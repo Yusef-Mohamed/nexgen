@@ -1,0 +1,326 @@
+import { emojis } from "./constants";
+
+export interface ICategory {
+  title: string;
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface ICourse {
+  title: string;
+  description: string;
+  image: string;
+  price: string;
+  priceAfterDiscount?: string;
+  category: ICategory;
+  accessibleCourses?: ICourse[];
+  coursePercentage: number;
+  highlights: string[];
+  colors: {
+    bgColor: string;
+    bgDarkMode: string;
+    fontColor: string;
+    fontDarkMode: string;
+  };
+  reviews: IReview[];
+  ratingsQuantity: number;
+  ratingsAverage: number;
+  progressPercentage?: number;
+  totalProgress?: number;
+  _id: string;
+  createdAt: string;
+  instructor: IUser;
+  updatedAt: string;
+}
+export interface ILesson {
+  course: ICourse;
+  title: string;
+  image: string;
+  videoUrl?: string;
+  _id: string;
+  type: string;
+}
+
+export interface IUser {
+  name: string;
+  email: string;
+  role: "user" | "admin" | "marketer" | "customer" | "instructor";
+  _id: string;
+  phone: string;
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
+  profileImg?: string;
+  authToReview: boolean;
+  startMarketing: boolean;
+  __v: number;
+}
+export interface InputData {
+  name: string;
+  type: string;
+  pattern?: string;
+  title?: string;
+  values?: {
+    value: string;
+    label: string;
+  }[];
+}
+
+export interface InputProps {
+  input: InputData;
+  isLoading: boolean;
+  value?: string | null;
+  setData: (data: string | File) => void;
+  error: Record<string, any>;
+  inputs: (name: string) => string;
+  notRequired?: boolean;
+}
+export interface ApiError {
+  param: string;
+  msg: string;
+}
+export interface IExam {
+  _id: string;
+  model: string;
+  title: string;
+  passingScore: number;
+  type: string;
+  questions: IQuestion[];
+  createdAt: string;
+  updatedAt: string;
+}
+export interface IQuestion {
+  _id: string;
+  question: string;
+  options: string[];
+  correctOption: number;
+  questionImage?: string;
+  wrongAnswer?: number;
+  grade?: number;
+}
+export interface IPackage {
+  title: string;
+  description: string;
+  highlights: string[];
+  price: number;
+  priceAfterDiscount?: number;
+  subscriptionDurationDays: number;
+  course: ICourse;
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface ICoursePackage {
+  title: string;
+  description: string;
+  highlights: string[];
+  price: string;
+  priceAfterDiscount?: string;
+  courses: ICourse[];
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface IPost {
+  content: string;
+  imageCover: string;
+  images: string[];
+  sharedTo: string;
+  user: IUser;
+  course: ICourse[];
+  package: IPackage[];
+  reactionsCount: number;
+  commentsCount: number;
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface ILive {
+  title: string;
+  date: string;
+  package: IPackage[];
+  instructor: IUser;
+  link: string;
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface IChat {
+  groupName: string;
+  description: string;
+  isGroupChat: boolean;
+  archived: boolean;
+  image?: string;
+  participants: {
+    user: string;
+    userDetails: IUser;
+    isAdmin: boolean;
+    _id: string;
+  }[];
+
+  lastMessage?: IMessage[];
+  createdAt: string;
+  _id: string;
+}
+export interface IMessage {
+  chat: string;
+  isRead: boolean;
+  media: string[];
+  reactions: string[];
+  sender: IUser;
+  text: string;
+  seenBy: string[];
+  repliedTo: IMessage;
+  createdAt: string;
+  _id: string;
+}
+export interface IComment {
+  content: string;
+  image: string;
+  post: string;
+  user: IUser;
+
+  repiles: IComment[];
+  createdAt: string;
+  updatedAt: string;
+  _id: string;
+}
+export interface IReview {
+  title: string;
+  ratings: number;
+  user: IUser;
+  course?: ICourse;
+  reply?: string;
+  createdAt: string;
+  updatedAt: string;
+  _id: string;
+}
+export interface IReact {
+  user: IUser;
+  post: string;
+  type: keyof typeof emojis;
+  createdAt: string;
+  updatedAt: string;
+  _id: string;
+}
+export interface ITransaction {
+  child: IUser;
+  amount: number;
+  item: string;
+  percentage: number;
+  profit: number;
+  Date: string;
+  _id: string;
+}
+export interface IInovice {
+  desc: string;
+  mySales: number;
+  profits: number;
+  status: string;
+  totalSalesMoney: number;
+  walletProfits: number;
+  _id: string;
+}
+export interface IWalletItem {
+  member: IUser;
+  amount: number;
+  percentage: number;
+  profit: number;
+  Date: string;
+  createdAt: string;
+  _id: string;
+}
+export interface IWalletInvoiceItem {
+  Date: string;
+  createdAt: string;
+  desc: string;
+  paymentMethod: string;
+  profits: number;
+  reasonToWithdraw: string;
+  recieverAcc: string;
+  status: string;
+  _id: string;
+}
+export interface IMarketLog {
+  role: string;
+  marketer: IUser;
+  walletInvoices: IWalletInvoiceItem[];
+  totalSalesMoney: number;
+  hasSentRequest: boolean;
+  transactions: ITransaction[];
+  direct_transactions: ITransaction[];
+  invoices: IInovice[];
+  wallet: IWalletItem[];
+  __v: number;
+  _id: string;
+  updatedAt: string;
+  createdAt: string;
+}
+export interface IAnalytic {
+  content: string;
+  createdAt: string;
+  imageCover: string;
+  isPassed: boolean;
+  marketer: string;
+  updatedAt: string;
+  marketerComment?: string;
+  user: IUser;
+  _id: string;
+}
+export interface ICourseProgress {
+  averageGradePercentage: number;
+  completedLessons: ILesson[];
+  examsCompletedPercentage: number;
+  examsNotAttemptedPercentage: number;
+  finalExamCompletionPercentage: number;
+  notAttemptedLessons: ILesson[];
+  totalProgress: number;
+  completedLessonsPercentage: number;
+}
+export interface IPagination {
+  numberOfPages: number;
+  limit: number;
+  currentPage: number;
+  results: number;
+}
+export interface IOrder {
+  coursePackage?: ICoursePackage;
+  package?: IPackage;
+  course?: ICourse;
+  isPaid: boolean;
+  paidAt: string;
+  paymentMethodType: string;
+  totalOrderPrice: number;
+  user: IUser;
+  _id: string;
+}
+export interface INotification {
+  _id: string;
+  createdAt: string;
+  message: string;
+  read: boolean;
+  type: "chat" | "post" | "system";
+  post?: string;
+  chat?: string;
+  updatedAt: string;
+  user: string;
+  __v: number;
+}
+export interface IBlog {
+  title: string;
+  videoUrl: string;
+  imageCover: string;
+  content: string;
+  description: string;
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface IProgress {
+  lesson: ILesson;
+  modelExam: "A" | "B";
+  status: "Completed" | "failed";
+  examScore: number;
+  attemptDate: string;
+  _id: string;
+}

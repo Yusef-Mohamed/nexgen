@@ -1,0 +1,78 @@
+.box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.box.md svg {
+  transform: rotate(278deg);
+  transform-origin: center;
+  -webkit-transform: rotate(278deg);
+  -moz-transform: rotate(278deg);
+  -ms-transform: rotate(278deg);
+  -o-transform: rotate(278deg);
+}
+.box.sm svg {
+  transform: rotate(270deg);
+  transform-origin: center;
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+}
+
+.box.sm svg {
+  width: 5rem;
+  height: 5rem;
+}
+
+.box.md svg {
+  width: 12rem;
+  height: 12rem;
+}
+
+.box.lg svg {
+  width: 18rem;
+  height: 18rem;
+}
+circle {
+  fill: none;
+  transition: all 0.5s ease;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -ms-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+}
+.box.sm circle {
+  stroke-width: 0.45rem;
+}
+.box.md circle {
+  stroke-width: 1.5rem;
+}
+.box.lg circle {
+  stroke-width: 1.75rem;
+}
+
+circle:nth-child(1) {
+  stroke: var(--circle-bg);
+  filter: drop-shadow(0 0 0.001rem var(--white));
+}
+
+.progress {
+  stroke: var(--stroke);
+  position: relative;
+  z-index: 1;
+  stroke-dasharray: var(--stroke-dasharray);
+  stroke-dashoffset: var(--stroke-dasharray);
+  animation: progress var(--animation-time) ease-in forwards;
+  --webkit-stroke-position: inside;
+  stroke-linecap: round;
+  -o-transition: var(--transition);
+}
+
+@keyframes progress {
+  to {
+    stroke-dashoffset: var(--stroke-dashoffset);
+  }
+}

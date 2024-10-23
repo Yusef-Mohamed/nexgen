@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+main {
+  min-height: calc(100vh - 380px);
+}
+h1,
+.h1 {
+  @apply leading-[2.25rem] text-3xl sm:text-4xl sm:leading-[3rem] md:text-5xl md:leading-[3.75rem] lg:text-6xl lg:leading-[4.5rem];
+}
+h2,
+.h2 {
+  @apply text-2xl font-semibold md:text-3xl lg:text-4xl;
+}
+.h2-5 {
+  @apply text-xl font-semibold md:text-2xl lg:text-3xl;
+}
+h3,
+.h3 {
+  @apply text-lg font-semibold md:text-xl lg:text-2xl;
+}
+h4,
+.h4 {
+  @apply text-base font-semibold md:text-lg lg:text-xl;
+}
+h5,
+.h5 {
+  @apply text-sm font-semibold md:text-base lg:text-lg;
+}
+.secPadding {
+  @apply py-16 max-md:py-10 max-sm:py-8;
+}
+p,
+a,
+li {
+  @apply leading-7 sm:text-sm md:text-base;
+}
+@layer base {
+  :root {
+    --background: 0 0% 99%;
+    --clear-ground: 0 0% 100%;
+    --foreground: 210 22% 7%;
+    --text-1: 212 21% 16%;
+    --text-2: 210 21% 22%;
+    --text-3: 208 22% 37%;
+    --gold: 55 100% 44%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 213 92% 53%;
+    --primary-main: 218 78% 40%;
+    --primary-faded: 205 100% 97%;
+    --primary-foreground: 205 100% 97%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 205 12% 95%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 213, 27%, 84%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 1rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 210 15% 15%; /* Dark background */
+    --clear-ground: 210 15% 10%; /* Even darker for contrast */
+    --foreground: 0 0% 90%; /* Light text color */
+    --text-1: 0 0% 90%; /* Primary text */
+    --text-2: 0 0% 80%; /* Secondary text */
+    --text-3: 0 0% 70%; /* Tertiary text */
+    --gold: 55 100% 65%; /* Brightened gold for visibility */
+    --card: 210 15% 20%; /* Slightly lighter than background */
+    --card-foreground: 0 0% 90%; /* Light text on cards */
+    --popover: 210 15% 20%; /* Matches card background */
+    --popover-foreground: 0 0% 90%; /* Light text on popovers */
+    --primary: 213 92% 70%; /* Brighter primary color */
+    --primary-main: 218 78% 75%; /* Adjusted for contrast */
+    --primary-faded: 205 100% 20%; /* Darker faded primary */
+    --primary-foreground: 0 0% 90%; /* Light text on primary elements */
+    --secondary: 210 40% 30%; /* Darker secondary color */
+    --secondary-foreground: 0 0% 90%; /* Light text on secondary elements */
+    --muted: 205 12% 25%; /* Muted background elements */
+    --muted-foreground: 0 0% 70%; /* Muted text */
+    --accent: 210 40% 30%; /* Accent color adjusted */
+    --accent-foreground: 0 0% 90%; /* Light text on accents */
+    --destructive: 0 84.2% 60.2%; /* Destructive action color */
+    --destructive-foreground: 0 0% 90%; /* Light text on destructive elements */
+    --border: 210 10% 30%; /* Border color for dark mode */
+    --input: 210 10% 25%; /* Input backgrounds */
+    --ring: 221.2 83.2% 70%; /* Focus ring color */
+    --radius: 1rem; /* Border radius remains the same */
+    --chart-1: 12 76% 70%; /* Chart colors adjusted for visibility */
+    --chart-2: 173 58% 60%;
+    --chart-3: 197 37% 65%;
+    --chart-4: 43 74% 70%;
+    --chart-5: 27 87% 75%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Hide the built-in password icon for most browsers */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+/* Hide the built-in password icon for WebKit browsers (Chrome, Safari) */
+input[type="password"]::-webkit-textfield-decoration-container {
+  display: none;
+}
+
+/* Hide the built-in password icon for Firefox */
+input[type="password"] {
+  -moz-appearance: textfield;
+}
+/* .prose {
+  @apply max-w-full prose-headings:text-text-1 prose-p:text-text-2 prose-li:text-text-2 prose-a:text-primary;
+} */
