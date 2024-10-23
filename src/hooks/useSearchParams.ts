@@ -5,7 +5,7 @@ function useCustomSearchParams() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const setSearchParams = (values: any) => {
+  const setSearchParams = (values: Record<string, string>) => {
     const newSearchParams = new URLSearchParams(searchParams);
     for (const key in values) {
       if (values[key] === "") {

@@ -65,7 +65,7 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       container: {
-        center: "true",
+        center: true,
         screens: {
           sm: "100%",
           md: "100%",

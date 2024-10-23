@@ -12,6 +12,7 @@ import BlogSection from "./components/BlogSection";
 import FAQ from "./components/FAQ";
 import { Metadata } from "next";
 import { getMetadataLandingPage } from "@/getMetaData";
+import { unstable_setRequestLocale } from "next-intl/server";
 export function generateMetadata({
   params,
 }: {
@@ -22,7 +23,9 @@ export function generateMetadata({
   });
 }
 
-const LandingPage = () => {
+const LandingPage = ({ params }: { params: { locale: string } }) => {
+  unstable_setRequestLocale(params.locale);
+
   return (
     <main>
       <Hero />

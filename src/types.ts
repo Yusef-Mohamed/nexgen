@@ -71,7 +71,6 @@ export interface InputProps {
   isLoading: boolean;
   value?: string | null;
   setData: (data: string | File) => void;
-  error: Record<string, any>;
   inputs: (name: string) => string;
   notRequired?: boolean;
 }

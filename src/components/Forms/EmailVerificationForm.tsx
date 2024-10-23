@@ -1,11 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import { FaSpinner } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useRouter } from "@/i18n/routing";
 import * as z from "zod";

@@ -13,7 +13,7 @@ export default function RootLayout({
 
   return (
     <>
-      <Header logo="" />
+      <Header />
       {children}
       <Footer />
     </>

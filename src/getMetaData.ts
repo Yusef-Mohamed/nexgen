@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { IBlog, ICourse } from "./types";
 
 const getTitle = (title: string, locale: string) => {
   if (locale === "ar") {
@@ -460,7 +459,8 @@ export function getMetadataTermsOfServicePage({
   } else {
     return {
       title: getTitle("Terms of Service", "en"),
-      description: "Learn about the terms of service for using the Nexgen Academy website.",
+      description:
+        "Learn about the terms of service for using the Nexgen Academy website.",
     };
   }
 }

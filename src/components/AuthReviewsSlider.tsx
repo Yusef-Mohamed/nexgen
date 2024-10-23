@@ -4,12 +4,9 @@ import {
   CarouselApi,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useEffect, useState } from "react";
 import Autoplay from "embla-carousel-autoplay";
-import Image from "next/image";
 import { IReview } from "@/types";
 import { useLocale } from "next-intl";
 import UserAvatar from "./UserAvatar";

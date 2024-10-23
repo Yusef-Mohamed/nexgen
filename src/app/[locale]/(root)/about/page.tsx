@@ -6,6 +6,7 @@ import PartnersSection from "./components/PartnersSection";
 import OurValues from "./components/OurValues";
 import ReviewsSection from "./components/ReviewsSection";
 import { PromoBanner2 } from "../components/PromoBanner";
+import { unstable_setRequestLocale } from "next-intl/server";
 
 export function generateMetadata({
   params,
@@ -17,7 +18,8 @@ export function generateMetadata({
   });
 }
 
-const AboutPage = () => {
+const AboutPage = ({ params }: { params: { locale: string } }) => {
+  unstable_setRequestLocale(params.locale);
   return (
     <main>
       <HeroSection />
