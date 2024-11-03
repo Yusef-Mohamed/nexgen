@@ -13,11 +13,11 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
   iconSrc,
 }) => {
   return (
-    <div className="flex items-center gap-4 p-3 shadow-md sm:p-4 sm:gap-5 bg-clear-ground rounded-xl">
+    <div className="flex items-center gap-4 p-3 shadow-md cardShadow sm:p-4 sm:gap-5 bg-clear-ground rounded-xl">
       <Image
         src={iconSrc}
         alt={title}
-        className="rounded-md aspect-square w-16 sm:w-[4.5rem] bg-text-5"
+        className="rounded-md aspect-square w-16 sm:w-[4.5rem] bg-muted"
         width={72}
         height={72}
       />

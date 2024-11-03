@@ -60,7 +60,7 @@ const CustomFormField = <T extends FieldValues>({
         <FormItem>
           <FormLabel
             htmlFor={input.name}
-            className="text-sm font-semibold text-subText"
+            className="text-sm font-semibold text-text-2"
           >
             {input.label}{" "}
             {input.required && <span className="text-destructive">*</span>}

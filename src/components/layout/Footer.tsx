@@ -1,10 +1,10 @@
 import { useTranslations } from "next-intl";
 import React from "react";
 import Logo from "../logo";
-import { FaTelegramPlane } from "react-icons/fa";
+import { FaFacebookF, FaTelegramPlane, FaTiktok } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
 import { Link } from "@/i18n/routing";
-
+import { FaInstagram } from "react-icons/fa";
 const aboutLinks = [
   {
     name: "about",
@@ -31,6 +31,23 @@ const supportLinks = [
   {
     name: "telegram",
     link: "https://t.me/nexgensupport",
+  },
+];
+const socialLinks = [
+  {
+    name: "facebook",
+    link: "https://www.facebook.com/profile.php?id=61566778123491",
+    icon: <FaFacebookF />,
+  },
+  {
+    name: "tiktok",
+    link: "https://www.tiktok.com/@nexgen.academy0",
+    icon: <FaTiktok />,
+  },
+  {
+    name: "instagram",
+    link: "https://www.instagram.com/Nex.genacademy",
+    icon: <FaInstagram />,
   },
 ];
 const Footer: React.FC = () => {
@@ -69,13 +86,15 @@ const Footer: React.FC = () => {
                   <FaTelegramPlane />
                 </div>
                 <div className="flex-1 ">
-                  <div className="text-xs sm:text-sm">Have a question?</div>
+                  <div className="text-xs sm:text-sm">
+                    {text("haveAQuestion")}
+                  </div>
                   <a
                     href="https://t.me/nexgensupport"
                     target="_blank"
                     className="text-sm font-semibold underline sm:text-base text-primary"
                   >
-                    Telegram Support
+                    {text("telegramSupport")}
                   </a>
                 </div>
               </div>
@@ -84,28 +103,27 @@ const Footer: React.FC = () => {
                   <MdOutlineMail />
                 </div>
                 <div className="flex-1">
-                  <div className="text-xs sm:text-sm">Contact us</div>
+                  <div className="text-xs sm:text-sm">{text("contactUs")}</div>
                   <a
                     href="mailto:nexgensupprot@gmail.com"
                     target="_blank"
                     className="text-sm font-semibold underline sm:text-base text-primary"
                   >
-                    nexgensupprot@gmail.com{" "}
+                    {text("contactEmail")}
                   </a>
                 </div>
               </div>
             </div>
             <div className="flex items-start self-start justify-center gap-4 mt-6 sm:gap-6 sm:mt-10">
-              {["Facebook", "Twitter", "Instagram", "LinkedIn"].map(
-                (platform, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-center w-10 h-10 text-xl rounded-full sm:w-12 sm:h-12 sm:text-2xl text-primary bg-primary/10"
-                  >
-                    <MdOutlineMail />
-                  </div>
-                )
-              )}
+              {socialLinks.map((platform, index) => (
+                <a
+                  key={index}
+                  href={platform.link}
+                  className="flex items-center justify-center w-10 h-10 text-xl rounded-full sm:w-12 sm:h-12 sm:text-2xl text-text-1 bg-primary/10"
+                >
+                  {platform.icon}
+                </a>
+              ))}
             </div>
           </div>
         </div>

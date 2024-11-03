@@ -11,54 +11,57 @@
   },
   "hero": {
     "heading": "Master Forex Trading with Expert-Led Courses",
-    "subHeading": "The Leading Platform for Forex Courses",
-    "description": "Learn the strategies and skills to trade with confidence, whether you're a beginner or looking to enhance your expertise.",
+    "subHeading": "The #1 Platform for Forex Courses",
+    "description": "Learn strategies and skills to trade with confidence, whether you’re a beginner or looking to enhance your expertise.",
     "startNow": "Start Now"
   },
   "features": {
     "feature_1_title": "Consulting Service",
-    "feature_2_title": "Top Courses",
+    "feature_2_title": "Best Courses",
     "feature_3_title": "Live Classes",
-    "feature_1_description": "We provide 24/7 support to our students.",
-    "feature_2_description": "Our instructors are highly skilled and experienced from around the world.",
-    "feature_3_description": "We offer live classes to ensure our students receive the highest quality education."
+    "feature_1_description": "We offer 24/7 support to our students.",
+    "feature_2_description": "Our trainers are highly skilled and experienced from around the world.",
+    "feature_3_description": "We offer live classes to provide our students with high-quality education."
   },
   "popularCourses": {
     "exploreAllCourses": "Explore All Courses",
     "exploreOurPopularCourses": "Explore Our Popular Courses",
-    "learnMore": "Learn More"
+    "learnMore": "Learn More",
+    "ourPopularCourses": "Our Popular Courses"
   },
   "learningPaths": {
-    "heading": "Advance Your Career in Forex Trading",
-    "coursesCount": "Contains {count} Courses",
-    "showDetails": "Show Details"
+    "heading": "Advance Your Forex Trading Journey",
+    "coursesCount": "Contains {count} courses",
+    "showDetails": "Show Details",
+    "exploreAllPaths": "Explore All Paths"
   },
   "whyChooseUs": {
     "heading": "Why Choose NexGen Academy",
-    "subHeading": "Join a community, not just a classroom.",
+    "subHeading": "Join a Community, Not Just a Classroom.",
     "case_1_title": "Learn from the Best",
     "case_2_title": "Learning Paths for All Levels",
     "case_3_title": "Evaluate Your Progress",
-    "case_1_description": "Our instructors are seasoned Forex experts with years of experience, offering you insights and strategies that work in real markets.",
-    "case_2_description": "Whether you're a beginner or seeking to level up, our structured learning paths guide you from one level to the next.",
-    "case_3_description": "Engage with interactive quizzes and assignments to track your learning journey and sharpen your skills."
+    "case_1_description": "Our instructors are seasoned Forex experts offering real market insights and effective strategies.",
+    "case_2_description": "Whether you're a beginner or advancing, our structured learning paths guide you from one level to the next.",
+    "case_3_description": "Engage with interactive quizzes and assignments to track your learning journey and strengthen your skills."
   },
   "services": {
     "heading": "Our Services",
     "startNow": "Start Now",
-    "perMonth": "Per Month",
+    "perMonth": "per month",
     "save": "Save",
-    "weOffer": "We Offer"
+    "weOffer": "We Offer",
+    "exploreAllServices": "Explore All Services"
   },
   "promoBanner": {
-    "heading": "Register Now and Get 4 Months of Free Services",
+    "heading": "Register Now and Get 4 Months Free Access to Our Services",
     "description": "Sign up for any course today and enjoy 4 months of free access to our premium services.",
     "startNow": "Start Now"
   },
   "successStories": {
     "heading": "Our Students' Success Stories",
-    "subHeading": "Your success story starts here.",
-    "description": "Discover how our students transformed their lives through education. Each success story highlights the journey, challenges, and achievements of individuals who chose to dive into Forex trading, overcoming market fluctuations and technical analysis hurdles to reach their financial goals.",
+    "subHeading": "Your success story begins here.",
+    "description": "Discover how our students transformed their lives through education. Each success story highlights the journey, challenges, and achievements of individuals who chose to engage in Forex trading, overcoming market volatility and technical analysis hurdles to achieve their financial goals.",
     "startYourJourney": "Start Your Journey"
   },
   "learnerReviews": {
@@ -66,38 +69,47 @@
     "exploreAllReviews": "Explore All Reviews"
   },
   "featuredInstructors": {
-    "heading": "Meet Our Featured Instructors of the Week",
+    "heading": "Meet Our Featured Instructors This Week",
     "exploreAllInstructors": "Explore All Instructors"
   },
   "blogs": {
     "heading": "Stay Ahead with Our Blogs",
     "exploreAllBlogs": "Explore All Blogs",
     "heading2": "Our Blog",
-    "description": "Learn, trade, and succeed: Build your skills in the Forex market."
+    "description": "Learn, trade, and succeed: build your skills in the Forex market.",
+    "latestBlogs": "Latest Blogs",
+    "donotOnlyLearnSuccess": "Don’t just learn, achieve success! Join NexGen Academy and start trading with confidence!",
+    "startNow": "Start Now",
+    "donotOnlyLearnSuccessP": "Sign up now for expert guidance, comprehensive resources, and to join a supportive community!",
+    "relatedBlogsHeading": "Related Topics",
+    "relatedBlogsDescription": "Explore more insights on trading strategies and investment."
   },
   "faqs": {
     "heading": "Frequently Asked Questions",
     "description": "Still unsure? Our support team is here to answer your questions and guide you every step of the way.",
     "faq_q_1": "What is trading?",
-    "faq_a_1": "Trading - buying and selling in financial markets - is a modern phenomenon and a fundamental economic activity that has evolved over centuries. At its core, trading involves exchanging goods, stocks, forex, and cryptocurrencies with the goal of profiting from market price fluctuations. Unlike investing, which often focuses on long-term growth, trading benefits from short-term market movements.",
+    "faq_a_1": "Trading – buying and selling in financial markets – is a modern phenomenon and a fundamental economic activity that has evolved over centuries. Trading essentially involves the exchange of goods, stocks, forex, and cryptocurrencies to benefit from market price fluctuations. Unlike investing, which often focuses on long-term growth, trading leverages short-term market movements.",
     "faq_q_2": "How long does it take to master trading?",
-    "faq_a_2": "There is no set time for mastering trading, but based on the educational plan we provide, we estimate that it takes students between 6 to 9 months to acquire the necessary skills and knowledge. Professional mastery, however, depends entirely on personal market experience (market analysis calls with the expert are crucial for skill development).",
-    "faq_q_3": "How long does it take to complete the education?",
-    "faq_a_3": "The world of trading is vast, so the amount of information you can acquire is tremendous, and it doesn't depend on time because you'll learn something new every day, even over years. However, our educational plan estimates two days per lesson: one for watching and one for applying and correcting.",
+    "faq_a_2": "There is no specific time to master trading, but based on the educational plan we provide, we estimate that a student needs 6 to 9 months to acquire skills and information. Mastery depends entirely on market experience and practice (market analysis calls with experts are essential for skill acquisition).",
+    "faq_q_3": "How long will it take to complete the training?",
+    "faq_a_3": "The trading world is vast, so the amount of information to acquire is immense, and it doesn’t rely on time as you’ll learn something new daily, even over years. Our educational plan estimates two days per lesson: one for watching and one for application and correction.",
     "faq_q_4": "Is trading easy?",
-    "faq_a_4": "It's deceptively difficult. Trading is one of the most challenging fields a person can choose to enter, but if mastered, it can be life-changing. Unlike what you see on social media, trading is not just a strategy or a chart; it's much broader and more comprehensive.",
-    "faq_q_5": "When will I start making money from trading?",
-    "faq_a_5": "It's better to ask this question differently: Can I stop losing? The answer is after training on a demo (simulated) account and when your coach sees that you're following a set risk management plan. The coach will then decide when you can start trading on a live account and begin making money with a specific risk management strategy.",
-    "faq_q_6": "Does your academy provide comprehensive education from beginner to expert?",
-    "faq_a_6": "Yes, the academy offers education that starts from Forex basics, moves on to classical technical analysis, then economic and fundamental analysis, followed by liquidity analysis, and concludes with weekly market analysis to complete the professional training program.",
+    "faq_a_4": "It’s deceptively challenging. One of the most difficult fields to enter, but once mastered, it becomes a transformative life skill. Unlike what you see on social media, trading is not a strategy or even a specific stock or chart pattern; it’s much broader than that.",
+    "faq_q_5": "When will I start earning from trading?",
+    "faq_a_5": "It’s better to rephrase this question as 'Can I stop losing?' The answer comes after practicing on a demo account (mock account) and once your trainer sees you’re following a specific risk management strategy, they’ll decide when you can start real trading and profit within a defined risk framework.",
+    "faq_q_6": "Does your academy offer comprehensive education from basics to mastery?",
+    "faq_a_6": "Yes, our academy provides education that begins with Forex basics, then moves to classic technical analysis, fundamental and economic analysis, liquidity analysis, weekly market reviews, and concludes with advanced expertise.",
     "faq_q_7": "Are there any monthly subscription fees?",
-    "faq_a_7": "There are no fees for education; it's a one-time payment, and weekly analysis is provided for one month. After that, monthly payment is required to continue receiving weekly analysis and market insights.",
-    "faq_q_8": "Can I learn at any time?",
-    "faq_a_8": "Yes, the calls are recorded, and students can learn at any time they wish.",
+    "faq_a_7": "There are no fees for education; it’s a one-time payment. Weekly analysis is provided for a month, after which monthly payment is required to continue receiving weekly and market analysis.",
+    "faq_q_8": "Can I learn whenever I want?",
+    "faq_a_8": "Yes, calls are recorded, and students can learn whenever they like.",
     "faq_q_9": "Why do most traders lose at the beginning?",
-    "faq_a_9": "One of the fundamental principles of trading is risk management, which we focus on in our educational curriculum. It can reduce losses and increase the chances of profit.",
-    "faq_q_10": "What is the minimum capital I can start trading with?",
-    "faq_a_10": "No one can set your capital, but you can ask yourself what daily profit you're satisfied with in the Forex market, aiming for 1-3% of your capital."
+    "faq_a_9": "One of the most important foundations of trading is risk management, which is a core focus in our curriculum. Proper risk management can reduce your losses and increase profit opportunities.",
+    "faq_q_10": "What is the minimum capital needed to start trading?",
+    "faq_a_10": "No one can define your capital, but you might ask yourself how much daily profit you’d be satisfied with in the Forex market, aiming for 1-3% of the capital.",
+    "contact": "Contact Us",
+    "displayMore": "Show More",
+    "displayLess": "Show Less"
   },
   "footer": {
     "copyRight": "©2024 NexGen Inc. All rights reserved.",
@@ -107,45 +119,49 @@
     "whatsapp": "WhatsApp",
     "contact": "Contact Us",
     "telegram": "Telegram",
-    "courses": "Courses"
+    "courses": "Courses",
+    "haveAQuestion": "Have a Question?",
+    "telegramSupport": "Telegram Support",
+    "contactUs": "Contact Us",
+    "contactEmail": "Contact Email"
   },
   "aboutHeroPage": {
-    "heading": "Master Forex with Practical and Applied Education",
-    "subHeading": "At NexGen Academy, we excel at offering practical and applied Forex education.",
-    "description": "Welcome to NexGen Academy, your trusted partner in mastering Forex trading. We offer comprehensive, practical, and accessible courses for traders of all levels.",
-    "yearsOfExperience": "Years of Experience",
-    "ourInstructors": "Our Instructors",
-    "ourLearners": "Our Learners' Success"
+    "heading": "Master Forex Through Practical Learning.",
+    "subHeading": "At NexGen Academy, we provide hands-on Forex training.",
+    "description": "Welcome to NexGen Academy, your trusted partner in mastering Forex trading. We offer comprehensive, practical, and accessible courses for traders at all levels.",
+    "yearsOfExperience": "Years of Experience.",
+    "ourInstructors": "Our Instructors.",
+    "ourLearners": "Our Students’ Success."
   },
   "aboutPartnersPage": {
-    "heading": "Trusted by Top Global Companies"
+    "heading": "Trusted by Top Global Companies."
   },
   "aboutOurValuesPage": {
-    "ourValues": "Our Values",
-    "heading": "Empowering Traders with High-Quality Education and Practical Experience",
-    "description": "Our mission is to equip individuals with the knowledge and tools they need to confidently and successfully navigate the Forex market.",
-    "case_1_title": "Empowerment Through Knowledge",
-    "case_2_title": "Practical and Applied Learning",
-    "case_3_title": "Practical and Applied Learning",
-    "case_1_description": "We provide learners with the skills and confidence to navigate the complexities of the Forex market.",
+    "ourValues": "Our Values.",
+    "heading": "Empowering Traders Through Quality Education and Practical Experience.",
+    "description": "Our mission is to equip individuals with the knowledge and tools needed to navigate the Forex market confidently and successfully.",
+    "case_1_title": "Empowerment Through Knowledge.",
+    "case_2_title": "Hands-On Learning.",
+    "case_3_title": "Hands-On Learning.",
+    "case_1_description": "We empower learners with the skills and confidence to navigate the complexities of the Forex market.",
     "case_2_description": "Our focus on real-world trading simulations ensures students are prepared for real market conditions.",
     "case_3_description": "With a 95% completion rate, our platform is committed to helping traders achieve their financial goals."
   },
   "SignUp": {
-    "heading": "Create Account",
+    "heading": "Sign Up",
     "paragraph": "Enter your information to create an account",
     "fall_back_paragraph": "Already have an account?",
     "fall_back_label": "Sign In",
-    "sign_up_with_google": "Sign Up with Google",
-    "sign_up_with_facebook": "Sign Up with Facebook"
+    "sign_up_with_google": "Sign up with Google",
+    "sign_up_with_facebook": "Sign up with Facebook"
   },
   "SignIn": {
     "heading": "Sign In",
-    "paragraph": "Enter your email and password to sign in",
-    "fall_back_paragraph": "Don't have an account?",
-    "fall_back_label": "Create Account",
-    "sign_up_with_google": "Sign In with Google",
-    "sign_up_with_facebook": "Sign In with Facebook",
+    "paragraph": "Enter your email and password to access your account",
+    "fall_back_paragraph": "Don’t have an account?",
+    "fall_back_label": "Sign Up",
+    "sign_up_with_google": "Sign in with Google",
+    "sign_up_with_facebook": "Sign in with Facebook",
     "forgot_password": "Forgot Password?",
     "reset_password": "Reset Password"
   },
@@ -157,12 +173,12 @@
   "ResetCode": {
     "heading": "Verification Code",
     "paragraph": "Enter the verification code sent to your email",
-    "email_verification": "Please enter the code we sent to your email:",
+    "email_verification": "Please enter the code sent to your email: ",
     "not_your_account": "Not your account?",
     "logout": "Logout",
     "no_email_received": "Didn't receive the email?",
     "resend_email": "Resend Email",
-    "resend_email_success": "Email resent successfully",
+    "resend_email_success": "Email successfully resent",
     "something_went_wrong": "Something went wrong",
     "checkCode": "Check Code"
   },
@@ -172,10 +188,10 @@
     "reset_password": "Reset Password"
   },
   "Forms": {
-    "instructorProfits": "Instructor Profits",
+    "instructorProfits": "Instructor's Profits",
     "image": "Image",
     "invoiceType": "Invoice Type",
-    "requestToPay": "Request Payment",
+    "requestToPay": "Request to Pay",
     "wallet": "Wallet",
     "profit": "Profit",
     "reasonToWithdraw": "Reason to Withdraw",
@@ -190,7 +206,7 @@
     "passwords_not_match": "Passwords do not match",
     "email_already_exist": "Email already exists",
     "currentPassword": "Current Password",
-    "incorrect_password": "Incorrect Password",
+    "incorrect_password": "Incorrect password",
     "profileImg": "Profile Picture",
     "details": "Details",
     "alias": "Alias",
@@ -205,48 +221,101 @@
     "send_now": "Send Now",
     "there_is_no_user_with_this_email": "No user with this email",
     "code": "Code",
-    "invalid_code": "Invalid Code",
+    "invalid_code": "Invalid code",
     "send": "Send",
     "newPassword": "New Password",
     "something_wrong": "Something went wrong",
-    "password_reset_success_please_login": "Password reset successfully. Please log in.",
+    "password_reset_success_please_login": "Password reset successful. Please login",
     "reset_code_sent_to_email": "Reset code sent to email",
     "code_verified": "Code Verified",
     "rating_from_1_to_5": "Rating from 1 to 5",
     "review": "Review",
     "course": "Course",
     "select_course": "Select Course",
-    "cv": "Resume",
+    "cv": "CV",
     "fullName": "Full Name",
     "country": "Country",
     "birthDate": "Birth Date",
     "currentWork": "Current Work",
-    "ansOfQuestion": "Write a resume about yourself in 100 words",
-    "instagram": "Your Instagram Account",
-    "tiktok": "Your TikTok Account",
-    "telegram": "Your Telegram Account",
+    "ansOfQuestion": "Write a bio about yourself in 100 words",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "telegram": "Telegram",
     "paymentMethod": "Payment Method",
     "sharedTo": "Shared With",
     "package": "Package",
-    "imageDropDownPlaceHolder": "Drag and drop an image here, or click to select an image",
+    "imageDropDownPlaceHolder": "Drag & Drop an image here or click to select",
     "createPostPlaceholder": "What's on your mind?",
     "isPassed": "Passed",
     "user": "User",
     "me": "Me",
     "isAdmin": "Admin",
-    "recieverAccount": "Receiver Account",
+    "recieverAccount": "Recipient Account",
     "your_email_have_been_verified": "Your email has been verified",
     "thisFieldIsRequired": "This field is required",
     "continueWithGoogle": "Continue with Google",
     "otpMustBe6Digits": "OTP must be 6 digits"
   },
   "reviewsSectionAboutPage": {
-    "heading": "Learners' Opinions",
-    "description": "Hundreds of five-star reviews for NexGen Academy's award-winning software."
+    "heading": "Learners’ Reviews.",
+    "description": "Hundreds of five-star ratings for NexGen Academy’s award-winning programs."
   },
   "promoBanner2": {
-    "heading": "Don't Just Learn, Succeed! Join NexGen Academy and Start Trading with Confidence!",
-    "description": "Sign up now for expert guidance, comprehensive resources, and join a supportive community!",
+    "heading": "Don't just learn, succeed! Join NexGen Academy and start trading with confidence!",
+    "description": "Sign up now for expert guidance, comprehensive resources, and to join a supportive community!",
     "action": "Start Now"
+  },
+  "stayUpToDate": {
+    "heading": "Stay Updated, Stay Ahead!",
+    "description": "Stay ahead of the market: get the latest insights straight to your inbox!",
+    "startNow": "Start Now",
+    "enterYourEmail": "Enter Your Email",
+    "byClickingStartNowYouAgree": "By clicking \"Start Now,\" you agree to our ",
+    "privacyPolicy": "Privacy Policy"
+  },
+  "blogShareButtons": {
+    "shareFacebook": "Share on Facebook",
+    "shareWhatsapp": "Share on WhatsApp",
+    "shareTwitter": "Share on Twitter",
+    "shareLinkedIn": "Share on LinkedIn",
+    "copyLink": "Copy Link",
+    "copyLinkAlert": "Link copied",
+    "shareTheBlog": "Share the Blog"
+  },
+  "coursesPage": {
+    "heading": "Find the Perfect Course for Your Journey.",
+    "description": "Whether you're just starting out or looking to advance, explore courses tailored to fit your learning goals and schedule."
+  },
+  "coursePage": {
+    "discounted": "Discount",
+    "startNow": "Start Now",
+    "thisCourseIncludes": "This course includes:",
+    "nHourOfVideos": "{n} hours of video",
+    "quizes": "Regular Quizzes",
+    "accessOnMobile": "Mobile Access",
+    "certificateOfCompletion": "Certificate of Completion",
+    "lifetimeAccess": "Lifetime Access",
+    "whatYouWillLearn": "What You Will Learn",
+    "requirements": "Requirements",
+    "noExperienceRequired": "No prior experience needed",
+    "studentsReviews": "Student Reviews",
+    "courseContent": "Course Content",
+    "displayMore": "Show More",
+    "thereIsNoReview": "No reviews available"
+  },
+  "contact": {
+    "contactFormTitle": "Contact Us",
+    "contactFormDescription": "Reach out for personal support and answers to all your questions!",
+    "yourMessageHasBeenSent": "Your message has been sent successfully",
+    "something_went_wrong": "Something went wrong",
+    "email": "Email",
+    "emailDescription": "Send us an email for expert help and quick responses!",
+    "supportEmail": "Support Email",
+    "telegram": "Telegram",
+    "telegramDescription": "Contact us via Telegram for immediate support!",
+    "supportTelegram": "Support Telegram",
+    "whatsapp": "WhatsApp",
+    "whatsappDescription": "Contact us via WhatsApp for immediate support!",
+    "supportWhatsapp": "Support WhatsApp"
   }
 }

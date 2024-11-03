@@ -14,6 +14,9 @@ h1,
 .h1 {
   @apply leading-[2.25rem] text-3xl sm:text-4xl sm:leading-[3rem] md:text-5xl md:leading-[3.75rem] lg:text-6xl lg:leading-[4.5rem];
 }
+.h1-5 {
+  @apply leading-[2.25rem] text-2xl sm:text-3xl sm:leading-[3rem] md:text-4xl md:leading-[3.75rem] lg:text-5xl lg:leading-[4.5rem];
+}
 h2,
 .h2 {
   @apply text-2xl font-semibold md:text-3xl lg:text-4xl;
@@ -50,6 +53,8 @@ li {
     --text-2: 210 21% 22%;
     --text-3: 208 22% 37%;
     --gold: 55 100% 44%;
+    --green: 144 81% 25%;
+    --fadedGreen: 145 71% 87%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
@@ -121,7 +126,9 @@ li {
     @apply bg-background text-foreground;
   }
 }
-
+.cardShadow {
+  box-shadow: 2px 6px 32px 0px #1b7df51f;
+}
 /* Hide the built-in password icon for most browsers */
 input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
@@ -137,6 +144,6 @@ input[type="password"]::-webkit-textfield-decoration-container {
 input[type="password"] {
   -moz-appearance: textfield;
 }
-/* .prose {
-  @apply max-w-full prose-headings:text-text-1 prose-p:text-text-2 prose-li:text-text-2 prose-a:text-primary;
-} */
+.prose {
+  @apply prose-headings:text-text-1 prose-p:text-text-2 prose-li:text-text-2 prose-a:text-primary;
+}

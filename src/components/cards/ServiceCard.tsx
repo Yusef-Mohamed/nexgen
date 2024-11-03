@@ -14,7 +14,7 @@ const ServiceCard: React.FC<IPackage> = ({
   return (
     <div
       className={
-        "flex flex-col justify-between gap-4 sm:gap-8 self-stretch sm:py-8 py-12 px-6 sm:px-8 bg-background rounded-2xl border-4 border-solid border-primary/10 hover:border-primary/50 transition-colors shadow-[2px_8px_40px] shadow-primary/10"
+        "flex flex-col cardShadow justify-between gap-4 sm:gap-8 self-stretch sm:py-8 py-12 px-6 sm:px-8 bg-background rounded-2xl border-4 border-solid border-primary/10 hover:border-primary/50 transition-colors"
       }
     >
       <h3>{title}</h3>{" "}

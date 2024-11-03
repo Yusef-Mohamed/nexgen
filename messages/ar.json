@@ -26,12 +26,14 @@
   "popularCourses": {
     "exploreAllCourses": "استكشف جميع الدورات",
     "exploreOurPopularCourses": "استكشف دوراتنا الرائجة",
-    "learnMore": "تعرف على المزيد"
+    "learnMore": "تعرف على المزيد",
+    "ourPopularCourses": "دوراتنا الرائجة"
   },
   "learningPaths": {
     "heading": "ارتقِ بمسيرتك في تداول الفوركس",
     "coursesCount": "يحتوي علي {count} كورسات",
-    "showDetails": "عرض التفاصيل"
+    "showDetails": "عرض التفاصيل",
+    "exploreAllPaths": "استكشف جميع المسارات"
   },
   "whyChooseUs": {
     "heading": "لماذا تختار أكاديمية NexGen",
@@ -48,7 +50,8 @@
     "startNow": "ابدأ الآن",
     "perMonth": "شهرياً",
     "save": "وفر",
-    "weOffer": "نحن نقدم"
+    "weOffer": "نحن نقدم",
+    "exploreAllServices": "استكشف جميع الخدمات"
   },
   "promoBanner": {
     "heading": "سجل الآن واحصل على ٤ أشهر من خدماتنا مجاناً",
@@ -73,7 +76,13 @@
     "heading": "ابقَ متقدّمًا مع مدوناتنا",
     "exploreAllBlogs": "استكشف جميع المدونات",
     "heading2": "مدونتنا",
-    "description": "تعلم، تداول، وحقق النجاح: بناء مهاراتك في سوق الفوركس."
+    "description": "تعلم، تداول، وحقق النجاح: بناء مهاراتك في سوق الفوركس.",
+    "latestBlogs": "أحدث المدونات",
+    "donotOnlyLearnSuccess": "لا تتعلم فقط، بل حقق النجاح! انضم إلى أكاديمية NexGen وابدأ التداول بثقة!",
+    "startNow": "ابدأ الآن",
+    "donotOnlyLearnSuccessP": "سجل الآن للحصول على إرشادات الخبراء، الموارد الشاملة، والانضمام إلى مجتمع داعم!",
+    "relatedBlogsHeading": "مواضيع ذات صلة",
+    "relatedBlogsDescription": "استكشف المزيد من الرؤى حول استراتيجيات التداول والاستثمار"
   },
   "faqs": {
     "heading": "الأسئلة الشائعة",
@@ -110,7 +119,11 @@
     "whatsapp": "واتساب",
     "contact": "تواصل معنا",
     "telegram": "تليجرام",
-    "courses": "الدورات"
+    "courses": "الدورات",
+    "haveAQuestion": "لديك سؤال؟",
+    "telegramSupport": "الدعم عبر تليجرام",
+    "contactUs": "تواصل معنا",
+    "contactEmail": "البريد الإلكتروني للتواصل"
   },
   "aboutHeroPage": {
     "heading": "إتقان الفوركس من خلال التعليم العملي والتطبيقي.",
@@ -251,5 +264,58 @@
     "heading": "لا تتعلم فقط، بل حقق النجاح! انضم إلى أكاديمية NexGen وابدأ التداول بثقة!",
     "description": "سجل الآن للحصول على إرشادات الخبراء، الموارد الشاملة، والانضمام إلى مجتمع داعم!",
     "action": "ابدأ الآن"
+  },
+  "stayUpToDate": {
+    "heading": "ابق على اطلاع، ابق في المقدمة!",
+    "description": "ابق في صدارة السوق: احصل على أحدث الأفكار مباشرة إلى صندوق الوارد الخاص بك!",
+    "startNow": "ابدأ الآن",
+    "enterYourEmail": "أدخل بريدك الإلكتروني",
+    "byClickingStartNowYouAgree": "بالنقر فوق \"ابدأ الآن\"، فإنك توافق على ",
+    "privacyPolicy": "سياسة الخصوصية"
+  },
+  "blogShareButtons": {
+    "shareFacebook": "شارك على فيسبوك",
+    "shareWhatsapp": "شارك على واتساب",
+    "shareTwitter": "شارك على تويتر",
+    "shareLinkedIn": "شارك على لينكدإن",
+    "copyLink": "نسخ الرابط",
+    "copyLinkAlert": "تم نسخ الرابط",
+    "shareTheBlog": "شارك المدونة"
+  },
+  "coursesPage": {
+    "heading": "اعثر على الدورة المثالية لرحلتك.",
+    "description": "سواء كنت قد بدأت للتو أو تبحث عن التقدم، استكشف الدورات المصممة لتناسب أهدافك التعليمية وجداولك الزمنية."
+  },
+  "coursePage": {
+    "discounted": "خصم",
+    "startNow": "ابدأ الآن",
+    "thisCourseIncludes": "تتضمن هذه الدورة:",
+    "nHourOfVideos": "{n} ساعة من الفيديوهات",
+    "quizes": "اختبارات دورية",
+    "accessOnMobile": "الوصول على الهاتف المحمول",
+    "certificateOfCompletion": "شهادة إتمام",
+    "lifetimeAccess": "الوصول مدى الحياة",
+    "whatYouWillLearn": "ما ستتعلمه",
+    "requirements": "المتطلبات",
+    "noExperienceRequired": "لا حاجة لخبرة سابقة",
+    "studentsReviews": "تقييمات الطلاب",
+    "courseContent": "محتوى الدورة",
+    "displayMore": "عرض المزيد",
+    "thereIsNoReview": "لا توجد تقييمات"
+  },
+  "contact": {
+    "contactFormTitle": "تواصل معنا",
+    "contactFormDescription": "تواصل معنا للحصول على دعم شخصي وإجابات على جميع أسئلتك!",
+    "yourMessageHasBeenSent": "تم إرسال رسالتك بنجاح",
+    "something_went_wrong": "حدث خطأ ما",
+    "email": "البريد الإلكتروني",
+    "emailDescription": "أرسل لنا بريدًا إلكترونيًا لمساعدة الخبراء والاستجابات السريعة!",
+    "supportEmail": "البريد الإلكتروني الخاص بالدعم",
+    "telegram": "تليجرام",
+    "telegramDescription": "تواصل معنا عبر تطبيق تليجرام للحصول على دعم فوري!",
+    "supportTelegram": "التليجرام الخاص بالدعم",
+    "whatsapp": "واتساب",
+    "whatsappDescription": "تواصل معنا عبر تطبيق واتساب للحصول على دعم فوري!",
+    "supportWhatsapp": "الواتساب الخاص بالدعم"
   }
 }

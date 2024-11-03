@@ -5,13 +5,20 @@ import { getTranslations } from "next-intl/server";
 import { ICoursePackage } from "@/types";
 import GridSection from "@/components/GridSection";
 
-const LearningPaths: React.FC = async () => {
+const LearningPaths: React.FC<{ viewAll?: boolean }> = async ({ viewAll }) => {
   const text = await getTranslations("learningPaths");
   const axiosInstance = createServerAxiosInstance();
-  const coursePackagesRes = await axiosInstance.get("/coursePackages");
+  const coursePackagesRes = await axiosInstance.get(
+    `/coursePackages${viewAll ? "" : "?limit=3"}`
+  );
   const coursePackages = coursePackagesRes.data.data as ICoursePackage[];
   return (
-    <GridSection heading={text("heading")}>
+    <GridSection
+      id="learning-paths-section"
+      heading={text("heading")}
+      button={!viewAll ? text("exploreAllPaths") : ""}
+      href="/courses#learning-paths-section"
+    >
       {coursePackages.map((_package, index) => (
         <LearningPath key={index} {..._package} />
       ))}

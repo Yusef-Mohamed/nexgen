@@ -6,7 +6,7 @@ const HeroSection = () => {
   return (
     <section className="container secPadding">
       <div className="max-w-3xl">
-        <h2>{text("heading")}</h2>
+        <h2 className="h1-5">{text("heading")}</h2>
         <h3 className="mt-4 sm:mt-6 h5">{text("subHeading")}</h3>
       </div>
       <Image

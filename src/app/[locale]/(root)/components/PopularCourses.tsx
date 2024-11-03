@@ -4,18 +4,21 @@ import { getTranslations } from "next-intl/server";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { ICourse } from "@/types";
 import GridSection from "@/components/GridSection";
-const PopularCourses: React.FC = async () => {
+const PopularCourses: React.FC<{ viewAll?: boolean }> = async ({ viewAll }) => {
   const text = await getTranslations("popularCourses");
   const axiosInstance = createServerAxiosInstance();
   const coursesRes = await axiosInstance.get(
-    "/courses?sort=-ratingsQuantity&limit=3"
+    `/courses?sort=-ratingsQuantity${viewAll ? "" : "&limit=3"}`
   );
   const coursesData = coursesRes.data.data as ICourse[];
   return (
     <GridSection
-      heading={text("exploreOurPopularCourses")}
-      button={text("exploreAllCourses")}
-      href="/courses"
+      id="courses-section"
+      heading={
+        viewAll ? text("ourPopularCourses") : text("exploreOurPopularCourses")
+      }
+      button={!viewAll ? text("exploreAllCourses") : ""}
+      href="/courses#courses-section"
     >
       {coursesData.map((course, index) => (
         <CourseCard key={index} {...course} />

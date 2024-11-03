@@ -13,6 +13,8 @@ const config: Config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         gold: "hsl(var(--gold))",
+        green: "hsl(var(--green))",
+        fadedGreen: "hsl(var(--fadedGreen))",
         "clear-ground": "hsl(var(--clear-ground))",
         "text-1": "hsl(var(--text-1))",
         "text-2": "hsl(var(--text-2))",
@@ -101,6 +103,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 };
 export default config;

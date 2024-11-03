@@ -54,10 +54,10 @@ const Header = () => {
         <div className="items-center hidden gap-4 lg:gap-6 md:flex ">
           <LanguageSelector />
           <ThemeToggler />
-          <Button variant={"outline"}>
+          <Button asChild variant={"outline"}>
             <Link href="/sign-in">{text("signIn")}</Link>
           </Button>
-          <Button>
+          <Button asChild>
             <Link href="/sign-up">{text("startNow")}</Link>
           </Button>
         </div>

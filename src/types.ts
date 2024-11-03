@@ -10,8 +10,8 @@ export interface ICourse {
   title: string;
   description: string;
   image: string;
-  price: string;
-  priceAfterDiscount?: string;
+  price: number;
+  priceAfterDiscount?: number;
   category: ICategory;
   accessibleCourses?: ICourse[];
   coursePercentage: number;
@@ -39,6 +39,7 @@ export interface ILesson {
   videoUrl?: string;
   _id: string;
   type: string;
+  lessonDuration?: number;
 }
 
 export interface IUser {
@@ -64,6 +65,7 @@ export interface InputData {
     value: string;
     label: string;
   }[];
+  multiLang?: boolean;
 }
 
 export interface InputProps {
@@ -314,6 +316,8 @@ export interface IBlog {
   _id: string;
   createdAt: string;
   updatedAt: string;
+  author: string;
+  readTime: number;
 }
 export interface IProgress {
   lesson: ILesson;
@@ -322,4 +326,12 @@ export interface IProgress {
   examScore: number;
   attemptDate: string;
   _id: string;
+}
+export interface ISection {
+  title: string;
+  _id: string;
+  course: ICourse;
+  createdAt: string;
+  updatedAt: string;
+  lessons?: ILesson[];
 }

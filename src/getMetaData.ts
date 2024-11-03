@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { IBlog } from "./types";
 
 const getTitle = (title: string, locale: string) => {
   if (locale === "ar") {
@@ -147,10 +148,7 @@ export function getMetadataBlogPage({
   blog,
 }: {
   params: { locale: string };
-  blog: {
-    title: string;
-    description: string;
-  };
+  blog: IBlog;
 }): Metadata {
   return {
     title: getTitle(blog.title, params.locale),

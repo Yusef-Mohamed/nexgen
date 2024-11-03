@@ -82,10 +82,10 @@ const MobileHeader = ({
               <LanguageSelector />
               <ThemeToggler />
             </div>
-            <Button variant={"outline"}>
+            <Button asChild variant={"outline"}>
               <Link href="/sign-in">{text("signIn")}</Link>
             </Button>
-            <Button>
+            <Button asChild>
               <Link href="/sign-up">{text("startNow")}</Link>
             </Button>
           </div>

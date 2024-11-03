@@ -7,7 +7,6 @@ import Services from "./components/Services";
 import PromoBanner from "./components/PromoBanner";
 import SuccessStories from "./components/SuccessStories";
 import Testimonials from "./components/Testimonials";
-import FeaturedInstructors from "./components/FeaturedInstructors";
 import BlogSection from "./components/BlogSection";
 import FAQ from "./components/FAQ";
 import { Metadata } from "next";
@@ -37,7 +36,7 @@ const LandingPage = ({ params }: { params: { locale: string } }) => {
       <PromoBanner />
       <SuccessStories />
       <Testimonials />
-      <FeaturedInstructors />
+      {/* <FeaturedInstructors /> */}
       <BlogSection />
       <FAQ />
     </main>

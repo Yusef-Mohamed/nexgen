@@ -18,7 +18,7 @@ const LearningPath: React.FC<ICoursePackage> = ({
   return (
     <div
       className={
-        "flex flex-col justify-between self-stretch sm:p-8 p-6 bg-background rounded-2xl border-4 border-solid border-primary/10 hover:border-primary/50 transition-colors shadow-[2px_8px_40px] shadow-primary/10 "
+        "flex flex-col cardShadow justify-between self-stretch sm:p-8 p-6 bg-background rounded-2xl border-4 border-solid border-primary/10 hover:border-primary/50 transition-colors shadow-[2px_8px_40px] shadow-primary/10 "
       }
     >
       <div>

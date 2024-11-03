@@ -8,7 +8,7 @@ import { AiOutlinePlayCircle } from "react-icons/ai";
 const SuccessStories: React.FC = () => {
   const text = useTranslations("successStories");
   return (
-    <section className="container grid gap-4 gap-10 lg:grid-cols-2 md:gap-14 secPadding">
+    <section className="container grid gap-4 lg:grid-cols-2 md:gap-14 secPadding">
       <div className="order-2 lg:order-1">
         <div>
           <h4 className="text-primary-main">{text("subHeading")}</h4>
@@ -22,14 +22,14 @@ const SuccessStories: React.FC = () => {
           <Link href={"/sign-up"}>{text("startYourJourney")}</Link>
         </Button>
       </div>
-      <div className="relative overflow-hidden rounded-3xl">
+      <div className="  aspect-[75/45] relative overflow-hidden rounded-3xl">
         <Image
           loading="lazy"
           src="/images/success.jpeg"
           alt="Success story background"
-          width={750}
-          height={450}
-          className="aspect-[75/45] object-cover"
+          width={825}
+          height={500}
+          className="aspect-[75/45] w-full object-cover"
         />
         <div className="absolute top-0 right-0 flex items-center justify-center w-full h-full bg-foreground/30">
           <div className="flex items-center justify-center w-16 h-16 p-3 rounded-full sm:w-20 sm:h-20 bg-background/20">
