@@ -7,6 +7,8 @@ import ThemeToggler from "../ThemeToggler";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import MobileHeader from "./MobileHeader";
+import { getServerCookie } from "@/app/lib/serverUtils";
+import UserHeader from "./UserHeader";
 const headerLinks = [
   {
     name: "home",
@@ -31,6 +33,7 @@ const headerLinks = [
 ];
 const Header = () => {
   const text = useTranslations("header");
+  const token = getServerCookie("token");
   return (
     <header className="sticky top-0 z-50 w-full py-1 shadow-md md:py-2 bg-clear-ground">
       <div className="container flex items-center justify-between gap-10">
@@ -51,15 +54,22 @@ const Header = () => {
             ))}
           </ul>
         </nav>
-        <div className="items-center hidden gap-4 lg:gap-6 md:flex ">
+        <div className="items-center hidden gap-2 lg:gap-3 md:flex ">
           <LanguageSelector />
           <ThemeToggler />
-          <Button asChild variant={"outline"}>
-            <Link href="/sign-in">{text("signIn")}</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/sign-up">{text("startNow")}</Link>
-          </Button>
+          {token ? (
+            <UserHeader />
+          ) : (
+            <>
+              {" "}
+              <Button asChild variant={"outline"}>
+                <Link href="/sign-in">{text("signIn")}</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/sign-up">{text("startNow")}</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>

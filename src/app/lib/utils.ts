@@ -16,3 +16,13 @@ export const createClientAxiosInstance = () => {
     },
   });
 };
+export const getClientCookie = (name: string, isObject?: boolean) => {
+  const string = getCookie(name);
+  if (string) {
+    if (isObject) {
+      return JSON.parse(string);
+    }
+    return string;
+  }
+  return null;
+};

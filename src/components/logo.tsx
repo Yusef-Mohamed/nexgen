@@ -5,9 +5,11 @@ import Image from "next/image";
 const Logo = ({
   className,
   size = "md",
+  isIconic = false,
 }: {
   className?: string;
   size?: "sm" | "md" | "lg";
+  isIconic?: boolean;
 }) => {
   const sizes = {
     sm: {
@@ -47,12 +49,12 @@ const Logo = ({
     <Link
       href={"/"}
       className={cn(
-        `flex gap-px items-center font-semibold whitespace-nowrap sm:${sizes[size].textSize} ${responsiveSizes[size].textSize}`,
+        `flex gap-px items-center font-semibold whitespace-nowrap  `,
         className
       )}
     >
       <Image
-        src="/images/logo.svg"
+        src="/logos/logo.svg"
         alt="NexGen Logo"
         className={cn(
           `sm:w-${sizes[size].width} w-${responsiveSizes[size].width} sm:h-${sizes[size].height} h-${responsiveSizes[size].height}`
@@ -60,7 +62,13 @@ const Logo = ({
         width={sizes[size].width}
         height={sizes[size].height}
       />
-      <div>NexGen</div>
+      {!isIconic && (
+        <div
+          className={`${responsiveSizes[size].textSize} sm:${sizes[size].textSize}`}
+        >
+          NexGen
+        </div>
+      )}
     </Link>
   );
 };

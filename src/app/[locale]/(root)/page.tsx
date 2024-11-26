@@ -26,7 +26,7 @@ const LandingPage = ({ params }: { params: { locale: string } }) => {
   unstable_setRequestLocale(params.locale);
 
   return (
-    <main>
+    <main className="max-w-full overflow-hidden">
       <Hero />
       <Features />
       <PopularCourses />

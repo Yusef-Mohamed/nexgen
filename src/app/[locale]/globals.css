@@ -10,40 +10,60 @@
 main {
   min-height: calc(100vh - 380px);
 }
-h1,
-.h1 {
-  @apply leading-[2.25rem] text-3xl sm:text-4xl sm:leading-[3rem] md:text-5xl md:leading-[3.75rem] lg:text-6xl lg:leading-[4.5rem];
+.main {
+  h1,
+  .h1 {
+    @apply leading-[2.25rem] text-3xl sm:text-4xl sm:leading-[3rem] md:text-5xl md:leading-[3.75rem] lg:text-6xl lg:leading-[4.5rem];
+  }
+  .h1-5 {
+    @apply leading-[2.25rem] text-2xl sm:text-3xl sm:leading-[3rem] md:text-4xl md:leading-[3.75rem] lg:text-5xl lg:leading-[4.5rem];
+  }
+  h2,
+  .h2 {
+    @apply text-2xl font-semibold md:text-3xl lg:text-4xl;
+  }
+  .h2-5 {
+    @apply text-xl font-semibold md:text-2xl lg:text-3xl;
+  }
+  h3,
+  .h3 {
+    @apply text-lg font-semibold md:text-xl lg:text-2xl;
+  }
+  h4,
+  .h4 {
+    @apply text-base font-semibold md:text-lg lg:text-xl;
+  }
+  h5,
+  .h5 {
+    @apply text-sm font-semibold md:text-base lg:text-lg;
+  }
+  .secPadding {
+    @apply py-16 max-md:py-10 max-sm:py-8;
+  }
+  p,
+  a,
+  li {
+    @apply leading-7 sm:text-sm md:text-base;
+  }
 }
-.h1-5 {
-  @apply leading-[2.25rem] text-2xl sm:text-3xl sm:leading-[3rem] md:text-4xl md:leading-[3.75rem] lg:text-5xl lg:leading-[4.5rem];
+.dashboard {
+  h1,
+  .h1 {
+    @apply text-2xl sm:text-3xl;
+  }
+  .h1-5 {
+    @apply text-xl sm:text-2xl;
+  }
+  h2,
+  .h2 {
+    @apply text-lg sm:text-xl;
+  }
+  h3,
+  .h3 {
+    @apply sm:text-lg;
+  }
 }
-h2,
-.h2 {
-  @apply text-2xl font-semibold md:text-3xl lg:text-4xl;
-}
-.h2-5 {
-  @apply text-xl font-semibold md:text-2xl lg:text-3xl;
-}
-h3,
-.h3 {
-  @apply text-lg font-semibold md:text-xl lg:text-2xl;
-}
-h4,
-.h4 {
-  @apply text-base font-semibold md:text-lg lg:text-xl;
-}
-h5,
-.h5 {
-  @apply text-sm font-semibold md:text-base lg:text-lg;
-}
-.secPadding {
-  @apply py-16 max-md:py-10 max-sm:py-8;
-}
-p,
-a,
-li {
-  @apply leading-7 sm:text-sm md:text-base;
-}
+
 @layer base {
   :root {
     --background: 0 0% 99%;
@@ -117,7 +137,6 @@ li {
     --chart-5: 27 87% 75%;
   }
 }
-
 @layer base {
   * {
     @apply border-border;
@@ -146,4 +165,19 @@ input[type="password"] {
 }
 .prose {
   @apply prose-headings:text-text-1 prose-p:text-text-2 prose-li:text-text-2 prose-a:text-primary;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: #244b7f;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
 }

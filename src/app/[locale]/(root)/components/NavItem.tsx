@@ -9,6 +9,7 @@ type NavItemProps = {
   href: string;
   className: string;
   activeClass: string;
+  onClick?: () => void;
 };
 
 const NavItem: React.FC<NavItemProps> = ({
@@ -16,11 +17,12 @@ const NavItem: React.FC<NavItemProps> = ({
   href,
   className,
   activeClass,
+  onClick = () => {},
 }) => {
   const text = useTranslations("header");
   const pathname = usePathname();
   return (
-    <li>
+    <li onClick={onClick}>
       <Link
         className={cn(className, {
           [activeClass]: pathname === href,

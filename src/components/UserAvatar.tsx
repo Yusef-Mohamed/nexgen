@@ -8,11 +8,13 @@ interface UserAvatarProps {
   };
   size?: "sm" | "md" | "lg";
   className?: string;
+  innerClassName?: string;
 }
 const UserAvatar: React.FC<UserAvatarProps> = ({
   user,
   size = "md",
   className,
+  innerClassName,
 }) => {
   return (
     <Avatar
@@ -29,9 +31,11 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
       <AvatarImage
         src={user?.profileImg ?? "/images/user-placeholder.jpeg"}
         alt={user?.name}
-        className="object-cover"
+        className={cn("object-cover", innerClassName)}
       />
-      <AvatarFallback>{user?.name?.slice(0, 2).toUpperCase()}</AvatarFallback>
+      <AvatarFallback className={cn(innerClassName)}>
+        {user?.name?.slice(0, 2).toUpperCase()}
+      </AvatarFallback>
     </Avatar>
   );
 };

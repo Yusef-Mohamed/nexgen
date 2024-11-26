@@ -9,7 +9,7 @@ import ThemeToggler from "../ThemeToggler";
 import { Button } from "../ui/button";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-
+import { getCookie } from "cookies-next";
 const MobileHeader = ({
   headerLinks,
 }: {
@@ -18,6 +18,7 @@ const MobileHeader = ({
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const text = useTranslations("header");
+  const token = getCookie("token");
   const handleClickOutside = (event: MouseEvent) => {
     if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
       setIsOpen(false);
@@ -68,6 +69,7 @@ const MobileHeader = ({
             <ul>
               {headerLinks.map((link) => (
                 <NavItem
+                  onClick={() => setIsOpen(false)}
                   className="gap-2.5 px-2.5 py-2 my-auto hover:text-primary transition-colors w-full block"
                   activeClass="font-semibold text-primary bg-primary/10"
                   key={link.name}
@@ -78,16 +80,46 @@ const MobileHeader = ({
             </ul>
           </nav>
           <div className="flex flex-col items-start justify-start gap-4 mt-4 md:hidden">
-            <div className="flex items-center gap-4">
+            <div
+              className="flex items-center gap-4"
+              onClick={() => {
+                setIsOpen(false);
+              }}
+            >
               <LanguageSelector />
               <ThemeToggler />
             </div>
-            <Button asChild variant={"outline"}>
-              <Link href="/sign-in">{text("signIn")}</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/sign-up">{text("startNow")}</Link>
-            </Button>
+            {token ? (
+              <Button
+                onClick={() => {
+                  setIsOpen(false);
+                }}
+                asChild
+              >
+                <Link href="/dashboard">{text("dashboard")}</Link>
+              </Button>
+            ) : (
+              <>
+                {" "}
+                <Button
+                  onClick={() => {
+                    setIsOpen(false);
+                  }}
+                  asChild
+                  variant={"outline"}
+                >
+                  <Link href="/sign-in">{text("signIn")}</Link>
+                </Button>
+                <Button
+                  onClick={() => {
+                    setIsOpen(false);
+                  }}
+                  asChild
+                >
+                  <Link href="/sign-up">{text("startNow")}</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>

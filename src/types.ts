@@ -75,6 +75,7 @@ export interface InputProps {
   setData: (data: string | File) => void;
   inputs: (name: string) => string;
   notRequired?: boolean;
+  error?: Record<string, string>;
 }
 export interface ApiError {
   param: string;

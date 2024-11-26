@@ -17,7 +17,7 @@ const ThemeToggler: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
           setTheme("light");
         }}
         className={cn(
-          "dark:flex items-center justify-center rounded-full h-[3.25rem] w-[3.25rem] bg-primary-faded hidden",
+          "dark:flex items-center justify-center rounded-full h-[2.5rem] w-[2.5rem] bg-primary-faded hidden",
           className
         )}
         {...props}
@@ -27,7 +27,7 @@ const ThemeToggler: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
       <button
         {...props}
         className={cn(
-          "dark:hidden items-center justify-center rounded-full h-[3.25rem] w-[3.25rem] bg-primary-faded flex",
+          "dark:hidden items-center justify-center rounded-full h-[2.5rem] w-[2.5rem] bg-primary-faded flex",
           className
         )}
         onClick={() => {

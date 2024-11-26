@@ -10,7 +10,7 @@ const LanguageSelector: React.FC = () => {
     <Link
       href={pathname}
       locale={locale === "en" ? "ar" : "en"}
-      className="flex items-center justify-center rounded-full h-[3.25rem] w-[3.25rem] bg-primary-faded"
+      className="flex items-center justify-center rounded-full h-[2.5rem] w-[2.5rem] bg-primary-faded"
     >
       {locale === "en" ? "ع ر" : "EN"}
     </Link>

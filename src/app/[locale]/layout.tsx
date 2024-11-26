@@ -8,6 +8,11 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import Script from "next/script";
 import { FaTelegramPlane } from "react-icons/fa";
 import ToastProvider from "@/components/ToastProvider";
+import RefreshDataProvider from "@/components/RefreshDataProvider";
+import dynamic from "next/dynamic";
+const SocketWrapper = dynamic(() => import("@/components/SocketWrapper"), {
+  ssr: false,
+});
 
 const alexandria = Alexandria({ subsets: ["latin"] });
 export async function generateMetadata({
@@ -93,39 +98,40 @@ export default function RootLayout({
       <body className={alexandria.className}>
         <ThemeProvider
           attribute="class"
-          // defaultTheme="system"
-          defaultTheme="light"
+          defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
           <NextIntlClientProvider messages={messages}>
-            {/* <RefreshDataProvider> */}
-            <ToastProvider />
-            {children}
-            <div
-              style={{
-                pointerEvents: "none",
-              }}
-              className="fixed right-0 z-10 flex justify-end w-full px-10 bottom-10"
-            >
-              <a
-                style={{
-                  pointerEvents: "auto",
-                }}
-                target="_blank"
-                href="https://t.me/nexgensupport"
-                className="relative flex items-center justify-center w-12 h-12 text-3xl text-white rounded-full bg-sky-500"
-              >
-                <FaTelegramPlane className="z-10" />
+            <RefreshDataProvider>
+              <SocketWrapper>
+                <ToastProvider />
+                {children}
                 <div
-                  className="absolute w-full h-full rounded-full opacity-50 animate-ping top-0 right-0  bg-sky-500 z-[0]"
                   style={{
-                    transformOrigin: "center",
+                    pointerEvents: "none",
                   }}
-                />
-              </a>
-            </div>
-            {/* </RefreshDataProvider> */}
+                  className="fixed right-0 z-10 flex justify-end w-full px-10 bottom-10"
+                >
+                  <a
+                    style={{
+                      pointerEvents: "auto",
+                    }}
+                    target="_blank"
+                    href="https://t.me/nexgensupport"
+                    className="relative flex items-center justify-center w-12 h-12 text-3xl text-white rounded-full bg-sky-500"
+                  >
+                    <FaTelegramPlane className="z-10" />
+                    <div
+                      className="absolute w-full h-full rounded-full opacity-50 animate-ping top-0 right-0  bg-sky-500 z-[0]"
+                      style={{
+                        transformOrigin: "center",
+                      }}
+                    />
+                  </a>
+                </div>
+              </SocketWrapper>
+            </RefreshDataProvider>
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
