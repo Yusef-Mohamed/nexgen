@@ -18,8 +18,6 @@ export function useInfiniteScroll<T>({
     null
   );
   const observerRef = useRef<HTMLDivElement | null>(null);
-
-  // useCallback without dependencies to prevent recreation on re-renders
   const loadMoreData = useCallback(async () => {
     if (
       isLoading ||
@@ -40,15 +38,11 @@ export function useInfiniteScroll<T>({
       setIsLoading(false);
     }
   }, [isLoading, fetchData, paginationData, search, initialPage]);
-
-  // Fetch data when search changes
   useEffect(() => {
     setData([]);
     setPaginationData(null); // reset pagination data
     loadMoreData(); // Initial load for new search
   }, [search]);
-
-  // IntersectionObserver effect
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -61,7 +55,7 @@ export function useInfiniteScroll<T>({
     if (observerRef.current) observer.observe(observerRef.current);
     return () => {
       if (observerRef.current) observer.unobserve(observerRef.current);
-      observer.disconnect(); // Ensure disconnection to avoid repeated calls
+      observer.disconnect();
     };
   }, [loadMoreData]);
 

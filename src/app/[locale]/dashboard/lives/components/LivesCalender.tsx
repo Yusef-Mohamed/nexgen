@@ -19,7 +19,8 @@ import useCustomSearchParams from "@/hooks/useSearchParams";
 const WEEKDAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
 const LivesCalender = () => {
-  const { setSearchParams, getSearchParam } = useCustomSearchParams();
+  // const { setSearchParams, getSearchParam } = useCustomSearchParams();
+  const { getSearchParam } = useCustomSearchParams();
   const locale = useLocale();
   const isArabic = locale === "ar";
   const currentDate = new Date();
@@ -33,10 +34,7 @@ const LivesCalender = () => {
     return eachDayOfInterval({ start: firstDayOfMonth, end: lastDayOfMonth });
   }, [firstDayOfMonth, lastDayOfMonth]);
   return (
-    <div
-      dir="ltr"
-      className="w-full col-span-3 bg-clear-ground rounded-xl h-fit"
-    >
+    <div dir="ltr" className="w-full bg-clear-ground rounded-xl h-fit">
       <div className="p-4">
         <span className="block text-xs text-center">
           {format(selectedMonth, " yyyy", {
@@ -97,7 +95,7 @@ const LivesCalender = () => {
             return (
               <button
                 onClick={() => {
-                  setSearchParams({ date: dateKey });
+                  // setSearchParams({ date: dateKey });
                 }}
                 key={index}
                 className={clsx(

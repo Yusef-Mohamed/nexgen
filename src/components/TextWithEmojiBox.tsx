@@ -3,7 +3,7 @@ import { MdOutlineAttachment } from "react-icons/md";
 import { Textarea } from "./ui/textarea";
 import { SendHorizontal } from "lucide-react";
 import { EmojiPicker } from "./EmojiPicker";
-import { useRef, useCallback } from "react";
+import React, { useRef, useCallback } from "react";
 import { useLocale } from "next-intl";
 
 interface TextWithEmojiBoxProps {
@@ -11,11 +11,14 @@ interface TextWithEmojiBoxProps {
   setText: React.Dispatch<React.SetStateAction<string>>;
   handleSend: () => void;
   isLoading: boolean;
-  media: File | null;
-  setMedia: (media: File | null) => void;
+  media: File | null | File[];
+  setMedia:
+    | React.Dispatch<React.SetStateAction<File | null>>
+    | React.Dispatch<React.SetStateAction<File[] | null>>;
   inputRef: React.RefObject<HTMLTextAreaElement>;
   className?: string;
   placeholder?: string;
+  multiMedia?: boolean;
 }
 
 const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
@@ -28,6 +31,7 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
   inputRef,
   className,
   placeholder,
+  multiMedia = false,
 }) => {
   const mediaRef = useRef<HTMLInputElement>(null);
   const locale = useLocale();
@@ -76,16 +80,32 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
 
   const handleMediaChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (file) setMedia(file);
+      if (multiMedia) {
+        const files = e.target.files;
+        if (files) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          setMedia((prev: File[]) => {
+            if (prev) {
+              return [...(prev as File[]), ...Array.from(files)];
+            } else {
+              return [...Array.from(files)];
+            }
+          });
+        }
+      } else {
+        const file = e.target.files?.[0]; // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        if (file) setMedia(file);
+      }
     },
-    [setMedia]
+    [setMedia, multiMedia]
   );
 
   return (
     <div
       className={cn(
-        "p-2 flex justify-between w-full items-center gap-2 border-t",
+        "flex justify-between w-full items-center gap-2 border-t",
         className
       )}
     >
@@ -120,7 +140,7 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
         >
           {" "}
           <button disabled={isLoading} onClick={handleSend}>
-            <SendHorizontal size={20} />
+            <SendHorizontal className="text-text-3" size={18} />
           </button>
           <div className="flex">
             <button
@@ -129,7 +149,7 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
                 "text-primary": media !== null,
               })}
             >
-              <MdOutlineAttachment className="text-xl" />
+              <MdOutlineAttachment className="text-xl text-text-3" />
             </button>
             <input
               disabled={isLoading}
@@ -138,6 +158,7 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
               className="hidden"
               ref={mediaRef}
               onChange={handleMediaChange}
+              multiple={multiMedia}
             />
           </div>
         </div>

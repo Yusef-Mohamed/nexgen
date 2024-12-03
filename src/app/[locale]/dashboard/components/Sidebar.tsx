@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { FaHome, FaUser, FaUsers } from "react-icons/fa";
 import { IoMdChatboxes } from "react-icons/io";
-import { IoAnalytics } from "react-icons/io5";
+import { IoAnalytics, IoBookOutline } from "react-icons/io5";
 import { MdLiveTv } from "react-icons/md";
 import { GiCash } from "react-icons/gi";
 import { AiFillFolderOpen } from "react-icons/ai";
@@ -21,9 +21,14 @@ const Sidebar: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
       icon: <FaHome />,
     },
     {
-      href: "/dashboard/community?sharedTo=courses",
+      href: "/dashboard/community?sharedTo=students",
       label: "community",
       icon: <FaUsers />,
+    },
+    {
+      href: "/dashboard/learn",
+      label: "learn",
+      icon: <IoBookOutline />,
     },
     {
       href: "/dashboard/analytics",

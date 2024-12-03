@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/routing";
 import { IPackage } from "@/types";
 import { useTranslations } from "next-intl";
 import React from "react";
@@ -9,6 +10,7 @@ const ServiceCard: React.FC<IPackage> = ({
   highlights,
   price,
   priceAfterDiscount,
+  _id,
 }) => {
   const text = useTranslations("services");
   return (
@@ -31,8 +33,8 @@ const ServiceCard: React.FC<IPackage> = ({
           </h4>
         )}
       </div>
-      <Button size="lg" className="w-full ">
-        {text("startNow")}
+      <Button asChild size="lg" className="w-full ">
+        <Link href={`/checkout/service/${_id}`}>{text("startNow")}</Link>
       </Button>
       <div>
         <h4>{text("weOffer")}</h4>

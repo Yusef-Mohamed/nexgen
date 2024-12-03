@@ -8,26 +8,45 @@ import { FaRegComment } from "react-icons/fa6";
 import { AiOutlineLike } from "react-icons/ai";
 import { useState } from "react";
 import FocusedPostCard from "./FocusedPostCard";
+import { Link } from "@/i18n/routing";
 interface PostCardProps {
   post: IPost;
+  inCommunity?: boolean;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post }) => {
+const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
   const text = useTranslations("post");
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       <div className="w-full p-3 rounded-md cardShadow sm:p-6 bg-background">
-        <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
-          <UserAvatar size="lg" user={post.user} />
-          <div className="flex flex-col">
-            <h3>{post.user.name}</h3>
-            <span className="max-sm:text-sm text-muted-foreground">
-              {new Date(post.createdAt).toLocaleDateString()}
-            </span>
+        {inCommunity ? (
+          <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
+            <Link href={`/dashboard/community/profile/${post.user._id}`}>
+              <UserAvatar user={post.user} />
+            </Link>
+            <div className="flex flex-col">
+              <Link href={`/dashboard/community/profile/${post.user._id}`}>
+                <h4>{post.user.name}</h4>
+              </Link>
+              <span className="text-sm max-sm:text-sm text-muted-foreground">
+                {new Date(post.createdAt).toLocaleDateString()}
+              </span>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
+            <UserAvatar user={post.user} />
+            <div className="flex flex-col">
+              <h4>{post.user.name}</h4>
+              <span className="text-sm max-sm:text-sm text-muted-foreground">
+                {new Date(post.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+          </div>
+        )}
+
         <p className="my-2 sm:my-4 max-sm:text-sm">{post.content}</p>
         <div
           onClick={() => {
@@ -99,7 +118,12 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           </button>
         </div>
       </div>
-      <FocusedPostCard post={post} isOpen={isOpen} setIsOpen={setIsOpen} />
+      <FocusedPostCard
+        inCommunity={inCommunity}
+        post={post}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
     </>
   );
 };

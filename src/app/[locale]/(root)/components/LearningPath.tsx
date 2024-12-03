@@ -11,6 +11,7 @@ const LearningPath: React.FC<ICoursePackage> = ({
   courses,
   price,
   priceAfterDiscount,
+  _id,
 }) => {
   const levels = ["STATIC", "STATIC"];
   const locale = useLocale();
@@ -80,8 +81,10 @@ const LearningPath: React.FC<ICoursePackage> = ({
         </div>
       </div>
       <div>
-        <Button size="lg" className="w-full mt-4 sm:mt-6 ">
-          {text("showDetails")}
+        <Button asChild size="lg" className="w-full mt-4 sm:mt-6 ">
+          <Link href={`/checkout/learning-path/${_id}`}>
+            {text("showDetails")}
+          </Link>
         </Button>
       </div>
     </div>

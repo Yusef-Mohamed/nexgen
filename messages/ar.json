@@ -244,7 +244,7 @@
     "telegram": "حسابك على تليجرام",
     "paymentMethod": "طريقة الدفع",
     "sharedTo": "مشارك مع",
-    "package": "الحزمة",
+    "package": "الخدمة",
     "imageDropDownPlaceHolder": "اسحب وأسقط صورة هنا، أو انقر لاختيار صورة",
     "createPostPlaceholder": "بماذا تفكر؟",
     "isPassed": "تم الاجتياز",
@@ -255,7 +255,13 @@
     "your_email_have_been_verified": "تم التحقق من بريدك الإلكتروني",
     "thisFieldIsRequired": "هذا الحقل مطلوب",
     "continueWithGoogle": "المتابعة باستخدام جوجل",
-    "otpMustBe6Digits": "يجب أن يتكون رمز التحقق من 6 أرقام"
+    "otpMustBe6Digits": "يجب أن يتكون رمز الحقق من 6 أرقام",
+    "all_courses": "جميع الدورات",
+    "RelatedTo": "متعلق بـ",
+    "SelectRelatedTo": "اختر متعلق بـ",
+    "SelectCourse": "اختر الدورة",
+    "selectService": "اختر الخدمة",
+    "service": "الخدمة"
   },
   "reviewsSectionAboutPage": {
     "heading": "أراء المتعلمين.",
@@ -349,7 +355,9 @@
     "edit": "تعديل",
     "delete": "حذف",
     "areYouSureDeleteMessage": "هل أنت متأكد من حذف هذه الرسالة؟",
-    "continue": "متابعة"
+    "continue": "متابعة",
+    "something_went_wrong": "حدث خطأ ما",
+    "learn": "التعلم"
   },
   "post": {
     "like": "إعجاب",
@@ -400,5 +408,54 @@
     "addParticipant": "إضافة مشارك",
     "add": "إضافة",
     "editChatData": "تعديل بيانات المحادثة"
+  },
+  "lives": {
+    "livesNow": "البثوث المباشرة الآن",
+    "no_instructor": "لا يوجد مدرب",
+    "go_to_meeting_room": "الذهاب إلى غرفة الاجتماع",
+    "upcomingLives": "البثوث المباشرة القادمة",
+    "noLivesNow": "لا توجد بثوث مباشرة الآن",
+    "noUpcomingLives": "لا توجد بثوث مباشرة قادمة"
+  },
+  "community": {
+    "filters": "الفلاتر",
+    "clearFilters": "مسح الفلاتر",
+    "close": "إغلاق",
+    "filterPosts": "تصفية المنشورات",
+    "home": "الرئيسية",
+    "course": "الدورة",
+    "package": "الخدمة",
+    "whatIsOnYourMind": "بم تفكر يا {name}؟",
+    "relatedToStudents": "متعلق بالطلاب",
+    "relatedToService": "متعلق بالخدمة",
+    "relatedToCourse": "متعلق بالدورة",
+    "applyFilters": "تطبيق الفلاتر",
+    "pleaseSelectImage": "يرجى اختيار صورة",
+    "postCreatedSuccessfully": "تم إنشاء المنشور بنجاح",
+    "customizePosts": "تخصيص المنشورات"
+  },
+  "checkout": {
+    "title": "الدفع",
+    "description": "كل عمليات الدفع والتحويل مؤمنة ومشفرة.",
+    "card": "بطاقة ائتمان أو بطاقة خصم",
+    "crypto": "عملات رقمية",
+    "returnAndRefundPolicy": "سياسة الإرجاع والاسترداد",
+    "privacyPolicy": "سياسة الخصوصية",
+    "termsOfService": "شروط الخدمة",
+    "pay": "دفع",
+    "course": "دورة",
+    "learning-path": "مسار التعلم",
+    "service": "خدمة",
+    "apply": "تطبيق",
+    "discountCode": "كود الخصم",
+    "subTotal": "المجموع الفرعي",
+    "discount": "الخصم",
+    "total": "المجموع",
+    "loginFirst": "يجب عليك تسجيل الدخول أولاً",
+    "verifyRecaptcha": "يرجى التحقق من reCAPTCHA",
+    "selectPaymentMethod": "يرجى اختيار طريقة الدفع",
+    "invalidItem": "العنصر غير صالح",
+    "pleaseMakeSureThatYouHavePassedThePlacementExamsOfAllRequiredCourses": "يرجى التأكد من أنك قد اجتزت امتحانات التوجيه لجميع الدورات المطلوبة",
+    "pleaseMakeSureThatYouHavePassedThePlacementExams": "يرجى التأكد من أنك قد اجتزت امتحانات التوجيه"
   }
 }

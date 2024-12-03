@@ -202,7 +202,11 @@ const CourseCard: React.FC<{
         )}
       </div>
       <CourseHeading courseData={courseData} className="lg:hidden" />
-      <Button className="w-full mb-4 md:mb-8">{text("startNow")}</Button>
+      <Button asChild className="w-full mb-4 md:mb-8">
+        <Link href={`/checkout/course/${courseData._id}`}>
+          {text("startNow")}
+        </Link>
+      </Button>
       <div>
         <h4 className="mb-4 md:mb-6">{text("thisCourseIncludes")}</h4>
         <ul className="space-y-2 md:space-y-4">

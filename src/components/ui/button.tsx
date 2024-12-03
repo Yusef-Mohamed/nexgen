@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { FaSpinner } from "react-icons/fa";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -23,10 +23,23 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         muted: "bg-muted shadow-sm hover:bg-muted/90",
       },
+      // size: {
+      //   default: "h-10 px-4 py-2",
+      //   sm: "h-9 rounded-md px-3",
+      //   lg: "h-11 rounded-md px-8",
+      //   icon: "h-10 w-10",
+      // },
+      // size: {
+      //   default:
+      //     "md:h-[3rem] lg:h-[3.25rem] min-w-36 md:px-5 md:py-3 px-4 py-2 h-[2.75rem] text-sm md:text-base",
+      //   lg: "md:h-[3.5rem] lg:h-[3.75rem] min-w-40 lg:px-6 lg:py-4 px-5 py-3 h-[3.25rem] text-base lg:text-lg",
+      //   sm: "h-8 rounded-md px-3 text-xs",
+      //   icon: "h-9 w-9",
+      // },
       size: {
         default:
-          "md:h-[3rem] lg:h-[3.25rem] min-w-36 md:px-5 md:py-3 px-4 py-2 h-[2.75rem] text-sm md:text-base",
-        lg: "md:h-[3.5rem] lg:h-[3.75rem] min-w-40 lg:px-6 lg:py-4 px-5 py-3 h-[3.25rem] text-base lg:text-lg",
+          "md:h-[2.75rem] lg:h-[3rem] min-w-36 md:px-5 px-4 h-[2.5rem] text-sm md:text-base",
+        lg: "md:h-[3rem] lg:h-[3.25rem] min-w-40 lg:px-6 px-5 h-[2.75rem] text-base lg:text-lg",
         sm: "h-8 rounded-md px-3 text-xs",
         icon: "h-9 w-9",
       },

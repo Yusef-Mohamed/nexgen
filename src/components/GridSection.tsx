@@ -22,7 +22,7 @@ const GridSection = ({
       </div>
       {button && (
         <Button
-          className="block mx-auto text-center exploreAllReviews w-80"
+          className="mx-auto text-center exploreAllReviews w-80"
           variant={"outline"}
           size={"lg"}
           asChild={!!href}

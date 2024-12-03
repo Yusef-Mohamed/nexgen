@@ -12,15 +12,18 @@ import TextWithEmojiBox from "../TextWithEmojiBox";
 import { toast } from "react-toastify";
 import ImageWithZoom from "../ImageWithZoom";
 import { createClientAxiosInstance, getClientCookie } from "@/app/lib/utils";
+import { Link } from "@/i18n/routing";
 interface FocusedPostCardProps {
   post: IPost;
   isOpen: boolean;
   setIsOpen: React.Dispatch<SetStateAction<boolean>>;
+  inCommunity?: boolean;
 }
 const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
   post,
   isOpen,
   setIsOpen,
+  inCommunity,
 }) => {
   const text = useTranslations("post");
   const [selectedImage, setSelectedImage] = useState(0);
@@ -201,15 +204,33 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
           </DialogHeader>
           <div className="w-full rounded-md max-h-[80vh] overflow-auto">
             <div className="p-3 sm:p-6">
-              <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
-                <UserAvatar size="lg" user={post.user} />
-                <div className="flex flex-col">
-                  <h3>{post.user.name}</h3>
-                  <span className="max-sm:text-sm text-muted-foreground">
-                    {new Date(post.createdAt).toLocaleDateString()}
-                  </span>
+              {inCommunity ? (
+                <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
+                  <Link href={`/dashboard/community/profile/${post.user._id}`}>
+                    <UserAvatar user={post.user} />
+                  </Link>
+                  <div className="flex flex-col">
+                    <Link
+                      href={`/dashboard/community/profile/${post.user._id}`}
+                    >
+                      <h4>{post.user.name}</h4>
+                    </Link>
+                    <span className="text-sm max-sm:text-sm text-muted-foreground">
+                      {new Date(post.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
+                  <UserAvatar user={post.user} />
+                  <div className="flex flex-col">
+                    <h4>{post.user.name}</h4>
+                    <span className="text-sm max-sm:text-sm text-muted-foreground">
+                      {new Date(post.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                </div>
+              )}
               <p className="my-2 sm:my-4 max-sm:text-sm">{post.content}</p>
             </div>
             <div className={"relative"}>

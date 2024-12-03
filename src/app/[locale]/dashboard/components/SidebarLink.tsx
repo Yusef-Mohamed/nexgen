@@ -21,7 +21,7 @@ const SidebarLink: React.FC<{
       className={cn(
         "flex w-full items-center gap-2 px-3 hover:text-clear-ground rounded-md py-2 hover:bg-primary transition-all",
         {
-          "bg-primary text-clear-ground": pathname === link.href,
+          "bg-primary text-clear-ground": pathname === link.href.split("?")[0],
         }
       )}
     >
