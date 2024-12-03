@@ -70,10 +70,10 @@ const MainComponent = ({
       setIsLoading(true);
       let endpoint =
         itemType === "course"
-          ? `/orders/course-checkout/${thisItem._id}`
+          ? `/orders/cryptomus/course-checkout/${thisItem._id}`
           : itemType === "learning-path"
-          ? `/orders/course-package-checkout/${thisItem._id}`
-          : `/orders/package-checkout/${thisItem._id}`;
+          ? `/orders/cryptomus/course-package-checkout/${thisItem._id}`
+          : `/orders/cryptomus/package-checkout/${thisItem._id}`;
       if (selectedMethod === "card") {
         endpoint =
           itemType === "course"
