@@ -11,7 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Link } from "@/i18n/routing";
 import { toast } from "react-toastify";
 import { createClientAxiosInstance } from "@/app/lib/utils";
-import { getCookie } from "cookies-next";
 import { AxiosError } from "axios";
 import {
   Dialog,
@@ -20,6 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useAuth } from "@/components/auth-provider";
 const methods = [
   {
     label: "card",
@@ -46,8 +46,8 @@ const MainComponent = ({
   const [isVerified, setIsVerified] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [needPlacementExams, setNeedPlacementExams] = useState(false);
+  const { token } = useAuth();
   const handelPayment = async () => {
-    const token = getCookie("token");
     if (!token) {
       toast.error(text("loginFirst"));
       return;
@@ -108,10 +108,30 @@ const MainComponent = ({
       setIsLoading(false);
     }
   };
+  const [coupon, setCoupon] = useState("");
+  const applyCoupon = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // /coupons/getCouponDetails/Ns10
+    try {
+      const axiosInstance = await createClientAxiosInstance();
+      const res = await axiosInstance.get(
+        `/coupons/getCouponDetails/${coupon}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(res);
+      console.log(coupon);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <>
       <section className="container grid lg:grid-cols-2 secPadding">
-        <div className="py-6 lg:px-6 max-lg:order-2">
+        <div className="py-6 max-lg:order-1 lg:px-6">
           <h1 className="h3">{text("title")}</h1>
           <p className="mt-1 font-medium text-text-3">{text("description")}</p>
           <div className="mt-4 ">
@@ -163,7 +183,7 @@ const MainComponent = ({
               </button>
             ))}
           </div>
-          <div className="mt-3 w-fit ms-auto min-w-72">
+          <div className="mt-3 max-lg:hidden w-fit ms-auto min-w-72">
             {selectedMethod && (
               <div>
                 <ReCAPTCHA
@@ -183,7 +203,7 @@ const MainComponent = ({
               {text("pay")}
             </Button>
           </div>
-          <div className="flex flex-wrap items-center gap-2 mt-4 whitespace-nowrap ">
+          <div className="flex flex-wrap items-center gap-2 mt-4 max-lg:hidden whitespace-nowrap ">
             <Link
               className="underline text-primary"
               href={"/return-and-refund-policy"}
@@ -201,7 +221,7 @@ const MainComponent = ({
             </Link>
           </div>
         </div>
-        <div className="py-6 max-lg:order-1 lg:px-6">
+        <div className="py-6 max-lg:order-2 lg:px-6">
           <div className="flex justify-between ">
             <div>
               <h5>{thisItem?.title}</h5>
@@ -221,8 +241,14 @@ const MainComponent = ({
               )}
             </div>
           </div>
-          <form className="flex items-center gap-3 mt-4">
-            <Input disabled={isLoading} placeholder={text("discountCode")} />
+          <form onSubmit={applyCoupon} className="flex items-center gap-3 mt-4">
+            <Input
+              required
+              disabled={isLoading}
+              placeholder={text("discountCode")}
+              value={coupon}
+              onChange={(e) => setCoupon(e.target.value)}
+            />
             <Button disabled={isLoading}>{text("apply")}</Button>
           </form>
           <div className="mt-4">
@@ -243,18 +269,51 @@ const MainComponent = ({
               </span>
             </div>
           </div>
+          <div className="mt-3 lg:hidden w-fit ms-auto min-w-72">
+            {selectedMethod && (
+              <div>
+                <ReCAPTCHA
+                  sitekey="6Lc30IsqAAAAAMQTYXjAZgOEn92Yj085Hne_RWN1"
+                  onChange={() => {
+                    setIsVerified(true);
+                  }}
+                />
+              </div>
+            )}
+            <Button
+              disabled={!isVerified || !selectedMethod || isLoading}
+              className="w-full mt-3"
+              size={"lg"}
+              onClick={handelPayment}
+            >
+              {text("pay")}
+            </Button>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 mt-4 lg:hidden whitespace-nowrap ">
+            <Link
+              className="underline text-primary"
+              href={"/return-and-refund-policy"}
+            >
+              {text("returnAndRefundPolicy")}
+            </Link>
+            <Link
+              href={"/terms-of-services"}
+              className="underline text-primary"
+            >
+              {text("termsOfService")}
+            </Link>
+            <Link href={"/privacy-policy"} className="underline text-primary">
+              {text("privacyPolicy")}
+            </Link>
+          </div>
         </div>
       </section>
       <Dialog open={needPlacementExams} onOpenChange={setNeedPlacementExams}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              {text("pleaseMakeSureThatYouHavePassedThePlacementExams")}
-            </DialogTitle>
+            <DialogTitle>{text("youCanontBuyThisCourseNow")}</DialogTitle>
             <DialogDescription>
-              {text(
-                "pleaseMakeSureThatYouHavePassedThePlacementExamsOfAllRequiredCourses"
-              )}
+              {text("youShouldTakeThoseCoursesFirstOrTakePlacementTest")}
             </DialogDescription>
           </DialogHeader>
           <ul>
@@ -270,6 +329,11 @@ const MainComponent = ({
               </li>
             ))}
           </ul>
+          <Button asChild>
+            <Link href={`/courses/${thisItem?._id}/placement-exam`}>
+              {text("startPlacementTest")}
+            </Link>
+          </Button>
         </DialogContent>
       </Dialog>
     </>

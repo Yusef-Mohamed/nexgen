@@ -1,4 +1,4 @@
-import { IComment, IPost, IReact, IUser } from "@/types";
+import { IComment, IPost, IReact } from "@/types";
 import { SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import UserAvatar from "../UserAvatar";
 import { emojis } from "@/constants";
@@ -7,12 +7,12 @@ import { useTranslations } from "next-intl";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import CommentCard from "./CommentCard";
 import { cn } from "@/lib/utils";
-import { getCookie } from "cookies-next";
 import TextWithEmojiBox from "../TextWithEmojiBox";
 import { toast } from "react-toastify";
 import ImageWithZoom from "../ImageWithZoom";
-import { createClientAxiosInstance, getClientCookie } from "@/app/lib/utils";
+import { createClientAxiosInstance } from "@/app/lib/utils";
 import { Link } from "@/i18n/routing";
+import { useAuth } from "../auth-provider";
 interface FocusedPostCardProps {
   post: IPost;
   isOpen: boolean;
@@ -30,8 +30,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
   const allImages = [post.imageCover, ...post.images];
   const [comments, setComments] = useState<IComment[]>([]);
   const [reacts, setReacts] = useState<IReact[]>([]);
-  const token = getCookie("token");
-  const user = getClientCookie("user", true) as IUser;
+  const { token, user } = useAuth();
   useEffect(() => {
     const axiosInstance = createClientAxiosInstance();
     if (isOpen && post) {
@@ -61,7 +60,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
   const [media, setMedia] = useState<File | null>(null);
   const inputRef = useRef(null);
   const handleCommentSubmit = async () => {
-    if (!user.authToReview) {
+    if (!user?.authToReview) {
       toast.error(text("youShouldBuyCourseOrServiceToDoThisAction"));
       return;
     }
@@ -116,7 +115,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
     return reacts.find((react) => react?.user?._id === user?._id);
   }, [reacts]);
   const addReactToPost = async (type: keyof typeof emojis) => {
-    if (!user.authToReview) {
+    if (!user?.authToReview) {
       toast.error(text("youShouldBuyCourseOrServiceToDoThisAction"));
       return;
     }
@@ -198,7 +197,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
           <DialogHeader className="sticky top-0 z-10 p-4 text-center border-b bg-clear-ground">
             <DialogTitle className="text-center">
               {text("userPost", {
-                name: post.user.name,
+                name: post.user?.name,
               })}
             </DialogTitle>
           </DialogHeader>
@@ -206,14 +205,14 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
             <div className="p-3 sm:p-6">
               {inCommunity ? (
                 <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
-                  <Link href={`/dashboard/community/profile/${post.user._id}`}>
+                  <Link href={`/dashboard/community/profile/${post.user?._id}`}>
                     <UserAvatar user={post.user} />
                   </Link>
                   <div className="flex flex-col">
                     <Link
-                      href={`/dashboard/community/profile/${post.user._id}`}
+                      href={`/dashboard/community/profile/${post.user?._id}`}
                     >
-                      <h4>{post.user.name}</h4>
+                      <h4>{post.user?.name}</h4>
                     </Link>
                     <span className="text-sm max-sm:text-sm text-muted-foreground">
                       {new Date(post.createdAt).toLocaleDateString()}
@@ -224,7 +223,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
                 <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
                   <UserAvatar user={post.user} />
                   <div className="flex flex-col">
-                    <h4>{post.user.name}</h4>
+                    <h4>{post.user?.name}</h4>
                     <span className="text-sm max-sm:text-sm text-muted-foreground">
                       {new Date(post.createdAt).toLocaleDateString()}
                     </span>

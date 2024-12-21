@@ -24,7 +24,7 @@ const ChatPage = async ({
         maxHeight: "calc(100vh - 76px)",
         height: "calc(100vh - 76px)",
       }}
-      className="flex flex-col h-screen px-2 py-6 lg:px-6 sm:px-4 bg-background"
+      className="flex flex-col h-screen px-2 py-6 lg:px-6 sm:px-4"
     >
       <ChatLayout selectedChat={selectedChat} />
     </main>

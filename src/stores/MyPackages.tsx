@@ -2,31 +2,46 @@ import { createClientAxiosInstance } from "@/app/lib/utils";
 import { IPackage } from "@/types";
 import { create } from "zustand";
 
-type MyPackagesStore = {
-  Packages: IPackage[];
-  setPackages: (course: IPackage[]) => void;
-  getPackages: (token: string) => void;
+const FIVE_MINUTES = 5 * 60 * 1000;
+
+type PackagesStore = {
+  packages: { package: IPackage }[];
   isLoading: boolean;
+  lastFetched: number | null;
+  setPackages: (packages: { package: IPackage }[]) => void;
+  getPackages: (token: string) => Promise<void>;
 };
 
-export const useMyPackagesStore = create<MyPackagesStore>((set) => ({
-  Packages: [],
-  setPackages: (Packages) => set({ Packages }),
+export const usePackagesStore = create<PackagesStore>((set, get) => ({
+  packages: [],
+  isLoading: false,
+  lastFetched: null,
+
+  setPackages: (packages) => set({ packages }),
+
   getPackages: async (token) => {
+    const { isLoading, lastFetched } = get();
+    if (!token || isLoading) return;
+
+    const now = Date.now();
+    const isFresh = lastFetched && now - lastFetched < FIVE_MINUTES;
+    if (isFresh) return;
+
     try {
       set({ isLoading: true });
       const axiosInstance = await createClientAxiosInstance();
-      const res = await axiosInstance.get("/Packages/MyPackages", {
+
+      const res = await axiosInstance.get("/userSubscriptions", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      set({ Packages: res.data.data });
+      console.log(res.data.data);
+      set({ packages: res.data.data, lastFetched: now });
     } catch (err) {
       console.log(err);
     } finally {
       set({ isLoading: false });
     }
   },
-  isLoading: false,
 }));

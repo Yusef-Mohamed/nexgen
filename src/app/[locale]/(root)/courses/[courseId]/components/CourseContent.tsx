@@ -11,9 +11,12 @@ import { Button } from "@/components/ui/button";
 import { ILesson, ISection } from "@/types";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { useParams } from "next/navigation";
-import { getCookie } from "cookies-next";
 import { FiPlayCircle } from "react-icons/fi";
-async function getSections(courseId: string): Promise<ISection[]> {
+import { useAuth } from "@/components/auth-provider";
+async function getSections(
+  courseId: string,
+  token: string
+): Promise<ISection[]> {
   const axiosInstance = createClientAxiosInstance();
 
   try {
@@ -26,7 +29,7 @@ async function getSections(courseId: string): Promise<ISection[]> {
             `/lessons/sectionLessons/${courseId}/${section._id}`,
             {
               headers: {
-                Authorization: `Bearer ${getCookie("token")}`,
+                Authorization: `Bearer ${token}`,
               },
             }
           );
@@ -58,9 +61,10 @@ const FAQ: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { courseId } = useParams();
   const locale = useLocale();
+  const { token } = useAuth();
   useEffect(() => {
     setLoading(true);
-    getSections(courseId as string).then((sections) => {
+    getSections(courseId as string, token).then((sections) => {
       setSections(sections);
       setLoading(false);
     });
@@ -76,7 +80,7 @@ const FAQ: React.FC = () => {
               {section.lessons?.map((lesson, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between py-1 gap-2 text-sm"
+                  className="flex items-center justify-between gap-2 py-1 text-sm"
                 >
                   <div className="flex items-center gap-1 ">
                     <FiPlayCircle className="w-4 h-4 sm:w-5 sm:h-5" />

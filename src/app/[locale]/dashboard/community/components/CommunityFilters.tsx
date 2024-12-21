@@ -1,6 +1,6 @@
 "use client";
 
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { useAuth } from "@/components/auth-provider";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -18,7 +18,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useCustomSearchParams from "@/hooks/useSearchParams";
-import { ICourse, IPackage } from "@/types";
+import { useMyCoursesStore } from "@/stores/MyCoursesStore";
+import { usePackagesStore } from "@/stores/MyPackages";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { FaFilter } from "react-icons/fa";
@@ -43,8 +44,6 @@ const CommunityFilters = () => {
   const inputs = useTranslations("Forms");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { setSearchParams, searchParams } = useCustomSearchParams();
-  const [courses, setCourses] = useState<ICourse[]>([]);
-  const [packages, setPackages] = useState<IPackage[]>([]);
 
   // Local state for filters
   const [selectedSharedTo, setSelectedSharedTo] = useState(
@@ -56,34 +55,15 @@ const CommunityFilters = () => {
   const [selectedPackage, setSelectedPackage] = useState(
     searchParams.get("package") || ""
   );
-
+  const { token, user } = useAuth();
+  const { courses, getCourses } = useMyCoursesStore();
+  const { packages, getPackages } = usePackagesStore();
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const axiosInstance = await createClientAxiosInstance();
-        const res = await axiosInstance(`/courses`);
-        const data = res.data.data;
-        setCourses(data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    const fetchPackages = async () => {
-      try {
-        const axiosInstance = await createClientAxiosInstance();
-        const res = await axiosInstance(`/packages`);
-        const data = res.data.data;
-        setPackages(data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchCourses();
-    fetchPackages();
-  }, []);
-
+    if (token && user) {
+      getPackages(token);
+      getCourses(token, user._id);
+    }
+  }, [token, user, getPackages, getCourses]);
   return (
     <div className="flex items-center justify-between px-6 py-3 rounded-md bg-background">
       <Button
@@ -171,8 +151,11 @@ const CommunityFilters = () => {
                   </SelectTrigger>
                   <SelectContent>
                     {packages.map((pack) => (
-                      <SelectItem value={pack._id} key={pack._id}>
-                        {pack.title}
+                      <SelectItem
+                        value={pack.package._id}
+                        key={pack.package._id}
+                      >
+                        {pack.package.title}
                       </SelectItem>
                     ))}
                   </SelectContent>

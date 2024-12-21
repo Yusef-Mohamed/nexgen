@@ -1,11 +1,10 @@
 "use client";
 
 import { createClientAxiosInstance } from "@/app/lib/utils";
+import { useAuth } from "@/components/auth-provider";
 import TextWithEmojiBox from "@/components/TextWithEmojiBox";
 import UserAvatar from "@/components/UserAvatar";
 import { cn } from "@/lib/utils";
-import { IUser } from "@/types";
-import { getCookie } from "cookies-next";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRef, useState, useMemo } from "react";
@@ -17,7 +16,7 @@ const CreatePost = () => {
   const [content, setContent] = useState("");
   const [media, setMedia] = useState<File[] | null>(null);
   const [coverImageIndex, setCoverImageIndex] = useState(0);
-  const user = JSON.parse(getCookie("user") || "{}") as IUser;
+  const { user, token } = useAuth();
   const text = useTranslations("community");
   const inputRef = useRef(null);
 
@@ -44,7 +43,6 @@ const CreatePost = () => {
         setIsLoading(false);
         return;
       }
-      const token = getCookie("token");
       const axiosInstance = await createClientAxiosInstance();
       await axiosInstance.post("/posts", formData, {
         headers: {
@@ -64,7 +62,7 @@ const CreatePost = () => {
   return (
     <div className="px-3 py-3 space-x-3 rounded-md bg-background">
       <div className="flex items-start justify-between gap-2">
-        <UserAvatar user={user} size="md" />
+        <UserAvatar user={user || undefined} size="md" />
         <TextWithEmojiBox
           text={content}
           setText={setContent}
@@ -72,7 +70,7 @@ const CreatePost = () => {
           setMedia={setMedia}
           multiMedia
           placeholder={text("whatIsOnYourMind", {
-            name: user.name || "",
+            name: user?.name || "",
           })}
           className="w-full p-0 m-0 border-none"
           handleSend={handelCreatePost}

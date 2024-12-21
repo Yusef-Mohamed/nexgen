@@ -1,15 +1,14 @@
 import React, { useMemo, useRef } from "react";
 import ChatBottombar from "./ChatBottomBar";
-import { IMessage, IUser } from "@/types";
-import { getCookie } from "cookies-next";
+import { IMessage } from "@/types";
 import MessageCard from "@/components/cards/MessageCard";
 import { useChatStore } from "@/stores/ChatStore";
 import { FaSpinner } from "react-icons/fa";
 import { createClientAxiosInstance } from "@/app/lib/utils";
+import { useAuth } from "@/components/auth-provider";
 export function ChatList() {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const myAccount = JSON.parse(getCookie("user") || "{}") as IUser;
-  const token = getCookie("token");
+  const { user, token } = useAuth();
   const {
     messages,
     isFetchingMessages,
@@ -102,7 +101,7 @@ export function ChatList() {
               <MessageCard
                 key={message._id}
                 message={message}
-                isMine={message.sender._id === myAccount._id}
+                isMine={message.sender._id === user?._id}
                 isFirst={ind === 0}
               />
             ))}

@@ -1,16 +1,16 @@
-import { IChat, IUser } from "@/types";
+import { IChat } from "@/types";
 import UserAvatar from "@/components/UserAvatar";
 import { cn } from "@/lib/utils";
-import { getCookie } from "cookies-next";
 import { Link } from "@/i18n/routing";
+import { useAuth } from "../auth-provider";
 interface ChatCardProps {
   chat: IChat;
   selectedChat?: string;
 }
 const ChatCard: React.FC<ChatCardProps> = ({ chat, selectedChat }) => {
-  const myAccount = JSON.parse(getCookie("user") || "{}") as IUser;
+  const { user: myAccount } = useAuth();
   const anotherUser = chat?.participants.find(
-    (user) => user.user !== myAccount._id
+    (user) => user.user !== myAccount?._id
   );
   return (
     <Link

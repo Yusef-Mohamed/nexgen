@@ -8,8 +8,8 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import Script from "next/script";
 import { FaTelegramPlane } from "react-icons/fa";
 import ToastProvider from "@/components/ToastProvider";
-import RefreshDataProvider from "@/components/RefreshDataProvider";
 import dynamic from "next/dynamic";
+import { AuthProvider } from "@/components/auth-provider";
 const SocketWrapper = dynamic(() => import("@/components/SocketWrapper"), {
   ssr: false,
 });
@@ -103,7 +103,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <NextIntlClientProvider messages={messages}>
-            <RefreshDataProvider>
+            <AuthProvider>
               <SocketWrapper>
                 <ToastProvider />
                 {children}
@@ -131,7 +131,7 @@ export default function RootLayout({
                   </a>
                 </div>
               </SocketWrapper>
-            </RefreshDataProvider>
+            </AuthProvider>
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>

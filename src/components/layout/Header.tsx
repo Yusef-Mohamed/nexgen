@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import LanguageSelector from "../LanguageSelector";
 import NavItem from "../../app/[locale]/(root)/components/NavItem";
@@ -7,8 +8,8 @@ import ThemeToggler from "../ThemeToggler";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import MobileHeader from "./MobileHeader";
-import { getServerCookie } from "@/app/lib/serverUtils";
 import UserHeader from "./UserHeader";
+import { useAuth } from "../auth-provider";
 const headerLinks = [
   {
     name: "home",
@@ -33,7 +34,7 @@ const headerLinks = [
 ];
 const Header = () => {
   const text = useTranslations("header");
-  const token = getServerCookie("token");
+  const { token } = useAuth();
   return (
     <header className="sticky top-0 z-50 w-full py-1 shadow-md md:py-2 bg-clear-ground">
       <div className="container flex items-center justify-between gap-10">

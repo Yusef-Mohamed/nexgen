@@ -4,10 +4,10 @@ import React, { useEffect } from "react";
 import { Sidebar } from "./ChatSidebar";
 import { Chat } from "./Chat";
 import { useChatStore } from "@/stores/ChatStore";
-import { getCookie } from "cookies-next";
 import { io } from "socket.io-client";
 import { SOCKET_URL } from "@/constants";
 import { createClientAxiosInstance } from "@/app/lib/utils";
+import { useAuth } from "@/components/auth-provider";
 
 interface ChatLayoutProps {
   selectedChat?: string;
@@ -15,8 +15,7 @@ interface ChatLayoutProps {
 
 export function ChatLayout({ selectedChat }: ChatLayoutProps) {
   const { setChats, setIsFetchingChats, setSocket, socket } = useChatStore();
-  const token = getCookie("token");
-  const myAccount = JSON.parse(getCookie("user") || "{}");
+  const { user, token } = useAuth();
   const getChats = async () => {
     setIsFetchingChats(true);
     const axiosInstance = createClientAxiosInstance();
@@ -42,7 +41,7 @@ export function ChatLayout({ selectedChat }: ChatLayoutProps) {
   }, [token]);
   useEffect(() => {
     if (socket) {
-      socket.emit("addUser", { userId: myAccount._id });
+      socket.emit("addUser", { userId: user?._id });
     }
   }, [socket]);
   return (

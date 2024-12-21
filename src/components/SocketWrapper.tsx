@@ -1,22 +1,12 @@
 "use client";
 import { useSocketStore } from "@/stores/SocketStore";
-import { IUser } from "@/types";
-import { getCookie } from "cookies-next";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
+import { useAuth } from "./auth-provider";
 
 export function SocketWrapper({ children }: { children: React.ReactNode }) {
   const setupSocket = useSocketStore((state) => state.setupSocket);
   const disconnectSocket = useSocketStore((state) => state.disconnectSocket);
-
-  const token = getCookie("token");
-  const userString = getCookie("user");
-
-  const user = useMemo<null | IUser>(() => {
-    if (userString) {
-      return JSON.parse(userString);
-    }
-    return null;
-  }, [userString]);
+  const { token, user } = useAuth();
 
   useEffect(() => {
     if (token && user) {

@@ -12,6 +12,7 @@ const config: Config = {
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        "dash-ground": "hsl(var(--dash-ground))",
         gold: "hsl(var(--gold))",
         green: "hsl(var(--green))",
         fadedGreen: "hsl(var(--fadedGreen))",

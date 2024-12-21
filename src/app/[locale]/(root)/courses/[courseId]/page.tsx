@@ -9,7 +9,6 @@ import { CourseReviewOverView } from "@/components/cards/CourseCard";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { CiDiscount1 } from "react-icons/ci";
-import { Button } from "@/components/ui/button";
 import { FiPlayCircle } from "react-icons/fi";
 import { PiExam } from "react-icons/pi";
 import { CiMobile2 } from "react-icons/ci";
@@ -20,6 +19,7 @@ import PromoBanner from "../../components/PromoBanner";
 import PopularCourses from "../../components/PopularCourses";
 import ReviewsGrid from "@/components/ReviewsGrid";
 import CourseContent from "./components/CourseContent";
+import BuyCourse from "./components/BuyCourse";
 export async function generateMetadata({
   params,
 }: {
@@ -202,11 +202,7 @@ const CourseCard: React.FC<{
         )}
       </div>
       <CourseHeading courseData={courseData} className="lg:hidden" />
-      <Button asChild className="w-full mb-4 md:mb-8">
-        <Link href={`/checkout/course/${courseData._id}`}>
-          {text("startNow")}
-        </Link>
-      </Button>
+      <BuyCourse id={courseData._id} />
       <div>
         <h4 className="mb-4 md:mb-6">{text("thisCourseIncludes")}</h4>
         <ul className="space-y-2 md:space-y-4">

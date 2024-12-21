@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useChatStore } from "@/stores/ChatStore";
-import { getCookie } from "cookies-next";
 import { ChatList } from "./ChatList";
 import { IMessage } from "@/types";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import ChatTopbar from "./ChatTopbar";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/components/auth-provider";
 
 interface ChatProps {
   selectedChat?: string;
@@ -28,8 +28,7 @@ export function Chat({ selectedChat }: ChatProps) {
     selectedChatId,
     setSelectedChatId,
   } = useChatStore();
-  const myAccount = JSON.parse(getCookie("user") || "{}");
-  const token = getCookie("token");
+  const { token, user } = useAuth();
   const getMessages = async () => {
     setIsFetchingMessages(true);
     try {
@@ -75,14 +74,14 @@ export function Chat({ selectedChat }: ChatProps) {
   useEffect(() => {
     if (socket && selectedChatId) {
       socket.emit("joinRoom", {
-        userId: myAccount._id,
+        userId: user?._id,
         roomId: selectedChatId,
       });
     }
     return () => {
       if (socket && selectedChatId) {
         socket.emit("leaveRoom", {
-          userId: myAccount._id,
+          userId: user?._id,
           roomId: selectedChatId,
         });
       }
@@ -132,7 +131,6 @@ export function Chat({ selectedChat }: ChatProps) {
       })}
     >
       <ChatTopbar />
-
       <ChatList />
     </div>
   );

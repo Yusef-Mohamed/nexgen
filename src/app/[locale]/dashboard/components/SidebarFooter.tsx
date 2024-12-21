@@ -1,5 +1,5 @@
 "use client";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
@@ -8,14 +8,14 @@ import { IoMoon } from "react-icons/io5";
 import SidebarLink from "./SidebarLink";
 import { IoIosNotifications, IoMdSettings } from "react-icons/io";
 import { RiLogoutBoxLine, RiLogoutBoxRLine } from "react-icons/ri";
-import { deleteCookie } from "cookies-next";
+import { useAuth } from "@/components/auth-provider";
 
 const SidebarFooter = () => {
   const { setTheme } = useTheme();
+  const { logout } = useAuth();
   const text = useTranslations("dashboard");
   const pathname = usePathname();
   const locale = useLocale();
-  const router = useRouter();
   return (
     <div className="space-y-2">
       <SidebarLink
@@ -33,12 +33,7 @@ const SidebarFooter = () => {
         }}
       />
       <button
-        onClick={() => {
-          deleteCookie("user");
-          deleteCookie("token");
-          router.refresh();
-          router.push("/");
-        }}
+        onClick={logout}
         className={cn(
           "flex w-full items-center gap-2 px-3 hover:text-clear-ground rounded-md py-2 hover:bg-primary transition-all"
         )}

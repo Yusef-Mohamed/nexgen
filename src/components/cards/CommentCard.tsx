@@ -1,12 +1,11 @@
 "use client";
 import { useTranslations } from "next-intl";
 import UserAvatar from "../UserAvatar";
-import { IComment, IUser } from "@/types";
+import { IComment } from "@/types";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import TextWithEmojiBox from "../TextWithEmojiBox";
-import { getCookie } from "cookies-next";
 import { FaSpinner } from "react-icons/fa";
 import {
   AlertDialog,
@@ -17,8 +16,9 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
-import { createClientAxiosInstance, getClientCookie } from "@/app/lib/utils";
+import { createClientAxiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
+import { useAuth } from "../auth-provider";
 
 interface CommentCardProps {
   comment: IComment;
@@ -41,7 +41,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
   const [isFetchingReplies, setIsFetchingReplies] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const user = JSON.parse(getCookie("user") || "{}") as IUser;
+  const { user } = useAuth();
   const getReplies = async () => {
     if (!isRepliesFetched) {
       setIsRepliesFetched(true);
@@ -225,17 +225,16 @@ const CommentAction: React.FC<{
   setIsEditing,
 }) => {
   const text = useTranslations("post");
-  const token = getCookie("token");
   const [isLoading, setIsLoading] = useState(false);
   const [media, setMedia] = useState<File | null>(null);
   const [comment, setComment] = useState(
     type === "edit" ? parentComment.content : ""
   );
   const inputRef = useRef(null);
-  const user = getClientCookie("user", true) as IUser;
+  const { user, token } = useAuth();
 
   const handleSend = async () => {
-    if (!user.authToReview) {
+    if (!user?.authToReview) {
       toast.error(text("youShouldBuyCourseOrServiceToDoThisAction"));
       return;
     }
@@ -246,7 +245,7 @@ const CommentAction: React.FC<{
         const newReply: IComment = {
           _id: Date.now().toString(),
           content: comment,
-          user: JSON.parse(getCookie("user") || "{}"),
+          user: user,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           repiles: [],
@@ -330,11 +329,10 @@ const DeleteComment: React.FC<{
 }> = ({ comment, setComments, isDeleting, setIsDeleting, isChild }) => {
   const text = useTranslations("post");
   const [isLoading, setIsLoading] = useState(false);
-  const token = getCookie("token");
-  const user = getClientCookie("user", true) as IUser;
+  const { token, user } = useAuth();
 
   const handleDelete = async () => {
-    if (!user.authToReview) {
+    if (!user?.authToReview) {
       toast.error(text("youShouldBuyCourseOrServiceToDoThisAction"));
       return;
     }

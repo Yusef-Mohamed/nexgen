@@ -1,14 +1,13 @@
 "use client";
 import { createClientAxiosInstance } from "@/app/lib/utils";
-import { getCookie } from "cookies-next";
+import { useAuth } from "@/components/auth-provider";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
 const Resend = () => {
   const t = useTranslations("ResetCode");
-  const myAccount = JSON.parse(getCookie("user") || "{}");
-  const token = getCookie("token");
+  const { user, token } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const handelNotActive = async () => {
     const axiosInstance = createClientAxiosInstance();
@@ -17,7 +16,7 @@ const Resend = () => {
       await axiosInstance.post(
         "auth/resendEmailCode",
         {
-          email: myAccount.email,
+          email: user?.email,
         },
         {
           headers: {

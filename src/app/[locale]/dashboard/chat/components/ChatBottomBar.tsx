@@ -2,21 +2,22 @@ import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { useChatStore } from "@/stores/ChatStore";
-import { getCookie } from "cookies-next";
 import { IMessage } from "@/types";
 import { useTranslations } from "next-intl";
 import { IoMdClose } from "react-icons/io";
 import TextWithEmojiBox from "@/components/TextWithEmojiBox";
 import { createClientAxiosInstance } from "@/app/lib/utils";
+import { useAuth } from "@/components/auth-provider";
+import { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
 export default function ChatBottombar() {
   const text = useTranslations("chat");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [media, setMedia] = useState<File | null>(null);
-  const token = getCookie("token");
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const myAccount = JSON.parse(getCookie("user") || "{}");
+  const { token, user } = useAuth();
   const {
     setActionOnMessage,
     selectedChatId,
@@ -30,14 +31,14 @@ export default function ChatBottombar() {
     if (socket) {
       if (type === "new")
         socket.emit("sendMessage", {
-          senderId: myAccount._id,
+          senderId: user?._id,
           roomId: selectedChatId,
           payload: payload,
           action: "sendMessage",
         });
       else if (type === "edit")
         socket.emit("sendMessage", {
-          senderId: myAccount._id,
+          senderId: user?._id,
           roomId: selectedChatId,
           payload: payload,
           action: "editMessage",
@@ -45,10 +46,10 @@ export default function ChatBottombar() {
     }
   };
   const handleSend = async () => {
-    if (message.trim()) {
+    if (message.trim() || media) {
       setIsLoading(true);
       const data = new FormData();
-      data.append("text", message);
+      if (message) data.append("text", message);
       if (media) data.append("media", media);
       try {
         if (!actionOnMessage) {
@@ -91,17 +92,21 @@ export default function ChatBottombar() {
           addMessage(res.data.data);
           sendMessageToSocket(res.data.data, "new");
         }
-      } catch (e) {
-        console.log(e);
-      } finally {
         setActionOnMessage(null);
-        setIsLoading(false);
         setMessage("");
         if (inputRef.current) {
           setTimeout(() => {
             inputRef.current?.focus();
           }, 10);
         }
+      } catch (e) {
+        const typedError = e as AxiosError<{
+          message: string;
+        }>;
+        if (typedError.response?.data?.message)
+          toast.error(typedError.response?.data?.message);
+      } finally {
+        setIsLoading(false);
       }
     }
   };

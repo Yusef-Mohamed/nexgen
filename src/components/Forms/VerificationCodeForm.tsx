@@ -21,7 +21,7 @@ const VerificationCodeForm = () => {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const axiosInstance = createClientAxiosInstance();
     await axiosInstance.post("/auth/verifyResetCode", {
-      code: data.otp,
+      resetCode: data.otp,
     });
     router.push("/reset-password");
     toast.success(inputs("code_verified"));

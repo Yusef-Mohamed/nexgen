@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { IMessage, IUser } from "@/types";
+import { IMessage } from "@/types";
 import { motion } from "framer-motion";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import UserAvatar from "../UserAvatar";
@@ -12,7 +12,6 @@ import {
 } from "../ui/dropdown-menu";
 import { LuReply } from "react-icons/lu";
 import { useChatStore } from "@/stores/ChatStore";
-import { getCookie } from "cookies-next";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -27,6 +26,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import Image from "next/image";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { useTranslations } from "next-intl";
+import { useAuth } from "../auth-provider";
 interface MessageCardProps {
   message: IMessage;
   isMine: boolean;
@@ -42,8 +42,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const { setActionOnMessage, deleteMessage, socket } = useChatStore();
   const messageDiv = useRef(null);
-  const myAccount = JSON.parse(getCookie("user") || "{}") as IUser;
-  const token = getCookie("token");
+  const { user: myAccount, token } = useAuth();
   const text = useTranslations("chat");
   const deleteMessageAction = async () => {
     try {
@@ -57,7 +56,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
       deleteMessage(message._id);
       if (socket) {
         socket.emit("sendMessage", {
-          senderId: myAccount._id,
+          senderId: myAccount?._id,
           roomId: message.chat,
           payload: message._id,
           action: "deleteMessage",
@@ -120,15 +119,24 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 </span>
               )}
               <p>{message.text}</p>
-              {message.media[0] && (
-                <Image
-                  src={message.media[0]}
-                  alt=""
-                  width={400}
-                  height={400}
-                  className="w-full mt-4"
-                />
-              )}
+              {message.media[0] &&
+                (message.media[0].endsWith("pdf") ? (
+                  <a
+                    href={message.media[0]}
+                    target="_blank"
+                    className="text-sm font-normal underline"
+                  >
+                    {text("pdfFileClickToOpen")}
+                  </a>
+                ) : (
+                  <Image
+                    src={message.media[0]}
+                    alt=""
+                    width={400}
+                    height={400}
+                    className="w-full mt-4"
+                  />
+                ))}
 
               <span
                 className={cn(
@@ -176,7 +184,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                         disabled={
                           new Date(message.createdAt).getTime() <
                             new Date().getTime() - 1000 * 60 * 60 * 6 &&
-                          myAccount.role !== "admin"
+                          myAccount?.role !== "admin"
                         }
                         className="flex items-center w-full gap-4 disabled:cursor-not-allowed disabled:opacity-50"
                         onClick={() => {
@@ -191,7 +199,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                     </DropdownMenuItem>
                   </>
                 )}
-                {(isMine || myAccount.role === "admin") && (
+                {(isMine || myAccount?.role === "admin") && (
                   <>
                     {" "}
                     <DropdownMenuSeparator />
@@ -200,7 +208,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                         disabled={
                           new Date(message.createdAt).getTime() <
                             new Date().getTime() - 1000 * 60 * 60 * 6 &&
-                          myAccount.role !== "admin"
+                          myAccount?.role !== "admin"
                         }
                         className="flex items-center w-full gap-4 disabled:cursor-not-allowed disabled:opacity-50"
                         onClick={() => {

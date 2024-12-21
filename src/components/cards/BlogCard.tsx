@@ -18,6 +18,7 @@ const BlogCard: React.FC<IBlog> = ({
   author,
 }) => {
   const locale = useLocale();
+  if (!author) return null;
   return (
     <article className="flex flex-col w-full h-full ">
       <Link href={`/blogs/${_id}`} className="w-full">

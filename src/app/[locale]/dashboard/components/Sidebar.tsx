@@ -1,5 +1,6 @@
+"use client";
 import { cn } from "@/lib/utils";
-import { FaHome, FaUser, FaUsers } from "react-icons/fa";
+import { FaHome, FaRegChartBar, FaUser, FaUsers } from "react-icons/fa";
 import { IoMdChatboxes } from "react-icons/io";
 import { IoAnalytics, IoBookOutline } from "react-icons/io5";
 import { MdLiveTv } from "react-icons/md";
@@ -7,13 +8,15 @@ import { GiCash } from "react-icons/gi";
 import { AiFillFolderOpen } from "react-icons/ai";
 import SidebarLink from "./SidebarLink";
 import SidebarFooter from "./SidebarFooter";
+import { CiMoneyBill } from "react-icons/ci";
+import { RiDiscountPercentLine } from "react-icons/ri";
+import { useAuth } from "@/components/auth-provider";
 
 const Sidebar: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
   className,
   ...props
 }) => {
-  // const cookiesStore = cookies();
-  // const user = JSON.parse(cookiesStore.get("user")?.value || "{}") as IUser;
+  const { user } = useAuth();
   const links = [
     {
       href: "/dashboard",
@@ -49,6 +52,23 @@ const Sidebar: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
       href: "/dashboard/marketing",
       label: "marketing",
       icon: <GiCash />,
+      links: [
+        {
+          href: "/dashboard/marketing/sales-analytics",
+          label: "salesAnalytics",
+          icon: <FaRegChartBar />,
+        },
+        {
+          href: "/dashboard/marketing/invoices",
+          label: "invoices",
+          icon: <CiMoneyBill />,
+        },
+        {
+          href: "/dashboard/marketing/coupons",
+          label: "coupons",
+          icon: <RiDiscountPercentLine />,
+        },
+      ],
     },
     {
       href: "/dashboard/practice",
@@ -56,7 +76,7 @@ const Sidebar: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
       icon: <AiFillFolderOpen />,
     },
     {
-      href: "/dashboard/profile",
+      href: `/dashboard/community/profile/${user?._id}`,
       label: "profile",
       icon: <FaUser />,
     },

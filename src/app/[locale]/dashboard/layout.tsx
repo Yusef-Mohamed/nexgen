@@ -18,8 +18,8 @@ export default function RootLayout({
 
   return (
     <div className="dashboard">
-      <header className="sticky top-0 z-50 h-[76px] w-full px-3 py-1 sm:px-6 bg-clear-ground">
-        <div className="flex items-center justify-between gap-10">
+      <header className="sticky top-0 z-50 w-full px-3 sm:px-6 bg-clear-ground">
+        <div className="flex items-center h-[76px] py-1 justify-between gap-10">
           <Logo size="sm" />
           <div className="flex items-center gap-4">
             <Sheet>
@@ -41,7 +41,7 @@ export default function RootLayout({
         style={{
           minHeight: "calc(100vh - 76px)",
         }}
-        className="flex bg-muted"
+        className="flex bg-dash-ground"
       >
         <Sidebar
           style={{
@@ -49,9 +49,9 @@ export default function RootLayout({
             top: "76px",
             height: "calc(100vh - 76px)",
           }}
-          className="hidden lg:flex"
+          className="hidden lg:flex "
         />
-        <div className="relative flex-1">{children}</div>
+        <div className="relative flex-1 w-full ">{children}</div>
       </div>
     </div>
   );

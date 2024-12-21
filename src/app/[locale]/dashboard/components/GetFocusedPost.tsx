@@ -1,15 +1,15 @@
 import { createClientAxiosInstance } from "@/app/lib/utils";
+import { useAuth } from "@/components/auth-provider";
 import FocusedPostCard from "@/components/cards/FocusedPostCard";
 import useCustomSearchParams from "@/hooks/useSearchParams";
 import { IPost } from "@/types";
-import { getCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 
 const GetFocusedPost = () => {
   const { searchParams, setSearchParams } = useCustomSearchParams();
   const [selectedPost, setSelectedPost] = useState<IPost | null>(null);
   const [isOpen, setIsOpen] = useState(true);
-  const token = getCookie("token");
+  const { token } = useAuth();
   useEffect(() => {
     const post = searchParams.get("focusedPost");
     if (post) {
@@ -33,7 +33,7 @@ const GetFocusedPost = () => {
           });
         });
     }
-  }, []);
+  }, [token, searchParams, setSearchParams]);
 
   return (
     <>

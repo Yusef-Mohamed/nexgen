@@ -67,6 +67,7 @@ main {
 @layer base {
   :root {
     --background: 0 0% 99%;
+    --dash-ground: 213 40% 97%;
     --clear-ground: 0 0% 100%;
     --foreground: 210 22% 7%;
     --text-1: 212 21% 16%;
@@ -104,15 +105,16 @@ main {
 
   .dark {
     --background: 210 15% 15%; /* Dark background */
+    --dash-ground: 210 22% 7%;
     --clear-ground: 210 15% 10%; /* Even darker for contrast */
     --foreground: 0 0% 90%; /* Light text color */
     --text-1: 0 0% 90%; /* Primary text */
     --text-2: 0 0% 80%; /* Secondary text */
     --text-3: 0 0% 70%; /* Tertiary text */
     --gold: 55 100% 65%; /* Brightened gold for visibility */
-    --card: 210 15% 20%; /* Slightly lighter than background */
+    --card: 210 15% 10%; /* Slightly lighter than background */
     --card-foreground: 0 0% 90%; /* Light text on cards */
-    --popover: 210 15% 20%; /* Matches card background */
+    --popover: 210 15% 10%; /* Matches card background */
     --popover-foreground: 0 0% 90%; /* Light text on popovers */
     --primary: 213 92% 70%; /* Brighter primary color */
     --primary-main: 218 78% 75%; /* Adjusted for contrast */

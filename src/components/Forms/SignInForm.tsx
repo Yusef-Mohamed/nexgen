@@ -1,12 +1,12 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { setCookie } from "cookies-next";
 import { useRouter } from "@/i18n/routing";
 import * as z from "zod";
 import GoogleAuthBtn from "../GoogleAuthBtn";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import CustomForm from "./CustomForm";
+import { useAuth } from "../auth-provider";
 
 const SignInForm = () => {
   const t = useTranslations("SignIn");
@@ -16,6 +16,7 @@ const SignInForm = () => {
     email: z.string().email({ message: inputs("invalidEmail") }),
     password: z.string({ message: inputs("thisFieldIsRequired") }),
   });
+  const { updateUser } = useAuth();
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const axiosInstance = createClientAxiosInstance();
     const formattedData: {
@@ -25,8 +26,10 @@ const SignInForm = () => {
     const response = await axiosInstance.post("/auth/login", formattedData);
     const user = response.data.data;
     const token = response.data.token;
-    setCookie("user", JSON.stringify(user), { maxAge: 60 * 60 * 24 });
-    setCookie("token", token, { maxAge: 60 * 60 * 24 });
+    updateUser({
+      userData: user,
+      token,
+    });
     if (user.emailVerified === false) {
       router.refresh();
       router.push("/email-verification");

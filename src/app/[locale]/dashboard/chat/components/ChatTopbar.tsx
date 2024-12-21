@@ -4,7 +4,6 @@ import { Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UserAvatar from "@/components/UserAvatar";
 import { useChatStore } from "@/stores/ChatStore";
-import { getCookie } from "cookies-next";
 import { IChat, IUser } from "@/types";
 import {
   Sheet,
@@ -36,21 +35,21 @@ import {
 } from "@/components/ui/alert-dialog";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import InputField from "@/components/InputField";
+import { useAuth } from "@/components/auth-provider";
 export default function ChatTopbar() {
   const inputs = useTranslations("Forms");
   const locale = useLocale();
   const { isFetchingThisChat, thisChat, setThisChat, setChats, chats } =
     useChatStore();
-  const myAccount = JSON.parse(getCookie("user") || "{}") as IUser;
+  const { user, token } = useAuth();
   const anotherUser = thisChat?.participants.find(
-    (user) => user.user !== myAccount._id
+    (user) => user.user !== user?._id
   );
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const text = useTranslations("chat");
   const isAdmin = thisChat?.participants.find(
-    (participant) => participant.user === myAccount._id
+    (participant) => participant.user === user?._id
   )?.isAdmin;
-  const token = getCookie("token");
   const [action, setAction] = useState<"remove" | "changeRole">("remove");
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

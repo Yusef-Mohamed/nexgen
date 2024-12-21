@@ -1,24 +1,13 @@
 "use client";
-import { useRouter } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
-import { deleteCookie } from "cookies-next";
 import { useTranslations } from "next-intl";
+import { useAuth } from "./auth-provider";
 
 export const DropdownMenuLogout = ({ className }: { className?: string }) => {
-  const router = useRouter();
   const text = useTranslations("header");
+  const { logout } = useAuth();
   return (
-    <button
-      className={cn(className)}
-      onClick={() => {
-        deleteCookie("user");
-        deleteCookie("token");
-        router.push("/");
-        setTimeout(() => {
-          router.refresh();
-        }, 1000);
-      }}
-    >
+    <button className={cn(className)} onClick={logout}>
       {text("logout")}
     </button>
   );

@@ -1,9 +1,8 @@
 "use client";
 import { BsThreeDots } from "react-icons/bs";
-import { IAnalytic, IUser } from "@/types";
+import { IAnalytic } from "@/types";
 import UserAvatar from "../UserAvatar";
 import Image from "next/image";
-import { getCookie } from "cookies-next";
 import { IoMdClose } from "react-icons/io";
 import { FaCheck } from "react-icons/fa";
 import { Textarea } from "../ui/textarea";
@@ -28,6 +27,7 @@ import {
 } from "../ui/dropdown-menu";
 import { AiFillDelete } from "react-icons/ai";
 import { createClientAxiosInstance } from "@/app/lib/utils";
+import { useAuth } from "../auth-provider";
 interface AnalyticCardProps {
   analytic: IAnalytic;
   getNewPosts?: () => void;
@@ -41,7 +41,6 @@ const AnalyticCard: React.FC<AnalyticCardProps> = ({
   setAnalytics,
 }) => {
   const text = useTranslations("practice");
-  const myAccount = JSON.parse(getCookie("user") || "{}") as IUser;
   const postDiv = useRef(null);
   const [marketerComment, setMarketerComment] = useState<string>("");
   const [isPassed, setIsPassed] = useState<boolean>(false);
@@ -49,8 +48,8 @@ const AnalyticCard: React.FC<AnalyticCardProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isImageOpened, setIsImageOpened] = useState<boolean>(false);
-
-  const isMyChild = myAccount._id === analytic.marketer;
+  const { user, token } = useAuth();
+  const isMyChild = user?._id === analytic.marketer;
   const handelSubmit = async () => {
     try {
       setIsLoading(true);
@@ -63,7 +62,7 @@ const AnalyticCard: React.FC<AnalyticCardProps> = ({
         },
         {
           headers: {
-            Authorization: `Bearer ${getCookie("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -113,7 +112,7 @@ const AnalyticCard: React.FC<AnalyticCardProps> = ({
       const axiosInstance = await createClientAxiosInstance();
       await axiosInstance.delete(`/analytics/${analytic._id}`, {
         headers: {
-          Authorization: `Bearer ${getCookie("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       if (setAnalytics) {
@@ -141,7 +140,7 @@ const AnalyticCard: React.FC<AnalyticCardProps> = ({
               </span>
             </div>
           </div>
-          {myAccount.role === "admin" && (
+          {user?.role === "admin" && (
             <>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

@@ -27,10 +27,18 @@ export interface ICourse {
   ratingsAverage: number;
   progressPercentage?: number;
   totalProgress?: number;
+  userScore?: IUserScore;
+  courseProgress?: ICourseProgress;
   _id: string;
   createdAt: string;
   instructor: IUser;
   updatedAt: string;
+  users: {
+    email: string;
+    id: string;
+    profileImg: string;
+    name: string;
+  }[];
 }
 export interface ILesson {
   course: ICourse;
@@ -52,8 +60,13 @@ export interface IUser {
   updatedAt: string;
   active: boolean;
   profileImg?: string;
+  coverImg?: string;
   authToReview: boolean;
   startMarketing: boolean;
+  emailVerified: boolean;
+  idVerification: "pending" | "rejected" | "verified";
+  note?: string;
+  idDocuments: string[];
   __v: number;
 }
 export interface InputData {
@@ -269,15 +282,16 @@ export interface IAnalytic {
   user: IUser;
   _id: string;
 }
-export interface ICourseProgress {
+export interface IUserScore {
   averageGradePercentage: number;
   completedLessons: ILesson[];
   examsCompletedPercentage: number;
   examsNotAttemptedPercentage: number;
   finalExamCompletionPercentage: number;
   notAttemptedLessons: ILesson[];
-  totalProgress: number;
+  totalProgress: string;
   completedLessonsPercentage: number;
+  completionStatus: string;
 }
 export interface IPagination {
   numberOfPages: number;
@@ -335,4 +349,25 @@ export interface ISection {
   createdAt: string;
   updatedAt: string;
   lessons?: ILesson[];
+}
+export interface ICourseProgress {
+  totalProgress: number;
+  status: "Completed" | "failed";
+  certificate: {
+    isTaken: boolean;
+    isDeserved: boolean;
+    file?: string;
+  };
+}
+export interface ICoupon {
+  couponName: string;
+  discount: number;
+  marketer: IUser;
+  maxUsageTimes: number;
+  usedTimes: number;
+  status: "active" | "rejected" | "pending";
+  reason: string;
+  createdAt: string;
+  updatedAt: string;
+  _id: string;
 }

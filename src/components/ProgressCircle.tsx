@@ -1,10 +1,10 @@
 import React, { useEffect, FC, useState } from "react";
 import "../chart.css";
 import { ICourse, ICourseProgress } from "@/types";
-import { getCookie } from "cookies-next";
 import ProgressUnit from "./ProgressUnit";
 import { useAnalyticsStore } from "@/stores/AnalyticsStore";
 import { createClientAxiosInstance } from "@/app/lib/utils";
+import { useAuth } from "./auth-provider";
 const ProgressCircle: FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [coursesWithProgress, setCoursesWithProgress] = useState<
@@ -21,8 +21,7 @@ const ProgressCircle: FC = () => {
     }[]
   >([]);
   const { selectedUser } = useAnalyticsStore((state) => state);
-  const token = getCookie("token");
-
+  const { token } = useAuth();
   const getData = async () => {
     setIsLoading(true);
     const axiosInstance = await createClientAxiosInstance();

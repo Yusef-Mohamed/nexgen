@@ -2,15 +2,15 @@
 import PostCard, { SkeletonPostCard } from "@/components/cards/PostCard";
 import useCustomSearchParams from "@/hooks/useSearchParams";
 import { IPost } from "@/types";
-import { getCookie } from "cookies-next";
 import { useCallback, useState } from "react";
 import CommunityFilters from "./CommunityFilters";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useTranslations } from "next-intl";
 import CreatePost from "./CreatePost";
+import { useAuth } from "@/components/auth-provider";
 const DisplayCommunityAnalytics = () => {
-  const token = getCookie("token");
+  const { token } = useAuth();
   const text = useTranslations("dashboard");
   const [haveError, setHaveError] = useState(false);
   const { searchParams } = useCustomSearchParams();
@@ -38,7 +38,7 @@ const DisplayCommunityAnalytics = () => {
         filtersParams.append("limit", "4");
         if (page) filtersParams.append("page", `${page}`);
         const filters = filtersParams.toString()
-          ? `${sharedTo.startsWith("?") ? "" : "?"}${filtersParams.toString()}`
+          ? `${sharedTo.startsWith("?") ? "&" : "?"}${filtersParams.toString()}`
           : "";
         const axiosInstance = await createClientAxiosInstance();
         const res = await axiosInstance(`/posts${sharedTo}${filters}`, {

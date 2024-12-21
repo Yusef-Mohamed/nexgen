@@ -9,7 +9,7 @@ import ThemeToggler from "../ThemeToggler";
 import { Button } from "../ui/button";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-import { getCookie } from "cookies-next";
+import { useAuth } from "../auth-provider";
 const MobileHeader = ({
   headerLinks,
 }: {
@@ -18,7 +18,7 @@ const MobileHeader = ({
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const text = useTranslations("header");
-  const token = getCookie("token");
+  const { token } = useAuth();
   const handleClickOutside = (event: MouseEvent) => {
     if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
       setIsOpen(false);

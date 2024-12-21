@@ -10,12 +10,12 @@ import NotificationCard, {
   SkeletonNotificationCard,
 } from "./cards/NotificationCard";
 import { useEffect, useRef, useState } from "react";
-import { getCookie } from "cookies-next";
 import { useNotificationStore } from "@/stores/NotificationStore";
-import { IUser } from "@/types";
+import { useAuth } from "./auth-provider";
 const NotificationDropDownMenu = () => {
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [isOpened, setIsOpened] = useState(false);
+  const { token, user } = useAuth();
   const {
     notifications,
     unReadCount,
@@ -26,15 +26,13 @@ const NotificationDropDownMenu = () => {
     getUnReadCount,
   } = useNotificationStore();
   useEffect(() => {
-    const token = getCookie("token");
-    const myAccount = JSON.parse(getCookie("user") || "{}") as IUser;
     if (token) {
       getUnReadCount();
       setupSocket({
-        userId: myAccount._id as string,
+        userId: user?._id as string,
       });
     }
-  }, [getUnReadCount, setupSocket]);
+  }, [getUnReadCount, setupSocket, user, token]);
   useEffect(() => {
     if (!observerRef.current) return;
     const observer = new IntersectionObserver(

@@ -1,4 +1,7 @@
 {
+  "common": {
+    "please_verify_your_email": "يرجى التحقق من بريدك الإلكتروني"
+  },
   "header": {
     "home": "الرئيسية",
     "about": "من نحن",
@@ -261,7 +264,12 @@
     "SelectRelatedTo": "اختر متعلق بـ",
     "SelectCourse": "اختر الدورة",
     "selectService": "اختر الخدمة",
-    "service": "الخدمة"
+    "service": "الخدمة",
+    "save": "حفظ",
+    "profile_updated": "تم تحديث الملف الشخصي",
+    "changePassword": "تغيير كلمة المرور",
+    "password_updated": "تم تحديث كلمة المرور",
+    "change_password_failed": "فشل تغيير كلمة المرور"
   },
   "reviewsSectionAboutPage": {
     "heading": "أراء المتعلمين.",
@@ -308,7 +316,8 @@
     "studentsReviews": "تقييمات الطلاب",
     "courseContent": "محتوى الدورة",
     "displayMore": "عرض المزيد",
-    "thereIsNoReview": "لا توجد تقييمات"
+    "thereIsNoReview": "لا توجد تقييمات",
+    "startLearning": "ابدأ التعلم"
   },
   "contact": {
     "contactFormTitle": "تواصل معنا",
@@ -357,7 +366,13 @@
     "areYouSureDeleteMessage": "هل أنت متأكد من حذف هذه الرسالة؟",
     "continue": "متابعة",
     "something_went_wrong": "حدث خطأ ما",
-    "learn": "التعلم"
+    "learn": "التعلم",
+    "follow": "متابعة",
+    "unfollow": "إلغاء المتابعة",
+    "salesAnalytics": "تحليلات المبيعات",
+    "invoices": "الفواتير",
+    "coupons": "كوبونات الخصم",
+    "followingRecommendation": "التوصيات  للمتابعة"
   },
   "post": {
     "like": "إعجاب",
@@ -407,7 +422,8 @@
     "actionFailed": "فشلت العملية",
     "addParticipant": "إضافة مشارك",
     "add": "إضافة",
-    "editChatData": "تعديل بيانات المحادثة"
+    "editChatData": "تعديل بيانات المحادثة",
+    "pdfFileClickToOpen": "ملف PDF (انقر لفتح)"
   },
   "lives": {
     "livesNow": "البثوث المباشرة الآن",
@@ -455,7 +471,163 @@
     "verifyRecaptcha": "يرجى التحقق من reCAPTCHA",
     "selectPaymentMethod": "يرجى اختيار طريقة الدفع",
     "invalidItem": "العنصر غير صالح",
-    "pleaseMakeSureThatYouHavePassedThePlacementExamsOfAllRequiredCourses": "يرجى التأكد من أنك قد اجتزت امتحانات التوجيه لجميع الدورات المطلوبة",
-    "pleaseMakeSureThatYouHavePassedThePlacementExams": "يرجى التأكد من أنك قد اجتزت امتحانات التوجيه"
+    "youCanontBuyThisCourseNow": "لا يمكنك شراء هذه الدورة الآن",
+    "youShouldTakeThoseCoursesFirstOrTakePlacementTest": "يجب عليك أخذ هذه الدورات أولاً أو أداء اختبار التحديد",
+    "startPlacementTest": "ابدأ اختبار التحديد"
+  },
+  "learn": {
+    "quiz": "اختبار",
+    "select_quiz_or_lesson": "اختر اختبار أو درس",
+    "aboutCourse": "عن الدورة",
+    "addReview": "إضافة تقييمك",
+    "reviewTheCourse": "قيم الدورة",
+    "yourFeedback": "تعليقك",
+    "ratingFrom1To5": "التقييم من 1 إلى 5",
+    "saveMyReview": "حفظ تقييمي",
+    "delete": "حذف",
+    "editYourReview": "تعديل تقييمك",
+    "writeYourFeedbackExample": "اكتب تعليقك ...",
+    "reviewUpdatedSuccessfully": "تم تحديث التقييم بنجاح",
+    "reviewCreatedSuccessfully": "تم إنشاء التقييم بنجاح",
+    "reviewDeletedSuccessfully": "تم حذف التقييم بنجاح",
+    "lesson_type": "اختبار علي الدرس",
+    "questions": "أسئلة",
+    "toPassExamYouNeedMoreThan": "للنجاح في الامتحان، تحتاج إلى أكثر من",
+    "start": "ابدأ",
+    "please_answer_all_questions": "يرجى الإجابة على جميع الأسئلة",
+    "submit": "إرسال",
+    "there_is_error_please_click_the_button_below_to_copy_the_error_and_send_it_to_support": "حدث خطأ، يرجى النقر على الزر أدناه لنسخ الخطأ وإرساله إلى الدعم",
+    "copied": "تم النسخ",
+    "copy_error": "نسخ الخطأ",
+    "something_wrong": "حدث خطأ ما",
+    "congrats_you_passed_with_score": "تهانينا، لقد نجحت بدرجة",
+    "you_failed_with_score": "للأسف، لم تنجح بدرجة",
+    "final_exam": "الامتحان النهائي",
+    "course_type": "الامتحان النهائي",
+    "completed": "مكتمل",
+    "Completed": "مكتمل",
+    "notCompleted": "غير مكتمل",
+    "overAllProgress": "التقدم العام",
+    "course": "دورة",
+    "examsHistory": "سجل الامتحانات",
+    "courseExamsHistory": "سجل امتحانات الدورة",
+    "failed": "فشل",
+    "modelB": "نموذج ب",
+    "modelA": "نموذج أ",
+    "score": "الدرجة",
+    "viewExamDetails": "عرض تفاصيل الامتحان",
+    "examDetails": "تفاصيل الامتحان",
+    "congratsOnFinishingTheCourse": "تهانينا على إنهاء الدورة 🎉",
+    "checkYourCertificate": "تحقق من شهادتك 🌟",
+    "yourCertificateDosnotAvailableYet": "شهادتك غير متوفرة بعد",
+    "menu": "القائمة",
+    "shareWithUsYourOpinionAndHelpUsImprove": "شاركنا رأيك وساعدنا على التحسين",
+    "yourExperienceMattersToUsTellUsHowCanWeImproves": "تجربتك تهمنا، أخبرنا كيف يمكننا التحسين",
+    "placement_type": "اختبار التحديد",
+    "your_are_not_fit_for_this_course": "أنت لست مناسب لهذه الدورة من الأفضل البداء في الدورات الأبسط او يمكنك شراء هذه الدورة والبداء فيها"
+  },
+  "settings": {
+    "myProfile": "الملف الشخصي",
+    "changePassword": "تغيير كلمة المرور",
+    "identityVerification": "التحقق من الهوية",
+    "systemReview": "تقييم النظام",
+    "verification1H": "الصورة امامية للهوية",
+    "verification2H": "الصورة خلفية للهوية",
+    "verification3H": "الصورة شخصية مع الهوية",
+    "verification1P": "قم بتصوير صورة واضحة للجهة الأمامية للهوية وارفقها في المربع اسفل ",
+    "verification2P": "قم بتصوير صورة واضحة للجهة الخلفية للهوية وارفقها في المربع اسفل ",
+    "verification3P": "قم بتصوير صورة شخصية مع الهوية وارفقها في المربع اسفل ",
+    "prev": "السابق",
+    "next": "التالي",
+    "clickOrDragImageToUpload": "انقر أو اسحب الصورة للتحميل",
+    "verificationSubmitted": "تم تقديم طلب تحقق من الهوية",
+    "verificationSubmittedP": "تم تقديم طلب التحقق من الهوية بنجاح، سيتم مراجعته من قبل الإدارة",
+    "verificationRejectedAndOurNoteIs": "تم رفض طلب التحقق من الهوية وملاحظتنا هي : ",
+    "pleaseReSendItAgain": "يرجى إعادة إرساله مرة أخرى",
+    "verificationDone": "تم التحقق من الهوية",
+    "verificationDoneP": "تم التحقق من الهوية بنجاح شكرا لك"
+  },
+  "couponManagement": {
+    "createCoupon": {
+      "title": "إنشاء كوبون جديد",
+      "success": "تم إنشاء الكوبون بنجاح",
+      "description": "املأ التفاصيل أدناه لطلب كوبون خصم جديد",
+      "form": {
+        "couponName": {
+          "label": "اسم الكوبون",
+          "placeholder": "مثال: SUMMER2024"
+        },
+        "discountPercentage": {
+          "label": "نسبة الخصم",
+          "placeholder": "مثال: 20"
+        },
+        "maxUses": {
+          "label": "الحد الأقصى للاستخدام",
+          "placeholder": "مثال: 100"
+        },
+        "reason": {
+          "label": "السبب",
+          "placeholder": "اشرح الغرض من هذا الكوبون"
+        },
+        "submitButton": "إنشاء الكوبون"
+      }
+    },
+    "couponsList": {
+      "title": "الكوبونات الخاصة بك",
+      "description": "إدارة ومراقبة كوبونات الخصم الخاصة بك",
+      "table": {
+        "empty": "لا توجد كوبونات",
+        "headers": {
+          "couponName": "اسم الكوبون",
+          "discount": "الخصم",
+          "usage": "الاستخدام",
+          "reason": "السبب",
+          "status": "الحالة"
+        },
+        "status": {
+          "active": "مفعل",
+          "rejected": "مرفوض",
+          "pending": "قيد الانتظار"
+        }
+      }
+    }
+  },
+  "invoicesManagement": {
+    "stats": {
+      "totalSales": "إجمالي المبيعات",
+      "profit": "الأرباح",
+      "withdrawals": "المسحوبات",
+      "balance": "الرصيد المتاح",
+      "withdraw": "سحب الرصيد"
+    },
+    "tabs": {
+      "commission": "العمولات",
+      "sales": "المبيعات"
+    },
+    "commission": {
+      "member": "العضو",
+      "profit": "الربح",
+      "lastUpdate": "آخر تحديث",
+      "noData": "لا توجد عمولات حالياً"
+    },
+    "sales": {
+      "purchaser": "المشتري",
+      "item": "المنتج",
+      "amount": "المبلغ",
+      "type": "النوع",
+      "date": "التاريخ",
+      "noData": "لا توجد مبيعات حالياً"
+    },
+    "invoices": {
+      "title": "الفواتير",
+      "period": "الفترة",
+      "mySales": "عدد المبيعات",
+      "totalSales": "إجمالي المبيعات",
+      "profit": "الربح",
+      "status": "الحالة"
+    },
+    "common": {
+      "showAll": "عرض الكل"
+    }
   }
 }

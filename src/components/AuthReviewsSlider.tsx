@@ -77,8 +77,8 @@ const AuthReviewSlider = ({ reviews }: { reviews: IReview[] }) => {
                 );
               })}
             </div>
-            <p className="my-4">{review.title}</p>
-            <div className="flex items-center gap-2">
+            <p className="my-4 text-white">{review.title}</p>
+            <div className="flex items-center gap-2 text-white">
               <UserAvatar user={review.user} />
               {review.user.name}
             </div>
@@ -90,7 +90,7 @@ const AuthReviewSlider = ({ reviews }: { reviews: IReview[] }) => {
           <button
             key={index}
             className={`h-2.5  w-2.5 transition-all rounded-full ${
-              index === current - 1 ? "bg-background" : "bg-muted/40"
+              index === current - 1 ? "bg-text-white" : "bg-gray-400"
             }`}
             onClick={() => api?.scrollTo(index)}
           ></button>
