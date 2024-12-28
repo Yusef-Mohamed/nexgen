@@ -227,21 +227,13 @@ const CouponManagement = () => {
           <Table className="whitespace-nowrap">
             <TableHeader>
               <TableRow>
-                <TableHead className="text-center">
+                <TableHead>
                   {t("couponsList.table.headers.couponName")}
                 </TableHead>
-                <TableHead className="text-center">
-                  {t("couponsList.table.headers.discount")}
-                </TableHead>
-                <TableHead className="text-center">
-                  {t("couponsList.table.headers.usage")}
-                </TableHead>
-                <TableHead className="text-center">
-                  {t("couponsList.table.headers.reason")}
-                </TableHead>
-                <TableHead className="text-center">
-                  {t("couponsList.table.headers.status")}
-                </TableHead>
+                <TableHead>{t("couponsList.table.headers.discount")}</TableHead>
+                <TableHead>{t("couponsList.table.headers.usage")}</TableHead>
+                <TableHead>{t("couponsList.table.headers.reason")}</TableHead>
+                <TableHead>{t("couponsList.table.headers.status")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

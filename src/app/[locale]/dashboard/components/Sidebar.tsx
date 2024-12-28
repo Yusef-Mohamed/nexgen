@@ -9,7 +9,7 @@ import { AiFillFolderOpen } from "react-icons/ai";
 import SidebarLink from "./SidebarLink";
 import SidebarFooter from "./SidebarFooter";
 import { CiMoneyBill } from "react-icons/ci";
-import { RiDiscountPercentLine } from "react-icons/ri";
+import { RiDiscountPercentLine, RiTeamFill } from "react-icons/ri";
 import { useAuth } from "@/components/auth-provider";
 
 const Sidebar: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
@@ -59,10 +59,16 @@ const Sidebar: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
           icon: <FaRegChartBar />,
         },
         {
+          href: "/dashboard/marketing/my-team",
+          label: "myTeam",
+          icon: <RiTeamFill />,
+        },
+        {
           href: "/dashboard/marketing/invoices",
           label: "invoices",
           icon: <CiMoneyBill />,
         },
+
         {
           href: "/dashboard/marketing/coupons",
           label: "coupons",
@@ -94,7 +100,7 @@ const Sidebar: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
         className
       )}
     >
-      <nav>
+      <nav className="mb-2">
         <ul className="space-y-2 ">
           {links.map((link) => (
             <li key={link.href}>

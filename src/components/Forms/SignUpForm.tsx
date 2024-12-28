@@ -40,10 +40,12 @@ const SignUpForm = () => {
       password: string;
       passwordConfirm: string;
       invitor?: string | null;
+      invitationKey?: string | null;
     } = { ...data };
 
     if (searchParams.get("invitor")) {
       formattedData.invitor = searchParams.get("invitor");
+      formattedData.invitationKey = searchParams.get("invitationKey");
     }
 
     const response = await axiosInstance.post("/auth/signup", formattedData);
@@ -109,6 +111,7 @@ const SignUpForm = () => {
       submitLabel={t("heading")}
       onSubmit={onSubmit}
       extraComponents={<GoogleAuthBtn />}
+      hasTerms
     />
   );
 };

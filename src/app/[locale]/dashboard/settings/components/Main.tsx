@@ -172,14 +172,7 @@ const Main = () => {
         <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">{text("name")} :</Label>
-            <Input
-              id="name"
-              disabled={isLoading}
-              value={data.name}
-              onChange={(e) =>
-                setData((prev) => ({ ...prev, name: e.target.value }))
-              }
-            />
+            <Input id="name" disabled={isLoading} value={data.name} readOnly />
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">{text("email")} :</Label>

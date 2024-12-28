@@ -4,6 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { FaBars } from "react-icons/fa";
 import Logo from "@/components/logo";
 import UserHeader from "@/components/layout/UserHeader";
+import Footer from "@/components/layout/Footer";
 // import UserDropDownMenu from "@/components/UserDropDownMenu";
 // import NotificationDropDownMenu from "@/components/NotificationDropDownMenu";
 
@@ -51,7 +52,10 @@ export default function RootLayout({
           }}
           className="hidden lg:flex "
         />
-        <div className="relative flex-1 w-full ">{children}</div>
+        <div className="relative flex-1 w-full ">
+          {children}
+          <Footer />
+        </div>
       </div>
     </div>
   );

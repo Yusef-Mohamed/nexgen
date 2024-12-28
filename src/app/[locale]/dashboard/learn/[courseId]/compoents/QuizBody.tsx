@@ -102,8 +102,8 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, title }) => {
       const typedError = error as AxiosError;
       toast.error(text("something_wrong"));
       setSubmitError(JSON.stringify(typedError.response?.data || "{}"));
-      setIsSubmitting(false);
     }
+    setIsSubmitting(false);
     setIsLoading(false);
   };
   useEffect(() => {
@@ -135,11 +135,12 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, title }) => {
             )}{" "}
             {submitData.score} / {submitData.totalScore}
             <br />
-            {quizType === "placement" && submitData.passed ? (
-              <>{text("you_can_now_buy_the_course")}</>
-            ) : (
-              <>{text("your_are_not_fit_for_this_course")}</>
-            )}
+            {quizType === "placement" &&
+              (submitData.passed ? (
+                <>{text("you_can_now_buy_the_course")}</>
+              ) : (
+                <>{text("your_are_not_fit_for_this_course")}</>
+              ))}
           </p>
         ) : (
           <>

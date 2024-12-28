@@ -10,14 +10,18 @@ import useCustomSearchParams from "@/hooks/useSearchParams";
 import { cn } from "@/lib/utils";
 import { ICourse, ISection } from "@/types";
 import { useTranslations } from "next-intl";
-import { MdMenu, MdPlayCircleOutline } from "react-icons/md";
+import {
+  MdMenu,
+  MdOutlineAssignment,
+  MdPlayCircleOutline,
+} from "react-icons/md";
 import { PiExam } from "react-icons/pi";
-import AboutCourse from "./AboutCourse";
 import LessonBody from "./LessonBody";
 import QuizBody from "./QuizBody";
 import { FaLock } from "react-icons/fa";
 import { GiGraduateCap } from "react-icons/gi";
 import { useState } from "react";
+import AboutCourse from "./AboutCourse";
 
 const Main = ({
   sections,
@@ -32,6 +36,7 @@ const Main = ({
   const selectedDisplay = searchParams.get("display");
   const lessonTitle = searchParams.get("lessonTitle");
   const [isOpen, setIsOpen] = useState(false);
+  console.log("sections", sections);
   return (
     <section className="flex flex-col-reverse gap-8 xl:flex-row">
       <div className="w-full">
@@ -41,7 +46,14 @@ const Main = ({
           </div>
         )}
         {selectedLesson && selectedDisplay === "lesson" && (
-          <LessonBody lessonId={selectedLesson} />
+          <LessonBody
+            lessonId={selectedLesson}
+            lesson={
+              sections
+                .flatMap((section) => section.lessons)
+                .find((lesson) => lesson?._id === selectedLesson) || undefined
+            }
+          />
         )}
         {selectedLesson && selectedDisplay === "quiz" ? (
           <QuizBody
@@ -141,6 +153,33 @@ const Main = ({
                       </div>{" "}
                       {!lesson.videoUrl && <FaLock />}
                     </button>
+                    {lesson.isRequireAnalytic && (
+                      <button
+                        key={ind}
+                        onClick={() => {
+                          setSearchParams({
+                            lesson: lesson._id,
+                            display: "practice",
+                            lessonTitle: lesson.title,
+                          });
+                        }}
+                        disabled={!lesson.videoUrl}
+                        className={cn(
+                          "flex disabled:cursor-not-allowed justify-between items-center disabled:opacity-50 w-full gap-2 px-4 py-3 rounded-md hover:bg-primary bg-clear-ground hover:text-clear-ground text-start",
+                          {
+                            "bg-primary text-clear-ground":
+                              selectedLesson === lesson._id &&
+                              selectedDisplay === "practice",
+                          }
+                        )}
+                      >
+                        <div className="flex items-center gap-2">
+                          <MdOutlineAssignment className="w-6 h-6" />
+                          {lesson.title} - {text("practice")}
+                        </div>{" "}
+                        {!lesson.videoUrl && <FaLock />}
+                      </button>
+                    )}
                     {sections.length - 1 === index &&
                       (section?.lessons?.length || 0) - 1 === ind && (
                         <button

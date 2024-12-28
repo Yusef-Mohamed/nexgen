@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* @import "react-day-picker/dist/style.css"; */
 
 @layer utilities {
   .text-balance {
@@ -57,6 +58,10 @@ main {
   h2,
   .h2 {
     @apply text-lg sm:text-xl;
+  }
+
+  .h2s {
+    @apply text-sm sm:text-lg md:text-xl;
   }
   h3,
   .h3 {
@@ -182,4 +187,22 @@ input[type="password"] {
   -moz-border-radius: 4px;
   -ms-border-radius: 4px;
   -o-border-radius: 4px;
+}
+.selectMenu span {
+  @apply flex items-center gap-4 !important;
+}
+.Toastify__progress-bar--success {
+  @apply bg-primary !important;
+}
+.Toastify__toast--success svg {
+  @apply fill-primary !important;
+}
+.Toastify__progress-bar--error {
+  @apply bg-destructive !important;
+}
+.Toastify__toast--error svg {
+  @apply fill-destructive !important;
+}
+.Toastify__toast-theme--light {
+  @apply bg-clear-ground text-text-2 !important;
 }

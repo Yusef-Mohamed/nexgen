@@ -9,10 +9,10 @@ import { useLocale } from "next-intl";
 interface TextWithEmojiBoxProps {
   text: string;
   setText: React.Dispatch<React.SetStateAction<string>>;
-  handleSend: () => void;
+  handleSend?: () => void;
   isLoading: boolean;
-  media: File | null | File[];
-  setMedia:
+  media?: File | null | File[];
+  setMedia?:
     | React.Dispatch<React.SetStateAction<File | null>>
     | React.Dispatch<React.SetStateAction<File[] | null>>;
   inputRef: React.RefObject<HTMLTextAreaElement>;
@@ -56,7 +56,7 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
         if (event.shiftKey) {
           setText((prev) => prev + "\n");
         } else {
-          handleSend();
+          if (handleSend) handleSend();
         }
       }
     },
@@ -139,28 +139,32 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
           })}
         >
           {" "}
-          <button disabled={isLoading} onClick={handleSend}>
-            <SendHorizontal className="text-text-3" size={18} />
-          </button>
-          <div className="flex">
-            <button
-              onClick={handleMediaClick}
-              className={cn({
-                "text-primary": media !== null,
-              })}
-            >
-              <MdOutlineAttachment className="text-xl text-text-3" />
+          {handleSend && (
+            <button disabled={isLoading} onClick={handleSend}>
+              <SendHorizontal className="text-text-3" size={18} />
             </button>
-            <input
-              disabled={isLoading}
-              type="file"
-              id="mediaFile"
-              className="hidden"
-              ref={mediaRef}
-              onChange={handleMediaChange}
-              multiple={multiMedia}
-            />
-          </div>
+          )}
+          {setMedia && (
+            <div className="flex">
+              <button
+                onClick={handleMediaClick}
+                className={cn({
+                  "text-primary": media !== null,
+                })}
+              >
+                <MdOutlineAttachment className="text-xl text-text-3" />
+              </button>
+              <input
+                disabled={isLoading}
+                type="file"
+                id="mediaFile"
+                className="hidden"
+                ref={mediaRef}
+                onChange={handleMediaChange}
+                multiple={multiMedia}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

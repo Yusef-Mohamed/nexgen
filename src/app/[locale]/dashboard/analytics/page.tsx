@@ -11,7 +11,6 @@ export async function generateMetadata({
 }
 const Dashboard = ({ params: { locale } }: { params: { locale: string } }) => {
   unstable_setRequestLocale(locale);
-  return null;
   return <Charts />;
 };
 

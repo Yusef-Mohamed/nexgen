@@ -12,10 +12,12 @@ import NotificationCard, {
 import { useEffect, useRef, useState } from "react";
 import { useNotificationStore } from "@/stores/NotificationStore";
 import { useAuth } from "./auth-provider";
+import { useRouter } from "@/i18n/routing";
 const NotificationDropDownMenu = () => {
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [isOpened, setIsOpened] = useState(false);
   const { token, user } = useAuth();
+  const router = useRouter();
   const {
     notifications,
     unReadCount,
@@ -68,11 +70,21 @@ const NotificationDropDownMenu = () => {
           <NotificationCard
             key={n._id}
             notification={n}
-            readNotification={() =>
-              readNotification({
+            readNotification={async () => {
+              await readNotification({
                 id: n._id as string,
-              })
-            }
+              });
+              if (n.type === "chat" && n.chat)
+                router.push(`/dashboard/chat?selectedChat=${n.chat._id}`);
+              else if (n.type === "follow" && n.followedUser)
+                router.push(
+                  `/dashboard/community/profile/${n.followedUser._id}`
+                );
+              else if (n.type === "post" && n.post)
+                router.push(`/dashboard?focusedPost=${n.post}`);
+              else if (n.type === "certificate" && n.course)
+                router.push(`/dashboard/analytics?selectedCourse=${n.course}`);
+            }}
           />
         ))}
 

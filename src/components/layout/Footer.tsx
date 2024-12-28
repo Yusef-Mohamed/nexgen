@@ -5,6 +5,7 @@ import { FaFacebookF, FaTelegramPlane, FaTiktok } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
 import { Link } from "@/i18n/routing";
 import { FaInstagram } from "react-icons/fa";
+import { cn } from "@/lib/utils";
 const aboutLinks = [
   {
     name: "about",
@@ -50,10 +51,15 @@ const socialLinks = [
     icon: <FaInstagram />,
   },
 ];
-const Footer: React.FC = () => {
+const Footer: React.FC = ({ clear }: { clear?: boolean }) => {
   const text = useTranslations("footer");
   return (
-    <footer className="bg-muted/50">
+    <footer
+      className={cn({
+        "bg-muted/50": !clear,
+        "bg-clear-ground": clear,
+      })}
+    >
       <div className="container pt-8 pb-4 text-text-3">
         <div className="flex flex-col justify-between gap-6 sm:gap-10 lg:flex-row">
           <div className="flex items-start gap-4 sm:gap-8 md:gap-10 lg:gap-14 justify-evenly lg:w-fit">
@@ -79,7 +85,7 @@ const Footer: React.FC = () => {
               </ul>
             </div>
           </div>
-          <div>
+          <div className="max-w-lg">
             <div className="flex flex-col items-start w-full gap-4 sm:mt-6 sm:flex-row sm:gap-10 whitespace-nowrap max-md:max-w-full">
               <div className="flex justify-center gap-3">
                 <div className="flex items-center justify-center w-10 h-10 text-xl rounded-full sm:w-12 sm:h-12 sm:text-2xl text-primary bg-primary/10">
@@ -125,6 +131,7 @@ const Footer: React.FC = () => {
                 </a>
               ))}
             </div>
+            <p className="mt-4 text-sm text-center">{text("description")}</p>
           </div>
         </div>
         <div className="pt-2 mt-6 text-sm sm:text-base ">

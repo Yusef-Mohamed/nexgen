@@ -43,10 +43,13 @@ export interface ICourse {
 export interface ILesson {
   course: ICourse;
   title: string;
+  description: string;
+  attachments: string[];
   image: string;
   videoUrl?: string;
   _id: string;
   type: string;
+  isRequireAnalytic: boolean;
   lessonDuration?: number;
 }
 
@@ -67,6 +70,10 @@ export interface IUser {
   idVerification: "pending" | "rejected" | "verified";
   note?: string;
   idDocuments: string[];
+  timeSpent: {
+    monthlyTimeSpent: number;
+    totalTimeSpent: number;
+  };
   __v: number;
 }
 export interface InputData {
@@ -218,22 +225,17 @@ export interface IReact {
   updatedAt: string;
   _id: string;
 }
-export interface ITransaction {
-  child: IUser;
-  amount: number;
-  item: string;
-  percentage: number;
-  profit: number;
-  Date: string;
-  _id: string;
-}
+
 export interface IInovice {
-  desc: string;
-  mySales: number;
-  profits: number;
-  status: string;
   totalSalesMoney: number;
-  walletProfits: number;
+  mySales: number;
+  profitPercentage: number;
+  profits: number;
+  desc: string;
+  paymentMethod: string;
+  receiverAcc: string;
+  status: string;
+  createdAt: string;
   _id: string;
 }
 export interface IWalletItem {
@@ -259,17 +261,46 @@ export interface IWalletInvoiceItem {
 export interface IMarketLog {
   role: string;
   marketer: IUser;
-  walletInvoices: IWalletInvoiceItem[];
+  availableToWithdraw: number;
+  withdrawals: number;
   totalSalesMoney: number;
   hasSentRequest: boolean;
-  transactions: ITransaction[];
-  direct_transactions: ITransaction[];
+  salesMoneyDifference: number;
+  profitsDifference: number;
+  profits: number;
+  profitPercentage: number;
   invoices: IInovice[];
+  sales: ISale[];
+  commissions: ICommissions[];
+  invitationKeys: string[];
   wallet: IWalletItem[];
+  walletInvoices: ISubInvoice[];
+  commissionsInvoices: ISubInvoice[];
   __v: number;
   _id: string;
   updatedAt: string;
   createdAt: string;
+}
+export interface ISale {
+  purchaser: IUser;
+  amount: number;
+  type: string;
+  item: string;
+  Date: string;
+  _id: string;
+}
+export interface ISubInvoice {
+  createdAt: string;
+  desc: string;
+  profits: number;
+  status: string;
+  _id: string;
+}
+export interface ICommissions {
+  profit: number;
+  lastUpdate: string;
+  _id: string;
+  member: IUser;
 }
 export interface IAnalytic {
   content: string;
@@ -307,6 +338,7 @@ export interface IOrder {
   paidAt: string;
   paymentMethodType: string;
   totalOrderPrice: number;
+  isResale: boolean;
   user: IUser;
   _id: string;
 }
@@ -315,11 +347,12 @@ export interface INotification {
   createdAt: string;
   message: string;
   read: boolean;
-  type: "chat" | "post" | "system";
+  type: "chat" | "post" | "system" | "follow" | "certificate";
+  course?: string;
   post?: string;
-  chat?: string;
+  chat?: IChat;
+  followedUser?: IUser;
   updatedAt: string;
-  user: string;
   __v: number;
 }
 export interface IBlog {
@@ -367,6 +400,16 @@ export interface ICoupon {
   usedTimes: number;
   status: "active" | "rejected" | "pending";
   reason: string;
+  createdAt: string;
+  updatedAt: string;
+  _id: string;
+}
+export interface IEvent {
+  title: string;
+  description: string;
+  date: string;
+  link: string;
+  image: string;
   createdAt: string;
   updatedAt: string;
   _id: string;

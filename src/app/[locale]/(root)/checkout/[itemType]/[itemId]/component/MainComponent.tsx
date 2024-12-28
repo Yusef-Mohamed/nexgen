@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -46,6 +47,8 @@ const MainComponent = ({
   const [isVerified, setIsVerified] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [needPlacementExams, setNeedPlacementExams] = useState(false);
+  const [discount, setDiscount] = useState(0);
+  const [selectedCoupon, setSelectedCoupon] = useState("");
   const { token } = useAuth();
   const handelPayment = async () => {
     if (!token) {
@@ -85,7 +88,7 @@ const MainComponent = ({
       const axiosInstance = await createClientAxiosInstance();
       const res = await axiosInstance.put(
         endpoint,
-        { paymentMethod: selectedMethod },
+        { paymentMethod: selectedMethod, coupon: selectedCoupon },
         {
           headers: {
             "Content-Type": "application/json",
@@ -95,13 +98,13 @@ const MainComponent = ({
       );
       window.location.href = res.data.redirectUrl;
     } catch (err) {
-      const typedError = err as AxiosError;
+      const typedError = err as AxiosError<{ error?: string }>;
       if (typedError.response?.status === 403 && itemType === "course") {
         setNeedPlacementExams(true);
-      } else if (typedError.response?.status === 400) {
-        toast.error(text("invalidPaymentDetails"));
       } else {
-        toast.error(text("paymentError"));
+        if (typedError.response?.data.error)
+          toast.error(typedError.response.data.error);
+        else toast.error(text("paymentError"));
       }
       console.log(err);
     } finally {
@@ -113,6 +116,7 @@ const MainComponent = ({
     e.preventDefault();
     // /coupons/getCouponDetails/Ns10
     try {
+      setIsLoading(true);
       const axiosInstance = await createClientAxiosInstance();
       const res = await axiosInstance.get(
         `/coupons/getCouponDetails/${coupon}`,
@@ -122,11 +126,22 @@ const MainComponent = ({
           },
         }
       );
-      console.log(res);
-      console.log(coupon);
+      const couponObj = res.data.coupon;
+      if (couponObj.usedTimes < couponObj.maxUsageTimes) {
+        setDiscount(res.data.coupon.discount);
+        toast.success(text("couponAppliedSuccessfully"));
+        setSelectedCoupon(coupon);
+      } else {
+        toast.error(text("couponExceeded"));
+      }
     } catch (err) {
       console.log(err);
+      const typedError = err as AxiosError<{ error?: string }>;
+      if (typedError.response?.data.error)
+        toast.error(typedError.response.data.error);
+      else toast.error(text("invalidCoupon"));
     }
+    setIsLoading(false);
   };
   return (
     <>
@@ -249,7 +264,7 @@ const MainComponent = ({
               value={coupon}
               onChange={(e) => setCoupon(e.target.value)}
             />
-            <Button disabled={isLoading}>{text("apply")}</Button>
+            <Button isLoading={isLoading}>{text("apply")}</Button>
           </form>
           <div className="mt-4">
             <div className="flex justify-between mt-1 text-sm">
@@ -260,12 +275,27 @@ const MainComponent = ({
             </div>
             <div className="flex justify-between mt-1 text-sm">
               <span className="font-medium">{text("discount")}</span>
-              <span className="text-text-3">$0</span>
+              <span className="text-text-3">
+                $
+                {thisItem?.priceAfterDiscount
+                  ? //@ts-ignore
+                    thisItem?.priceAfterDiscount * (discount / 100)
+                  : //@ts-ignore
+                    thisItem?.price * (discount / 100)}
+              </span>
             </div>
             <div className="flex justify-between mt-1 text-sm">
               <span className="font-medium">{text("total")}</span>
               <span className="text-text-3">
-                ${thisItem?.priceAfterDiscount || thisItem?.price}
+                $
+                {
+                  //@ts-ignore
+                  thisItem?.priceAfterDiscount -
+                    //@ts-ignore
+                    thisItem?.priceAfterDiscount * (discount / 100) ||
+                    //@ts-ignore
+                    thisItem?.price - thisItem?.price * (discount / 100)
+                }
               </span>
             </div>
           </div>

@@ -73,7 +73,7 @@ const FAQ: React.FC = () => {
     <div className="my-4 md:my-8">
       <h3 className="mb-4 md:mb-8">{text("courseContent")}</h3>
       <Accordion type="single" collapsible className="flex-1 w-full">
-        {sections.map((section, index) => (
+        {sections.reverse().map((section, index) => (
           <AccordionItem key={index} value={section._id}>
             <AccordionTrigger>{section.title}</AccordionTrigger>
             <AccordionContent>

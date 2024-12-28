@@ -1,6 +1,18 @@
 {
   "common": {
-    "please_verify_your_email": "يرجى التحقق من بريدك الإلكتروني"
+    "please_verify_your_email": "يرجى التحقق من بريدك الإلكتروني",
+    "id_verification": {
+      "title": "مطلوب التحقق من الهوية",
+      "description": "لأسباب أمنية، تحتاج إلى التحقق من هويتك قبل المتابعة. سيتم توجيهك إلى صفحة التحقق.",
+      "button": "الذهاب إلى التحقق من الهوية"
+    },
+    "banned": {
+      "title": "تم تعليق الحساب",
+      "description": "تم تعليق حسابك من قبل المسؤول. يرجى الاتصال بفريق الدعم لمزيد من المعلومات حول حالة حسابك.",
+      "contact_support": "الاتصال بالدعم"
+    },
+    "you_are_banned_can_not_use_the_platform": "تم حظرك من استخدام المنصة , تواصل معنا لمعرفة المزيد",
+    "please_verify_your_identity_to_be_able_to_use_the_platform": "يرجى التحقق من هويتك لتتمكن من استخدام المنصة"
   },
   "header": {
     "home": "الرئيسية",
@@ -127,7 +139,8 @@
     "haveAQuestion": "لديك سؤال؟",
     "telegramSupport": "الدعم عبر تليجرام",
     "contactUs": "تواصل معنا",
-    "contactEmail": "البريد الإلكتروني للتواصل"
+    "contactEmail": "البريد الإلكتروني للتواصل",
+    "description": "مرخصة من وزارة الاقتصاد الفلسطينية تحت رقم 565002342 وذلك الستناد لاحكام القرار لقانون رقم 42 لسنة 2021"
   },
   "aboutHeroPage": {
     "heading": "إتقان الفوركس من خلال التعليم العملي والتطبيقي.",
@@ -372,7 +385,9 @@
     "salesAnalytics": "تحليلات المبيعات",
     "invoices": "الفواتير",
     "coupons": "كوبونات الخصم",
-    "followingRecommendation": "التوصيات  للمتابعة"
+    "followingRecommendation": "التوصيات  للمتابعة",
+    "systemReview": "تقييم النظام",
+    "myTeam": "فريقي"
   },
   "post": {
     "like": "إعجاب",
@@ -448,7 +463,9 @@
     "applyFilters": "تطبيق الفلاتر",
     "pleaseSelectImage": "يرجى اختيار صورة",
     "postCreatedSuccessfully": "تم إنشاء المنشور بنجاح",
-    "customizePosts": "تخصيص المنشورات"
+    "customizePosts": "تخصيص المنشورات",
+    "acceptedFormats": "الصيغ المقبولة: ",
+    "clickOrDragImageToUpload": "انقر أو اسحب الصورة للتحميل"
   },
   "checkout": {
     "title": "الدفع",
@@ -473,7 +490,11 @@
     "invalidItem": "العنصر غير صالح",
     "youCanontBuyThisCourseNow": "لا يمكنك شراء هذه الدورة الآن",
     "youShouldTakeThoseCoursesFirstOrTakePlacementTest": "يجب عليك أخذ هذه الدورات أولاً أو أداء اختبار التحديد",
-    "startPlacementTest": "ابدأ اختبار التحديد"
+    "startPlacementTest": "ابدأ اختبار التحديد",
+    "couponAppliedSuccessfully": "تم تطبيق الكوبون بنجاح",
+    "couponExceeded": "الكوبون تجاوز الحد",
+    "invalidCoupon": "كوبون غير صالح",
+    "paymentError": "خطأ في الدفع"
   },
   "learn": {
     "quiz": "اختبار",
@@ -524,7 +545,9 @@
     "shareWithUsYourOpinionAndHelpUsImprove": "شاركنا رأيك وساعدنا على التحسين",
     "yourExperienceMattersToUsTellUsHowCanWeImproves": "تجربتك تهمنا، أخبرنا كيف يمكننا التحسين",
     "placement_type": "اختبار التحديد",
-    "your_are_not_fit_for_this_course": "أنت لست مناسب لهذه الدورة من الأفضل البداء في الدورات الأبسط او يمكنك شراء هذه الدورة والبداء فيها"
+    "your_are_not_fit_for_this_course": "أنت لست مناسب لهذه الدورة من الأفضل البداء في الدورات الأبسط او يمكنك شراء هذه الدورة والبداء فيها",
+    "attachment": "المرفق",
+    "practice": "تدريب"
   },
   "settings": {
     "myProfile": "الملف الشخصي",
@@ -545,7 +568,8 @@
     "verificationRejectedAndOurNoteIs": "تم رفض طلب التحقق من الهوية وملاحظتنا هي : ",
     "pleaseReSendItAgain": "يرجى إعادة إرساله مرة أخرى",
     "verificationDone": "تم التحقق من الهوية",
-    "verificationDoneP": "تم التحقق من الهوية بنجاح شكرا لك"
+    "verificationDoneP": "تم التحقق من الهوية بنجاح شكرا لك",
+    "acceptedFormats": "الصيغ المقبولة: "
   },
   "couponManagement": {
     "createCoupon": {
@@ -595,10 +619,14 @@
   "invoicesManagement": {
     "stats": {
       "totalSales": "إجمالي المبيعات",
-      "profit": "الأرباح",
+      "profit": "الربح",
       "withdrawals": "المسحوبات",
-      "balance": "الرصيد المتاح",
-      "withdraw": "سحب الرصيد"
+      "currentBalance": "الرصيد الحالي",
+      "withdraw": "سحب",
+      "withdrawInvoiceHasSent": "تم إنشاء فاتورة السحب",
+      "withdrawTitle": "طلب سحب",
+      "enterAmount": "أدخل المبلغ",
+      "confirmWithdraw": "تأكيد السحب"
     },
     "tabs": {
       "commission": "العمولات",
@@ -607,27 +635,162 @@
     "commission": {
       "member": "العضو",
       "profit": "الربح",
-      "lastUpdate": "آخر تحديث",
-      "noData": "لا توجد عمولات حالياً"
+      "lastUpdate": "آخر تحديث"
     },
     "sales": {
       "purchaser": "المشتري",
       "item": "المنتج",
       "amount": "المبلغ",
       "type": "النوع",
-      "date": "التاريخ",
-      "noData": "لا توجد مبيعات حالياً"
+      "date": "التاريخ"
     },
     "invoices": {
       "title": "الفواتير",
       "period": "الفترة",
-      "mySales": "عدد المبيعات",
+      "mySales": "مبيعاتي",
       "totalSales": "إجمالي المبيعات",
       "profit": "الربح",
-      "status": "الحالة"
+      "status": "الحالة",
+      "date": "التاريخ",
+      "tabs": {
+        "regular": "الفواتير العادية",
+        "wallet": "فواتير المحفظة",
+        "commission": "فواتير العمولات"
+      }
     },
     "common": {
-      "showAll": "عرض الكل"
+      "showAll": "عرض الكل",
+      "loading": "جاري التحميل..."
     }
+  },
+  "practice": {
+    "completed": "مكتمل",
+    "onProgress": "قيد التقدم",
+    "addNew": "إضافة جديد",
+    "somethingWentWrong": "حدث خطأ ما",
+    "submit": "إرسال",
+    "clickOrDragImageToUpload": "انقر أو اسحب الصورة للتحميل",
+    "acceptedFormats": "الصيغ المقبولة: ",
+    "pleaseSelectImage": "يرجى اختيار صورة",
+    "postCreatedSuccessfully": "تم إنشاء المنشور بنجاح"
+  },
+  "event": {
+    "upComingEvents": "الأحداث القادمة",
+    "applyNow": "قدم الآن",
+    "noEvents": "لا توجد أحداث قريبة"
+  },
+  "courseHome": {
+    "continueYourLearningJourney": "تابع رحلتك التعليمية",
+    "continueLearning": "تابع التعلم",
+    "completedPercentage": "نسبة الانتهاء"
+  },
+  "salesManagement": {
+    "coupons": "الكوبونات",
+    "invitations": "الدعوات",
+    "affiliateMarketing": "التسويق بالعمولة",
+    "totalSales": "إجمالي المبيعات",
+    "hours": "ساعات",
+    "hoursSpent": "الوقت المستغرق",
+    "student": "الطالب",
+    "hour": "ساعة",
+    "topCourses": "أفضل الدورات",
+    "courseName": "اسم الدورة",
+    "popularity": "الشهرة",
+    "sales": "المبيعات",
+    "ourTopInstructors": "أفضل مدربينا",
+    "myTeam": "فريقي",
+    "seeAllTeam": "عرض الفريق",
+    "affilateMarketing": "التسويق بالعمولة",
+    "week": "الأسبوع",
+    "clickCount": "عدد النقرات",
+    "times": "مرات",
+    "registrationCount": "عدد التسجيل",
+    "resellingCount": "عدد إعادة البيع",
+    "manageCoupones": "إدارة الكوبونات",
+    "manageInvitaionKeys": "إدارة روابط الدعوة",
+    "salesAnalytics": "تحليلات المبيعات",
+    "topCoursesSell": "أفضل الدورات مبيعا",
+    "course": "الدورة",
+    "percentage": "النسبة"
+  },
+  "teamManagement": {
+    "createLink": {
+      "title": "إنشاء رابط دعوة",
+      "success": "تم إنشاء رابط الدعوه بنجاح",
+      "description": "قم بإنشاء رابط دعوة لدعوة أعضاء جدد إلى فريقك",
+      "form": {
+        "linkName": {
+          "label": "اسم الرابط",
+          "placeholder": "مثال: INVITE2025"
+        },
+        "submitButton": "إنشاء الرابط"
+      }
+    },
+    "couponsList": {
+      "title": "الكوبونات الخاصة بك",
+      "description": "إدارة ومراقبة كوبونات الخصم الخاصة بك",
+      "table": {
+        "empty": "لا توجد كوبونات",
+        "headers": {
+          "couponName": "اسم الكوبون",
+          "discount": "الخصم",
+          "usage": "الاستخدام",
+          "reason": "السبب",
+          "status": "الحالة"
+        },
+        "status": {
+          "active": "مفعل",
+          "rejected": "مرفوض",
+          "pending": "قيد الانتظار"
+        }
+      }
+    },
+    "totalRegistrations": "إجمالي التسجيلات",
+    "student": "طالب",
+    "totalSubscribers": "إجمالي المشتركين",
+    "resale": "إعادة البيع",
+    "affiliateMarketing": "التسويق بالعمولة",
+    "myTeamMembers": "أعضاء فريقي",
+    "name": "الاسم",
+    "items": "العناصر",
+    "totalOrdersPrice": "إجمالي سعر الطلبات",
+    "registeredDate": "تاريخ التسجيل",
+    "orders": "الطلبات",
+    "analytics": "التحليلات",
+    "filterByPurchase": "تصفية حسب الشراء",
+    "allUsers": "جميع المستخدمين",
+    "buyersOnly": "المشترين فقط",
+    "nonBuyersOnly": "غير المشترين فقط",
+    "resaleFilter": "تصفية إعادة البيع",
+    "allOrders": "جميع الطلبات",
+    "resaleOrdersOnly": "طلبات إعادة البيع فقط",
+    "noResults": "لا توجد نتائج",
+    "clearAllFilters": "مسح جميع الفلاتر",
+    "order": "طلب",
+    "noOrders": "لا توجد طلبات",
+    "course/service/path": "الدورة / الخدمة / المسار",
+    "amount": "المبلغ",
+    "paymentMethod": "طريقة الدفع",
+    "status": "الحالة",
+    "paidAt": "الدفع في",
+    "isResale": "إعادة البيع",
+    "paid": "مدفوع",
+    "unpaid": "غير مدفوع",
+    "yes": "نعم",
+    "no": "لا",
+    "hisAnalytics": "تحليلاته",
+    "showHisAnalytics": "عرض تحليلاته",
+    "resaleCount": "عدد إعادة البيع",
+    "orderDetails": "تفاصيل الطلب",
+    "inviteLinks": "روابط الدعوة",
+    "fetchError": "حدث خطأ أثناء جلب البيانات",
+    "clicksCount": "عدد النقرات",
+    "registerCount": "عدد التسجيل",
+    "month": "الشهر",
+    "year": "السنة",
+    "copyTheLink": "نسخ الرابط",
+    "copy": "نسخ",
+    "link": "الرابط",
+    "linkCopied": "تم نسخ الرابط"
   }
 }

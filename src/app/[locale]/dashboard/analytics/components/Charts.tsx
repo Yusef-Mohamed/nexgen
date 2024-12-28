@@ -1,197 +1,193 @@
-// "use client";
-// import ProgressCircle from "@/components/ProgressCircle";
-// import { Label } from "@/components/ui/label";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
-// import {
-//   Chart as ChartJS,
-//   CategoryScale,
-//   LinearScale,
-//   PointElement,
-//   LineElement,
-//   Title,
-//   Tooltip,
-//   Legend,
-//   Filler,
-//   ArcElement,
-//   BarElement,
-// } from "chart.js";
-// import { getCookie } from "cookies-next";
-// import { useTranslations } from "next-intl";
-// import { useEffect, useState } from "react";
-// ChartJS.register(
-//   CategoryScale,
-//   BarElement,
-//   ArcElement,
-//   LinearScale,
-//   PointElement,
-//   LineElement,
-//   Title,
-//   Tooltip,
-//   Legend,
-//   Filler
-// );
+"use client";
+import ProgressCircle from "@/components/ProgressCircle";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+  ArcElement,
+  BarElement,
+} from "chart.js";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+ChartJS.register(
+  CategoryScale,
+  BarElement,
+  ArcElement,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
+import { ICourse, IUser } from "@/types";
+import { useAnalyticsStore } from "@/stores/AnalyticsStore";
+import PracticeChart from "./PracticeChart";
+import { createClientAxiosInstance } from "@/app/lib/utils";
+import { useAuth } from "@/components/auth-provider";
+import UserAvatar from "@/components/UserAvatar";
+import CircleChart from "./CircleChart";
+const Charts = () => {
+  const inputs = useTranslations("Forms");
+  const { user: myAccount, token } = useAuth();
+  const [myChildren, setMyChildren] = useState<IUser[]>([]);
+  const [courses, setCourses] = useState<ICourse[]>([]);
+  const {
+    selectedUser,
+    setSelectedUser,
+    selectedCourse,
+    setSelectedCourse,
+    setSelectedCourseObject,
+    setSelectedUserObject,
+  } = useAnalyticsStore();
+  useEffect(() => {
+    if (myAccount) setSelectedUserObject(myAccount);
+  }, [myAccount, setSelectedUserObject]);
+  const getCourses = async () => {
+    if (selectedUser) {
+      try {
+        const axiosInstance = createClientAxiosInstance();
+        const res = await axiosInstance.get(
+          `/courses/myCourses/${selectedUser}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-// import CourseProgress from "./CourseProgress";
-// import MyOrders from "./MyOrders";
-// import { ICourse, IUser } from "@/types";
-// import { useAnalyticsStore } from "@/stores/AnalyticsStore";
-// import ExamsChart from "./ExamsChart";
-// import PracticeChart from "./PracticeChart";
-// import { createClientAxiosInstance } from "@/app/lib/utils";
-// const Charts = () => {
-//   const token = getCookie("token");
-//   const inputs = useTranslations("Forms");
+        setCourses(res.data.data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+  useEffect(() => {
+    if (!myAccount) return;
+    setSelectedUser(myAccount._id);
+    const axiosInstance = createClientAxiosInstance();
+    axiosInstance
+      .get(`/marketing/getMarketerChildren/${myAccount._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log(res.data.data);
+        setMyChildren(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [myAccount]);
+  useEffect(() => {
+    getCourses();
+  }, [selectedUser]);
 
-//   const [myChildren, setMyChildren] = useState<IUser[]>([]);
-//   const [courses, setCourses] = useState<ICourse[]>([]);
-//   const myAccount = JSON.parse(getCookie("user") || "{}") as IUser;
-//   const {
-//     selectedUser,
-//     setSelectedUser,
-//     selectedCourse,
-//     setSelectedCourse,
-//     setSelectedCourseObject,
-//     setSelectedUserObject,
-//   } = useAnalyticsStore();
-//   useEffect(() => {
-//     setSelectedUserObject(myAccount);
-//   }, []);
-//   const getCourses = async () => {
-//     if (selectedUser) {
-//       try {
-//         const axiosInstance = createClientAxiosInstance();
-//         const res = await axiosInstance.get(
-//           `/courses/myCourses/${selectedUser}`,
-//           {
-//             headers: {
-//               Authorization: `Bearer ${token}`,
-//             },
-//           }
-//         );
+  useEffect(() => {
+    if (courses.length && selectedCourse === "") {
+      setSelectedCourse(courses[0]._id);
+      setSelectedCourseObject(courses[0]);
+    }
+  }, [courses]);
 
-//         setCourses(res.data.data);
-//       } catch (err) {
-//         console.log(err);
-//       }
-//     }
-//   };
-//   useEffect(() => {
-//     setSelectedUser(myAccount._id);
-//     const axiosInstance = createClientAxiosInstance();
-//     axiosInstance
-//       .get(`/marketing/getMarketerChildren/${myAccount._id}`, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       })
-//       .then((res) => {
-//         console.log(res.data.data);
-//         setMyChildren(res.data.data);
-//       })
-//       .catch((err) => {
-//         console.log(err);
-//       });
-//   }, []);
-//   useEffect(() => {
-//     getCourses();
-//   }, [selectedUser]);
-
-//   useEffect(() => {
-//     if (courses.length && selectedCourse === "") {
-//       setSelectedCourse(courses[0]._id);
-//       setSelectedCourseObject(courses[0]);
-//     }
-//   }, [courses]);
-
-//   return (
-//     <>
-//       <main>
-//         <div className="w-full p-4 mb-8 space-y-4 rounded-xl bg-background">
-//           {myChildren.length > 0 && (
-//             <div className="flex items-center gap-4">
-//               <Label htmlFor={"user"}>{inputs("user")} :</Label>
-//               <Select
-//                 value={selectedUser}
-//                 name="user"
-//                 onValueChange={(value) => {
-//                   const user = myChildren.find((user) => user._id === value);
-//                   if (user) {
-//                     setSelectedUserObject(user);
-//                   }
-//                   setSelectedUser(value);
-//                 }}
-//               >
-//                 <SelectTrigger className="flex-1 w-full">
-//                   <SelectValue placeholder={inputs("user")} />
-//                 </SelectTrigger>
-//                 <SelectContent>
-//                   <SelectItem value={myAccount._id}>{inputs("me")}</SelectItem>
-//                   {myChildren.map((user) => {
-//                     return (
-//                       <SelectItem value={user._id} key={user._id}>
-//                         {user.name} - {user.email}
-//                       </SelectItem>
-//                     );
-//                   })}
-//                 </SelectContent>
-//               </Select>
-//             </div>
-//           )}
-//           <div className="flex items-center gap-4">
-//             <Label htmlFor={"course"}>{inputs("course")} :</Label>
-//             <Select
-//               value={selectedCourse}
-//               name="course"
-//               onValueChange={(value) => {
-//                 setSelectedCourse(value);
-//                 const course = courses.find((course) => course._id === value);
-//                 if (course) {
-//                   setSelectedCourseObject(course);
-//                 }
-//               }}
-//             >
-//               <SelectTrigger className="flex-1 w-full">
-//                 <SelectValue placeholder={inputs("course")} />
-//               </SelectTrigger>
-//               <SelectContent>
-//                 {courses.map((course) => {
-//                   return (
-//                     <SelectItem value={course._id} key={course._id}>
-//                       {course.title}
-//                     </SelectItem>
-//                   );
-//                 })}
-//               </SelectContent>
-//             </Select>
-//           </div>
-//         </div>
-//         <div className="grid gap-8 lg:grid-cols-3">
-//           <div className="space-y-8 lg:col-span-2 ">
-//             {/*not dynamic*/}
-//             <CourseProgress />
-//             <ExamsChart />
-//             <MyOrders />
-//           </div>
-//           <div className="space-y-8 lg:col-span-1 ">
-//             {/*not dynamic*/}
-//             <ProgressCircle />
-//             <PracticeChart />
-//           </div>
-//         </div>
-//       </main>
-//     </>
-//   );
-// };
-
-// export default Charts;
-const Test = () => {
-  return <></>;
+  return (
+    <>
+      <main
+        style={{
+          maxHeight: "calc(100vh - 76px)",
+          height: "calc(100vh - 76px)",
+        }}
+        className="flex flex-col h-screen px-2 py-6 lg:px-6 sm:px-4"
+      >
+        <div className="grid gap-8 lg:grid-cols-3">
+          <div className="space-y-8 lg:col-span-2 ">
+            <div className="w-full p-4 mb-8 space-y-4 rounded-xl bg-background">
+              <Select
+                value={selectedCourse}
+                name="course"
+                onValueChange={(value) => {
+                  setSelectedCourse(value);
+                  const course = courses.find((course) => course._id === value);
+                  if (course) {
+                    setSelectedCourseObject(course);
+                  }
+                }}
+              >
+                <SelectTrigger className="w-full border-2 border-transparent border-s-primary">
+                  <SelectValue placeholder={inputs("course")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {courses.map((course) => {
+                    return (
+                      <SelectItem value={course._id} key={course._id}>
+                        {course.title}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>{" "}
+              <Select
+                value={selectedUser}
+                name="user"
+                onValueChange={(value) => {
+                  const user = myChildren.find((user) => user._id === value);
+                  if (user) {
+                    setSelectedUserObject(user);
+                  }
+                  setSelectedUser(value);
+                }}
+              >
+                <SelectTrigger className="w-full border-2 border-transparent border-s-primary">
+                  <SelectValue className="" placeholder={inputs("user")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    className="flex items-center gap-4"
+                    value={myAccount?._id || ""}
+                  >
+                    <UserAvatar user={myAccount || undefined} />
+                    {inputs("me")}
+                  </SelectItem>
+                  {myChildren.map((user) => {
+                    return (
+                      <SelectItem
+                        className="flex items-center gap-4"
+                        value={user._id}
+                        key={user._id}
+                      >
+                        <UserAvatar user={user} />
+                        {user.name} - {user.email}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+            <ProgressCircle />
+            <PracticeChart />
+          </div>
+          <div className="space-y-8 lg:col-span-1 ">
+            <CircleChart />
+          </div>
+        </div>
+      </main>
+    </>
+  );
 };
 
-export default Test;
+export default Charts;

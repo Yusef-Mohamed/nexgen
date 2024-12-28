@@ -9,15 +9,67 @@ import SidebarLink from "./SidebarLink";
 import { IoIosNotifications, IoMdSettings } from "react-icons/io";
 import { RiLogoutBoxLine, RiLogoutBoxRLine } from "react-icons/ri";
 import { useAuth } from "@/components/auth-provider";
+import { useEffect, useMemo, useState } from "react";
+import { createClientAxiosInstance } from "@/app/lib/utils";
+import { IReview } from "@/types";
+import { BsChatLeftDots } from "react-icons/bs";
 
 const SidebarFooter = () => {
   const { setTheme } = useTheme();
-  const { logout } = useAuth();
+  const { logout, token } = useAuth();
   const text = useTranslations("dashboard");
   const pathname = usePathname();
   const locale = useLocale();
+  const [systemReviewCreatedAt, setSystemReviewCreatedAt] = useState("");
+  useEffect(() => {
+    const getCurrentReview = async () => {
+      const axiosInstance = createClientAxiosInstance();
+      axiosInstance
+        .get("/systemReviews/myReviews", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          const thisReview = res.data.data[
+            res.data.data?.length - 1
+          ] as IReview;
+          if (!thisReview) return;
+          setSystemReviewCreatedAt(thisReview?.createdAt);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    getCurrentReview();
+  }, [token]);
+  const showSystemReview = useMemo(() => {
+    if (!systemReviewCreatedAt) return true;
+    else {
+      // check if created at from day or more return true else return false
+      const createdAt = new Date(systemReviewCreatedAt);
+      const today = new Date();
+      const diffTime = Math.abs(today.getTime() - createdAt.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays >= 1) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }, [systemReviewCreatedAt]);
   return (
     <div className="space-y-2">
+      {showSystemReview && (
+        <SidebarLink
+          link={{
+            href: "/dashboard/settings/system-review",
+            label: "systemReview",
+            icon: <BsChatLeftDots />,
+          }}
+        />
+      )}
+
       <SidebarLink
         link={{
           href: "/dashboard/settings",

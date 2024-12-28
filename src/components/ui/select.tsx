@@ -28,7 +28,7 @@ const SelectTrigger = React.forwardRef<
       ref={ref}
       dir={locale === "ar" ? "rtl" : "ltr"}
       className={cn(
-        "flex md:h-[3rem] lg:h-[3.25rem] min-w-36 md:px-5 md:py-3 px-4 py-2 h-[2.75rem] text-sm md:text-base w-full rounded-md border border-input bg-transparent shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+        "flex md:h-[3rem] selectMenu lg:h-[3.25rem] min-w-36 md:px-5 md:py-3 px-4 py-2 h-[2.75rem] text-sm md:text-base w-full rounded-md border border-input bg-transparent shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
         "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
         className
       )}

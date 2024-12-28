@@ -5,6 +5,9 @@ import useCustomForm from "@/hooks/useCustomForm";
 import { ZodSchema } from "zod";
 import { Form } from "../ui/form";
 import { FieldValues, Path } from "react-hook-form";
+import { Checkbox } from "../ui/checkbox";
+import { useLocale } from "next-intl";
+import { Link } from "@/i18n/routing";
 
 interface CustomFormProps<T extends FieldValues> {
   schema: ZodSchema<T>;
@@ -19,6 +22,7 @@ interface CustomFormProps<T extends FieldValues> {
   submitLabel: string;
   onSubmit: (data: T) => Promise<void>;
   extraComponents?: React.ReactNode;
+  hasTerms?: boolean;
 }
 
 function CustomForm<T extends FieldValues>({
@@ -28,13 +32,14 @@ function CustomForm<T extends FieldValues>({
   submitLabel,
   onSubmit,
   extraComponents,
+  hasTerms,
 }: CustomFormProps<T>) {
   const { form, isLoading, formError, handleSubmit } = useCustomForm<T>({
     schema,
     defaultValues,
     onSubmit,
   });
-
+  const locale = useLocale();
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -56,7 +61,39 @@ function CustomForm<T extends FieldValues>({
         {formError && (
           <div className="text-sm text-destructive">{formError}</div>
         )}
-
+        {hasTerms && (
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="terms"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-text-2"
+            >
+              {locale === "ar" ? (
+                <>
+                  أوافق علي{" "}
+                  <Link
+                    href={"/terms-of-services"}
+                    className="underline text-primary"
+                    target="_blank"
+                  >
+                    الشروط الخدمات
+                  </Link>
+                </>
+              ) : (
+                <>
+                  I agree to the{" "}
+                  <Link
+                    href={"/terms-of-services"}
+                    className="underline text-primary"
+                    target="_blank"
+                  >
+                    Terms of Services
+                  </Link>
+                </>
+              )}
+            </label>
+            <Checkbox required id="terms" />
+          </div>
+        )}
         <Button isLoading={isLoading} className="w-full" type="submit">
           {submitLabel}
         </Button>

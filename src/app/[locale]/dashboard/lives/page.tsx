@@ -50,7 +50,6 @@ const Lives = async ({
   const text = await getTranslations("lives");
   const livesNow = lives.filter((e) => e.link);
   const livesUpcoming = lives.filter((e) => !e.link);
-  console.log(lives);
   return (
     <main className="flex flex-col-reverse w-full gap-8 p-8 lg:flex-row lg:gap-10 lg:p-10">
       <div className="flex-1 w-full">

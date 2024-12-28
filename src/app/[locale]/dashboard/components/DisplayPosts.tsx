@@ -7,6 +7,8 @@ import { IPost } from "@/types";
 import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/auth-provider";
+import HomeEvents from "./HomeEvents";
+import HomeCourses from "./HomeCourses";
 const DisplayPosts = ({ userId }: { userId?: string }) => {
   const { token } = useAuth();
   const text = useTranslations("post");
@@ -56,6 +58,8 @@ const DisplayPosts = ({ userId }: { userId?: string }) => {
   if (!userId)
     return (
       <section className="flex-1 w-full max-w-2xl px-4 py-6 mx-auto space-y-3 sm:px-4 sm:py-12 sm:space-y-6">
+        <HomeEvents />
+        <HomeCourses />
         {haveError && (
           <p className="text-center text-destructive">
             {text("something_went_wrong")}

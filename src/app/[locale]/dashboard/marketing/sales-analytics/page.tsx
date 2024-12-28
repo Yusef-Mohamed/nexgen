@@ -1,6 +1,7 @@
 import { unstable_setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
 import { getMetadataDashboardPage } from "@/getMetaData";
+import SalesManagement from "../components/SalesManagement";
 export async function generateMetadata({
   params,
 }: {
@@ -23,7 +24,7 @@ const Dashboard = async ({
       }}
       className="px-2 py-6 lg:px-6 sm:px-4 "
     >
-      test
+      <SalesManagement />
     </main>
   );
 };
