@@ -6,7 +6,7 @@ import {
   createServerAxiosInstance,
   getServerCookie,
 } from "@/app/lib/serverUtils";
-import { ICourse, ILesson, ISection } from "@/types";
+import { ICourse, ILesson } from "@/types";
 import { notFound } from "next/navigation";
 import Main from "./compoents/Main";
 
@@ -26,38 +26,24 @@ export async function generateMetadata({
 async function getSections(
   courseId: string,
   token: string
-): Promise<ISection[]> {
+): Promise<
+  {
+    section: string;
+    lessons: ILesson[];
+  }[]
+> {
   const axiosInstance = createServerAxiosInstance();
 
   try {
-    const sectionsRes = await axiosInstance.get(`/sections/${courseId}/course`);
-    const sections = sectionsRes.data.data as ISection[];
-    const sectionsWithLessons = await Promise.all(
-      sections.map(async (section) => {
-        try {
-          const lessonsRes = await axiosInstance.get(
-            `/lessons/sectionLessons/${courseId}/${section._id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          const lessons = lessonsRes.data.data as ILesson[];
-          return {
-            ...section,
-            lessons,
-          };
-        } catch (e) {
-          console.log(e);
-          return {
-            ...section,
-            lessons: [],
-          };
-        }
-      })
+    const sectionsRes = await axiosInstance.get(
+      `/lessons/sectionLessons/${courseId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
-    return sectionsWithLessons;
+    return sectionsRes.data.data;
   } catch (error) {
     console.error("Error fetching sections or lessons:", error);
     return [];

@@ -672,7 +672,21 @@
     "clickOrDragImageToUpload": "انقر أو اسحب الصورة للتحميل",
     "acceptedFormats": "الصيغ المقبولة: ",
     "pleaseSelectImage": "يرجى اختيار صورة",
-    "postCreatedSuccessfully": "تم إنشاء المنشور بنجاح"
+    "postCreatedSuccessfully": "تم إنشاء المنشور بنجاح",
+    "contentIsRequired": "المحتوى مطلوب",
+    "yourCommentIsAddedSuccessfully": "تمت إضافة تعليقك بنجاح",
+    "iamSure": "أنا متأكد",
+    "cancel": "إلغاء",
+    "youWillNotBeAbleToRevert": "لن تتمكن من التراجع عن هذا!",
+    "areYouSure": "هل أنت متأكد؟",
+    "approve": "موافقة",
+    "reject": "رفض",
+    "preview": "معاينة",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "commentPlaceholder": "اكتب تعليقك ...",
+    "noPostsFound": "لا توجد منشورات",
+    "errorLoadingPosts": "حدث خطأ أثناء تحميل المنشورات"
   },
   "event": {
     "upComingEvents": "الأحداث القادمة",

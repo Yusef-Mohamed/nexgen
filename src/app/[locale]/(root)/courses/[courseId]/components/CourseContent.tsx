@@ -8,7 +8,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { ILesson, ISection } from "@/types";
+import { ILesson } from "@/types";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { useParams } from "next/navigation";
 import { FiPlayCircle } from "react-icons/fi";
@@ -16,39 +16,25 @@ import { useAuth } from "@/components/auth-provider";
 async function getSections(
   courseId: string,
   token: string
-): Promise<ISection[]> {
+): Promise<
+  {
+    section: string;
+    lessons: ILesson[];
+  }[]
+> {
   const axiosInstance = createClientAxiosInstance();
 
   try {
-    const sectionsRes = await axiosInstance.get(`/sections/${courseId}/course`);
-    const sections = sectionsRes.data.data as ISection[];
-    const sectionsWithLessons = await Promise.all(
-      sections.map(async (section) => {
-        try {
-          const lessonsRes = await axiosInstance.get(
-            `/lessons/sectionLessons/${courseId}/${section._id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          const lessons = lessonsRes.data.data as ILesson[];
-          return {
-            ...section,
-            lessons,
-          };
-        } catch (e) {
-          console.log(e);
-          return {
-            ...section,
-            lessons: [],
-          };
-        }
-      })
+    const sectionsRes = await axiosInstance.get(
+      `/lessons/sectionLessons/${courseId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
-    return sectionsWithLessons;
+    return sectionsRes.data.data;
   } catch (error) {
     console.error("Error fetching sections or lessons:", error);
     return [];
@@ -57,7 +43,12 @@ async function getSections(
 const FAQ: React.FC = () => {
   const text = useTranslations("coursePage");
   const [count, setCount] = useState(10);
-  const [sections, setSections] = useState<ISection[]>([]);
+  const [sections, setSections] = useState<
+    {
+      section: string;
+      lessons: ILesson[];
+    }[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const { courseId } = useParams();
   const locale = useLocale();
@@ -74,8 +65,8 @@ const FAQ: React.FC = () => {
       <h3 className="mb-4 md:mb-8">{text("courseContent")}</h3>
       <Accordion type="single" collapsible className="flex-1 w-full">
         {sections.reverse().map((section, index) => (
-          <AccordionItem key={index} value={section._id}>
-            <AccordionTrigger>{section.title}</AccordionTrigger>
+          <AccordionItem key={index} value={section.section}>
+            <AccordionTrigger>{section.section}</AccordionTrigger>
             <AccordionContent>
               {section.lessons?.map((lesson, index) => (
                 <div

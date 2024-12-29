@@ -56,50 +56,53 @@ const HomeEvents = () => {
 
   return (
     <div className="space-y-3">
-      <h2>{text("upComingEvents")}</h2>
       {isGettingEvents ? (
         <>
+          <h2>{text("upComingEvents")}</h2>
           <EventSkeleton />
           <EventSkeleton />
         </>
-      ) : (
-        events.map((event) => (
-          <div
-            className="flex items-center w-full p-3 rounded-md cardShadow sm:p-6 bg-background"
-            key={event._id}
-          >
-            <div className="basis-2/3">
-              <h4 className="h2s">{event.title}</h4>
-              <p className="max-sm:mt-0.5 mt-1 text-sm text-text-2 max-md:text-sm max-sm:text-xs">
-                {event.description}
-              </p>
-              <div className="flex items-center gap-2 mt-2 mb-4 max-sm:mt-1 max-sm:mb-2 text-text-3">
-                <IoCalendarClearOutline className="max-sm:text-sm" />
-                <span className="text-sm max-sm:text-xs">
-                  {new Date(event.date).toLocaleDateString()}
-                </span>
+      ) : events.length ? (
+        <>
+          <h2>{text("upComingEvents")}</h2>
+          {events.map((event) => (
+            <div
+              className="flex items-center w-full p-3 rounded-md cardShadow sm:p-6 bg-background"
+              key={event._id}
+            >
+              <div className="basis-2/3">
+                <h4 className="h2s">{event.title}</h4>
+                <p className="max-sm:mt-0.5 mt-1 text-sm text-text-2 max-md:text-sm max-sm:text-xs">
+                  {event.description}
+                </p>
+                <div className="flex items-center gap-2 mt-2 mb-4 max-sm:mt-1 max-sm:mb-2 text-text-3">
+                  <IoCalendarClearOutline className="max-sm:text-sm" />
+                  <span className="text-sm max-sm:text-xs">
+                    {new Date(event.date).toLocaleDateString()}
+                  </span>
+                </div>
+                <Button
+                  asChild
+                  className="max-sm:h-8 max-sm:text-xs max-sm:rounded max-sm:w-fit max-sm:min-w-24 w-fit"
+                >
+                  <a href={event.link} target="_blank">
+                    {text("applyNow")}
+                  </a>
+                </Button>
               </div>
-              <Button
-                asChild
-                className="max-sm:h-8 max-sm:text-xs max-sm:rounded max-sm:w-fit max-sm:min-w-24 w-fit"
-              >
-                <a href={event.link} target="_blank">
-                  {text("applyNow")}
-                </a>
-              </Button>
+              <div className="basis-1/3">
+                <Image
+                  src={event.image}
+                  alt={event.title}
+                  width={600}
+                  height={400}
+                  className="object-cover w-full rounded-md aspect-square max-w-52"
+                />
+              </div>
             </div>
-            <div className="basis-1/3">
-              <Image
-                src={event.image}
-                alt={event.title}
-                width={600}
-                height={400}
-                className="object-cover w-full rounded-md aspect-square max-w-52"
-              />
-            </div>
-          </div>
-        ))
-      )}
+          ))}
+        </>
+      ) : null}
     </div>
   );
 };

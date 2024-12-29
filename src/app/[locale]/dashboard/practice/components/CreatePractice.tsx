@@ -14,7 +14,7 @@ import { IoClose } from "react-icons/io5";
 import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 
-const CreatePractice = () => {
+const CreatePractice = ({ lessonId }: { lessonId?: string }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [content, setContent] = useState("");
   const [media, setMedia] = useState<File[]>([]);
@@ -24,6 +24,12 @@ const CreatePractice = () => {
   const handelCreatePractice = async () => {
     setIsLoading(true);
     try {
+      if (!content.trim()) {
+        toast.error(text("contentIsRequired"));
+        setIsLoading(false);
+        return;
+      }
+
       const formData = new FormData();
       formData.append("content", content);
       if (media.length) {
@@ -35,6 +41,7 @@ const CreatePractice = () => {
         setIsLoading(false);
         return;
       }
+      if (lessonId) formData.append("lesson", lessonId);
       const axiosInstance = await createClientAxiosInstance();
       await axiosInstance.post("/analytics", formData, {
         headers: {
@@ -94,6 +101,7 @@ const CreatePractice = () => {
           inputRef={inputRef}
         />
       </div>
+
       <div
         className={cn(
           `relative mx-auto h-[220px] mt-4 w-full aspect-video rounded-3xl overflow-hidden`,

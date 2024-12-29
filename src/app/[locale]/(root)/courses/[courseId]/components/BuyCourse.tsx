@@ -26,7 +26,6 @@ const BuyCourse = ({ id }: { id: string }) => {
   const isCourseBought = useMemo(() => {
     return myCourses.some((course) => course._id === id);
   }, [myCourses, id]);
-  console.log("isCourseBought", myCourses);
   return (
     <Button asChild className="w-full mb-4 md:mb-8">
       <Link

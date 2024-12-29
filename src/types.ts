@@ -74,6 +74,7 @@ export interface IUser {
     monthlyTimeSpent: number;
     totalTimeSpent: number;
   };
+  isMarketer: boolean;
   __v: number;
 }
 export interface InputData {
@@ -310,6 +311,7 @@ export interface IAnalytic {
   marketer: string;
   updatedAt: string;
   marketerComment?: string;
+  media: string[];
   user: IUser;
   _id: string;
 }

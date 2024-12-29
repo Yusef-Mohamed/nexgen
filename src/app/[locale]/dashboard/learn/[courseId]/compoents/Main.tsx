@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import useCustomSearchParams from "@/hooks/useSearchParams";
 import { cn } from "@/lib/utils";
-import { ICourse, ISection } from "@/types";
+import { ICourse, ILesson } from "@/types";
 import { useTranslations } from "next-intl";
 import {
   MdMenu,
@@ -22,12 +22,16 @@ import { FaLock } from "react-icons/fa";
 import { GiGraduateCap } from "react-icons/gi";
 import { useState } from "react";
 import AboutCourse from "./AboutCourse";
+import CreatePractice from "../../../practice/components/CreatePractice";
 
 const Main = ({
   sections,
   course,
 }: {
-  sections: ISection[];
+  sections: {
+    section: string;
+    lessons: ILesson[];
+  }[];
   course: ICourse;
 }) => {
   const text = useTranslations("learn");
@@ -54,6 +58,9 @@ const Main = ({
                 .find((lesson) => lesson?._id === selectedLesson) || undefined
             }
           />
+        )}
+        {selectedLesson && selectedDisplay === "practice" && (
+          <CreatePractice lessonId={selectedLesson} />
         )}
         {selectedLesson && selectedDisplay === "quiz" ? (
           <QuizBody
@@ -98,7 +105,7 @@ const Main = ({
                 className="flex justify-between gap-4 text-sm text-start md:text-sm lg:text-sm"
                 asChild
               >
-                <AccordionTrigger>{section.title}</AccordionTrigger>
+                <AccordionTrigger>{section.section}</AccordionTrigger>
               </Button>
               <AccordionContent className="p-0 -mt-2 space-y-1 overflow-hidden bg-clear-ground rounded-2xl">
                 {section.lessons?.map((lesson, ind) => (

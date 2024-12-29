@@ -1,5 +1,5 @@
 "use client";
-import ProgressCircle from "@/components/ProgressCircle";
+// import ProgressCircle from "@/components/ProgressCircle";
 import {
   Select,
   SelectContent,
@@ -69,7 +69,6 @@ const Charts = () => {
             },
           }
         );
-
         setCourses(res.data.data);
       } catch (err) {
         console.log(err);
@@ -87,8 +86,7 @@ const Charts = () => {
         },
       })
       .then((res) => {
-        console.log(res.data.data);
-        setMyChildren(res.data.data);
+        setMyChildren(res.data.teamMembers1);
       })
       .catch((err) => {
         console.log(err);
@@ -116,7 +114,11 @@ const Charts = () => {
       >
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-8 lg:col-span-2 ">
+            <PracticeChart />
+          </div>
+          <div className="space-y-8 lg:col-span-1 ">
             <div className="w-full p-4 mb-8 space-y-4 rounded-xl bg-background">
+              {/* <ProgressCircle /> */}
               <Select
                 value={selectedCourse}
                 name="course"
@@ -163,7 +165,7 @@ const Charts = () => {
                     <UserAvatar user={myAccount || undefined} />
                     {inputs("me")}
                   </SelectItem>
-                  {myChildren.map((user) => {
+                  {myChildren?.map((user) => {
                     return (
                       <SelectItem
                         className="flex items-center gap-4"
@@ -178,11 +180,7 @@ const Charts = () => {
                 </SelectContent>
               </Select>
             </div>
-            <ProgressCircle />
-            <PracticeChart />
-          </div>
-          <div className="space-y-8 lg:col-span-1 ">
-            <CircleChart />
+            <CircleChart />{" "}
           </div>
         </div>
       </main>

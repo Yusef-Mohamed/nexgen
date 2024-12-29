@@ -132,7 +132,7 @@ const SelectItem = React.forwardRef<
       dir={locale === "ar" ? "rtl" : "ltr"}
       ref={ref}
       className={cn(
-        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 selectItem",
         className
       )}
       {...props}
@@ -142,7 +142,11 @@ const SelectItem = React.forwardRef<
           <CheckIcon className="w-4 h-4" />
         </SelectPrimitive.ItemIndicator>
       </span>
-      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+      <SelectPrimitive.ItemText>
+        <span className="flex items-center justify-center gap-4">
+          {children}
+        </span>
+      </SelectPrimitive.ItemText>
     </SelectPrimitive.Item>
   );
 });

@@ -104,7 +104,7 @@ const TeamTable = ({ data }: { data: TeamData }) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="relative overflow-x-auto whitespace-nowrap">
+        <div className="relative w-full overflow-x-auto whitespace-nowrap">
           <Table>
             <TableHeader>
               <TableRow>

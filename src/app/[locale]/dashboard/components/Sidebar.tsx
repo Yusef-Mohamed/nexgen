@@ -11,7 +11,6 @@ import SidebarFooter from "./SidebarFooter";
 import { CiMoneyBill } from "react-icons/ci";
 import { RiDiscountPercentLine, RiTeamFill } from "react-icons/ri";
 import { useAuth } from "@/components/auth-provider";
-
 const Sidebar: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
   className,
   ...props
@@ -87,9 +86,14 @@ const Sidebar: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
       icon: <FaUser />,
     },
   ];
-  // if (!user.authToReview) {
+  // if (user && !user.authToReview) {
   //   links = links.filter((link) => {
   //     return !reqAuthToReview?.includes(link.label);
+  //   });
+  // }
+  // if (user && !user.isMarketer) {
+  //   links = links.filter((link) => {
+  //     return link.label !== "marketing";
   //   });
   // }
   return (

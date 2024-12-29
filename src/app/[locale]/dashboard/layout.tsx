@@ -52,7 +52,7 @@ export default function RootLayout({
           }}
           className="hidden lg:flex "
         />
-        <div className="relative flex-1 w-full ">
+        <div className="relative flex-1 w-full dashboardMain">
           {children}
           <Footer />
         </div>

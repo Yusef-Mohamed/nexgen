@@ -206,3 +206,11 @@ input[type="password"] {
 .Toastify__toast-theme--light {
   @apply bg-clear-ground text-text-2 !important;
 }
+.dashboardMain {
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  .dashboardMain {
+    width: calc(100vw - 320px);
+  }
+}

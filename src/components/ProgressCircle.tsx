@@ -79,7 +79,7 @@ const ProgressCircle: FC = () => {
     if (selectedUser) getData();
   }, [selectedUser]);
   return (
-    <div className="p-4 bg-background rounded-xl">
+    <div>
       {!isLoading && coursesWithProgress && (
         <>
           <ProgressUnit
@@ -98,16 +98,16 @@ const ProgressCircle: FC = () => {
                     style={{
                       backgroundColor: course.course.colors.bgColor,
                     }}
-                    className="w-4 h-4 rounded-md dark:hidden"
+                    className="w-3 h-3 rounded-md dark:hidden"
                   ></div>
                   <div
                     style={{
                       backgroundColor: course.course.colors.bgDarkMode,
                     }}
-                    className="hidden w-4 h-4 rounded-md dark:block"
+                    className="hidden w-3 h-3 rounded-md dark:block"
                   ></div>
 
-                  <span>
+                  <span className="text-xs">
                     {course.course.title} ({course.progress.toFixed(0)}%)
                   </span>
                 </div>

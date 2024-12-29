@@ -5,12 +5,14 @@ interface UseInfiniteScrollOptions<T> {
   fetchData: (page: number, search?: string) => Promise<T[]>;
   initialPage?: number;
   search?: string;
+  dependencies?: unknown[]; // Add dependencies array for reset trigger
 }
 
 export function useInfiniteScroll<T>({
   fetchData,
   initialPage = 1,
   search = "",
+  dependencies = [],
 }: UseInfiniteScrollOptions<T>) {
   const [data, setData] = useState<T[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +20,7 @@ export function useInfiniteScroll<T>({
     null
   );
   const observerRef = useRef<HTMLDivElement | null>(null);
+
   const loadMoreData = useCallback(async () => {
     if (
       isLoading ||
@@ -38,11 +41,18 @@ export function useInfiniteScroll<T>({
       setIsLoading(false);
     }
   }, [isLoading, fetchData, paginationData, search, initialPage]);
-  useEffect(() => {
+
+  const resetData = useCallback(() => {
     setData([]);
-    setPaginationData(null); // reset pagination data
-    loadMoreData(); // Initial load for new search
-  }, [search]);
+    setPaginationData(null);
+  }, []);
+
+  // Reset data when dependencies change
+  useEffect(() => {
+    resetData();
+    loadMoreData();
+  }, [...dependencies, search]);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -59,5 +69,12 @@ export function useInfiniteScroll<T>({
     };
   }, [loadMoreData]);
 
-  return { data, isLoading, observerRef, setPaginationData, setData };
+  return {
+    data,
+    isLoading,
+    observerRef,
+    setPaginationData,
+    setData,
+    resetData,
+  };
 }

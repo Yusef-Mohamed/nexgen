@@ -41,56 +41,60 @@ const HomeCourses = () => {
   console.log(courses);
   return (
     <div className="space-y-3">
-      <h2>{text("continueYourLearningJourney")}</h2>
       {isGettingCourses ? (
         <>
+          <h2>{text("continueYourLearningJourney")}</h2>
           <CourseSkeleton />
         </>
-      ) : (
-        courses.slice(0, 1).map((course) => (
-          <div
-            className="flex items-center w-full p-3 rounded-md cardShadow sm:p-6 bg-background"
-            key={course._id}
-          >
-            <div className="basis-2/3">
-              <h4 className="mb-8 max-sm:mb-4 h2s">{course.title}</h4>
-              <div className="flex items-center w-full gap-2">
-                <div className="w-full h-1 overflow-hidden rounded-full md:max-w-xs bg-muted">
-                  <div
-                    className="w-full h-1 rounded-full bg-primary"
-                    style={{
-                      transform: `translateX(${locale === "en" ? "-" : ""}${
-                        100 - Number(course.userScore?.totalProgress || 0)
-                      }%)`,
-                    }}
-                  ></div>
+      ) : courses.length ? (
+        <>
+          <h2>{text("continueYourLearningJourney")}</h2>
+          {courses.slice(0, 1).map((course) => (
+            <div
+              className="flex items-center w-full p-3 rounded-md cardShadow sm:p-6 bg-background"
+              key={course._id}
+            >
+              <div className="basis-2/3">
+                <h4 className="mb-8 max-sm:mb-4 h2s">{course.title}</h4>
+                <div className="flex items-center w-full gap-2">
+                  <div className="w-full h-1 overflow-hidden rounded-full md:max-w-xs bg-muted">
+                    <div
+                      className="w-full h-1 rounded-full bg-primary"
+                      style={{
+                        transform: `translateX(${locale === "en" ? "-" : ""}${
+                          100 - Number(course.userScore?.totalProgress || 0)
+                        }%)`,
+                      }}
+                    ></div>
+                  </div>
                 </div>
+                <span className="block mt-2 mb-4 text-sm max-sm:mt-1 max-sm:mb-2">
+                  {text("completedPercentage")}{" "}
+                  {parseInt(course.userScore?.totalProgress?.toString() || "0")}
+                  %
+                </span>
+                <Button
+                  asChild
+                  className="max-sm:h-8 max-sm:text-xs max-sm:rounded max-sm:w-fit max-sm:min-w-24 w-fit"
+                >
+                  <Link href={`/dashboard/learn/${course._id}`}>
+                    {text("continueLearning")}
+                  </Link>
+                </Button>
               </div>
-              <span className="block mt-2 mb-4 text-sm max-sm:mt-1 max-sm:mb-2">
-                {text("completedPercentage")}{" "}
-                {parseInt(course.userScore?.totalProgress?.toString() || "0")}%
-              </span>
-              <Button
-                asChild
-                className="max-sm:h-8 max-sm:text-xs max-sm:rounded max-sm:w-fit max-sm:min-w-24 w-fit"
-              >
-                <Link href={`/dashboard/learn/${course._id}`}>
-                  {text("continueLearning")}
-                </Link>
-              </Button>
+              <div className="basis-1/3">
+                <Image
+                  src={course.image}
+                  alt={course.title}
+                  width={600}
+                  height={400}
+                  className="object-cover w-full rounded-md aspect-[1.29] max-w-52"
+                />
+              </div>
             </div>
-            <div className="basis-1/3">
-              <Image
-                src={course.image}
-                alt={course.title}
-                width={600}
-                height={400}
-                className="object-cover w-full rounded-md aspect-[1.29] max-w-52"
-              />
-            </div>
-          </div>
-        ))
-      )}
+          ))}
+        </>
+      ) : null}
     </div>
   );
 };

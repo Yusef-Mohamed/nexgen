@@ -129,14 +129,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = () => {
+    router.push("/");
     setUser(null);
     setToken("");
     setStatus(undefined);
     deleteCookie("user");
     deleteCookie("token");
-
     router.refresh();
-    router.push("/");
   };
   useEffect(() => {
     if (
