@@ -55,6 +55,9 @@ const VideoChart = () => {
 
     // Aggregate exam counts by day
     courseProgress.progress
+      .filter((exam: { status: string }) => {
+        return exam.status === "Completed";
+      })
       .filter((exam: { attemptDate: string }) => {
         const examDate = new Date(exam.attemptDate);
         return examDate >= weekStart && examDate <= weekEnd;

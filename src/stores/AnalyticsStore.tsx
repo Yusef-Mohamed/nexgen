@@ -19,6 +19,7 @@ type AnalyticsStore = {
     progress: {
       attemptDate: string;
       examScore: number;
+      status: string;
       lesson: { title: string };
     }[];
   };
@@ -31,6 +32,7 @@ type AnalyticsStore = {
     progress: {
       attemptDate: string;
       examScore: number;
+      status: string;
       lesson: { title: string };
     }[];
   }) => void;

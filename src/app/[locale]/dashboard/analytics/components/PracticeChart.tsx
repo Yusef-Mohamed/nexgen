@@ -255,7 +255,7 @@ const Practice: React.FC = () => {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 gap-4 mb-8 md:grid-cols-3">
-          {true ? (
+          {isLoading ? (
             Array.from({ length: 3 }).map((_, index) => (
               <div key={index} className="animate-pulse">
                 <div className="w-3/4 h-4 rounded-full bg-muted" />
