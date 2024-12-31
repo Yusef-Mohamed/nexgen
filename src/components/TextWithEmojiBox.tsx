@@ -19,6 +19,7 @@ interface TextWithEmojiBoxProps {
   className?: string;
   placeholder?: string;
   multiMedia?: boolean;
+  textClassName?: string;
 }
 
 const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
@@ -32,6 +33,7 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
   className,
   placeholder,
   multiMedia = false,
+  textClassName,
 }) => {
   const mediaRef = useRef<HTMLInputElement>(null);
   const locale = useLocale();
@@ -120,7 +122,10 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
           onChange={handleInputChange}
           name="text"
           placeholder={placeholder || "Aa"}
-          className="flex items-center w-full py-2 pb-8 overflow-hidden border resize-none rounded-LG ps-8 bg-background"
+          className={cn(
+            "flex items-center w-full py-2 pb-8 overflow-hidden border resize-none rounded-LG ps-8 bg-background",
+            textClassName
+          )}
           style={{ height: "auto" }} // Set initial height to auto for dynamic resizing
         />
         <div

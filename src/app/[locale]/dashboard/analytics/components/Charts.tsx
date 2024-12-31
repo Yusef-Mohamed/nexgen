@@ -40,9 +40,14 @@ import PracticeChart from "./PracticeChart";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import UserAvatar from "@/components/UserAvatar";
-import CircleChart from "./CircleChart";
+import ProgressCircle from "@/components/ProgressCircle";
+import LeaderBoardCard from "@/components/LeaderBoardCard";
+import CourseProgress from "./CourseProgress";
+import ExamsChart from "./ExamsChart";
+import VideoChart from "./VideoChart";
 const Charts = () => {
   const inputs = useTranslations("Forms");
+  const text = useTranslations("analytics");
   const { user: myAccount, token } = useAuth();
   const [myChildren, setMyChildren] = useState<IUser[]>([]);
   const [courses, setCourses] = useState<ICourse[]>([]);
@@ -53,6 +58,8 @@ const Charts = () => {
     setSelectedCourse,
     setSelectedCourseObject,
     setSelectedUserObject,
+    topUsers,
+    setTopUsers,
   } = useAnalyticsStore();
   useEffect(() => {
     if (myAccount) setSelectedUserObject(myAccount);
@@ -102,23 +109,41 @@ const Charts = () => {
       setSelectedCourseObject(courses[0]);
     }
   }, [courses]);
-
+  const getCourseDetails = async (courseId: string) => {
+    try {
+      const axiosInstance = createClientAxiosInstance();
+      const courseDetails = await axiosInstance.get(
+        `/courses/courseDetails/${courseId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const users = courseDetails.data.data.users.slice(0, 3);
+      setTopUsers(users);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    if (selectedCourse) {
+      setTopUsers([]);
+      getCourseDetails(selectedCourse as string);
+    }
+  }, [selectedCourse]);
   return (
     <>
-      <main
-        style={{
-          maxHeight: "calc(100vh - 76px)",
-          height: "calc(100vh - 76px)",
-        }}
-        className="flex flex-col h-screen px-2 py-6 lg:px-6 sm:px-4"
-      >
-        <div className="grid gap-8 lg:grid-cols-3">
-          <div className="space-y-8 lg:col-span-2 ">
+      <main className="flex min-h-screen px-2 py-6 lg:px-6 sm:px-4">
+        <div className="grid gap-8 xl:grid-cols-3">
+          <div className="w-full space-y-8 max-lg:order-2 xl:col-span-2 ">
+            <CourseProgress />
+            <ExamsChart />
             <PracticeChart />
           </div>
-          <div className="space-y-8 lg:col-span-1 ">
-            <div className="w-full p-4 mb-8 space-y-4 rounded-xl bg-background">
-              {/* <ProgressCircle /> */}
+          <div className="w-full space-y-8 lg:col-span-1 ">
+            <div className="w-full p-4 mb-8 space-y-4 rounded-xl bg-clear-ground">
+              <ProgressCircle />
               <Select
                 value={selectedCourse}
                 name="course"
@@ -142,7 +167,7 @@ const Charts = () => {
                     );
                   })}
                 </SelectContent>
-              </Select>{" "}
+              </Select>
               <Select
                 value={selectedUser}
                 name="user"
@@ -159,28 +184,39 @@ const Charts = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem
-                    className="flex items-center gap-4"
+                    className="flex items-center gap-4 text-sm"
                     value={myAccount?._id || ""}
                   >
-                    <UserAvatar user={myAccount || undefined} />
+                    <UserAvatar
+                      className="max-sm:w-8 max-sm:h-8"
+                      user={myAccount || undefined}
+                    />
                     {inputs("me")}
                   </SelectItem>
                   {myChildren?.map((user) => {
                     return (
                       <SelectItem
-                        className="flex items-center gap-4"
+                        className="flex items-center gap-4 text-sm"
                         value={user._id}
                         key={user._id}
                       >
-                        <UserAvatar user={user} />
-                        {user.name} - {user.email}
+                        <UserAvatar
+                          className="max-sm:w-8 max-sm:h-8"
+                          user={user}
+                        />
+                        {user.email}
                       </SelectItem>
                     );
                   })}
                 </SelectContent>
               </Select>
             </div>
-            <CircleChart />{" "}
+            <LeaderBoardCard
+              users={topUsers}
+              isLoading={topUsers.length === 0}
+              title={text("outTopStudentsInThisCourse")}
+            />
+            <VideoChart />
           </div>
         </div>
       </main>

@@ -42,7 +42,6 @@ const CommunityPage = async ({
 }) => {
   unstable_setRequestLocale(locale);
   const thisUser = (await getThisUser(userId)) as IUser;
-
   return (
     <main className="flex flex-col xl:flex-row">
       <section className="flex-1 w-full max-w-2xl px-4 py-6 mx-auto space-y-3 sm:px-4 sm:py-12 sm:space-y-6">

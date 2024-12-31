@@ -35,7 +35,7 @@ export interface ICourse {
   updatedAt: string;
   users: {
     email: string;
-    id: string;
+    _id: string;
     profileImg: string;
     name: string;
   }[];
@@ -349,10 +349,11 @@ export interface INotification {
   createdAt: string;
   message: string;
   read: boolean;
-  type: "chat" | "post" | "system" | "follow" | "certificate";
+  type: "chat" | "post" | "system" | "follow" | "certificate" | "order";
   course?: string;
   post?: string;
   chat?: IChat;
+  file?: string;
   followedUser?: IUser;
   updatedAt: string;
   __v: number;
@@ -386,8 +387,10 @@ export interface ISection {
   lessons?: ILesson[];
 }
 export interface ICourseProgress {
-  totalProgress: number;
+  totalProgress: string;
   status: "Completed" | "failed";
+  totalLessonsExamsPercentage: string;
+
   certificate: {
     isTaken: boolean;
     isDeserved: boolean;

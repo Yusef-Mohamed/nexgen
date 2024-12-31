@@ -18,6 +18,7 @@ const CommunitySidebar = () => {
     const arrayOfArrayOfUsers = courses.map((course) => course.users);
     return arrayOfArrayOfUsers.flat();
   }, [courses]);
+  console.log(users);
   return (
     <div
       style={{
@@ -30,11 +31,11 @@ const CommunitySidebar = () => {
       <h2 className="mb-3 sm:mb-6">{text("followingRecommendation")}</h2>
       <ul className="space-y-2 sm:space-y-4">
         {users.map((thisUser) =>
-          thisUser && thisUser.id !== user?._id ? (
-            <li key={thisUser.id}>
+          thisUser && thisUser._id !== user?._id ? (
+            <li key={thisUser._id}>
               <div className="flex items-center justify-between px-2 py-1 border rounded">
                 <div className="flex items-center gap-2">
-                  <Link href={`/dashboard/community/profile/${thisUser.id}`}>
+                  <Link href={`/dashboard/community/profile/${thisUser._id}`}>
                     <UserAvatar
                       user={{
                         name: thisUser.name,
@@ -44,12 +45,12 @@ const CommunitySidebar = () => {
                   </Link>{" "}
                   <Link
                     className="text-sm"
-                    href={`/dashboard/community/profile/${thisUser.id}`}
+                    href={`/dashboard/community/profile/${thisUser._id}`}
                   >
                     {thisUser.name.slice(0, 15)}
                   </Link>
                 </div>
-                <FollowBtn sm userId={thisUser.id} />
+                <FollowBtn sm userId={thisUser._id} />
               </div>
             </li>
           ) : null

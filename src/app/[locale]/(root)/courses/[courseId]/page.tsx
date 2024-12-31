@@ -181,7 +181,7 @@ const CourseCard: React.FC<{
             <div className="h2">${courseData.price}</div>
           )}
         </div>
-        {courseData.priceAfterDiscount && (
+        {courseData.priceAfterDiscount ? (
           <div
             style={{
               fontWeight: 400,
@@ -199,7 +199,7 @@ const CourseCard: React.FC<{
               %
             </span>
           </div>
-        )}
+        ) : null}
       </div>
       <CourseHeading courseData={courseData} className="lg:hidden" />
       <BuyCourse id={courseData._id} />

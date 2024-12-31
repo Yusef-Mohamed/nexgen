@@ -44,6 +44,7 @@ const AnalyticCard = ({
   analytic: IAnalytic;
   setAnalytics: React.Dispatch<React.SetStateAction<IAnalytic[]>>;
 }) => {
+  console.log(analytic);
   const text = useTranslations("practice");
   const myAccount = JSON.parse(getCookie("user") || "{}");
   const [marketerComment, setMarketerComment] = useState(

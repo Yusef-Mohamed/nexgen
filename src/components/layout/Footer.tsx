@@ -51,7 +51,7 @@ const socialLinks = [
     icon: <FaInstagram />,
   },
 ];
-const Footer: React.FC = ({ clear }: { clear?: boolean }) => {
+const Footer = ({ clear }: { clear?: boolean }) => {
   const text = useTranslations("footer");
   return (
     <footer

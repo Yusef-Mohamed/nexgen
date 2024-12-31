@@ -35,7 +35,7 @@ const DisplayPosts = () => {
         } else if (show === "onProgress") {
           filtersParams.append("isPassed", "0");
         }
-        if (user?.isMarketer) filtersParams.append("asMarketer", "1");
+        if (!user?.isMarketer) filtersParams.append("asMarketer", "1");
 
         const filters = filtersParams.toString();
         const axiosInstance = createClientAxiosInstance();

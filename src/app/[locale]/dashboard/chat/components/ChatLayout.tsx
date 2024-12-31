@@ -50,7 +50,7 @@ export function ChatLayout({ selectedChat }: ChatLayoutProps) {
         maxHeight: "calc(100vh - 124px)",
         height: "calc(100vh - 124px)",
       }}
-      className="flex flex-grow overflow-hidden border rounded-md"
+      className="flex flex-grow overflow-hidden border rounded-md bg-clear-ground"
     >
       <Sidebar selectedChat={selectedChat} />
       <Chat selectedChat={selectedChat} />

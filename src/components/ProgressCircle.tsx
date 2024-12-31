@@ -43,7 +43,8 @@ const ProgressCircle: FC = () => {
           return {
             course,
             progress:
-              (courseProgress.totalProgress * course.coursePercentage) / 100,
+              (Number(courseProgress.totalProgress) * course.coursePercentage) /
+              100,
           };
         } catch (err) {
           console.log(err);

@@ -17,9 +17,6 @@ import { createClientAxiosInstance } from "@/app/lib/utils";
 import { RiTeamFill } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
-import Image from "next/image";
-import UserAvatar from "@/components/UserAvatar";
-import { FaMedal, FaMoneyBill } from "react-icons/fa";
 import { ICourse, IUser } from "@/types";
 import {
   Select,
@@ -28,6 +25,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import LeaderBoardCard from "@/components/LeaderBoardCard";
+import { FaMoneyBill } from "react-icons/fa";
 
 const SalesManagement = () => {
   const t = useTranslations("salesManagement");
@@ -102,7 +101,17 @@ const MainComponent = ({
   const t = useTranslations("salesManagement");
   const [item, setItem] = useState("");
   const [courses, setCourses] = useState<ICourse[]>([]);
-  const [data, setData] = useState();
+  const [data, setData] = useState<null | {
+    givenPeriodResales: number;
+    givenPeriodResalesStudents: number;
+    givenPeriodSales: number;
+    givenPeriodStudents: number;
+    oppositePeriodResales: number;
+    oppositePeriodResalesStudents: number;
+    oppositePeriodSales: number;
+    oppositePeriodStudents: number;
+  }>(null);
+  console.log(data);
   const { token } = useAuth();
   useEffect(() => {
     const fetchCourses = async () => {
@@ -121,14 +130,28 @@ const MainComponent = ({
     const fetchAnalytics = async () => {
       try {
         const axiosInstance = await createClientAxiosInstance();
+        // i want to get start date and end date of current month in format dd-mm-yyyy
+        const startDate = new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          1
+        );
+        const endDate = new Date(
+          new Date().getFullYear(),
+          new Date().getMonth() + 1,
+          0
+        );
         const res = await axiosInstance.get(
-          `/marketingAnalytics/item/${item}`,
+          `/marketingAnalytics/item/${item}?startDate=${startDate.toLocaleDateString(
+            "en-GB"
+          )}&endDate=${endDate.toLocaleDateString("en-GB")}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
+        console.log(res.data);
         setData(res.data);
       } catch (err) {
         console.error(err);
@@ -136,7 +159,6 @@ const MainComponent = ({
     };
     if (item && token) fetchAnalytics();
   }, [item, token]);
-  console.log(data);
   return (
     <Card className="mb-4 border-none">
       <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4 py-1">
@@ -357,7 +379,12 @@ const TopInstructors = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setData(res.data);
+        const leaderBoard = res.data.leaderBoard;
+        setData([
+          leaderBoard.firstRank.marketer,
+          leaderBoard.secondRank.marketer,
+          leaderBoard.thirdRank.marketer,
+        ]);
       } catch (err) {
         console.error(err);
       }
@@ -367,93 +394,16 @@ const TopInstructors = () => {
       getLeaderBoard();
     }
   }, [token]);
-  console.log(data);
   if (!user) return null;
   return (
-    <LeaderBoard
-      users={[user, user, user]}
+    <LeaderBoardCard
+      users={data}
       isLoading={isLoading}
       title={text("ourTopInstructors")}
     />
   );
 };
-const LeaderBoard = ({
-  users,
-  title,
-  isLoading,
-}: {
-  users: IUser[];
-  title: string;
-  isLoading: boolean;
-}) => {
-  return (
-    <Card className="p-4">
-      <CardHeader className="p-0 mb-6">
-        <CardTitle className="flex items-center gap-2 h2">
-          <FaMedal className="text-xl" />
-          {title}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-0">
-        {isLoading ? (
-          <ul className="space-y-2">
-            {Array.from({ length: 3 }).map((_, i) => {
-              if (i > 2) return null;
-              return (
-                <li
-                  key={i}
-                  className={`flex items-center justify-between px-6 py-2 border-2 border-transparent rounded-sm border-s-[${
-                    i === 0 ? "#FFED78" : i === 1 ? "#DCDFE5" : "#F0C093"
-                  }]`}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-input animate-pulse"></div>
-                    <div className="w-32 h-4 rounded-full bg-input animate-pulse"></div>
-                  </div>
-                  <Image
-                    src={`/images/medals/${
-                      i === 0 ? "gold" : i === 1 ? "silver" : "bronze"
-                    }.svg`}
-                    alt="avatar"
-                    width={32}
-                    height={32}
-                  />
-                </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <ul className="space-y-2">
-            {users.map((user, i) => {
-              if (i > 2) return null;
-              return (
-                <li
-                  key={user._id}
-                  className={`flex items-center justify-between px-6 py-2 border-2 border-transparent rounded-sm border-s-[${
-                    i === 0 ? "#FFED78" : i === 1 ? "#DCDFE5" : "#F0C093"
-                  }]`}
-                >
-                  <div className="flex items-center gap-4">
-                    <UserAvatar user={user} />
-                    <span>{user.name}</span>
-                  </div>
-                  <Image
-                    src={`/images/medals/${
-                      i === 0 ? "gold" : i === 1 ? "silver" : "bronze"
-                    }.svg`}
-                    alt="avatar"
-                    width={32}
-                    height={32}
-                  />
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </CardContent>
-    </Card>
-  );
-};
+
 const AffiliateMarketing = () => {
   const text = useTranslations("salesManagement");
   return (

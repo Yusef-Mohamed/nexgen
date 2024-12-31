@@ -8,12 +8,11 @@ import {
 } from "@/components/ui/table";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth-provider";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
-import { Button } from "@/components/ui/button";
 
 const LinksTable = ({ links }: { links: string[] }) => {
   const t = useTranslations("teamManagement");
@@ -55,9 +54,9 @@ const LinksTable = ({ links }: { links: string[] }) => {
     </Card>
   );
 };
-const LinkRow = ({ link, index }: { link: string; index: number }) => {
+// const LinkRow = ({ link, index }: { link: string; index: number }) => {
+const LinkRow = ({ link }: { link: string; index: number }) => {
   const t = useTranslations("teamManagement");
-  const locale = useLocale();
   const [data, setData] = useState<{
     registeredUsersCounter: number;
     clicks: {
@@ -90,14 +89,15 @@ const LinkRow = ({ link, index }: { link: string; index: number }) => {
 
     if (token) fetchData();
   }, [token, user?._id, t]);
+  console.log(data);
   return (
     <TableRow>
-      <TableCell>{index + 1}</TableCell>
+      {/* <TableCell>{index + 1}</TableCell>
       <TableCell>{link}</TableCell>
       <TableCell>{data?.clicks?.count || 0}</TableCell>
       <TableCell>{data?.registeredUsersCounter}</TableCell>
-      <TableCell>{data?.clicks.month}</TableCell>
-      <TableCell>{data?.clicks.year}</TableCell>
+      <TableCell>{data?.clicks?.month}</TableCell>
+      <TableCell>{data?.clicks?.year}</TableCell>
       <TableCell>
         <Button
           size={"sm"}
@@ -109,7 +109,7 @@ const LinkRow = ({ link, index }: { link: string; index: number }) => {
         >
           {t("copy")}
         </Button>
-      </TableCell>
+      </TableCell> */}
     </TableRow>
   );
 };

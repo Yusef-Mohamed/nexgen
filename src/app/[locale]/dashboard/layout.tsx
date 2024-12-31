@@ -54,7 +54,7 @@ export default function RootLayout({
         />
         <div className="relative flex-1 w-full dashboardMain">
           {children}
-          <Footer />
+          <Footer clear />
         </div>
       </div>
     </div>

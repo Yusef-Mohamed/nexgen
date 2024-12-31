@@ -41,14 +41,14 @@ export default function ChatTopbar() {
   const locale = useLocale();
   const { isFetchingThisChat, thisChat, setThisChat, setChats, chats } =
     useChatStore();
-  const { user, token } = useAuth();
+  const { user: thisUser, token } = useAuth();
   const anotherUser = thisChat?.participants.find(
-    (user) => user.user !== user?._id
+    (user) => user.user !== thisUser?._id
   );
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const text = useTranslations("chat");
   const isAdmin = thisChat?.participants.find(
-    (participant) => participant.user === user?._id
+    (participant) => participant.user === thisUser?._id
   )?.isAdmin;
   const [action, setAction] = useState<"remove" | "changeRole">("remove");
   const [isOpen, setIsOpen] = useState(false);

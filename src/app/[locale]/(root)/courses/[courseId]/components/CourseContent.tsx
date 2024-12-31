@@ -12,11 +12,7 @@ import { ILesson } from "@/types";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { useParams } from "next/navigation";
 import { FiPlayCircle } from "react-icons/fi";
-import { useAuth } from "@/components/auth-provider";
-async function getSections(
-  courseId: string,
-  token: string
-): Promise<
+async function getSections(courseId: string): Promise<
   {
     section: string;
     lessons: ILesson[];
@@ -26,12 +22,7 @@ async function getSections(
 
   try {
     const sectionsRes = await axiosInstance.get(
-      `/lessons/sectionLessons/${courseId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      `/lessons/sectionLessons/${courseId}/public`
     );
 
     return sectionsRes.data.data;
@@ -49,13 +40,13 @@ const FAQ: React.FC = () => {
       lessons: ILesson[];
     }[]
   >([]);
+  console.log(sections);
   const [loading, setLoading] = useState(true);
   const { courseId } = useParams();
   const locale = useLocale();
-  const { token } = useAuth();
   useEffect(() => {
     setLoading(true);
-    getSections(courseId as string, token).then((sections) => {
+    getSections(courseId as string).then((sections) => {
       setSections(sections);
       setLoading(false);
     });

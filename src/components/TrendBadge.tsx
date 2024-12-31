@@ -21,7 +21,7 @@ const TrendBadge = ({
         className
       )}
     >
-      {percentage}%{positive ? <FaArrowTrendUp /> : <FaArrowTrendDown />}
+      {positive ? <FaArrowTrendUp /> : <FaArrowTrendDown />} {percentage}%
     </span>
   );
 };

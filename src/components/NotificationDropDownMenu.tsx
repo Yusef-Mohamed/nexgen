@@ -84,6 +84,10 @@ const NotificationDropDownMenu = () => {
                 router.push(`/dashboard?focusedPost=${n.post}`);
               else if (n.type === "certificate" && n.course)
                 router.push(`/dashboard/analytics?selectedCourse=${n.course}`);
+              else if (n.type === "certificate" && n.file)
+                window.location.href = n.file;
+              else if (n.type === "order" && n.file)
+                window.location.href = n.file;
             }}
           />
         ))}

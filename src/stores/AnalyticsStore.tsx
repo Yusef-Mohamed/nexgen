@@ -12,18 +12,32 @@ type AnalyticsStore = {
   setSelectedUserObject: (selectedUserObject: IUser) => void;
   courseProgress: {
     certificate: {
-      istake: boolean;
-      isdeserve: boolean;
+      isTake: boolean;
+      isDeserve: boolean;
       file?: string;
     };
+    progress: {
+      attemptDate: string;
+      examScore: number;
+      lesson: { title: string };
+    }[];
   };
   setCourseProgress: (courseProgress: {
     certificate: {
-      istake: boolean;
-      isdeserve: boolean;
+      isTake: boolean;
+      isDeserve: boolean;
       file?: string;
     };
+    progress: {
+      attemptDate: string;
+      examScore: number;
+      lesson: { title: string };
+    }[];
   }) => void;
+  topUsers: IUser[];
+  setTopUsers: (topUsers: IUser[]) => void;
+  isCourseProgressLoading: boolean;
+  setIsCourseProgressLoading: (isCourseProgressLoading: boolean) => void;
 };
 export const useAnalyticsStore = create<AnalyticsStore>((set) => ({
   selectedUser: "",
@@ -37,9 +51,15 @@ export const useAnalyticsStore = create<AnalyticsStore>((set) => ({
     set({ selectedCourseObject }),
   courseProgress: {
     certificate: {
-      istake: false,
-      isdeserve: false,
+      isTake: false,
+      isDeserve: false,
     },
+    progress: [],
   },
   setCourseProgress: (courseProgress) => set({ courseProgress }),
+  topUsers: [],
+  setTopUsers: (topUsers) => set({ topUsers }),
+  isCourseProgressLoading: false,
+  setIsCourseProgressLoading: (isCourseProgressLoading) =>
+    set({ isCourseProgressLoading }),
 }));

@@ -10,7 +10,7 @@ const getData = async (lessonId: string, token: string, userId: string) => {
   try {
     const axiosInstance = await createServerAxiosInstance();
     const data = await axiosInstance.get(
-      `/exams/getLessonPerformance/${userId}/${lessonId}`,
+      `/exams/getLessonPerformance/${lessonId}/${userId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -38,7 +38,6 @@ const CourseExams = async ({
     };
   };
   const { lessonQuestions } = data.data;
-  console.log(lessonQuestions);
   return (
     <main>
       <section className="py-16">

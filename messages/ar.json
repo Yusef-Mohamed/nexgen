@@ -438,7 +438,12 @@
     "addParticipant": "إضافة مشارك",
     "add": "إضافة",
     "editChatData": "تعديل بيانات المحادثة",
-    "pdfFileClickToOpen": "ملف PDF (انقر لفتح)"
+    "pdfFileClickToOpen": "ملف PDF (انقر لفتح)",
+    "link": "رابط",
+    "areYouSureDeleteMessage": "هل أنت متأكد من حذف هذه الرسالة؟",
+    "externalLink": "رابط خارجي",
+    "externalLinkWarning": "هذا الرابط يحتوي على محتوى خارجي. هل تريد المتابعة؟",
+    "continue": "متابعة"
   },
   "lives": {
     "livesNow": "البثوث المباشرة الآن",
@@ -700,6 +705,7 @@
   },
   "salesManagement": {
     "coupons": "الكوبونات",
+    "resaleFilter": "تصفية إعادة البيع",
     "invitations": "الدعوات",
     "affiliateMarketing": "التسويق بالعمولة",
     "totalSales": "إجمالي المبيعات",
@@ -806,5 +812,35 @@
     "copy": "نسخ",
     "link": "الرابط",
     "linkCopied": "تم نسخ الرابط"
+  },
+  "analytics": {
+    "outTopStudentsInThisCourse": "أفضل الطلاب في هذه الدورة",
+    "gradesAverage": "متوسط الدرجات",
+    "timeSpent": "الوقت المستغرق",
+    "totalProgress": "التقدم الكلي",
+    "examsPerformance": "أداء الامتحانات",
+    "selectWeek": "اختر الأسبوع",
+    "score": "الدرجة",
+    "quiz": "اختبار",
+    "noExamsForThisWeek": "لا توجد امتحانات لهذا الأسبوع",
+    "practice": "التدريب",
+    "totalPracticeNumber": "إجمالي عدد التدريبات",
+    "thisWeekPracticeNumber": "عدد التدريبات لهذا الأسبوع",
+    "editingNumber": "عدد التعديلات",
+    "week": "الأسبوع",
+    "times": "مرات",
+    "noPracticeForThisWeek": "لا توجد تدريبات لهذا الأسبوع",
+    "correctAttempts": "المحاولات الصحيحة",
+    "wrongAttempts": "المحاولات الخاطئة",
+    "correct": "صحيح",
+    "wrong": "خاطئ",
+    "thisWeekWrongPracticeNumber": "عدد التدريبات الخاطئة",
+    "practiceNumber": "التدريب رقم",
+    "date": "التاريخ",
+    "status": "الحالة",
+    "pending": "قيد الانتظار",
+    "videosCount": "عدد الفيديوهات",
+    "courseVideos": "فيديوهات الدورة",
+    "noVideosForThisWeek": "لا توجد فيديوهات لهذا الأسبوع"
   }
 }

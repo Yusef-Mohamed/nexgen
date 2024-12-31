@@ -145,6 +145,7 @@ export default function ChatBottombar() {
         </AnimatePresence>
       )}
       <TextWithEmojiBox
+        textClassName="border-none rounded-none"
         isLoading={isLoading}
         text={message}
         setText={setMessage}

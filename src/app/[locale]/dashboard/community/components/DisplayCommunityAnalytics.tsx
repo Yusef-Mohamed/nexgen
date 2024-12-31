@@ -62,6 +62,7 @@ const DisplayCommunityAnalytics = () => {
     isLoading,
     observerRef,
     setPaginationData,
+    setData,
   } = useInfiniteScroll<IPost>({
     fetchData: fetchPosts,
     search: searchParams.toString(),
@@ -69,7 +70,7 @@ const DisplayCommunityAnalytics = () => {
   return (
     <section className="flex-1 w-full max-w-2xl px-4 py-6 mx-auto space-y-3 sm:px-4 sm:py-12 sm:space-y-6">
       <CommunityFilters />
-      <CreatePost />
+      <CreatePost setData={setData} />
       {haveError && (
         <p className="text-center text-destructive">
           {text("something_went_wrong")}

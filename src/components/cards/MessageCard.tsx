@@ -27,6 +27,7 @@ import Image from "next/image";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { useTranslations } from "next-intl";
 import { useAuth } from "../auth-provider";
+
 interface MessageCardProps {
   message: IMessage;
   isMine: boolean;
@@ -40,10 +41,12 @@ const MessageCard: React.FC<MessageCardProps> = ({
 }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedLink, setSelectedLink] = useState<string | null>(null);
   const { setActionOnMessage, deleteMessage, socket } = useChatStore();
   const messageDiv = useRef(null);
   const { user: myAccount, token } = useAuth();
   const text = useTranslations("chat");
+
   const deleteMessageAction = async () => {
     try {
       setIsLoading(true);
@@ -67,6 +70,26 @@ const MessageCard: React.FC<MessageCardProps> = ({
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  const renderMessageText = (content: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = content.split(urlRegex);
+
+    return parts.map((part, index) => {
+      if (part.match(urlRegex)) {
+        return (
+          <span
+            key={index}
+            className="underline cursor-pointer"
+            onClick={() => setSelectedLink(part)}
+          >
+            {text("link")}
+          </span>
+        );
+      }
+      return <span key={index}>{part}</span>;
+    });
   };
 
   return (
@@ -110,7 +133,9 @@ const MessageCard: React.FC<MessageCardProps> = ({
                   <h4 className="text-sm font-semibold">
                     {message.repliedTo.sender.name}
                   </h4>
-                  <p className="text-xs">{message.repliedTo.text}</p>
+                  <p className="text-xs">
+                    {renderMessageText(message.repliedTo.text)}
+                  </p>
                 </div>
               )}
               {!isMine && isFirst && (
@@ -118,7 +143,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                   {message.sender.name}
                 </span>
               )}
-              <p>{message.text}</p>
+              <p>{renderMessageText(message.text)}</p>
               {message.media[0] &&
                 (message.media[0].endsWith("pdf") ? (
                   <a
@@ -177,7 +202,6 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 </DropdownMenuItem>
                 {isMine && (
                   <>
-                    {" "}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <button
@@ -201,7 +225,6 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 )}
                 {(isMine || myAccount?.role === "admin") && (
                   <>
-                    {" "}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <button
@@ -224,7 +247,8 @@ const MessageCard: React.FC<MessageCardProps> = ({
             </DropdownMenu>
           </div>
         </div>
-      </motion.div>{" "}
+      </motion.div>
+
       <AlertDialog
         onOpenChange={(isOpen) => {
           setIsDeleting(isOpen);
@@ -233,9 +257,9 @@ const MessageCard: React.FC<MessageCardProps> = ({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{"areYouSure"}</AlertDialogTitle>
+            <AlertDialogTitle>{text("areYouSure")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {"areYouSureDeleteMessage"}
+              {text("areYouSureDeleteMessage")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -247,7 +271,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
               variant={"outline"}
               className="min-w-24"
             >
-              {text("cancel")}{" "}
+              {text("cancel")}
             </Button>
             <Button
               disabled={isLoading}
@@ -261,9 +285,37 @@ const MessageCard: React.FC<MessageCardProps> = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <AlertDialog
+        open={!!selectedLink}
+        onOpenChange={() => setSelectedLink(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{text("externalLink")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {text("externalLinkWarning")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button variant="outline" onClick={() => setSelectedLink(null)}>
+              {text("cancel")}
+            </Button>
+            <Button
+              onClick={() => {
+                window.open(selectedLink!, "_blank");
+                setSelectedLink(null);
+              }}
+            >
+              {text("continue")}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };
+
 export const MessageCardSkeleton = ({ isMine }: { isMine: boolean }) => {
   return (
     <div
@@ -280,7 +332,7 @@ export const MessageCardSkeleton = ({ isMine }: { isMine: boolean }) => {
         <div className="w-12 h-12 rounded-full bg-muted-foreground animate-pulse" />
         <div
           className={cn(
-            "p-3 group  rounded max-w-xs bg-muted w-full flex-1 animate-pulse"
+            "p-3 group rounded max-w-xs bg-muted w-full flex-1 animate-pulse"
           )}
         >
           <div className="w-full h-2 rounded bg-muted-foreground animate-pulse" />

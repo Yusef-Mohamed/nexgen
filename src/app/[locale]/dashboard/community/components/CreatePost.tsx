@@ -5,13 +5,18 @@ import { useAuth } from "@/components/auth-provider";
 import TextWithEmojiBox from "@/components/TextWithEmojiBox";
 import UserAvatar from "@/components/UserAvatar";
 import { cn } from "@/lib/utils";
+import { IPost } from "@/types";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRef, useState, useMemo } from "react";
 import { FaStar } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-const CreatePost = () => {
+const CreatePost = ({
+  setData,
+}: {
+  setData: React.Dispatch<React.SetStateAction<IPost[]>>;
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [content, setContent] = useState("");
   const [media, setMedia] = useState<File[] | null>(null);
@@ -44,11 +49,12 @@ const CreatePost = () => {
         return;
       }
       const axiosInstance = await createClientAxiosInstance();
-      await axiosInstance.post("/posts", formData, {
+      const res = await axiosInstance.post("/posts", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      setData((prevData) => [res.data.data, ...prevData]);
       setContent("");
       setMedia(null);
       setCoverImageIndex(0);
