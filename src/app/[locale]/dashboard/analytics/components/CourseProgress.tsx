@@ -10,7 +10,8 @@ const CourseProgress = () => {
   const [isFetching, setIsFetching] = useState(true);
   const [selectedCourseProgress, setSelectedCourseProgress] =
     useState<ICourseProgress | null>(null);
-  const { selectedCourse, selectedUser, courseProgress } = useAnalyticsStore();
+  const { selectedCourse, selectedUser, courseProgress, selectedUserObject } =
+    useAnalyticsStore();
   const locale = useLocale();
   const getCourseScore = async (course: string) => {
     setIsFetching(true);
@@ -36,6 +37,7 @@ const CourseProgress = () => {
       getCourseScore(selectedCourse);
     }
   }, [selectedCourse, selectedUser]);
+
   return (
     <div>
       {courseProgress.certificate.isTake && (
@@ -111,7 +113,13 @@ const CourseProgress = () => {
           }
           title="timeSpent"
           color="#9747FF"
-          value={Number(10) || 0}
+          value={Number(
+            (
+              ((selectedUserObject?.timeSpent.monthlyTimeSpent || 0) /
+                (50 * 60 * 60 * 1000)) *
+              100
+            ).toFixed(2)
+          )}
           isFetching={isFetching}
         />
         <CircleCell

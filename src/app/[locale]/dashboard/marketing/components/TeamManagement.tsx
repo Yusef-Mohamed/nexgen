@@ -98,7 +98,6 @@ const TeamManagement: React.FC = () => {
 
     if (token) fetchData();
   }, [token, user?._id, t]);
-  console.log(marketLog);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!user?._id) return;
@@ -186,8 +185,8 @@ const TeamManagement: React.FC = () => {
                 disabled={isLoading}
               />
             </div>
-            <Button disabled={isLoading} type="submit" className="mt-4">
-              {isLoading ? t("loading") : t("createLink.form.submitButton")}
+            <Button isLoading={isLoading} type="submit" className="mt-4">
+              {t("createLink.form.submitButton")}
             </Button>
           </form>
         </CardContent>

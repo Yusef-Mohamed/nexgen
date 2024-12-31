@@ -60,7 +60,7 @@ const DisplayCourses = () => {
               className="relative flex items-stretch gap-4 p-3 md:p-6 md:gap-10 max-md:flex-col cardShadow rounded-xl bg-clear-ground"
             >
               {/* Image skeleton */}
-              <div className="object-cover aspect-[1.29] md:w-60 w-full rounded-xl bg-muted animate-pulse" />
+              <div className="object-cover aspect-[1656/931] md:w-60 w-full rounded-xl bg-muted animate-pulse" />
 
               <div className="flex flex-1 w-full">
                 <div className="self-center w-full xl:pe-10 md:pe-6">
@@ -99,7 +99,7 @@ const DisplayCourses = () => {
                   alt={course.title}
                   width={600}
                   height={600}
-                  className="object-cover aspect-[1.29] md:w-60 w-full rounded-xl"
+                  className="object-cover aspect-[1656/931] md:w-60 w-full rounded-xl"
                 />
               </Link>
               <div className="flex flex-1 w-full ">
@@ -165,7 +165,7 @@ const DisplayCourses = () => {
                   {course.courseProgress?.certificate.file && (
                     <div className="self-center w-full xl:ps-10 md:ps-6 max-md:hidden border-s">
                       <a
-                        className="w-full block aspect-[1.29] md:w-60 rounded-xl bg-muted overflow-hidden"
+                        className="w-full block aspect-[1656/931] md:w-60 rounded-xl bg-muted overflow-hidden"
                         href={course.courseProgress.certificate.file}
                         target="_blank"
                         rel="noreferrer"

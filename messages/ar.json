@@ -451,7 +451,10 @@
     "go_to_meeting_room": "الذهاب إلى غرفة الاجتماع",
     "upcomingLives": "البثوث المباشرة القادمة",
     "noLivesNow": "لا توجد بثوث مباشرة الآن",
-    "noUpcomingLives": "لا توجد بثوث مباشرة قادمة"
+    "noUpcomingLives": "لا توجد بثوث مباشرة قادمة",
+    "thisWeek": "هذا الأسبوع",
+    "noLivesThisWeek": "لا توجد بثوث مباشرة هذا الأسبوع",
+    "upcomingWeeks": "الأسابيع القادمة"
   },
   "community": {
     "filters": "الفلاتر",
@@ -735,6 +738,7 @@
   },
   "teamManagement": {
     "createLink": {
+      "error": "حدث خطأ أثناء إنشاء الرابط",
       "title": "إنشاء رابط دعوة",
       "success": "تم إنشاء رابط الدعوه بنجاح",
       "description": "قم بإنشاء رابط دعوة لدعوة أعضاء جدد إلى فريقك",

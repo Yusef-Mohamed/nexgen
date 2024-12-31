@@ -83,7 +83,6 @@ const InvoicesManagement = () => {
   if (isLoading) {
     return <LoadingState />;
   }
-
   return (
     <div className="space-y-8">
       <StatsCards marketLog={marketLog} locale={locale} t={t} />
@@ -509,7 +508,7 @@ const SalesTab = ({
           .slice(0, all ? marketLog.sales.length : 5)
           .map((sale) => (
             <TableRow key={sale._id}>
-              <TableCell>{sale.purchaser.name}</TableCell>
+              <TableCell>{sale.purchaser?.name}</TableCell>
               <TableCell>{sale.item}</TableCell>
               <TableCell>${sale.amount.toLocaleString()}</TableCell>
               <TableCell>{sale.type || "-"}</TableCell>

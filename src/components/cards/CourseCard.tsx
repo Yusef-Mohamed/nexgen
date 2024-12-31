@@ -24,7 +24,7 @@ const CourseCard: React.FC<ICourse> = ({
         alt={title}
         width={600}
         height={600}
-        className="object-cover w-full aspect-[1.29] rounded-xl"
+        className="object-cover w-full aspect-[1656/931] rounded-xl"
       />
       <div className="w-full my-4 sm:my-5">
         <h4 className="font-semibold text-text-3">STATIC</h4>

@@ -40,7 +40,6 @@ const Main = ({
   const selectedDisplay = searchParams.get("display");
   const lessonTitle = searchParams.get("lessonTitle");
   const [isOpen, setIsOpen] = useState(false);
-  console.log("sections", sections);
   return (
     <section className="flex flex-col-reverse gap-8 xl:flex-row">
       <div className="w-full">
@@ -60,7 +59,7 @@ const Main = ({
           />
         )}
         {selectedLesson && selectedDisplay === "practice" && (
-          <CreatePractice lessonId={selectedLesson} />
+          <CreatePractice lessonId={selectedLesson} courseId={course._id} />
         )}
         {selectedLesson && selectedDisplay === "quiz" ? (
           <QuizBody
@@ -107,111 +106,127 @@ const Main = ({
               >
                 <AccordionTrigger>{section.section}</AccordionTrigger>
               </Button>
-              <AccordionContent className="p-0 -mt-2 space-y-1 overflow-hidden bg-clear-ground rounded-2xl">
+              <AccordionContent className="p-0 -mt-2 space-y-1 overflow-hidden bg-transparent ps-4 rounded-2xl">
                 {section.lessons?.map((lesson, ind) => (
                   <>
-                    <button
-                      key={ind}
-                      onClick={() => {
-                        setSearchParams({
-                          lesson: lesson._id,
-                          display: "lesson",
-                        });
-                      }}
-                      disabled={!lesson.videoUrl}
-                      className={cn(
-                        "flex items-center justify-between disabled:cursor-not-allowed   w-full disabled:opacity-50 gap-2 px-4 py-3 rounded-md hover:bg-primary bg-clear-ground hover:text-clear-ground text-start",
-                        {
-                          "bg-primary text-clear-ground":
-                            selectedLesson === lesson._id &&
-                            selectedDisplay === "lesson",
-                        }
-                      )}
-                    >
-                      <div className="flex items-center gap-2">
-                        <MdPlayCircleOutline className="w-6 h-6" />
-                        {lesson.title}
-                      </div>
-                      {!lesson.videoUrl && <FaLock />}
-                    </button>
-
-                    <button
-                      key={ind}
-                      onClick={() => {
-                        setSearchParams({
-                          lesson: lesson._id,
-                          display: "quiz",
-                          lessonTitle: lesson.title,
-                        });
-                      }}
-                      disabled={!lesson.videoUrl}
-                      className={cn(
-                        "flex disabled:cursor-not-allowed justify-between items-center disabled:opacity-50 w-full gap-2 px-4 py-3 rounded-md hover:bg-primary bg-clear-ground hover:text-clear-ground text-start",
-                        {
-                          "bg-primary text-clear-ground":
-                            selectedLesson === lesson._id &&
-                            selectedDisplay === "quiz",
-                        }
-                      )}
-                    >
-                      <div className="flex items-center gap-2">
-                        <PiExam className="w-6 h-6" />
-                        {lesson.title} - {text("quiz")}
-                      </div>{" "}
-                      {!lesson.videoUrl && <FaLock />}
-                    </button>
-                    {lesson.isRequireAnalytic && (
-                      <button
-                        key={ind}
-                        onClick={() => {
-                          setSearchParams({
-                            lesson: lesson._id,
-                            display: "practice",
-                            lessonTitle: lesson.title,
-                          });
-                        }}
-                        disabled={!lesson.videoUrl}
-                        className={cn(
-                          "flex disabled:cursor-not-allowed justify-between items-center disabled:opacity-50 w-full gap-2 px-4 py-3 rounded-md hover:bg-primary bg-clear-ground hover:text-clear-ground text-start",
-                          {
-                            "bg-primary text-clear-ground":
-                              selectedLesson === lesson._id &&
-                              selectedDisplay === "practice",
-                          }
-                        )}
+                    <Accordion type="single" collapsible>
+                      <AccordionItem
+                        className="p-0 border-none"
+                        key={index}
+                        value={"item-" + (index + 1)}
                       >
-                        <div className="flex items-center gap-2">
-                          <MdOutlineAssignment className="w-6 h-6" />
-                          {lesson.title} - {text("practice")}
-                        </div>{" "}
-                        {!lesson.videoUrl && <FaLock />}
-                      </button>
-                    )}
-                    {sections.length - 1 === index &&
-                      (section?.lessons?.length || 0) - 1 === ind && (
-                        <button
-                          key={ind}
-                          onClick={() => {
-                            setSearchParams({
-                              display: "final_exam",
-                            });
-                          }}
-                          disabled={!lesson.videoUrl}
-                          className={cn(
-                            "flex disabled:cursor-not-allowed justify-between items-center disabled:opacity-50 w-full gap-2 px-4 py-3 rounded-md hover:bg-primary bg-clear-ground hover:text-clear-ground text-start",
-                            {
-                              "bg-primary text-clear-ground":
-                                selectedDisplay === "final_exam",
-                            }
-                          )}
+                        <Button
+                          variant={"outline"}
+                          className="flex justify-between gap-4 text-sm whitespace-normal text-start md:text-sm low lg:text-sm"
+                          asChild
                         >
-                          <div className="flex items-center gap-2">
-                            <GiGraduateCap className="w-6 h-6" />
-                            {text("final_exam")}
-                          </div>{" "}
-                          {!lesson.videoUrl && <FaLock />}
-                        </button>
-                      )}
+                          <AccordionTrigger>{lesson.title}</AccordionTrigger>
+                        </Button>
+                        <AccordionContent className="p-0 -mt-2 space-y-1 overflow-hidden bg-transparent rounded-2xl">
+                          <button
+                            key={ind}
+                            onClick={() => {
+                              setSearchParams({
+                                lesson: lesson._id,
+                                display: "lesson",
+                              });
+                            }}
+                            disabled={!lesson.videoUrl}
+                            className={cn(
+                              "flex items-center justify-between disabled:cursor-not-allowed   w-full disabled:opacity-50 gap-2 px-4 py-3 rounded-md hover:bg-primary bg-clear-ground hover:text-clear-ground text-start",
+                              {
+                                "bg-primary text-clear-ground":
+                                  selectedLesson === lesson._id &&
+                                  selectedDisplay === "lesson",
+                              }
+                            )}
+                          >
+                            <div className="flex items-center gap-2">
+                              <MdPlayCircleOutline className="w-6 h-6" />
+                              {lesson.title}
+                            </div>
+                            {!lesson.videoUrl && <FaLock />}
+                          </button>
+                          <button
+                            key={ind}
+                            onClick={() => {
+                              setSearchParams({
+                                lesson: lesson._id,
+                                display: "quiz",
+                                lessonTitle: lesson.title,
+                              });
+                            }}
+                            disabled={!lesson.videoUrl}
+                            className={cn(
+                              "flex disabled:cursor-not-allowed justify-between items-center disabled:opacity-50 w-full gap-2 px-4 py-3 rounded-md hover:bg-primary bg-clear-ground hover:text-clear-ground text-start",
+                              {
+                                "bg-primary text-clear-ground":
+                                  selectedLesson === lesson._id &&
+                                  selectedDisplay === "quiz",
+                              }
+                            )}
+                          >
+                            <div className="flex items-center gap-2">
+                              <PiExam className="w-6 h-6" />
+                              {lesson.title} - {text("quiz")}
+                            </div>{" "}
+                            {!lesson.videoUrl && <FaLock />}
+                          </button>
+                          {lesson.isRequireAnalytic && (
+                            <button
+                              key={ind}
+                              onClick={() => {
+                                setSearchParams({
+                                  lesson: lesson._id,
+                                  display: "practice",
+                                  lessonTitle: lesson.title,
+                                });
+                              }}
+                              disabled={!lesson.videoUrl}
+                              className={cn(
+                                "flex disabled:cursor-not-allowed justify-between items-center disabled:opacity-50 w-full gap-2 px-4 py-3 rounded-md hover:bg-primary bg-clear-ground hover:text-clear-ground text-start",
+                                {
+                                  "bg-primary text-clear-ground":
+                                    selectedLesson === lesson._id &&
+                                    selectedDisplay === "practice",
+                                }
+                              )}
+                            >
+                              <div className="flex items-center gap-2">
+                                <MdOutlineAssignment className="w-6 h-6" />
+                                {lesson.title} - {text("practice")}
+                              </div>{" "}
+                              {!lesson.videoUrl && <FaLock />}
+                            </button>
+                          )}
+                          {sections.length - 1 === index &&
+                            (section?.lessons?.length || 0) - 1 === ind && (
+                              <button
+                                key={ind}
+                                onClick={() => {
+                                  setSearchParams({
+                                    display: "final_exam",
+                                  });
+                                }}
+                                disabled={!lesson.videoUrl}
+                                className={cn(
+                                  "flex disabled:cursor-not-allowed justify-between items-center disabled:opacity-50 w-full gap-2 px-4 py-3 rounded-md hover:bg-primary bg-clear-ground hover:text-clear-ground text-start",
+                                  {
+                                    "bg-primary text-clear-ground":
+                                      selectedDisplay === "final_exam",
+                                  }
+                                )}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <GiGraduateCap className="w-6 h-6" />
+                                  {text("final_exam")}
+                                </div>{" "}
+                                {!lesson.videoUrl && <FaLock />}
+                              </button>
+                            )}
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
                   </>
                 ))}
               </AccordionContent>

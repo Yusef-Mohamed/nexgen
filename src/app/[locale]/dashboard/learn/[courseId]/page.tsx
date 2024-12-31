@@ -62,7 +62,6 @@ const CoursesPage = async ({
       "/courses/" + params.courseId
     );
     const courseData = courseRes.data.data as ICourse;
-
     return (
       <main
         style={{

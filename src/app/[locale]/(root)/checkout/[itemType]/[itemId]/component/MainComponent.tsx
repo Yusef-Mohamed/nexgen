@@ -114,7 +114,6 @@ const MainComponent = ({
   const [coupon, setCoupon] = useState("");
   const applyCoupon = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // /coupons/getCouponDetails/Ns10
     try {
       setIsLoading(true);
       const axiosInstance = await createClientAxiosInstance();
@@ -136,9 +135,14 @@ const MainComponent = ({
       }
     } catch (err) {
       console.log(err);
-      const typedError = err as AxiosError<{ error?: string }>;
+      const typedError = err as AxiosError<{
+        error?: string;
+        message?: string;
+      }>;
       if (typedError.response?.data.error)
         toast.error(typedError.response.data.error);
+      if (typedError.response?.data.message)
+        toast.error(typedError.response.data.message);
       else toast.error(text("invalidCoupon"));
     }
     setIsLoading(false);

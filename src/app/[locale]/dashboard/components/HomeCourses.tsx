@@ -19,7 +19,7 @@ const CourseSkeleton = () => {
         <Skeleton className="w-32 rounded h-9 max-sm:h-8" />
       </div>
       <div className="basis-1/3">
-        <Skeleton className="max-w-52 w-full aspect-[1.29] rounded-md" />
+        <Skeleton className="max-w-52 w-full aspect-[1656/931] rounded-md" />
       </div>
     </div>
   );
@@ -38,7 +38,31 @@ const HomeCourses = () => {
   useEffect(() => {
     if (token && user) getCourses(token, user._id);
   }, [token, user]);
-  console.log(courses);
+
+  const getNewestIncompleteCourse = () => {
+    // Filter for incomplete courses (totalProgress < 100)
+    const incompleteCourses = courses.filter(
+      (course) => course.totalProgress !== 100
+    );
+
+    // Sort by newest lesson exam attempt date
+    return incompleteCourses.sort((a, b) => {
+      const aLatestAttempt =
+        a.userScore?.lessonsScores
+          ?.map((score) => new Date(score.attemptDate))
+          .sort((d1, d2) => d2.getTime() - d1.getTime())[0] || new Date(0);
+
+      const bLatestAttempt =
+        b.userScore?.lessonsScores
+          ?.map((score) => new Date(score.attemptDate))
+          .sort((d1, d2) => d2.getTime() - d1.getTime())[0] || new Date(0);
+
+      return bLatestAttempt.getTime() - aLatestAttempt.getTime();
+    })[0];
+  };
+
+  const newestIncompleteCourse = getNewestIncompleteCourse();
+
   return (
     <div className="space-y-3">
       {isGettingCourses ? (
@@ -46,53 +70,59 @@ const HomeCourses = () => {
           <h2>{text("continueYourLearningJourney")}</h2>
           <CourseSkeleton />
         </>
-      ) : courses.length ? (
+      ) : newestIncompleteCourse ? (
         <>
           <h2>{text("continueYourLearningJourney")}</h2>
-          {courses.slice(0, 1).map((course) => (
-            <div
-              className="flex items-center w-full p-3 rounded-md cardShadow sm:p-6 bg-background"
-              key={course._id}
-            >
-              <div className="basis-2/3">
-                <h4 className="mb-8 max-sm:mb-4 h2s">{course.title}</h4>
-                <div className="flex items-center w-full gap-2">
-                  <div className="w-full h-1 overflow-hidden rounded-full md:max-w-xs bg-muted">
-                    <div
-                      className="w-full h-1 rounded-full bg-primary"
-                      style={{
-                        transform: `translateX(${locale === "en" ? "-" : ""}${
-                          100 - Number(course.userScore?.totalProgress || 0)
-                        }%)`,
-                      }}
-                    ></div>
-                  </div>
+          <div
+            className="flex items-center w-full p-3 rounded-md cardShadow sm:p-6 bg-background"
+            key={newestIncompleteCourse._id}
+          >
+            <div className="basis-2/3">
+              <h4 className="mb-8 max-sm:mb-4 h2s">
+                {newestIncompleteCourse.title}
+              </h4>
+              <div className="flex items-center w-full gap-2">
+                <div className="w-full h-1 overflow-hidden rounded-full md:max-w-xs bg-muted">
+                  <div
+                    className="w-full h-1 rounded-full bg-primary"
+                    style={{
+                      transform: `translateX(${locale === "en" ? "-" : ""}${
+                        100 -
+                        Number(
+                          newestIncompleteCourse.userScore?.totalProgress || 0
+                        )
+                      }%)`,
+                    }}
+                  ></div>
                 </div>
-                <span className="block mt-2 mb-4 text-sm max-sm:mt-1 max-sm:mb-2">
-                  {text("completedPercentage")}{" "}
-                  {parseInt(course.userScore?.totalProgress?.toString() || "0")}
-                  %
-                </span>
-                <Button
-                  asChild
-                  className="max-sm:h-8 max-sm:text-xs max-sm:rounded max-sm:w-fit max-sm:min-w-24 w-fit"
-                >
-                  <Link href={`/dashboard/learn/${course._id}`}>
-                    {text("continueLearning")}
-                  </Link>
-                </Button>
               </div>
-              <div className="basis-1/3">
-                <Image
-                  src={course.image}
-                  alt={course.title}
-                  width={600}
-                  height={400}
-                  className="object-cover w-full rounded-md aspect-[1.29] max-w-52"
-                />
-              </div>
+              <span className="block mt-2 mb-4 text-sm max-sm:mt-1 max-sm:mb-2">
+                {text("completedPercentage")}{" "}
+                {parseInt(
+                  newestIncompleteCourse.userScore?.totalProgress?.toString() ||
+                    "0"
+                )}
+                %
+              </span>
+              <Button
+                asChild
+                className="max-sm:h-8 max-sm:text-xs max-sm:rounded max-sm:w-fit max-sm:min-w-24 w-fit"
+              >
+                <Link href={`/dashboard/learn/${newestIncompleteCourse._id}`}>
+                  {text("continueLearning")}
+                </Link>
+              </Button>
             </div>
-          ))}
+            <div className="basis-1/3">
+              <Image
+                src={newestIncompleteCourse.image}
+                alt={newestIncompleteCourse.title}
+                width={600}
+                height={400}
+                className="object-cover w-full rounded-md aspect-[1656/931] max-w-52"
+              />
+            </div>
+          </div>
         </>
       ) : null}
     </div>

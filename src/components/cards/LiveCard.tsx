@@ -19,43 +19,58 @@ const LiveCard: React.FC<LiveCardProps> = ({ live }) => {
     }
   }, []);
   return (
-    <div className="w-full p-4 border rounded-md">
-      <div className="flex flex-wrap items-center justify-end gap-2">
-        {live.package.map((packageItem) => {
-          if (!packageItem?.course) return null;
-          return (
-            <div
-              key={packageItem._id}
-              style={{
-                backgroundColor:
-                  theme === "dark"
-                    ? packageItem.course.colors?.bgDarkMode
-                    : packageItem.course.colors?.bgColor,
-                color:
-                  theme === "dark"
-                    ? packageItem.course.colors?.fontDarkMode
-                    : packageItem.course.colors?.fontColor,
-              }}
-              className="px-3 py-2 text-xs rounded-md "
-            >
-              {packageItem.course.title}
-            </div>
-          );
-        })}
-      </div>
-      <div className="flex items-center justify-between mt-2 ">
-        <div className="flex items-center gap-4">
-          {live.instructor ? (
-            <UserAvatar user={live.instructor} />
-          ) : (
-            <UserAvatar />
-          )}
-          <h4 className="text-sm font-semibold">
-            {live.instructor ? live.instructor.name : text("no_instructor")}
-          </h4>
+    <div className="flex flex-col justify-between w-full gap-4 p-4 border rounded-md">
+      <div>
+        <div className="flex flex-wrap items-center justify-start gap-2">
+          {live.package.map((packageItem) => {
+            if (!packageItem?.course) return null;
+            return (
+              <div
+                key={packageItem._id}
+                style={{
+                  backgroundColor:
+                    theme === "dark"
+                      ? packageItem.course.colors?.bgDarkMode
+                      : packageItem.course.colors?.bgColor,
+                  color:
+                    theme === "dark"
+                      ? packageItem.course.colors?.fontDarkMode
+                      : packageItem.course.colors?.fontColor,
+                  fontSize: "0.6rem",
+                }}
+                className="px-1.5 py-1  rounded font-semibold "
+              >
+                {packageItem.course.title}
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex items-center justify-between mt-4">
+          <div className="flex items-center gap-4 ">
+            {live.instructor ? (
+              <UserAvatar user={live.instructor} />
+            ) : (
+              <UserAvatar />
+            )}
+            <h4 className="text-sm font-semibold">
+              {live.instructor ? live.instructor.name : text("no_instructor")}
+            </h4>
+          </div>
+        </div>
+        <div className="py-2 mt-1 mb-3 font-semibold">{live.title}</div>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 font-semibold text-text-3">
+            <FaRegCalendarAlt />
+            {new Date(live.date).toLocaleDateString()}{" "}
+          </div>
+
+          <div className="flex items-center gap-2 font-semibold text-text-3">
+            <FaRegClock />
+            {new Date(live.date).toLocaleTimeString()}
+          </div>
         </div>
       </div>
-      <div className="py-2 my-3 font-semibold">{live.title}</div>
+
       {live.link && (
         <div>
           <Button
@@ -66,18 +81,6 @@ const LiveCard: React.FC<LiveCardProps> = ({ live }) => {
               {text("go_to_meeting_room")}
             </a>
           </Button>
-        </div>
-      )}
-      {!live.link && (
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 font-semibold text-text-3">
-            <FaRegCalendarAlt />
-            {new Date(live.date).toLocaleDateString()}{" "}
-          </div>
-          <div className="flex items-center gap-2 font-semibold text-text-3">
-            <FaRegClock />
-            {new Date(live.date).toLocaleTimeString()}
-          </div>
         </div>
       )}
     </div>

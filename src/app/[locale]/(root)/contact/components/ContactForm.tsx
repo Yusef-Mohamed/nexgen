@@ -19,8 +19,8 @@ const ContactForm = () => {
     if (!form.current) return;
     setIsLoading(true);
     emailjs
-      .sendForm("service_fshk8zk", "template_oiad10m", form.current, {
-        publicKey: "reEgbrdQEZu5u5bH9",
+      .sendForm("service_zux03ei", "template_a3ow78q", form.current, {
+        publicKey: "VMBcAEntptjUutBix",
       })
       .then(
         () => {
@@ -38,18 +38,18 @@ const ContactForm = () => {
   };
 
   return (
-    <section className="grid lg:grid-cols-2 gap-20 container secPadding">
+    <section className="container grid gap-20 lg:grid-cols-2 secPadding">
       <div>
-        <h1 className="h1-5 mb-2 md:mb-4">{text("contactFormTitle")}</h1>
+        <h1 className="mb-2 h1-5 md:mb-4">{text("contactFormTitle")}</h1>
         <p
-          className="h5 text-text-2 font-normal"
+          className="font-normal h5 text-text-2"
           style={{
             fontWeight: 400,
           }}
         >
           {text("contactFormDescription")}
         </p>
-        <form ref={form} className="space-y-4 mt-6" onSubmit={sendEmail}>
+        <form ref={form} className="mt-6 space-y-4" onSubmit={sendEmail}>
           <div className="space-y-2">
             <Label htmlFor="user_name" className="font-semibold text-text-2">
               {inputs("name")}
@@ -94,14 +94,14 @@ const ContactForm = () => {
           </Button>
         </form>
       </div>
-      <div className="relative max-lg:hidden rounded-3xl overflow-hidden    ">
+      <div className="relative overflow-hidden max-lg:hidden rounded-3xl ">
         <div className="bg-[#011F4333] absolute w-full h-full" />
         <Image
           src="/images/contact.jpeg"
           alt="Contact"
           width={1000}
           height={1000}
-          className="w-full h-full object-cover"
+          className="object-cover w-full h-full"
         />
       </div>
     </section>

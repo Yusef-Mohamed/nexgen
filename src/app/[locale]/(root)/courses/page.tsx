@@ -32,8 +32,8 @@ const CoursesPage = ({ params }: { params: { locale: string } }) => {
       </section>
       <Features />
       <PopularCourses viewAll />
-      <LearningPaths />
-      <Services />
+      <LearningPaths viewAll />
+      <Services viewAll />
       <FAQ />
     </main>
   );

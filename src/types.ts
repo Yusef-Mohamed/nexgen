@@ -51,6 +51,7 @@ export interface ILesson {
   type: string;
   isRequireAnalytic: boolean;
   lessonDuration?: number;
+  order: number;
 }
 
 export interface IUser {
@@ -325,6 +326,7 @@ export interface IUserScore {
   totalProgress: string;
   completedLessonsPercentage: number;
   completionStatus: string;
+  lessonsScores: IProgress[];
 }
 export interface IPagination {
   numberOfPages: number;

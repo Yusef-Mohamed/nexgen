@@ -14,7 +14,13 @@ import { IoClose } from "react-icons/io5";
 import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 
-const CreatePractice = ({ lessonId }: { lessonId?: string }) => {
+const CreatePractice = ({
+  lessonId,
+  courseId,
+}: {
+  lessonId?: string;
+  courseId?: string;
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [content, setContent] = useState("");
   const [media, setMedia] = useState<File[]>([]);
@@ -42,6 +48,7 @@ const CreatePractice = ({ lessonId }: { lessonId?: string }) => {
         return;
       }
       if (lessonId) formData.append("lesson", lessonId);
+      if (courseId) formData.append("course", courseId);
       const axiosInstance = await createClientAxiosInstance();
       await axiosInstance.post("/analytics", formData, {
         headers: {

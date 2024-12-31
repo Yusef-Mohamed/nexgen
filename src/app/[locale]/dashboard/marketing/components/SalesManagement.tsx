@@ -271,9 +271,13 @@ const StatsCards = ({
       />
       <StatCard
         title={t("hoursSpent")}
-        value={user?.timeSpent.totalTimeSpent || 0}
-        difference={user?.timeSpent.monthlyTimeSpent || 0}
-        total={user?.timeSpent.totalTimeSpent || 0}
+        value={Number(
+          ((user?.timeSpent.monthlyTimeSpent || 0) / (60 * 60 * 1000)).toFixed(
+            2
+          )
+        )}
+        difference={0}
+        total={0}
         base={t("hour")}
       />
       <StatCard
