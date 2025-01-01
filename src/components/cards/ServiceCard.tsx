@@ -11,6 +11,7 @@ const ServiceCard: React.FC<IPackage> = ({
   price,
   priceAfterDiscount,
   _id,
+  subscriptionDurationDays,
 }) => {
   const text = useTranslations("services");
   return (
@@ -25,7 +26,9 @@ const ServiceCard: React.FC<IPackage> = ({
           <div className="h2">
             ${priceAfterDiscount ? priceAfterDiscount : price}
           </div>
-          <span className="h4 text-text-3">/ {text("perMonth")}</span>
+          <span className="h4 text-text-3">
+            / {subscriptionDurationDays} {text("day")}
+          </span>
         </div>
         {priceAfterDiscount && (
           <h4 className="mt-1 sm:mt-2 text-primary">
