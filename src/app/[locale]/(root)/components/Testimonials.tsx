@@ -12,8 +12,8 @@ const Testimonials: React.FC = async () => {
   const reviewsData = reviewsRes.data.data as IReview[];
   return (
     <GridSection
-      button={text("exploreAllReviews")}
-      href="/reviews"
+      // button={text("exploreAllReviews")}
+      // href="/reviews"
       heading={text("heading")}
     >
       {reviewsData.map((testimonial, index) => (

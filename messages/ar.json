@@ -336,7 +336,9 @@
     "courseContent": "محتوى الدورة",
     "displayMore": "عرض المزيد",
     "thereIsNoReview": "لا توجد تقييمات",
-    "startLearning": "ابدأ التعلم"
+    "startLearning": "ابدأ التعلم",
+    "viewAllReviews": "عرض جميع التقييمات",
+    "reviews": "التقييمات"
   },
   "contact": {
     "contactFormTitle": "تواصل معنا",

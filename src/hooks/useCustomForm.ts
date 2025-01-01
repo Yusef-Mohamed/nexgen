@@ -9,6 +9,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ZodSchema } from "zod";
 import { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
 interface UseCustomFormProps<T extends FieldValues> {
   schema: ZodSchema<T>;
@@ -57,6 +58,7 @@ function useCustomForm<T extends FieldValues>({
         });
       } else if (typedError.response?.data?.message) {
         setFormError(typedError.response.data.message);
+        toast.error(typedError.response.data.message);
       }
     } finally {
       setIsLoading(false);

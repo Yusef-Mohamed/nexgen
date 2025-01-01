@@ -80,6 +80,7 @@ const Charts = () => {
             },
           }
         );
+        console.log(res.data.data);
         setCourses(res.data.data);
       } catch (err) {
         console.log(err);

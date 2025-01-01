@@ -133,14 +133,6 @@ const TeamManagement: React.FC = () => {
       [e.target.name]: e.target.value,
     });
   };
-
-  // if (isFetching) {
-  //   return (
-  //     <div className="flex items-center justify-center min-h-[400px]">
-  //       <div className="w-8 h-8 border-b-2 rounded-full animate-spin border-primary"></div>
-  //     </div>
-  //   );
-  // }
   return (
     <section className="space-y-4">
       <h2 className="font-semibold">{t("affiliateMarketing")}</h2>

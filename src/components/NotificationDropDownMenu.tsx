@@ -55,7 +55,6 @@ const NotificationDropDownMenu = () => {
   useEffect(() => {
     if (isOpened) fetchNotifications(true);
   }, [fetchNotifications, isOpened]);
-  console.log(notifications);
   return (
     <DropdownMenu onOpenChange={setIsOpened}>
       <DropdownMenuTrigger className="relative flex items-center justify-center h-[2.5rem] w-[2.5rem] bg-primary-faded border-none text-xl border rounded-full">

@@ -11,12 +11,13 @@ import SidebarFooter from "./SidebarFooter";
 import { CiMoneyBill } from "react-icons/ci";
 import { RiDiscountPercentLine, RiTeamFill } from "react-icons/ri";
 import { useAuth } from "@/components/auth-provider";
+import { reqAuthToReview } from "@/constants";
 const Sidebar: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
   className,
   ...props
 }) => {
   const { user } = useAuth();
-  const links = [
+  let links = [
     {
       href: "/dashboard",
       label: "home",
@@ -86,16 +87,16 @@ const Sidebar: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
       icon: <FaUser />,
     },
   ];
-  // if (user && !user.authToReview) {
-  //   links = links.filter((link) => {
-  //     return !reqAuthToReview?.includes(link.label);
-  //   });
-  // }
-  // if (user && !user.isMarketer) {
-  //   links = links.filter((link) => {
-  //     return link.label !== "marketing";
-  //   });
-  // }
+  if (user && !user.authToReview) {
+    links = links.filter((link) => {
+      return !reqAuthToReview?.includes(link.label);
+    });
+  }
+  if (user && !user.isMarketer) {
+    links = links.filter((link) => {
+      return link.label !== "marketing";
+    });
+  }
   return (
     <aside
       {...props}

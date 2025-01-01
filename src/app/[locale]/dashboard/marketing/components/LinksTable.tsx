@@ -8,15 +8,51 @@ import {
 } from "@/components/ui/table";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/auth-provider";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
+import { IUser } from "@/types";
+import { Button } from "@/components/ui/button";
 
 const LinksTable = ({ links }: { links: string[] }) => {
   const t = useTranslations("teamManagement");
+  const [data, setData] = useState<{
+    clicksDetails?: {
+      month: string;
+      year: string;
+      clicksDetails: {
+        clicks: number;
+        invitationKey: string;
+      }[];
+    };
+    registeredUsersCounter: Record<string, IUser[]>;
+  } | null>(null);
+  const { user, token } = useAuth();
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!user?._id) return;
+      try {
+        const axiosInstance = createClientAxiosInstance();
+        const res = await axiosInstance.get(
+          `/marketingAnalytics/getInvitationsAnalytics/${user._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setData(res.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error(t("fetchError"));
+      }
+    };
 
+    if (token) fetchData();
+  }, [token, user?._id, t]);
+  console.log(data);
   return (
     <Card className="mb-4 border-none">
       <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4">
@@ -38,7 +74,7 @@ const LinksTable = ({ links }: { links: string[] }) => {
             </TableHeader>
             <TableBody>
               {links?.map((link, index) => (
-                <LinkRow link={link} index={index} key={index} />
+                <LinkRow data={data} link={link} index={index} key={index} />
               ))}
               {links.length === 0 && (
                 <TableRow>
@@ -54,62 +90,58 @@ const LinksTable = ({ links }: { links: string[] }) => {
     </Card>
   );
 };
-// const LinkRow = ({ link, index }: { link: string; index: number }) => {
-const LinkRow = ({ link }: { link: string; index: number }) => {
+const LinkRow = ({
+  link,
+  index,
+  data,
+}: {
+  link: string;
+  index: number;
+  data: {
+    clicksDetails?: {
+      month: string;
+      year: string;
+      clicksDetails: {
+        clicks: number;
+        invitationKey: string;
+      }[];
+    };
+    registeredUsersCounter: Record<string, IUser[]>;
+  } | null;
+}) => {
   const t = useTranslations("teamManagement");
-  const [data, setData] = useState<{
-    registeredUsersCounter: number;
-    clicks: {
-      month: number;
-      year: number;
-      count: number;
-    };
-  } | null>(null);
-  const { user, token } = useAuth();
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!user?._id) return;
-      try {
-        const axiosInstance = createClientAxiosInstance();
-        const res = await axiosInstance.get(
-          `/marketingAnalytics/getInvitationsAnalytics/${user._id}?invitationKey=${link}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setData(res.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error(t("fetchError"));
-      }
-    };
-
-    if (token) fetchData();
-  }, [token, user?._id, t]);
-  console.log(data);
+  const locale = useLocale();
+  const clicksCount = useMemo(
+    () =>
+      data?.clicksDetails?.clicksDetails?.find(
+        (item) => item.invitationKey === link
+      )?.clicks,
+    [data, link]
+  );
+  const registerCount = useMemo(
+    () => data?.registeredUsersCounter[link]?.length,
+    [data, link]
+  );
   return (
     <TableRow>
-      {/* <TableCell>{index + 1}</TableCell>
+      <TableCell>{index + 1}</TableCell>
       <TableCell>{link}</TableCell>
-      <TableCell>{data?.clicks?.count || 0}</TableCell>
-      <TableCell>{data?.registeredUsersCounter}</TableCell>
-      <TableCell>{data?.clicks?.month}</TableCell>
-      <TableCell>{data?.clicks?.year}</TableCell>
+      <TableCell>{clicksCount || 0}</TableCell>
+      <TableCell>{registerCount || 0}</TableCell>
+      <TableCell>{data?.clicksDetails?.month}</TableCell>
+      <TableCell>{data?.clicksDetails?.year}</TableCell>
       <TableCell>
         <Button
           size={"sm"}
           onClick={() => {
-            const finLink = `${window.location.origin}/${locale}/sign-up?invitationKey=${link}&invitor=${user?._id}`;
+            const finLink = `${window.location.origin}/${locale}/sign-up/${link}`;
             navigator.clipboard.writeText(finLink);
             toast.success(t("linkCopied"));
           }}
         >
           {t("copy")}
         </Button>
-      </TableCell> */}
+      </TableCell>
     </TableRow>
   );
 };

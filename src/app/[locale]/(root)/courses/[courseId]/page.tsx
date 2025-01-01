@@ -105,7 +105,11 @@ const CoursesPage = async ({
         <PromoBanner />
         <section className="container secPadding">
           <h2 className="mb-6 md:mb-12">{text("studentsReviews")}</h2>
-          <ReviewsGrid reviews={courseData.reviews.slice(0, 6)} />
+          <ReviewsGrid
+            reviews={courseData.reviews}
+            isAll
+            dialogHeader={`${courseData.title} - ${text("reviews")}`}
+          />
         </section>
         <PopularCourses />
       </main>

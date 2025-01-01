@@ -1,20 +1,18 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import useCustomSearchParams from "@/hooks/useSearchParams";
 import { useRouter } from "@/i18n/routing";
 import * as z from "zod";
 import GoogleAuthBtn from "../GoogleAuthBtn";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import CustomForm from "./CustomForm";
 import { useAuth } from "../auth-provider";
+import { useEffect } from "react";
 
-const SignUpForm = () => {
+const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
   const t = useTranslations("SignIn");
   const inputs = useTranslations("Forms");
-  const { searchParams } = useCustomSearchParams();
   const router = useRouter();
-
   const formSchema = z
     .object({
       name: z.string({ message: inputs("thisFieldIsRequired") }),
@@ -42,10 +40,8 @@ const SignUpForm = () => {
       invitor?: string | null;
       invitationKey?: string | null;
     } = { ...data };
-
-    if (searchParams.get("invitor")) {
-      formattedData.invitor = searchParams.get("invitor");
-      formattedData.invitationKey = searchParams.get("invitationKey");
+    if (inviteKey) {
+      formattedData.invitationKey = inviteKey;
     }
 
     const response = await axiosInstance.post("/auth/signup", formattedData);
@@ -103,7 +99,13 @@ const SignUpForm = () => {
       required: true,
     },
   ];
-
+  useEffect(() => {
+    const axiosInstance = createClientAxiosInstance();
+    if (inviteKey)
+      axiosInstance.put(
+        `/marketingAnalytics/incrementSignUpClicks/${inviteKey}`
+      );
+  }, [inviteKey]);
   return (
     <CustomForm
       schema={formSchema}

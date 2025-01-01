@@ -73,7 +73,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         router.refresh();
       } catch (err) {
         const typedError = err as AxiosError;
-        if (typedError.response?.status === 401) handleNotActive();
+        if (
+          typedError.response?.status === 401 ||
+          typedError.response?.status === 407
+        )
+          handleNotActive();
         if (typedError.response?.status === 406) {
           setShowIdVerificationModal(true);
           setStatus(406);
@@ -130,12 +134,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = () => {
     router.push("/");
-    setUser(null);
-    setToken("");
-    setStatus(undefined);
-    deleteCookie("user");
-    deleteCookie("token");
-    router.refresh();
+    setTimeout(() => {
+      setUser(null);
+      setToken("");
+      setStatus(undefined);
+      deleteCookie("user");
+      deleteCookie("token");
+      router.refresh();
+    }, 500);
   };
   useEffect(() => {
     if (
@@ -154,6 +160,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       );
     }
   }, [status, pathname]);
+  useEffect(() => {
+    if (!token) {
+      if (pathname.includes("dashboard") || pathname.includes("checkout")) {
+        router.push("/");
+      }
+    }
+  }, [token, pathname]);
   return (
     <AuthContext.Provider
       value={{ user, updateUser, token: token || "", logout }}
