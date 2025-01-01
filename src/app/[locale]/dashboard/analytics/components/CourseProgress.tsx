@@ -115,7 +115,7 @@ const CourseProgress = () => {
           color="#9747FF"
           value={Number(
             (
-              ((selectedUserObject?.timeSpent.monthlyTimeSpent || 0) /
+              ((selectedUserObject?.timeSpent?.monthlyTimeSpent || 0) /
                 (50 * 60 * 60 * 1000)) *
               100
             ).toFixed(2)

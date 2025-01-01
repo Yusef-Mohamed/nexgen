@@ -88,7 +88,7 @@ const MainComponent = ({
       const axiosInstance = await createClientAxiosInstance();
       const res = await axiosInstance.put(
         endpoint,
-        { paymentMethod: selectedMethod, coupon: selectedCoupon },
+        { paymentMethod: selectedMethod, couponName: selectedCoupon },
         {
           headers: {
             "Content-Type": "application/json",

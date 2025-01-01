@@ -23,6 +23,7 @@ import UserAvatar from "@/components/UserAvatar";
 import OrdersDialog from "./OrdersDialog";
 import { format } from "date-fns";
 import { Link } from "@/i18n/routing";
+import { Button } from "@/components/ui/button";
 const formatDate = (date: Date) => {
   return format(date, "yyyy MM dd").split(" ").join("-");
 };
@@ -36,6 +37,7 @@ const TeamTable = ({ data }: { data: TeamData }) => {
     from: undefined,
     to: undefined,
   });
+  const [isShowAll, setIsShowAll] = useState<boolean>(false);
   const filteredUsers = useMemo(() => {
     let filteredUsers: User[] = [];
     if (purchaseFilter === "buyers") {
@@ -119,9 +121,11 @@ const TeamTable = ({ data }: { data: TeamData }) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUsers?.map((member, index) => (
-                <UserRow member={member} index={index} key={member._id} />
-              ))}
+              {filteredUsers
+                .slice(0, isShowAll ? filteredUsers.length : 3)
+                ?.map((member, index) => (
+                  <UserRow member={member} index={index} key={member._id} />
+                ))}
               {filteredUsers.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={7} className="py-8 text-center">
@@ -131,6 +135,14 @@ const TeamTable = ({ data }: { data: TeamData }) => {
               )}
             </TableBody>
           </Table>
+          <div className="flex justify-center mt-4">
+            <Button
+              onClick={() => setIsShowAll((prev) => !prev)}
+              variant={"outline"}
+            >
+              {isShowAll ? t("showLess") : t("showAll")}
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

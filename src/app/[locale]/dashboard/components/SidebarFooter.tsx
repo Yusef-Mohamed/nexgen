@@ -6,7 +6,8 @@ import { useTheme } from "next-themes";
 import { FaSun } from "react-icons/fa";
 import { IoMoon } from "react-icons/io5";
 import SidebarLink from "./SidebarLink";
-import { IoIosNotifications, IoMdSettings } from "react-icons/io";
+// import { IoIosNotifications, IoMdSettings } from "react-icons/io";
+import { IoMdSettings } from "react-icons/io";
 import { RiLogoutBoxLine, RiLogoutBoxRLine } from "react-icons/ri";
 import { useAuth } from "@/components/auth-provider";
 import { useEffect, useMemo, useState } from "react";
@@ -77,13 +78,13 @@ const SidebarFooter = () => {
           icon: <IoMdSettings />,
         }}
       />
-      <SidebarLink
+      {/* <SidebarLink
         link={{
           href: "/dashboard/notifications",
           label: "notifications",
           icon: <IoIosNotifications />,
         }}
-      />
+      /> */}
       <button
         onClick={logout}
         className={cn(

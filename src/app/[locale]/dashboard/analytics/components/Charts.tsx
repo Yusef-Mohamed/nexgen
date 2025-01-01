@@ -80,7 +80,6 @@ const Charts = () => {
             },
           }
         );
-        console.log(res.data.data);
         setCourses(res.data.data);
       } catch (err) {
         console.log(err);
@@ -142,8 +141,8 @@ const Charts = () => {
   }, [selectedCourse]);
   return (
     <>
-      <main className="flex min-h-screen px-2 py-6 lg:px-6 sm:px-4">
-        <div className="grid gap-8 xl:grid-cols-3">
+      <main className="flex w-full min-h-screen px-2 py-6 lg:px-6 sm:px-4">
+        <div className="grid w-full gap-8 xl:grid-cols-3">
           <div className="w-full space-y-8 max-lg:order-2 xl:col-span-2 ">
             <CourseProgress />
             <ExamsChart />

@@ -238,9 +238,4 @@ export const countries = [
   "Zambia",
   "Zimbabwe",
 ];
-export const reqAuthToReview = [
-  "community",
-  "notifications",
-  "practice",
-  "chat",
-];
+export const reqAuthToReview = ["community", "practice", "chat", "live"];

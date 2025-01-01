@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { useAuth } from "@/components/auth-provider";
 import { useAnalyticsStore } from "@/stores/AnalyticsStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,14 +19,24 @@ interface Exam {
   date: Date;
   examScore: number;
   title: string;
-  name?: string;
+  status: "Completed" | "Not Completed";
+}
+
+interface DayData {
+  name: string;
+  fullDate: string;
+  passed: number;
+  notPassed: number;
+  date: Date;
+  exams: Exam[];
 }
 
 interface TooltipProps {
   active?: boolean;
   payload?: Array<{
     value?: number;
-    payload?: Exam;
+    dataKey?: string;
+    payload?: DayData;
   }>;
 }
 
@@ -63,10 +74,12 @@ const ExamsChart = () => {
               attemptDate: string;
               examScore: number;
               lesson: { title: string };
+              status: "Completed" | "Not Completed";
             }) => ({
               date: new Date(exam.attemptDate),
               examScore: exam.examScore,
               title: exam.lesson.title,
+              status: exam.status,
             })
           ) || []
         );
@@ -88,38 +101,91 @@ const ExamsChart = () => {
 
   const filteredExams = useMemo(() => {
     if (!selectedWeek) return [];
-    const [startStr, endStr] = selectedWeek.split(" - ");
+    const [startStr] = selectedWeek.split(" - ");
     const [startDay, startMonth, startYear] = startStr.split("/").map(Number);
-    const [endDay, endMonth, endYear] = endStr.split("/").map(Number);
     const weekStart = new Date(startYear, startMonth - 1, startDay);
-    const weekEnd = new Date(endYear, endMonth - 1, endDay);
 
-    return exams
-      .filter((exam) => exam.date >= weekStart && exam.date <= weekEnd)
-      .sort((a, b) => a.date.getTime() - b.date.getTime())
-      .map((exam, index) => ({
-        ...exam,
-        name: `${index + 1}`,
-      }));
+    // Initialize 7 days of data
+    const weekData: DayData[] = [];
+    for (let i = 0; i < 7; i++) {
+      const currentDate = new Date(weekStart);
+      currentDate.setDate(weekStart.getDate() + i);
+      weekData.push({
+        name: String(i + 1),
+        fullDate: currentDate.toISOString().split("T")[0],
+        passed: 0,
+        notPassed: 0,
+        date: currentDate,
+        exams: [],
+      });
+    }
+
+    // Filter and aggregate exams by day
+    exams.forEach((exam) => {
+      const examDate = new Date(exam.date);
+      const dayIndex = weekData.findIndex(
+        (day) =>
+          day.date.getDate() === examDate.getDate() &&
+          day.date.getMonth() === examDate.getMonth() &&
+          day.date.getFullYear() === examDate.getFullYear()
+      );
+
+      if (dayIndex !== -1) {
+        weekData[dayIndex].exams.push(exam);
+        if (exam.status === "Completed") {
+          weekData[dayIndex].passed += 1;
+        } else {
+          weekData[dayIndex].notPassed += 1;
+        }
+      }
+    });
+
+    return weekData;
   }, [selectedWeek, exams]);
+
   const chartConfig = {
-    examScore: {
-      label: "Exam Score",
+    passed: {
+      label: "Passed",
       color: "hsl(var(--primary))",
+    },
+    notPassed: {
+      label: "Not Passed",
+      color: "hsl(var(--destructive))",
     },
   } satisfies ChartConfig;
 
   const CustomTooltip = ({ active, payload }: TooltipProps) => {
     if (active && payload && payload.length) {
+      const dayData = payload[0]?.payload as DayData;
       return (
         <div className="p-2 border rounded-lg shadow-sm bg-background">
           <div className="flex flex-col gap-2">
-            <span className="text-muted-foreground">
-              {text("quiz")} - {payload[0]?.payload?.title} :
+            <span className="font-medium text-center text-muted-foreground">
+              ({dayData.fullDate})
             </span>
-            <span className="font-bold">
-              {text("score")} :{payload[0]?.value}%
+            <span className="text-primary">
+              {text("passed")}: {dayData.passed}
             </span>
+            <span className="text-destructive">
+              {text("notPassed")}: {dayData.notPassed}
+            </span>
+            {dayData.exams.length > 0 && (
+              <div className="mt-2">
+                <span className="text-sm font-medium">{text("quizzes")}:</span>
+                {dayData.exams.map((exam, index) => (
+                  <div
+                    key={index}
+                    className={`pl-2 text-sm ${
+                      exam.status === "Completed"
+                        ? "text-primary"
+                        : "text-destructive"
+                    }`}
+                  >
+                    {exam.title} ({parseInt(exam.examScore.toString())}%)
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       );
@@ -143,21 +209,21 @@ const ExamsChart = () => {
       </CardHeader>
       <CardContent>
         {isCourseProgressLoading ? (
-          <>
-            <div
-              className="w-full rounded-md bg-muted animate-pulse"
-              style={{ height: "400px" }}
-            />
-          </>
+          <div
+            className="w-full rounded-md bg-muted animate-pulse"
+            style={{ height: "400px" }}
+          />
         ) : filteredExams.length === 0 ? (
           <p className="py-8 text-center">{text("noExamsForThisWeek")}</p>
         ) : (
           <ChartContainer className="w-full" config={chartConfig}>
             <ResponsiveContainer width="100%" height={400}>
-              <AreaChart
+              <BarChart
                 data={filteredExams}
                 margin={{
                   top: 20,
+                  right: 20,
+                  left: 20,
                 }}
                 className="w-full"
               >
@@ -168,42 +234,26 @@ const ExamsChart = () => {
                   tickMargin={8}
                 />
                 <YAxis
-                  domain={[0, 100]}
                   tickLine={false}
                   axisLine={false}
                   tickMargin={20}
                   padding={{ top: 20 }}
                 />
-                <ChartTooltip cursor={true} content={CustomTooltip} />
-                <defs>
-                  <linearGradient
-                    id="fillExamScore"
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                  >
-                    <stop
-                      offset="5%"
-                      stopColor="var(--color-examScore)"
-                      stopOpacity={0.8}
-                    />
-                    <stop
-                      offset="95%"
-                      stopColor="var(--color-examScore)"
-                      stopOpacity={0.1}
-                    />
-                  </linearGradient>
-                </defs>
-                <Area
-                  dataKey="examScore"
-                  type="natural"
-                  fill="url(#fillExamScore)"
-                  fillOpacity={0.4}
-                  stroke="var(--color-examScore)"
+                {/* @ts-ignore  */}
+                <ChartTooltip cursor={false} content={CustomTooltip} />
+                <Bar
+                  dataKey="passed"
+                  fill="var(--color-passed)"
+                  radius={[4, 4, 0, 0]}
                   className="w-full"
                 />
-              </AreaChart>
+                <Bar
+                  dataKey="notPassed"
+                  fill="var(--color-notPassed)"
+                  radius={[4, 4, 0, 0]}
+                  className="w-full"
+                />
+              </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
         )}
