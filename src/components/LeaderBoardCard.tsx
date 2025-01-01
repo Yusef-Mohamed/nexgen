@@ -4,6 +4,7 @@ import { FaMedal } from "react-icons/fa";
 import Image from "next/image";
 import UserAvatar from "./UserAvatar";
 import { useLocale } from "next-intl";
+import { Link } from "@/i18n/routing";
 
 const LeaderBoardCard = ({
   users,
@@ -72,10 +73,14 @@ const LeaderBoardCard = ({
                   }}
                   className={`flex items-center justify-between px-6 py-2 rounded-sm`}
                 >
-                  <div className="flex items-center gap-4">
+                  <Link
+                    href={`/dashboard/community/profile/${user._id}`}
+                    target="_blank"
+                    className="flex items-center gap-4"
+                  >
                     <UserAvatar user={user} />
                     <span>{user.name}</span>
-                  </div>
+                  </Link>
                   <Image
                     src={`/images/medals/${
                       i === 0 ? "gold" : i === 1 ? "silver" : "bronze"

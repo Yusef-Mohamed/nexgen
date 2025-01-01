@@ -128,19 +128,21 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, title }) => {
         </h3>
         {submitData.totalScore ? (
           <p className="mt-6 text-lg text-text-1">
-            {text(
-              submitData.passed
-                ? "congrats_you_passed_with_score"
-                : "you_failed_with_score"
-            )}{" "}
-            {submitData.score} / {submitData.totalScore}
+            {submitData.passed ? (
+              <>
+                {quizType === "placement" && text("placementPassed")}
+                {quizType === "lesson" && text("quizPassed")}
+                {quizType === "course" && text("coursePassed")}
+              </>
+            ) : (
+              <>
+                {quizType === "placement" && text("placementFailed")}
+                {quizType === "lesson" && text("quizFailed")}
+                {quizType === "course" && text("courseFailed")}
+              </>
+            )}
             <br />
-            {quizType === "placement" &&
-              (submitData.passed ? (
-                <>{text("you_can_now_buy_the_course")}</>
-              ) : (
-                <>{text("your_are_not_fit_for_this_course")}</>
-              ))}
+            {text("yourScoreIs")} : {submitData.score} / {submitData.totalScore}
           </p>
         ) : (
           <>

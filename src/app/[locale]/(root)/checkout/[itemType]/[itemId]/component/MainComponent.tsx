@@ -73,10 +73,10 @@ const MainComponent = ({
       setIsLoading(true);
       let endpoint =
         itemType === "course"
-          ? `/orders/cryptomus/course-checkout/${thisItem._id}`
+          ? `/orders/plisio/courseCheckout/${thisItem._id}`
           : itemType === "learning-path"
-          ? `/orders/cryptomus/course-package-checkout/${thisItem._id}`
-          : `/orders/cryptomus/package-checkout/${thisItem._id}`;
+          ? `/orders/plisio/coursePackageCheckout/${thisItem._id}`
+          : `/orders/plisio/packageCheckout/${thisItem._id}`;
       if (selectedMethod === "card") {
         endpoint =
           itemType === "course"

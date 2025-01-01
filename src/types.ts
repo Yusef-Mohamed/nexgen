@@ -9,6 +9,7 @@ export interface ICategory {
 export interface ICourse {
   title: string;
   description: string;
+  courseDuration: number;
   image: string;
   price: number;
   priceAfterDiscount?: number;
@@ -39,6 +40,7 @@ export interface ICourse {
     profileImg: string;
     name: string;
   }[];
+  type: "beginner" | "intermediate" | "advanced";
 }
 export interface ILesson {
   course: ICourse;
@@ -141,6 +143,10 @@ export interface ICoursePackage {
   price: string;
   priceAfterDiscount?: string;
   courses: ICourse[];
+  type:
+    | "beginnerToIntermediate"
+    | "intermediateToAdvanced"
+    | "beginnerToAdvanced";
   _id: string;
   createdAt: string;
   updatedAt: string;
@@ -353,7 +359,7 @@ export interface INotification {
   read: boolean;
   type: "chat" | "post" | "system" | "follow" | "certificate" | "order";
   course?: string;
-  post?: string;
+  post?: IPost;
   chat?: IChat;
   file?: string;
   followedUser?: IUser;

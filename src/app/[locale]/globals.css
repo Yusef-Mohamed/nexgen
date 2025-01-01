@@ -109,7 +109,7 @@ main {
   }
 
   .dark {
-    --background: 210 15% 15%; /* Dark background */
+    --background: 0 0% 5%; /* Dark background */
     --dash-ground: 210 22% 7%;
     --clear-ground: 210 15% 10%; /* Even darker for contrast */
     --foreground: 0 0% 90%; /* Light text color */
@@ -121,9 +121,9 @@ main {
     --card-foreground: 0 0% 90%; /* Light text on cards */
     --popover: 210 15% 10%; /* Matches card background */
     --popover-foreground: 0 0% 90%; /* Light text on popovers */
-    --primary: 213 92% 70%; /* Brighter primary color */
+    --primary: 213 92% 58%; /* Brighter primary color */
     --primary-main: 218 78% 75%; /* Adjusted for contrast */
-    --primary-faded: 205 100% 20%; /* Darker faded primary */
+    --primary-faded: 205 100% 20% / 0.2; /* Darker faded primary */
     --primary-foreground: 0 0% 90%; /* Light text on primary elements */
     --secondary: 210 40% 30%; /* Darker secondary color */
     --secondary-foreground: 0 0% 90%; /* Light text on secondary elements */

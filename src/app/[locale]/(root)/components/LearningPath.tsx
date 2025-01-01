@@ -12,8 +12,17 @@ const LearningPath: React.FC<ICoursePackage> = ({
   price,
   priceAfterDiscount,
   _id,
+  type,
 }) => {
-  const levels = ["STATIC", "STATIC"];
+  const levels = [];
+  if (type === "beginnerToIntermediate") {
+    levels.push("beginner", "intermediate");
+  } else if (type === "intermediateToAdvanced") {
+    levels.push("intermediate", "advanced");
+  } else if (type === "beginnerToAdvanced") {
+    levels.push("beginner", "advanced");
+  }
+
   const locale = useLocale();
   const text = useTranslations("learningPaths");
   return (
@@ -25,27 +34,29 @@ const LearningPath: React.FC<ICoursePackage> = ({
       <div>
         <h3 className="h2-5">{title}</h3>
         <div className="mt-4 sm:mt-6">
-          <div
-            style={{
-              fontWeight: 500,
-            }}
-            className="flex items-center gap-2 sm:gap-4 text-text-1 h4 whitespace-nowrap"
-          >
-            {levels.map((level, index) => (
-              <React.Fragment key={index}>
-                <div className="self-stretch my-auto">{level}</div>
-                {index < levels.length - 1 && (
-                  <div>
-                    {locale === "ar" ? (
-                      <FaArrowLeftLong />
-                    ) : (
-                      <FaArrowRightLong />
-                    )}
-                  </div>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
+          {levels.length ? (
+            <div
+              style={{
+                fontWeight: 500,
+              }}
+              className="flex items-center gap-2 sm:gap-4 text-text-1 h4 whitespace-nowrap"
+            >
+              {levels.map((level, index) => (
+                <React.Fragment key={index}>
+                  <div className="self-stretch my-auto">{level}</div>
+                  {index < levels.length - 1 && (
+                    <div>
+                      {locale === "ar" ? (
+                        <FaArrowLeftLong />
+                      ) : (
+                        <FaArrowRightLong />
+                      )}
+                    </div>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+          ) : null}
           <p className={`sm:mt-4 text-text-2 `}>{description}</p>
           <div className="mt-4">
             <h4>{text("coursesCount", { count: courses.length })}</h4>
@@ -56,11 +67,8 @@ const LearningPath: React.FC<ICoursePackage> = ({
                     className="flex sm:gap-3 gap-1.5 items-center group sm:mt-2 mt-1"
                     href={`/courses/${course._id}`}
                   >
-                    <div className="flex items-center justify-center w-8 h-8 text-sm rounded bg-primary-faded">
-                      ST
-                    </div>
                     <div className="text-primary group-hover:underline">
-                      {course.title}
+                      {index + 1} - {course.title}
                     </div>
                   </Link>
                 </li>

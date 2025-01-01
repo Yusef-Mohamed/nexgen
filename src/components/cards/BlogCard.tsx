@@ -34,7 +34,7 @@ const BlogCard: React.FC<IBlog> = ({
         <Link href={`/blogs/${_id}`} className="w-full">
           <h3 className="h5">{title}</h3>
         </Link>
-        <div className="flex flex-row-reverse items-center w-full gap-4 mt-3 text-sm sm:text-base sm:gap-6 sm:mt-4 text-text-2">
+        <div className="flex flex-row items-center justify-start w-full gap-4 mt-3 text-sm sm:text-base sm:gap-6 sm:mt-4 text-text-2">
           <div className="flex items-center gap-2 sm:gap-3 ">
             <GiSandsOfTime />
             <div>

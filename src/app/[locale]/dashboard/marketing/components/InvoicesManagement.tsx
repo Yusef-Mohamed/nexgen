@@ -73,7 +73,7 @@ const InvoicesManagement = () => {
     switch (status.toLowerCase()) {
       case "paid":
         return "bg-primary";
-      case "unpaid":
+      case "rejected":
         return "bg-destructive";
       default:
         return "bg-yellow-500 dark:bg-yellow-600";
@@ -554,7 +554,7 @@ const RegularInvoicesTab = ({
               <TableCell>${invoice.profits.toLocaleString()}</TableCell>
               <TableCell>
                 <Badge className={getStatusColor(invoice.status)}>
-                  {invoice.status}
+                  {t(invoice.status)}
                 </Badge>
               </TableCell>
             </TableRow>
@@ -596,7 +596,7 @@ const WalletInvoicesTab = ({
               <TableCell>${invoice.profits.toLocaleString()}</TableCell>
               <TableCell>
                 <Badge className={getStatusColor(invoice.status)}>
-                  {invoice.status}
+                  {t(invoice.status)}
                 </Badge>
               </TableCell>
               <TableCell>{formatDate(invoice.createdAt)}</TableCell>
@@ -639,7 +639,7 @@ const CommissionInvoicesTab = ({
               <TableCell>${invoice.profits.toLocaleString()}</TableCell>
               <TableCell>
                 <Badge className={getStatusColor(invoice.status)}>
-                  {invoice.status}
+                  {t(invoice.status)}
                 </Badge>
               </TableCell>
               <TableCell>{formatDate(invoice.createdAt)}</TableCell>

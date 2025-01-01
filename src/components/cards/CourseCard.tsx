@@ -14,6 +14,7 @@ const CourseCard: React.FC<ICourse> = ({
   price,
   priceAfterDiscount,
   _id,
+  type,
 }) => {
   const text = useTranslations("popularCourses");
   return (
@@ -27,7 +28,9 @@ const CourseCard: React.FC<ICourse> = ({
         className="object-cover w-full aspect-[1656/931] rounded-xl"
       />
       <div className="w-full my-4 sm:my-5">
-        <h4 className="font-semibold text-text-3">STATIC</h4>
+        {type && (
+          <h4 className="mb-2 font-semibold text-text-3">{text(type)}</h4>
+        )}
         <h3 className="font-semibold sm:mt-1">{title}</h3>
         <CourseReviewOverView
           ratingsAverage={ratingsAverage}

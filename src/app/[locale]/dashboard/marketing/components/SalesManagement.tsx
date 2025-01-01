@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import {
   Card,
@@ -27,6 +28,16 @@ import {
 } from "@/components/ui/select";
 import LeaderBoardCard from "@/components/LeaderBoardCard";
 import { FaMoneyBill } from "react-icons/fa";
+import {
+  Area,
+  AreaChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { DateRange } from "react-day-picker";
+import { DatePickerWithRange } from "@/components/DatePickerWithRange";
 
 const SalesManagement = () => {
   const t = useTranslations("salesManagement");
@@ -88,6 +99,53 @@ const SalesManagement = () => {
     </div>
   );
 };
+interface StatBlockProps {
+  title: string;
+  value: number;
+  difference: number;
+  total: number;
+  base?: string;
+  mark?: string;
+  withDivider?: boolean;
+  students: number;
+}
+
+const StatBlock: React.FC<StatBlockProps> = ({
+  title,
+  value,
+  difference,
+  total,
+  mark,
+  students,
+}) => {
+  const locale = useLocale();
+
+  return (
+    <div>
+      <div>
+        <p className="mb-2 font-medium sm:text-lg text-text-3">{title}</p>
+        <h3 className="flex items-end gap-1 mt-1 mb-2 font-semibold h1-5">
+          {mark}
+          {value?.toLocaleString()}
+        </h3>
+        <p className="mb-2">
+          <span className="mb-1 text-sm text-text-3">
+            <span className="h1-5 text-text-1">{students}</span>{" "}
+            {locale !== "ar" ? "/" : "\\"}{" "}
+            {locale === "ar" ? "طالب" : "Student"}
+          </span>
+        </p>
+      </div>
+      {difference !== 0 && difference && total && (
+        <TrendBadge
+          percentage={Math.abs((difference / total) * 100).toFixed(1)}
+          positive={difference > 0}
+        />
+      )}
+    </div>
+  );
+};
+
 const MainComponent = ({
   analytics,
 }: {
@@ -101,6 +159,10 @@ const MainComponent = ({
   const t = useTranslations("salesManagement");
   const [item, setItem] = useState("");
   const [courses, setCourses] = useState<ICourse[]>([]);
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+    to: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+  });
   const [data, setData] = useState<null | {
     givenPeriodResales: number;
     givenPeriodResalesStudents: number;
@@ -110,8 +172,11 @@ const MainComponent = ({
     oppositePeriodResalesStudents: number;
     oppositePeriodSales: number;
     oppositePeriodStudents: number;
+    givenPeriodOrders: {
+      totalOrderPrice: number;
+      createdAt: string;
+    }[];
   }>(null);
-  console.log(data);
   const { token } = useAuth();
   useEffect(() => {
     const fetchCourses = async () => {
@@ -127,10 +192,9 @@ const MainComponent = ({
     fetchCourses();
   }, []);
   useEffect(() => {
-    const fetchAnalytics = async () => {
+    const fetchData = async () => {
       try {
         const axiosInstance = await createClientAxiosInstance();
-        // i want to get start date and end date of current month in format dd-mm-yyyy
         const startDate = new Date(
           new Date().getFullYear(),
           new Date().getMonth(),
@@ -151,24 +215,24 @@ const MainComponent = ({
             },
           }
         );
-        console.log(res.data);
         setData(res.data);
       } catch (err) {
         console.error(err);
       }
     };
-    if (item && token) fetchAnalytics();
+    if (item && token) fetchData();
   }, [item, token]);
+  console.log(data);
   return (
     <Card className="mb-4 border-none">
-      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4 py-1">
+      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4 py-4">
         <CardTitle className="h2">{t("salesAnalytics")}</CardTitle>
         <div className="flex flex-wrap gap-4">
           <Select
             value={item.toString()}
             onValueChange={(value) => setItem(value)}
           >
-            <SelectTrigger className="w-40 h-10 md:w-48 lg:h-12 md:h-10 md:text-sm">
+            <SelectTrigger className="w-auto h-10 md:w-auto lg:h-12 md:h-10 md:text-sm">
               <SelectValue placeholder={t("resaleFilter")} />
             </SelectTrigger>
             <SelectContent>
@@ -178,10 +242,39 @@ const MainComponent = ({
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </Select>{" "}
+          <DatePickerWithRange date={date} setDate={setDate} />
         </div>
       </CardHeader>
       <CardContent>
+        <div className="grid gap-4 mt-6 md:grid-cols-2">
+          <StatBlock
+            title={t("totalSales")}
+            value={data?.givenPeriodSales || 0}
+            difference={
+              (data?.givenPeriodSales || 0) - (data?.oppositePeriodSales || 0)
+            }
+            total={data?.givenPeriodSales || 0}
+            students={data?.givenPeriodStudents || 0}
+            mark="$"
+          />
+          <StatBlock
+            title={t("totalResales")}
+            value={data?.givenPeriodResales || 0}
+            difference={
+              (data?.givenPeriodResales || 0) -
+              (data?.oppositePeriodResales || 0)
+            }
+            total={data?.givenPeriodResales || 0}
+            students={data?.givenPeriodResalesStudents || 0}
+            mark="$"
+          />
+        </div>
+        <OrdersChart
+          givenPeriodOrders={data?.givenPeriodOrders || []}
+          startDate={date?.from || new Date()}
+          endDate={date?.to || new Date()}
+        />
         <div className="relative overflow-x-auto whitespace-nowrap">
           <div className="mt-8">
             <h3 className="mb-4">{t("topCoursesSell")}</h3>
@@ -219,6 +312,126 @@ const MainComponent = ({
             </div>
           </div>
         </div>
+      </CardContent>
+    </Card>
+  );
+};
+const OrdersChart = ({
+  givenPeriodOrders,
+  startDate,
+  endDate,
+}: {
+  givenPeriodOrders: {
+    totalOrderPrice: number;
+    createdAt: string;
+  }[];
+  startDate: Date;
+  endDate: Date;
+}) => {
+  const t = useTranslations("salesManagement");
+  const chartData = useMemo(() => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    //@ts-ignore
+    const dayDiff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+    const allDates = Array.from({ length: dayDiff + 1 }, (_, i) => {
+      const date = new Date(start);
+      date.setDate(start.getDate() + i);
+      return date.toISOString().split("T")[0];
+    });
+    //@ts-ignore
+    const ordersByDate = givenPeriodOrders.reduce((acc, order) => {
+      const date = new Date(order.createdAt).toISOString().split("T")[0];
+      //@ts-ignore
+      acc[date] = (acc[date] || 0) + order.totalOrderPrice;
+      return acc;
+    }, {});
+    return allDates.map((date, index) => ({
+      //@ts-ignore
+      name: (index + 1).toString(),
+      //@ts-ignore
+      amount: ordersByDate[date] || 0,
+      date,
+    }));
+  }, [givenPeriodOrders, startDate, endDate]);
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="h3">{t("selectedPeriodOrders")}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {chartData.length === 0 ? (
+          <p className="py-8 text-center">{t("noOrdersFound")}</p>
+        ) : (
+          <ResponsiveContainer width="100%" height={400}>
+            <AreaChart
+              data={chartData}
+              margin={{
+                top: 20,
+              }}
+            >
+              <XAxis
+                dataKey="name"
+                axisLine={true}
+                tickLine={false}
+                tickMargin={8}
+                interval={0}
+              />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                tickMargin={20}
+                padding={{ top: 20 }}
+              />
+              <Tooltip
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    return (
+                      <div className="p-2 border rounded-lg shadow-sm bg-background">
+                        <div className="flex flex-col gap-2">
+                          <span className="text-center text-muted-foreground">
+                            {new Date(
+                              payload[0].payload.date
+                            ).toLocaleDateString()}
+                          </span>
+                          <span className="font-bold">
+                            {t("total")}: $
+                            {typeof payload[0]?.value === "number"
+                              ? payload[0].value.toFixed(2)
+                              : payload[0]?.value}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
+              <defs>
+                <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
+                  <stop
+                    offset="5%"
+                    stopColor="hsl(var(--primary))"
+                    stopOpacity={0.8}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor="hsl(var(--primary))"
+                    stopOpacity={0.1}
+                  />
+                </linearGradient>
+              </defs>
+              <Area
+                type="natural"
+                dataKey="amount"
+                stroke="hsl(var(--primary))"
+                fill="url(#colorAmount)"
+                fillOpacity={0.4}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
       </CardContent>
     </Card>
   );
@@ -336,7 +549,6 @@ const StatCard = ({
 };
 const MyTeam = () => {
   const text = useTranslations("salesManagement");
-  const locale = useLocale();
   return (
     <Card className="p-4">
       <CardHeader className="p-0 mb-6">
@@ -345,21 +557,7 @@ const MyTeam = () => {
           {text("myTeam")}
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-0">
-        <div className="flex">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div
-              key={i}
-              className="w-12 h-12 border-2 rounded-full bg-input border-clear-ground"
-              style={{
-                transform: `${locale === "ar" ? "" : "-"}translateX(${
-                  i * 20
-                }px)`,
-              }}
-            />
-          ))}
-        </div>
-      </CardContent>
+      <CardContent className="p-0">{/*   */}</CardContent>
       <CardFooter className="p-0 mt-6">
         <Button className="w-full" asChild>
           <Link href="/dashboard/marketing/my-team">{text("seeAllTeam")}</Link>
@@ -384,11 +582,14 @@ const TopInstructors = () => {
           },
         });
         const leaderBoard = res.data.leaderBoard;
-        setData([
-          leaderBoard.firstRank.marketer,
-          leaderBoard.secondRank.marketer,
-          leaderBoard.thirdRank.marketer,
-        ]);
+        const users = [];
+        if (leaderBoard.firstRank?.marketer)
+          users.push(leaderBoard.firstRank.marketer);
+        if (leaderBoard.secondRank?.marketer)
+          users.push(leaderBoard.secondRank.marketer);
+        if (leaderBoard.thirdRank?.marketer)
+          users.push(leaderBoard.thirdRank.marketer);
+        setData(users);
       } catch (err) {
         console.error(err);
       }

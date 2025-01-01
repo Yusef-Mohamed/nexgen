@@ -45,6 +45,7 @@ import LeaderBoardCard from "@/components/LeaderBoardCard";
 import CourseProgress from "./CourseProgress";
 import ExamsChart from "./ExamsChart";
 import VideoChart from "./VideoChart";
+import { useSearchParams } from "next/navigation";
 const Charts = () => {
   const inputs = useTranslations("Forms");
   const text = useTranslations("analytics");
@@ -61,6 +62,9 @@ const Charts = () => {
     topUsers,
     setTopUsers,
   } = useAnalyticsStore();
+  const searchParams = useSearchParams();
+  const selectedUserParam = searchParams.get("selectedUser");
+  const selectedCourseParam = searchParams.get("selectedCourse");
   useEffect(() => {
     if (myAccount) setSelectedUserObject(myAccount);
   }, [myAccount, setSelectedUserObject]);
@@ -84,7 +88,8 @@ const Charts = () => {
   };
   useEffect(() => {
     if (!myAccount) return;
-    setSelectedUser(myAccount._id);
+    const accountId = selectedUserParam || myAccount._id;
+    setSelectedUser(accountId);
     const axiosInstance = createClientAxiosInstance();
     axiosInstance
       .get(`/marketing/getMarketerChildren/${myAccount._id}`, {
@@ -98,17 +103,19 @@ const Charts = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [myAccount]);
+  }, [myAccount, selectedUserParam]);
   useEffect(() => {
     getCourses();
   }, [selectedUser]);
 
   useEffect(() => {
     if (courses.length && selectedCourse === "") {
-      setSelectedCourse(courses[0]._id);
+      if (selectedCourseParam) setSelectedCourse(selectedCourseParam);
+      else setSelectedCourse(courses[0]._id);
+
       setSelectedCourseObject(courses[0]);
     }
-  }, [courses]);
+  }, [courses, selectedCourseParam]);
   const getCourseDetails = async (courseId: string) => {
     try {
       const axiosInstance = createClientAxiosInstance();

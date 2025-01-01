@@ -1,14 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { useAuth } from "@/components/auth-provider";
 import { useAnalyticsStore } from "@/stores/AnalyticsStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -168,7 +161,6 @@ const ExamsChart = () => {
                 }}
                 className="w-full"
               >
-                <CartesianGrid vertical={false} />
                 <XAxis
                   dataKey="name"
                   axisLine={true}

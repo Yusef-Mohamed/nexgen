@@ -3,8 +3,9 @@ import { INotification } from "@/types";
 import { cn } from "@/lib/utils";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
 import { IoMdChatboxes } from "react-icons/io";
-import { FaUsers } from "react-icons/fa";
+import { FaMoneyBillWave, FaUsers } from "react-icons/fa";
 import { MdAdminPanelSettings } from "react-icons/md";
+import { GiGraduateCap } from "react-icons/gi";
 interface NotificationCardProps {
   notification: INotification;
   readNotification: (id: string) => void;
@@ -31,6 +32,8 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
           {notification.type === "chat" && <IoMdChatboxes />}
           {notification.type === "system" && <MdAdminPanelSettings />}
           {notification.type === "post" && <FaUsers />}
+          {notification.type === "certificate" && <GiGraduateCap />}
+          {notification.type === "order" && <FaMoneyBillWave />}
         </button>{" "}
         <div className="flex-1 w-full">
           <p>{notification.message}</p>

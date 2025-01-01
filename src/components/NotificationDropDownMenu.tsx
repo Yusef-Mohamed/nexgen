@@ -55,6 +55,7 @@ const NotificationDropDownMenu = () => {
   useEffect(() => {
     if (isOpened) fetchNotifications(true);
   }, [fetchNotifications, isOpened]);
+  console.log(notifications);
   return (
     <DropdownMenu onOpenChange={setIsOpened}>
       <DropdownMenuTrigger className="relative flex items-center justify-center h-[2.5rem] w-[2.5rem] bg-primary-faded border-none text-xl border rounded-full">
@@ -81,7 +82,7 @@ const NotificationDropDownMenu = () => {
                   `/dashboard/community/profile/${n.followedUser._id}`
                 );
               else if (n.type === "post" && n.post)
-                router.push(`/dashboard?focusedPost=${n.post}`);
+                router.push(`/dashboard?focusedPost=${n.post._id}`);
               else if (n.type === "certificate" && n.course)
                 router.push(`/dashboard/analytics?selectedCourse=${n.course}`);
               else if (n.type === "certificate" && n.file)

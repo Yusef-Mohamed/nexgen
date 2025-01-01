@@ -45,6 +45,7 @@ const CoursesPage = async ({
     const axiosInstance = createServerAxiosInstance();
     const courseRes = await axiosInstance.get("/courses/" + params.courseId);
     const courseData = courseRes.data.data as ICourse;
+    console.log(courseData);
     return (
       <main>
         <section className="container flex gap-20 secPadding">
@@ -145,7 +146,7 @@ const CourseCard: React.FC<{
     {
       icon: <FiPlayCircle className="w-4 h-4 sm:w-5 sm:h-5" />,
       text: "nHourOfVideos",
-      params: { n: 55 },
+      params: { n: (courseData.courseDuration / 60).toFixed(1) },
     },
     { icon: <PiExam className="w-4 h-4 sm:w-5 sm:h-5" />, text: "quizes" },
     {
