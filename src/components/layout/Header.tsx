@@ -56,6 +56,11 @@ const Header = () => {
           </ul>
         </nav>
         <div className="items-center hidden gap-2 lg:gap-3 md:flex ">
+          {token && (
+            <Button size={"sm"} asChild>
+              <Link href="/dashboard">{text("dashboard")}</Link>
+            </Button>
+          )}
           <LanguageSelector />
           <ThemeToggler />
           {token ? (

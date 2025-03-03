@@ -19,6 +19,28 @@ const ChangePassword = () => {
   });
   const text = useTranslations("Forms");
 
+  const validatePassword = (password: string) => {
+    const errors = [];
+
+    if (password.length < 8) {
+      errors.push(text("passwordTooShort"));
+    }
+    if (!/[A-Z]/.test(password)) {
+      errors.push(text("passwordRequiresUppercase"));
+    }
+    if (!/[a-z]/.test(password)) {
+      errors.push(text("passwordRequiresLowercase"));
+    }
+    if (!/[0-9]/.test(password)) {
+      errors.push(text("passwordRequiresNumber"));
+    }
+    if (!/[@#_]/.test(password)) {
+      errors.push(text("passwordRequiresSpecialChar"));
+    }
+
+    return errors;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -27,8 +49,9 @@ const ChangePassword = () => {
       return;
     }
 
-    if (data.newPassword.length < 6) {
-      toast.error(text("password_too_short"));
+    const passwordErrors = validatePassword(data.newPassword);
+    if (passwordErrors.length > 0) {
+      passwordErrors.forEach((error) => toast.error(error));
       return;
     }
 
@@ -67,6 +90,7 @@ const ChangePassword = () => {
       setIsLoading(false);
     }
   };
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="space-y-4">

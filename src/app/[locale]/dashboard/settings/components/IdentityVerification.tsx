@@ -17,6 +17,7 @@ const IdentityVerification = () => {
   const { token, user } = useAuth();
   const router = useRouter();
   const text = useTranslations("settings");
+  const common = useTranslations("common");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [data, setData] = useState<{
     frontImage: File | null;
@@ -208,7 +209,9 @@ const IdentityVerification = () => {
             })}
           </ul>
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-            {" "}
+            <p className="text-xs text-center text-text-2">
+              {common("id_verification.description")}
+            </p>
             <div className="flex items-center justify-end gap-2">
               <label
                 htmlFor="terms"

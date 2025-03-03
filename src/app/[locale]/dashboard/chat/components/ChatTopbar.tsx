@@ -50,6 +50,7 @@ export default function ChatTopbar() {
   const isAdmin = thisChat?.participants.find(
     (participant) => participant.user === thisUser?._id
   )?.isAdmin;
+
   const [action, setAction] = useState<"remove" | "changeRole">("remove");
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -378,7 +379,7 @@ export default function ChatTopbar() {
                 onClick={() => {
                   setIsAddToChatOpen(true);
                 }}
-                className="w-full"
+                className="w-full mt-4"
               >
                 {text("addParticipant")}
               </Button>

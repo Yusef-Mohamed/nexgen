@@ -13,6 +13,7 @@ import { FaImage } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "@/i18n/routing";
 
 const CreatePractice = ({
   lessonId,
@@ -26,6 +27,7 @@ const CreatePractice = ({
   const [media, setMedia] = useState<File[]>([]);
   const { user, token } = useAuth();
   const text = useTranslations("practice");
+  const router = useRouter();
   const inputRef = useRef(null);
   const handelCreatePractice = async () => {
     setIsLoading(true);
@@ -37,7 +39,6 @@ const CreatePractice = ({
       }
 
       const formData = new FormData();
-      formData.append("content", content);
       if (media.length) {
         media.forEach((file) => {
           formData.append("media", file);
@@ -49,12 +50,14 @@ const CreatePractice = ({
       }
       if (lessonId) formData.append("lesson", lessonId);
       if (courseId) formData.append("course", courseId);
+      formData.append("content", content);
       const axiosInstance = await createClientAxiosInstance();
       await axiosInstance.post("/analytics", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      router.refresh();
       setContent("");
       setMedia([]);
       toast.success(text("postCreatedSuccessfully"));

@@ -18,7 +18,7 @@ import { createClientAxiosInstance } from "@/app/lib/utils";
 import { RiTeamFill } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
-import { ICourse, IUser } from "@/types";
+import { ICourse, ICoursePackage, IPackage, IUser } from "@/types";
 import {
   Select,
   SelectContent,
@@ -124,7 +124,7 @@ const StatBlock: React.FC<StatBlockProps> = ({
     <div>
       <div>
         <p className="mb-2 font-medium sm:text-lg text-text-3">{title}</p>
-        <h3 className="flex items-end gap-1 mt-1 mb-2 font-semibold h1-5">
+        <h3 className="flex gap-1 items-end mt-1 mb-2 font-semibold h1-5">
           {mark}
           {value?.toLocaleString()}
         </h3>
@@ -159,6 +159,9 @@ const MainComponent = ({
   const t = useTranslations("salesManagement");
   const [item, setItem] = useState("");
   const [courses, setCourses] = useState<ICourse[]>([]);
+  const [coursePackages, setCoursePackages] = useState<ICoursePackage[]>([]);
+  const [packages, setPackages] = useState<IPackage[]>([]);
+
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     to: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
@@ -180,13 +183,27 @@ const MainComponent = ({
   const { token } = useAuth();
   useEffect(() => {
     const fetchCourses = async () => {
+      const axiosInstance = createClientAxiosInstance();
       try {
-        const axiosInstance = await createClientAxiosInstance();
         const res = await axiosInstance.get("/courses");
         setCourses(res.data.data);
-        setItem(res.data.data[0]._id);
       } catch (err) {
-        console.error(err);
+        console.log(err);
+        setCourses([]);
+      }
+      try {
+        const res = await axiosInstance.get("/coursePackages");
+        setCoursePackages(res.data.data);
+      } catch (err) {
+        console.log(err);
+        setCoursePackages([]);
+      }
+      try {
+        const res = await axiosInstance.get("/packages");
+        setPackages(res.data.data);
+      } catch (err) {
+        console.log(err);
+        setPackages([]);
       }
     };
     fetchCourses();
@@ -222,10 +239,9 @@ const MainComponent = ({
     };
     if (item && token) fetchData();
   }, [item, token]);
-  console.log(data);
   return (
     <Card className="mb-4 border-none">
-      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4 py-4">
+      <CardHeader className="flex flex-row flex-wrap gap-4 justify-between items-center py-4">
         <CardTitle className="h2">{t("salesAnalytics")}</CardTitle>
         <div className="flex flex-wrap gap-4">
           <Select
@@ -237,8 +253,21 @@ const MainComponent = ({
             </SelectTrigger>
             <SelectContent>
               {courses.map((course) => (
-                <SelectItem key={course._id} value={course._id}>
-                  {course.title}
+                <SelectItem key={course._id} value={`${course._id}`}>
+                  {t("nCourse")} - {course.title}
+                </SelectItem>
+              ))}
+              {coursePackages.map((coursePackage) => (
+                <SelectItem
+                  key={coursePackage._id}
+                  value={`${coursePackage._id}`}
+                >
+                  {t("path")} - {coursePackage.title}
+                </SelectItem>
+              ))}
+              {packages.map((pack) => (
+                <SelectItem key={pack._id} value={`${pack._id}`}>
+                  {t("service")} - {pack.title}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -275,10 +304,10 @@ const MainComponent = ({
           startDate={date?.from || new Date()}
           endDate={date?.to || new Date()}
         />
-        <div className="relative overflow-x-auto whitespace-nowrap">
+        <div className="overflow-x-auto relative whitespace-nowrap">
           <div className="mt-8">
             <h3 className="mb-4">{t("topCoursesSell")}</h3>
-            <div className="max-w-full overflow-auto">
+            <div className="overflow-auto max-w-full">
               <table className="w-full whitespace-nowrap text-text-2">
                 <thead>
                   <tr>
@@ -388,7 +417,7 @@ const OrdersChart = ({
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     return (
-                      <div className="p-2 border rounded-lg shadow-sm bg-background">
+                      <div className="p-2 rounded-lg border shadow-sm bg-background">
                         <div className="flex flex-col gap-2">
                           <span className="text-center text-muted-foreground">
                             {new Date(
@@ -442,7 +471,7 @@ const LoadingState = () => (
       {Array.from({ length: 4 }).map((_, i) => (
         <Card key={i}>
           <CardContent className="p-4">
-            <Skeleton className="w-24 h-4 mb-2" />
+            <Skeleton className="mb-2 w-24 h-4" />
             <Skeleton className="w-32 h-8" />
           </CardContent>
         </Card>
@@ -450,7 +479,7 @@ const LoadingState = () => (
     </div>
     <Card>
       <CardContent className="p-4">
-        <Skeleton className="w-48 h-8 mb-4" />
+        <Skeleton className="mb-4 w-48 h-8" />
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className="w-full h-12" />
@@ -525,7 +554,7 @@ const StatCard = ({
       <CardContent className="p-4">
         <div>
           <p className="mb-4 max-sm:text-sm text-muted-foreground">{title}</p>
-          <h3 className="flex items-end gap-1 mt-1 mb-2 font-semibold h1-5">
+          <h3 className="flex gap-1 items-end mt-1 mb-2 font-semibold h1-5">
             {mark}
             {value?.toLocaleString()}
             {base && (
@@ -552,7 +581,7 @@ const MyTeam = () => {
   return (
     <Card className="p-4">
       <CardHeader className="p-0 mb-6">
-        <CardTitle className="flex items-center gap-2 h2">
+        <CardTitle className="flex gap-2 items-center h2">
           <RiTeamFill className="text-xl" />
           {text("myTeam")}
         </CardTitle>
@@ -575,6 +604,7 @@ const TopInstructors = () => {
     const getLeaderBoard = async () => {
       try {
         setIsLoading(true);
+        console.log("");
         const axiosInstance = await createClientAxiosInstance();
         const res = await axiosInstance.get("/leaderboard", {
           headers: {
@@ -614,13 +644,13 @@ const AffiliateMarketing = () => {
   return (
     <Card className="p-4">
       <CardHeader className="p-0 mb-6">
-        <CardTitle className="flex items-center gap-2 h2">
+        <CardTitle className="flex gap-2 items-center h2">
           <FaMoneyBill className="text-xl" />
           {text("affiliateMarketing")}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <Button className="w-full mb-2" variant={"outline"} asChild>
+        <Button className="mb-2 w-full" variant={"outline"} asChild>
           <Link href="/dashboard/marketing/coupons">{text("coupons")}</Link>
         </Button>
         <Button className="w-full" asChild>

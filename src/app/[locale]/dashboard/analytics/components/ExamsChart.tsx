@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/chart";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { useTranslations } from "next-intl";
-import WeekSelector from "@/components/WeekSelector";
+import MonthSelector from "@/components/MonthSelector"; // Updated import
 
 interface Exam {
   date: Date;
@@ -51,7 +51,7 @@ const ExamsChart = () => {
     setIsCourseProgressLoading,
   } = useAnalyticsStore();
   const [exams, setExams] = useState<Exam[]>([]);
-  const [selectedWeek, setSelectedWeek] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState(""); // Updated state for month
   const text = useTranslations("analytics");
 
   useEffect(() => {
@@ -100,18 +100,18 @@ const ExamsChart = () => {
   ]);
 
   const filteredExams = useMemo(() => {
-    if (!selectedWeek) return [];
-    const [startStr] = selectedWeek.split(" - ");
-    const [startDay, startMonth, startYear] = startStr.split("/").map(Number);
-    const weekStart = new Date(startYear, startMonth - 1, startDay);
+    if (!selectedMonth) return [];
+    const [month, year] = selectedMonth.split("/").map(Number);
+    const monthStart = new Date(year, month - 1, 1); // Start of the month
+    const monthEnd = new Date(year, month, 0); // End of the month
 
-    // Initialize 7 days of data
-    const weekData: DayData[] = [];
-    for (let i = 0; i < 7; i++) {
-      const currentDate = new Date(weekStart);
-      currentDate.setDate(weekStart.getDate() + i);
-      weekData.push({
-        name: String(i + 1),
+    // Initialize data for all days in the month
+    const monthData: DayData[] = [];
+    for (let i = 0; i < monthEnd.getDate(); i++) {
+      const currentDate = new Date(monthStart);
+      currentDate.setDate(monthStart.getDate() + i);
+      monthData.push({
+        name: String(i + 1), // Day of the month (1, 2, 3, ..., 31)
         fullDate: currentDate.toISOString().split("T")[0],
         passed: 0,
         notPassed: 0,
@@ -123,7 +123,7 @@ const ExamsChart = () => {
     // Filter and aggregate exams by day
     exams.forEach((exam) => {
       const examDate = new Date(exam.date);
-      const dayIndex = weekData.findIndex(
+      const dayIndex = monthData.findIndex(
         (day) =>
           day.date.getDate() === examDate.getDate() &&
           day.date.getMonth() === examDate.getMonth() &&
@@ -131,17 +131,17 @@ const ExamsChart = () => {
       );
 
       if (dayIndex !== -1) {
-        weekData[dayIndex].exams.push(exam);
+        monthData[dayIndex].exams.push(exam);
         if (exam.status === "Completed") {
-          weekData[dayIndex].passed += 1;
+          monthData[dayIndex].passed += 1;
         } else {
-          weekData[dayIndex].notPassed += 1;
+          monthData[dayIndex].notPassed += 1;
         }
       }
     });
 
-    return weekData;
-  }, [selectedWeek, exams]);
+    return monthData;
+  }, [selectedMonth, exams]);
 
   const chartConfig = {
     passed: {
@@ -200,10 +200,10 @@ const ExamsChart = () => {
           <div>
             <CardTitle className="h3">{text("examsPerformance")}</CardTitle>
           </div>
-          <WeekSelector
+          <MonthSelector // Updated component
             selectedUserObject={selectedUserObject}
-            selectedWeek={selectedWeek}
-            setSelectedWeek={setSelectedWeek}
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
           />
         </div>
       </CardHeader>
@@ -214,7 +214,7 @@ const ExamsChart = () => {
             style={{ height: "400px" }}
           />
         ) : filteredExams.length === 0 ? (
-          <p className="py-8 text-center">{text("noExamsForThisWeek")}</p>
+          <p className="py-8 text-center">{text("noExamsForThisMonth")}</p> // Updated text
         ) : (
           <ChartContainer className="w-full" config={chartConfig}>
             <ResponsiveContainer width="100%" height={400}>

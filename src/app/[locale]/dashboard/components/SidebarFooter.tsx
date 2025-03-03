@@ -17,7 +17,7 @@ import { BsChatLeftDots } from "react-icons/bs";
 
 const SidebarFooter = () => {
   const { setTheme } = useTheme();
-  const { logout, token } = useAuth();
+  const { logout, token, user } = useAuth();
   const text = useTranslations("dashboard");
   const pathname = usePathname();
   const locale = useLocale();
@@ -61,7 +61,7 @@ const SidebarFooter = () => {
   }, [systemReviewCreatedAt]);
   return (
     <div className="space-y-2">
-      {showSystemReview && (
+      {showSystemReview && user?.authToReview && (
         <SidebarLink
           link={{
             href: "/dashboard/settings/system-review",

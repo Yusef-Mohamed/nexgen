@@ -16,9 +16,15 @@ const CommunitySidebar = () => {
   }, [token, user, getCourses]);
   const users = useMemo(() => {
     const arrayOfArrayOfUsers = courses.map((course) => course.users);
-    return arrayOfArrayOfUsers.flat();
+    const allUsers = arrayOfArrayOfUsers.flat();
+
+    // Use a Set to filter out duplicate users based on _id
+    const uniqueUsers = Array.from(
+      new Set(allUsers.map((user) => user._id))
+    ).map((id) => allUsers.find((user) => user._id === id));
+
+    return uniqueUsers;
   }, [courses]);
-  console.log(users);
   return (
     <div
       style={{

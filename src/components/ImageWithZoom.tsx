@@ -37,7 +37,7 @@ const ImageWithZoom: React.FC<ImageWithZoomProps> = ({
             setIsOpen(value);
           }}
         >
-          <DialogContent className="max-w-[95vw] p-0 overflow-hidden flex flex-col w-[95vw] max-h-[95vh] h-[95vh] ">
+          <DialogContent className="max-w-[95vw] sm:max-w-[95vw] p-0 overflow-hidden flex flex-col w-[95vw] max-h-[95vh] h-[95vh] ">
             <div className="flex-grow w-full overflow-hidden">
               <Image
                 width={2000}
@@ -59,7 +59,7 @@ const ImageWithZoom: React.FC<ImageWithZoomProps> = ({
                     y * 100
                   }%`;
                 }}
-                className="object-contain w-full cursor-zoom-in"
+                className="object-contain w-full h-full cursor-zoom-in"
               />
             </div>
           </DialogContent>

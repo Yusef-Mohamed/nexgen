@@ -110,7 +110,7 @@ const LoadingState = () => (
       {Array.from({ length: 4 }).map((_, i) => (
         <Card key={i}>
           <CardContent className="p-4">
-            <Skeleton className="w-24 h-4 mb-2" />
+            <Skeleton className="mb-2 w-24 h-4" />
             <Skeleton className="w-32 h-8" />
           </CardContent>
         </Card>
@@ -118,7 +118,7 @@ const LoadingState = () => (
     </div>
     <Card>
       <CardContent className="p-4">
-        <Skeleton className="w-48 h-8 mb-4" />
+        <Skeleton className="mb-4 w-48 h-8" />
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className="w-full h-12" />
@@ -239,20 +239,29 @@ const BalanceCard = ({
 
   return (
     <Card>
-      <CardContent className="flex flex-col items-center justify-center h-full p-4">
+      <CardContent className="flex flex-col justify-center items-center p-4 h-full">
         <div className="relative">
           <Image
-            src="/images/balance_card.svg"
+            src={`/images/card_light_${locale === "ar" ? "en" : "ar"}.png`}
             alt="balance card"
             width={500}
             height={500}
-            className={cn("aspect-[340/176] w-full", {
-              "-scale-x-100": locale === "ar",
-            })}
+            className={cn(
+              "hidden w-full rounded-md aspect-[340/176] dark:block"
+            )}
           />
-          <div className="absolute top-0 right-0 flex flex-col items-start justify-center w-full h-full px-4">
-            <p className="text-sm text-gray-200">{t("stats.currentBalance")}</p>
-            <h3 className="mt-1 mb-2 font-semibold text-white h1-5">
+          <Image
+            src={`/images/card_dark_${locale === "ar" ? "en" : "ar"}.png`}
+            alt="balance card"
+            width={500}
+            height={500}
+            className={cn("w-full rounded-md aspect-[340/176] dark:hidden")}
+          />
+          <div className="flex absolute top-0 right-0 flex-col justify-center items-start px-4 mt-2 w-full h-full">
+            <p className="text-sm text-gray-200 dark:text-gray-700">
+              {t("stats.currentBalance")}
+            </p>
+            <h3 className="font-semibold text-white dark:text-black h1-5">
               ${balance?.toLocaleString()}
             </h3>
           </div>
@@ -260,7 +269,7 @@ const BalanceCard = ({
 
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button className="w-full mt-4" variant="outline">
+            <Button className="mt-4 w-full" variant="outline">
               {t("stats.withdraw")}
             </Button>
           </DialogTrigger>
@@ -505,7 +514,7 @@ const SalesTab = ({
       </TableHeader>
       <TableBody>
         {marketLog?.sales
-          .slice(0, all ? marketLog.sales.length : 5)
+          ?.slice(0, all ? marketLog.sales.length : 5)
           .map((sale) => (
             <TableRow key={sale._id}>
               <TableCell>{sale.purchaser?.name}</TableCell>
@@ -545,7 +554,7 @@ const RegularInvoicesTab = ({
       </TableHeader>
       <TableBody>
         {marketLog?.invoices
-          .slice(0, all ? marketLog.invoices.length : 5)
+          ?.slice(0, all ? marketLog.invoices.length : 5)
           .map((invoice) => (
             <TableRow key={invoice._id}>
               <TableCell>{invoice.desc}</TableCell>
@@ -589,7 +598,7 @@ const WalletInvoicesTab = ({
       </TableHeader>
       <TableBody>
         {marketLog?.walletInvoices
-          .slice(0, all ? marketLog.walletInvoices.length : 5)
+          ?.slice(0, all ? marketLog.walletInvoices.length : 5)
           .map((invoice) => (
             <TableRow key={invoice._id}>
               <TableCell>{invoice.desc}</TableCell>
@@ -667,7 +676,7 @@ const TableWithModal = ({
 }) => {
   return (
     <>
-      <CardHeader className="flex flex-row items-center justify-between">
+      <CardHeader className="flex flex-row justify-between items-center">
         <div className="flex-1">{header}</div>
         {!hideModal && (
           <Dialog>
@@ -681,7 +690,7 @@ const TableWithModal = ({
                 />
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <DialogContent className="max-h-[80vh] max-w-[95vw] sm:max-w-[95vw] md:max-w-[95vw] lg:max-w-[95vw] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>{header}</DialogTitle>
               </DialogHeader>

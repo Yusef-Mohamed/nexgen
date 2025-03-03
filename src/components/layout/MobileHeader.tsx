@@ -18,7 +18,7 @@ const MobileHeader = ({
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const text = useTranslations("header");
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
   const handleClickOutside = (event: MouseEvent) => {
     if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
       setIsOpen(false);
@@ -90,14 +90,25 @@ const MobileHeader = ({
               <ThemeToggler />
             </div>
             {token ? (
-              <Button
-                onClick={() => {
-                  setIsOpen(false);
-                }}
-                asChild
-              >
-                <Link href="/dashboard">{text("dashboard")}</Link>
-              </Button>
+              <>
+                <Button
+                  onClick={() => {
+                    setIsOpen(false);
+                  }}
+                  asChild
+                >
+                  <Link href="/dashboard">{text("dashboard")}</Link>
+                </Button>{" "}
+                <Button
+                  variant={"outline"}
+                  onClick={() => {
+                    setIsOpen(false);
+                    logout();
+                  }}
+                >
+                  {text("signIn")}
+                </Button>
+              </>
             ) : (
               <>
                 {" "}

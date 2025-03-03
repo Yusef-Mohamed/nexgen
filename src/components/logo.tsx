@@ -64,9 +64,10 @@ const Logo = ({
       />
       {!isIconic && (
         <div
-          className={`${responsiveSizes[size].textSize} sm:${sizes[size].textSize}`}
+          className={`${responsiveSizes[size].textSize} sm:${sizes[size].textSize} flex flex-col`}
         >
-          NexGen
+          <span>NexGen</span>
+          <span className="h-1 text-xs text-text-3">Beta</span>
         </div>
       )}
     </Link>

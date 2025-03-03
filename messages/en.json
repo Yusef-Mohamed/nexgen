@@ -3,7 +3,7 @@
     "please_verify_your_email": "Please verify your email",
     "id_verification": {
       "title": "ID Verification Required",
-      "description": "For security reasons, you need to verify your identity before proceeding. You will be directed to the verification page.",
+      "description": "We require identity verification to ensure the protection of content rights and user rights, and to make sure that the provided content remains exclusive and dedicated to subscribers only!",
       "button": "Go to ID Verification"
     },
     "banned": {
@@ -89,7 +89,8 @@
   },
   "learnerReviews": {
     "heading": "Our Students' Reviews",
-    "exploreAllReviews": "Explore All Reviews"
+    "exploreAllReviews": "Explore All Reviews",
+    "loadMore": "Load More"
   },
   "featuredInstructors": {
     "heading": "Meet Our Featured Instructors of the Week",
@@ -97,7 +98,7 @@
   },
   "blogs": {
     "heading": "Stay Ahead with Our Blogs",
-    "exploreAllBlogs": "Explore All Blogs",
+    "exploreAllBlogs": "View more",
     "heading2": "Our Blog",
     "description": "Learn, Trade, and Succeed: Building Your Skills in the Forex Market",
     "latestBlogs": "Latest Blogs",
@@ -158,7 +159,7 @@
     "ourLearners": "Our Students' Success"
   },
   "aboutPartnersPage": {
-    "heading": "Trusted by the Best Global Companies"
+    "heading": "Our University and Corporate Partners"
   },
   "aboutOurValuesPage": {
     "ourValues": "Our Values",
@@ -289,7 +290,16 @@
     "profile_updated": "Profile updated",
     "changePassword": "Change Password",
     "password_updated": "Password updated",
-    "change_password_failed": "Password change failed"
+    "change_password_failed": "Password change failed",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "passwordRequiresUppercase": "Password must contain at least one uppercase letter",
+    "passwordRequiresLowercase": "Password must contain at least one lowercase letter",
+    "passwordRequiresNumber": "Password must contain at least one number",
+    "passwordRequiresSpecialChar": "Password must contain at least one special character @ # _",
+    "invalidEmail": "Invalid email",
+    "enterPhone": "Enter phone number",
+    "bio": "Bio",
+    "enterBio": "Enter bio"
   },
   "reviewsSectionAboutPage": {
     "heading": "Learner Reviews",
@@ -365,7 +375,7 @@
     "lives": "Live Streams",
     "chat": "Chat",
     "settings": "Settings",
-    "marketing": "Marketing",
+    "marketing": "Leader board",
     "community": "Community",
     "practice": "Practice",
     "notifications": "Notifications",
@@ -571,7 +581,10 @@
     "courseFailed": "Dear student, you didn't pass the final exam this time, but this isn't the end! 🚀 Take advantage of your chance to retry, and trust that each step brings you closer to success. We're confident in your ability to achieve it!",
     "placementPassed": "🎉 Congratulations! You've successfully passed the placement test. You can now proceed to purchase the course and start your learning journey with confidence! 🚀",
     "placementFailed": "Dear student, you couldn't pass the placement test. We recommend enrolling in the foundation course to strengthen your skills. If you decide to continue with this advanced course, it will be at your own responsibility. We're always here to support you!",
-    "yourScoreIs": "Your score is"
+    "yourScoreIs": "Your score is",
+    "retake": "Retake",
+    "loading": "Loading...",
+    "quiz_not_found": "Quiz not found"
   },
   "settings": {
     "myProfile": "My Profile",
@@ -644,6 +657,7 @@
     "pending": "Pending",
     "paid": "Paid",
     "rejected": "Rejected",
+    "unpaid": "Unpaid",
     "stats": {
       "totalSales": "Total Sales",
       "profit": "Profit",
@@ -757,7 +771,10 @@
     "course": "Course",
     "percentage": "Percentage",
     "noOrdersFound": "No Orders Found",
-    "total": "Total"
+    "total": "Total",
+    "nCourse": "Course",
+    "path": "Path",
+    "service": "Service"
   },
   "teamManagement": {
     "showLess": "Show Less",
@@ -841,7 +858,11 @@
     "copyTheLink": "Copy the Link",
     "copy": "Copy",
     "link": "Link",
-    "linkCopied": "Link Copied"
+    "linkCopied": "Link Copied",
+    "allItems": "All Items",
+    "course": "Course",
+    "service": "Service",
+    "path": "Path"
   },
   "analytics": {
     "outTopStudentsInThisCourse": "Our Top Students in This Course",
@@ -874,6 +895,33 @@
     "noVideosForThisWeek": "No Videos for This Week",
     "passed": "Passed",
     "notPassed": "Not Passed",
-    "quizzes": "Quizzes"
+    "quizzes": "Quizzes",
+    "thisMonthPracticeNumber": "This Month's Practices",
+    "thisMonthWrongPracticeNumber": "This Month's Wrong Practices",
+    "noPracticeForThisMonth": "No practices for this month",
+    "selectMonth": "Select Month",
+    "month": "Month"
+  },
+  "reviews": {
+    "reply": "Reply",
+    "delete": "Delete",
+    "review_reply": "Reply to review",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "are_you_sure": "Are you sure",
+    "delete_confirmation": "Are you sure you want to delete this review",
+    "continue": "Continue",
+    "delete_success": "Review deleted successfully",
+    "reply_success": "Reply to review submitted successfully",
+    "something_wrong": "Something went wrong"
+  },
+  "postAction": {
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "areYouSure": "Are you sure?",
+    "delete_confirmation": "Are you sure you want to delete this?",
+    "continue": "Continue",
+    "something_wrong": "Something went wrong",
+    "delete_success": "Deleted successfully"
   }
 }

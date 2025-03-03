@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { TeamData, User, UserStats } from "./TeamManagement";
 import { DatePickerWithRange } from "@/components/DatePickerWithRange";
@@ -24,6 +24,8 @@ import OrdersDialog from "./OrdersDialog";
 import { format } from "date-fns";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
+import { ICourse, ICoursePackage, IPackage } from "@/types";
+import { createClientAxiosInstance } from "@/app/lib/utils";
 const formatDate = (date: Date) => {
   return format(date, "yyyy MM dd").split(" ").join("-");
 };
@@ -38,6 +40,37 @@ const TeamTable = ({ data }: { data: TeamData }) => {
     to: undefined,
   });
   const [isShowAll, setIsShowAll] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<string>("");
+  const [courses, setCourses] = useState<ICourse[]>([]);
+  const [coursePackages, setCoursePackages] = useState<ICoursePackage[]>([]);
+  const [packages, setPackages] = useState<IPackage[]>([]);
+  useEffect(() => {
+    const fetchCourses = async () => {
+      const axiosInstance = createClientAxiosInstance();
+      try {
+        const res = await axiosInstance.get("/courses");
+        setCourses(res.data.data);
+      } catch (err) {
+        console.log(err);
+        setCourses([]);
+      }
+      try {
+        const res = await axiosInstance.get("/coursePackages");
+        setCoursePackages(res.data.data);
+      } catch (err) {
+        console.log(err);
+        setCoursePackages([]);
+      }
+      try {
+        const res = await axiosInstance.get("/packages");
+        setPackages(res.data.data);
+      } catch (err) {
+        console.log(err);
+        setPackages([]);
+      }
+    };
+    fetchCourses();
+  }, []);
   const filteredUsers = useMemo(() => {
     let filteredUsers: User[] = [];
     if (purchaseFilter === "buyers") {
@@ -52,6 +85,20 @@ const TeamTable = ({ data }: { data: TeamData }) => {
         member.orders?.some((order) => order.isResale)
       );
     }
+    if (selectedItem) {
+      const [type, id] = selectedItem.split("-");
+      filteredUsers = filteredUsers.filter((member) => {
+        return member.orders?.some((order) => {
+          if (type === "course") {
+            return order.course?._id === id;
+          } else if (type === "coursePackage") {
+            return order.coursePackage?._id === id;
+          } else if (type === "package") {
+            return order.package?._id === id;
+          }
+        });
+      });
+    }
     if (date?.from && date?.to) {
       filteredUsers = filteredUsers.filter((member) => {
         const createdAt = new Date(member.createdAt);
@@ -65,12 +112,42 @@ const TeamTable = ({ data }: { data: TeamData }) => {
     purchaseFilter,
     resaleFilter,
     date,
+    selectedItem,
   ]);
+
   return (
     <Card className="mb-4 border-none">
       <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4">
         <CardTitle>{t("myTeamMembers")}</CardTitle>
         <div className="flex flex-wrap gap-4">
+          <Select
+            value={selectedItem}
+            onValueChange={(value) => setSelectedItem(value)}
+          >
+            <SelectTrigger className="w-40 h-10 md:w-48 lg:h-12 md:h-10 md:text-sm">
+              <SelectValue placeholder={t("allItems")} />
+            </SelectTrigger>
+            <SelectContent>
+              {courses.map((course) => (
+                <SelectItem key={course._id} value={`course-${course._id}`}>
+                  {t("course")} - {course.title}
+                </SelectItem>
+              ))}
+              {coursePackages.map((coursePackage) => (
+                <SelectItem
+                  key={coursePackage._id}
+                  value={`coursePackage-${coursePackage._id}`}
+                >
+                  {t("path")} - {coursePackage.title}
+                </SelectItem>
+              ))}
+              {packages.map((pack) => (
+                <SelectItem key={pack._id} value={`package-${pack._id}`}>
+                  {t("service")} - {pack.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Select
             value={purchaseFilter}
             onValueChange={(value: "all" | "buyers" | "non-buyers") =>

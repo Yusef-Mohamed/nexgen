@@ -10,7 +10,7 @@ import { useAuth } from "../auth-provider";
 import { useEffect } from "react";
 
 const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
-  const t = useTranslations("SignIn");
+  const t = useTranslations("SignUp");
   const inputs = useTranslations("Forms");
   const router = useRouter();
   const formSchema = z
@@ -19,7 +19,13 @@ const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
       email: z.string().email({ message: inputs("invalidEmail") }),
       phone: z.string({ message: inputs("thisFieldIsRequired") }),
       country: z.string({ message: inputs("thisFieldIsRequired") }),
-      password: z.string({ message: inputs("thisFieldIsRequired") }),
+      password: z
+        .string({ message: inputs("thisFieldIsRequired") })
+        .min(8, { message: inputs("passwordTooShort") })
+        .regex(/[A-Z]/, { message: inputs("passwordRequiresUppercase") })
+        .regex(/[a-z]/, { message: inputs("passwordRequiresLowercase") })
+        .regex(/[0-9]/, { message: inputs("passwordRequiresNumber") })
+        .regex(/[@#_]/, { message: inputs("passwordRequiresSpecialChar") }),
       passwordConfirm: z.string({ message: inputs("thisFieldIsRequired") }),
     })
     .refine((data) => data.password === data.passwordConfirm, {

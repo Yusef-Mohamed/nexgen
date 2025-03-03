@@ -23,10 +23,10 @@ import {
 import { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { MdDelete, MdEdit } from "react-icons/md";
-import Image from "next/image";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { useTranslations } from "next-intl";
 import { useAuth } from "../auth-provider";
+import ImageWithZoom from "../ImageWithZoom";
 
 interface MessageCardProps {
   message: IMessage;
@@ -74,9 +74,9 @@ const MessageCard: React.FC<MessageCardProps> = ({
 
   const renderMessageText = (content: string) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const parts = content.split(urlRegex);
+    const parts = content?.split(urlRegex);
 
-    return parts.map((part, index) => {
+    return parts?.map((part, index) => {
       if (part.match(urlRegex)) {
         return (
           <span
@@ -154,7 +154,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                     {text("pdfFileClickToOpen")}
                   </a>
                 ) : (
-                  <Image
+                  <ImageWithZoom
                     src={message.media[0]}
                     alt=""
                     width={400}

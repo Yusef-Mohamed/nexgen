@@ -18,7 +18,7 @@ const AboutCourse = ({ course }: { course: ICourse }) => {
           <Button
             key={item}
             variant={show === item ? "default" : "outline"}
-            className="w-32 border-none rounded-none"
+            className="w-40 border-none rounded-none sm:w-48"
             onClick={() => setShow(item)}
           >
             {text(item)}

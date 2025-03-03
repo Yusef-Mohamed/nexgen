@@ -13,7 +13,13 @@ const ResetPassword = () => {
   const router = useRouter();
   const formSchema = z.object({
     email: z.string().email({ message: inputs("invalidEmail") }),
-    newPassword: z.string({ message: inputs("thisFieldIsRequired") }),
+    newPassword: z
+      .string({ message: inputs("thisFieldIsRequired") })
+      .min(8, { message: inputs("passwordTooShort") })
+      .regex(/[A-Z]/, { message: inputs("passwordRequiresUppercase") })
+      .regex(/[a-z]/, { message: inputs("passwordRequiresLowercase") })
+      .regex(/[0-9]/, { message: inputs("passwordRequiresNumber") })
+      .regex(/[@#_]/, { message: inputs("passwordRequiresSpecialChar") }),
   });
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const axiosInstance = createClientAxiosInstance();

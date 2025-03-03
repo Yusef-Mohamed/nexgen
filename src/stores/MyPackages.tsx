@@ -36,8 +36,21 @@ export const usePackagesStore = create<PackagesStore>((set, get) => ({
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(res.data.data);
-      set({ packages: res.data.data, lastFetched: now });
+
+      const uniquePackages = res.data.data.reduce(
+        (acc: { package: IPackage }[], item: { package: IPackage }) => {
+          const isDuplicate = acc.some(
+            (existingItem) => existingItem.package._id === item.package._id
+          );
+          if (!isDuplicate) {
+            acc.push(item);
+          }
+          return acc;
+        },
+        []
+      );
+
+      set({ packages: uniquePackages, lastFetched: now });
     } catch (err) {
       console.log(err);
     } finally {

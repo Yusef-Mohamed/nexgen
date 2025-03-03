@@ -78,6 +78,7 @@ export interface IUser {
     totalTimeSpent: number;
   };
   isMarketer: boolean;
+  bio?: string;
   __v: number;
 }
 export interface InputData {
@@ -375,7 +376,10 @@ export interface IBlog {
   _id: string;
   createdAt: string;
   updatedAt: string;
-  author: string;
+  author?: {
+    name: string;
+    profileImg: string;
+  };
   readTime: number;
 }
 export interface IProgress {

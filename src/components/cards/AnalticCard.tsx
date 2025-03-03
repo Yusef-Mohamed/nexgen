@@ -44,7 +44,6 @@ const AnalyticCard = ({
   analytic: IAnalytic;
   setAnalytics: React.Dispatch<React.SetStateAction<IAnalytic[]>>;
 }) => {
-  console.log(analytic);
   const text = useTranslations("practice");
   const myAccount = JSON.parse(getCookie("user") || "{}");
   const [marketerComment, setMarketerComment] = useState(
@@ -67,7 +66,7 @@ const AnalyticCard = ({
       const axiosInstance = createClientAxiosInstance();
       const res = await axiosInstance.put(
         `/analytics/${analytic._id}`,
-        { marketerComment, isPassed },
+        { marketerComment, isPassed, isSeen: true },
         { headers: { Authorization: `Bearer ${getCookie("token")}` } }
       );
 
@@ -135,8 +134,8 @@ const AnalyticCard = ({
             />
             {images.length > 2 && (
               <>
-                <div className="absolute inset-0 flex items-center justify-center opacity-25 bg-background" />
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="flex absolute inset-0 justify-center items-center opacity-25 bg-background" />
+                <div className="flex absolute inset-0 justify-center items-center">
                   <span className="text-4xl font-bold">
                     +{images.length - 2}
                   </span>
@@ -150,9 +149,9 @@ const AnalyticCard = ({
   };
 
   return (
-    <Card className="w-full p-3 rounded-md sm:p-6 bg-background">
+    <Card className="p-3 w-full rounded-md sm:p-6 bg-background">
       <CardContent className="p-0">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-1.5 sm:gap-3">
             <UserAvatar user={analytic.user} />
             <div className="flex flex-col">
@@ -174,7 +173,7 @@ const AnalyticCard = ({
                 <DropdownMenuLabel>
                   <button
                     onClick={() => setIsDeleting(true)}
-                    className="flex items-center gap-2 text-destructive"
+                    className="flex gap-2 items-center text-destructive"
                   >
                     <AiFillDelete size={18} />
                     {text("delete")}
@@ -190,8 +189,8 @@ const AnalyticCard = ({
         {renderMediaGrid()}
 
         {!isEditing && analytic.marketerComment && (
-          <div className="p-4 mt-4 border rounded-md bg-muted/30">
-            <div className="flex items-center gap-4">
+          <div className="p-4 mt-4 rounded-md border bg-muted/30">
+            <div className="flex gap-4 items-center">
               <p className="flex-1">{analytic.marketerComment}</p>
               <div
                 className={cn(
@@ -229,7 +228,7 @@ const AnalyticCard = ({
               placeholder={text("commentPlaceholder")}
               className="mb-4"
             />
-            <div className="flex justify-center gap-4">
+            <div className="flex gap-4 justify-center">
               <Button
                 variant="outline"
                 onClick={() => {
@@ -266,7 +265,7 @@ const AnalyticCard = ({
           <div className="relative">
             {analytic.media &&
               analytic.media.filter((m) => !isPDF(m)).length > 1 && (
-                <div className="absolute right-0 flex justify-between w-full px-4 -translate-y-1/2 top-1/2">
+                <div className="flex absolute right-0 top-1/2 justify-between px-4 w-full -translate-y-1/2">
                   <button
                     onClick={() => {
                       const images = analytic.media!.filter((m) => !isPDF(m));
@@ -274,7 +273,7 @@ const AnalyticCard = ({
                         prev === 0 ? images.length - 1 : prev - 1
                       );
                     }}
-                    className="flex items-center justify-center w-8 h-8 rounded-full bg-background/80"
+                    className="flex justify-center items-center w-8 h-8 rounded-full bg-background/80"
                   >
                     <FaChevronLeft />
                   </button>
@@ -285,13 +284,13 @@ const AnalyticCard = ({
                         prev === images.length - 1 ? 0 : prev + 1
                       );
                     }}
-                    className="flex items-center justify-center w-8 h-8 rounded-full bg-background/80"
+                    className="flex justify-center items-center w-8 h-8 rounded-full bg-background/80"
                   >
                     <FaChevronRight />
                   </button>
                 </div>
               )}
-            <div className="flex items-center justify-center bg-muted">
+            <div className="flex justify-center items-center bg-muted">
               <ImageWithZoom
                 width={600}
                 height={600}
@@ -365,51 +364,51 @@ const AnalyticCard = ({
 
 export const AnalyticCardSkeleton = () => {
   return (
-    <Card className="w-full p-3 rounded-md sm:p-6 bg-background">
+    <Card className="p-3 w-full rounded-md sm:p-6 bg-background">
       <CardContent className="p-0">
         {/* Header with avatar and name */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-1.5 sm:gap-3">
             {/* Avatar skeleton */}
-            <div className="w-10 h-10 rounded-full bg-muted animate-pulse" />
+            <div className="w-10 h-10 rounded-full animate-pulse bg-muted" />
             <div className="flex flex-col gap-2">
               {/* Name skeleton */}
-              <div className="w-32 h-4 rounded-md bg-muted animate-pulse" />
+              <div className="w-32 h-4 rounded-md animate-pulse bg-muted" />
               {/* Date skeleton */}
-              <div className="w-24 h-3 rounded-md bg-muted animate-pulse" />
+              <div className="w-24 h-3 rounded-md animate-pulse bg-muted" />
             </div>
           </div>
         </div>
 
         {/* Content skeleton */}
         <div className="my-2 space-y-2 sm:my-4">
-          <div className="w-full h-4 rounded-md bg-muted animate-pulse" />
-          <div className="w-3/4 h-4 rounded-md bg-muted animate-pulse" />
-          <div className="w-1/2 h-4 rounded-md bg-muted animate-pulse" />
+          <div className="w-full h-4 rounded-md animate-pulse bg-muted" />
+          <div className="w-3/4 h-4 rounded-md animate-pulse bg-muted" />
+          <div className="w-1/2 h-4 rounded-md animate-pulse bg-muted" />
         </div>
 
         {/* Media skeleton */}
         <div className="grid grid-cols-2 gap-0.5 mt-4">
-          <div className="w-full rounded-md bg-muted animate-pulse aspect-video" />
-          <div className="w-full rounded-md bg-muted animate-pulse aspect-video" />
+          <div className="w-full rounded-md animate-pulse bg-muted aspect-video" />
+          <div className="w-full rounded-md animate-pulse bg-muted aspect-video" />
         </div>
 
         {/* Comment box skeleton */}
-        <div className="p-4 mt-4 border rounded-md bg-muted/30">
-          <div className="flex items-center gap-4">
+        <div className="p-4 mt-4 rounded-md border bg-muted/30">
+          <div className="flex gap-4 items-center">
             <div className="flex-1 space-y-2">
-              <div className="w-full h-4 rounded-md bg-muted animate-pulse" />
-              <div className="w-3/4 h-4 rounded-md bg-muted animate-pulse" />
+              <div className="w-full h-4 rounded-md animate-pulse bg-muted" />
+              <div className="w-3/4 h-4 rounded-md animate-pulse bg-muted" />
             </div>
             {/* Status circle skeleton */}
-            <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
+            <div className="w-8 h-8 rounded-full animate-pulse bg-muted" />
           </div>
         </div>
 
         {/* Action buttons skeleton */}
-        <div className="flex justify-center gap-4 mt-4">
-          <div className="rounded-md w-28 h-9 bg-muted animate-pulse" />
-          <div className="rounded-md w-28 h-9 bg-muted animate-pulse" />
+        <div className="flex gap-4 justify-center mt-4">
+          <div className="w-28 h-9 rounded-md animate-pulse bg-muted" />
+          <div className="w-28 h-9 rounded-md animate-pulse bg-muted" />
         </div>
       </CardContent>
     </Card>

@@ -55,7 +55,11 @@ const OrdersDialog = ({ orders }: { orders: IOrder[] }) => {
             {orders.map((order, index) => (
               <TableRow key={order._id}>
                 <TableCell>{index + 1}</TableCell>
-                <TableCell></TableCell>
+                <TableCell>
+                  {order.course?.title ||
+                    order.package?.title ||
+                    order.coursePackage?.title}
+                </TableCell>
                 <TableCell>${order.totalOrderPrice.toLocaleString()}</TableCell>
                 <TableCell>{order.paymentMethodType}</TableCell>
                 <TableCell>

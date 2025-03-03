@@ -141,7 +141,7 @@ const MainComponent = ({
       }>;
       if (typedError.response?.data.error)
         toast.error(typedError.response.data.error);
-      if (typedError.response?.data.message)
+      else if (typedError.response?.data.message)
         toast.error(typedError.response.data.message);
       else toast.error(text("invalidCoupon"));
     }

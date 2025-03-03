@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { IMarketLog, IOrder, IUser } from "@/types";
 import TeamTable from "./TeamTable";
 import LinksTable from "./LinksTable";
+import { AxiosError } from "axios";
 interface User extends IUser {
   orders?: IOrder[];
 }
@@ -72,14 +73,6 @@ const TeamManagement: React.FC = () => {
       setIsFetching(true);
       try {
         const axiosInstance = createClientAxiosInstance();
-        const res = await axiosInstance.get<TeamData>(
-          `/marketing/getMarketerChildren/${user._id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
         const logRes = await axiosInstance.get<{
           marketLog: IMarketLog;
         }>(`/marketing/getMarketLog/${user._id}`, {
@@ -88,10 +81,21 @@ const TeamManagement: React.FC = () => {
           },
         });
         setMarketLog(logRes.data.marketLog);
+        const res = await axiosInstance.get<TeamData>(
+          `/marketing/getMarketerChildren/${user._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
         setData(res.data);
       } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error(t("fetchError"));
+        const typedError = error as AxiosError<{ message?: string }>;
+        if (typedError.response?.data?.message)
+          toast.error(typedError.response.data.message);
+        else toast.error(t("fetchError"));
       }
       setIsFetching(false);
     };
@@ -110,6 +114,8 @@ const TeamManagement: React.FC = () => {
         {
           keys: [formData.name],
           invitationKeys: [formData.name],
+          invitationKey: formData.name,
+          option: "add",
         },
         {
           headers: {
@@ -216,7 +222,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, base, mark }) => {
       <CardContent className="p-4">
         <div>
           <p className="mb-4 max-sm:text-sm text-muted-foreground">{title}</p>
-          <h3 className="flex items-end gap-1 mt-1 mb-2 font-semibold h1-5">
+          <h3 className="flex gap-1 items-end mt-1 mb-2 font-semibold h1-5">
             {mark}
             {value?.toLocaleString()}
             {base && (

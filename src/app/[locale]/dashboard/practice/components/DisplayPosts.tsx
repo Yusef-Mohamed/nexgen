@@ -21,6 +21,7 @@ const DisplayPosts = () => {
 
   const fetchPosts = useCallback(
     async (page: number, search?: string): Promise<IAnalytic[]> => {
+      console.log("fetchPosts");
       try {
         if (haveError) {
           return [];
@@ -31,9 +32,9 @@ const DisplayPosts = () => {
         filtersParams.append("page", `${page}`);
 
         if (show === "completed") {
-          filtersParams.append("isPassed", "1");
+          filtersParams.append("isSeen", "1");
         } else if (show === "onProgress") {
-          filtersParams.append("isPassed", "0");
+          filtersParams.append("isSeen", "0");
         }
         if (user?.isMarketer) filtersParams.append("asMarketer", "1");
 
@@ -66,19 +67,19 @@ const DisplayPosts = () => {
     setData,
     resetData,
     isLoading,
+    observerRef,
   } = useInfiniteScroll<IAnalytic>({
     fetchData: fetchPosts,
     dependencies: [show], // Add show as a dependency to trigger reset
   });
-
   const handleShowChange = (newShow: typeof show) => {
     setShow(newShow);
     resetData(); // Reset the data when show changes
   };
 
   return (
-    <section className="w-full max-w-4xl mx-auto space-y-4">
-      <div className="flex items-center overflow-hidden border rounded-full w-fit">
+    <section className="mx-auto space-y-4 w-full max-w-4xl">
+      <div className="flex overflow-hidden items-center rounded-full border w-fit">
         {(user?.isMarketer
           ? (["completed", "onProgress"] as const)
           : (["completed", "onProgress", "addNew"] as const)
@@ -86,7 +87,7 @@ const DisplayPosts = () => {
           <Button
             key={item}
             variant={show === item ? "default" : "outline"}
-            className="border-none rounded-none min-w-28 sm:min-w-32"
+            className="rounded-none border-none min-w-28 sm:min-w-32"
             onClick={() => handleShowChange(item)}
           >
             {text(item)}
@@ -119,6 +120,7 @@ const DisplayPosts = () => {
             Array.from({ length: 4 }).map((_, i) => (
               <AnalyticCardSkeleton key={i} />
             ))}
+          {!haveError && <div ref={observerRef} />}
         </div>
       )}
     </section>

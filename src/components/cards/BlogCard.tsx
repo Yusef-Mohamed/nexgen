@@ -55,7 +55,7 @@ const BlogCard: React.FC<IBlog> = ({
             </div>
           </div>
           <div className="flex items-center gap-2 whitespace-nowrap sm:gap-3 ">
-            <FaRegUser /> <div>{author.slice(0, 8)}</div>
+            <FaRegUser /> <div>{author?.name?.slice(0, 8)}</div>
           </div>
         </div>
       </div>
@@ -132,7 +132,10 @@ export const BlogUserComponent = ({
   createdAt,
   className,
 }: {
-  author: string;
+  author?: {
+    name: string;
+    profileImg: string;
+  };
   readTime: number;
   createdAt: string;
   className?: string;
@@ -140,11 +143,20 @@ export const BlogUserComponent = ({
   const locale = useLocale();
   return (
     <div className={cn("flex items-center gap-2 mt-2 sm:mt-4", className)}>
-      <UserAvatar className="w-12 h-12" />
+      <UserAvatar
+        className="w-12 h-12"
+        user={{
+          name: author?.name || "",
+          profileImg: author?.profileImg || "",
+        }}
+      />
       <div>
-        <div className="text-sm text-text-1 sm:text-base">{author}</div>
+        <div className="text-sm text-text-1 sm:text-base">{author?.name}</div>
         <div className="text-xs sm:text-sm text-text-3">
-          <span>{readTime} د</span> .{" "}
+          <span>
+            {readTime} {locale === "ar" ? "د" : "min"}
+          </span>{" "}
+          .{" "}
           <span>
             {new Date(createdAt).toLocaleDateString(
               locale === "ar" ? "ar-EG" : "en-US",

@@ -1,25 +1,105 @@
-import React from "react";
-import TestimonialCard from "../../../../components/cards/TestimonialCard";
-import { getTranslations } from "next-intl/server";
-import { createServerAxiosInstance } from "@/app/lib/serverUtils";
-import { IReview } from "@/types";
-import GridSection from "@/components/GridSection";
+"use client";
 
-const Testimonials: React.FC = async () => {
-  const text = await getTranslations("learnerReviews");
-  const axiosInstance = createServerAxiosInstance();
-  const reviewsRes = await axiosInstance.get("/systemReviews?limit=3");
-  const reviewsData = reviewsRes.data.data as IReview[];
+import React, { useState, useEffect } from "react";
+import TestimonialCard, {
+  TestimonialCard2,
+} from "@/components/cards/TestimonialCard";
+import { useTranslations } from "next-intl";
+import GridSection from "@/components/GridSection";
+import { Button } from "@/components/ui/button";
+import { IReview } from "@/types";
+import { createClientAxiosInstance } from "@/app/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+const Testimonials: React.FC = () => {
+  const text = useTranslations("learnerReviews");
+  const [reviews, setReviews] = useState<IReview[]>([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [showDialog, setShowDialog] = useState(false);
+
+  const fetchReviews = async (pageNumber: number) => {
+    try {
+      setLoading(true);
+      const axiosInstance = await createClientAxiosInstance();
+      const response = await axiosInstance.get(
+        `/systemReviews?page=${pageNumber}&limit=4`
+      );
+      const newReviews = response.data.data;
+
+      if (pageNumber === 1) {
+        setReviews(newReviews);
+      } else {
+        setReviews((prev) => [...prev, ...newReviews]);
+      }
+      setHasMore(response.data.paginationResult.numberOfPages > pageNumber);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchReviews(1);
+  }, []);
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchReviews(nextPage);
+  };
+
   return (
-    <GridSection
-      // button={text("exploreAllReviews")}
-      // href="/reviews"
-      heading={text("heading")}
-    >
-      {reviewsData.map((testimonial, index) => (
-        <TestimonialCard key={index} {...testimonial} />
-      ))}
-    </GridSection>
+    <>
+      <GridSection
+        button={text("exploreAllReviews")}
+        heading={text("heading")}
+        onClick={() => setShowDialog(true)}
+      >
+        {reviews.slice(0, 3).map((testimonial, index) => (
+          <TestimonialCard
+            reviewType="system"
+            key={testimonial._id || index}
+            review={testimonial}
+          />
+        ))}
+      </GridSection>
+
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent className="sm:w-[30rem] overflow-auto max-h-[80vh] rounded-e-none sm:rounded-e-none">
+          <DialogHeader>
+            <DialogTitle>{text("heading")}</DialogTitle>
+          </DialogHeader>
+          {reviews.map((testimonial, index) => (
+            <TestimonialCard2
+              reviewType="system"
+              key={testimonial._id || index}
+              review={testimonial}
+            />
+          ))}
+          {hasMore && (
+            <div className="mt-6 text-center">
+              <Button
+                onClick={handleLoadMore}
+                isLoading={loading}
+                variant="outline"
+                size="lg"
+                className="w-full mx-auto sm:w-80"
+              >
+                {text("loadMore")}
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

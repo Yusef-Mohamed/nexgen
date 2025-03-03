@@ -12,7 +12,7 @@ import { useAnalyticsStore } from "@/stores/AnalyticsStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { useTranslations } from "next-intl";
-import WeekSelector from "@/components/WeekSelector";
+import MonthSelector from "@/components/MonthSelector";
 
 interface TooltipProps {
   active?: boolean;
@@ -29,22 +29,20 @@ interface TooltipProps {
 
 const VideoChart = () => {
   const { selectedUserObject, courseProgress } = useAnalyticsStore();
-  const [selectedWeek, setSelectedWeek] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
   const text = useTranslations("analytics");
 
   const chartData = useMemo(() => {
-    if (!selectedWeek || !courseProgress?.progress) return [];
+    if (!selectedMonth || !courseProgress?.progress) return [];
 
-    const [startStr, endStr] = selectedWeek.split(" - ");
-    const [startDay, startMonth, startYear] = startStr.split("/").map(Number);
-    const [endDay, endMonth, endYear] = endStr.split("/").map(Number);
-    const weekStart = new Date(startYear, startMonth - 1, startDay);
-    const weekEnd = new Date(endYear, endMonth - 1, endDay);
+    const [month, year] = selectedMonth.split("/").map(Number);
+    const monthStart = new Date(year, month - 1, 1);
+    const monthEnd = new Date(year, month, 0);
 
-    // Initialize array for all days of the week
-    const daysOfWeek = Array.from({ length: 7 }, (_, i) => {
-      const day = new Date(weekStart);
-      day.setDate(weekStart.getDate() + i);
+    // Initialize array for all days of the month
+    const daysOfMonth = Array.from({ length: monthEnd.getDate() }, (_, i) => {
+      const day = new Date(monthStart);
+      day.setDate(monthStart.getDate() + i);
       return {
         date: day.toISOString(),
         count: 0,
@@ -60,21 +58,19 @@ const VideoChart = () => {
       })
       .filter((exam: { attemptDate: string }) => {
         const examDate = new Date(exam.attemptDate);
-        return examDate >= weekStart && examDate <= weekEnd;
+        return examDate >= monthStart && examDate <= monthEnd;
       })
       .forEach((exam: { attemptDate: string; lesson: { title: string } }) => {
         const examDate = new Date(exam.attemptDate);
-        const dayIndex = Math.floor(
-          (examDate.getTime() - weekStart.getTime()) / (1000 * 60 * 60 * 24)
-        );
-        if (dayIndex >= 0 && dayIndex < 7) {
-          daysOfWeek[dayIndex].count++;
-          daysOfWeek[dayIndex].titles.push(exam.lesson.title);
+        const dayIndex = examDate.getDate() - 1;
+        if (dayIndex >= 0 && dayIndex < daysOfMonth.length) {
+          daysOfMonth[dayIndex].count++;
+          daysOfMonth[dayIndex].titles.push(exam.lesson.title);
         }
       });
 
-    return daysOfWeek;
-  }, [selectedWeek, courseProgress]);
+    return daysOfMonth;
+  }, [selectedMonth, courseProgress]);
 
   const chartConfig = {
     count: {
@@ -109,16 +105,16 @@ const VideoChart = () => {
           <div>
             <CardTitle className="h3">{text("courseVideos")}</CardTitle>
           </div>
-          <WeekSelector
+          <MonthSelector
             selectedUserObject={selectedUserObject}
-            selectedWeek={selectedWeek}
-            setSelectedWeek={setSelectedWeek}
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
           />
         </div>
       </CardHeader>
       <CardContent>
         {chartData.length === 0 ? (
-          <p className="py-8 text-center">{text("noVideosForThisWeek")}</p>
+          <p className="py-8 text-center">{text("noVideosForThisMonth")}</p>
         ) : (
           <ChartContainer className="w-full" config={chartConfig}>
             <ResponsiveContainer width="100%" height={400}>

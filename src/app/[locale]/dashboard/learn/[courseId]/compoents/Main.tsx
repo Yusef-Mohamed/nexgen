@@ -40,6 +40,34 @@ const Main = ({
   const selectedDisplay = searchParams.get("display");
   const lessonTitle = searchParams.get("lessonTitle");
   const [isOpen, setIsOpen] = useState(false);
+
+  // Add safety check for lesson transitions
+  const handleLessonChange = (
+    lessonId: string,
+    display: string,
+    title?: string
+  ) => {
+    try {
+      const params: { lesson?: string; display: string; lessonTitle?: string } =
+        {
+          display,
+        };
+
+      if (lessonId) {
+        params.lesson = lessonId;
+      }
+
+      if (title) {
+        params.lessonTitle = title;
+      }
+
+      setSearchParams(params);
+      setIsOpen(false); // Close mobile menu after selection
+    } catch (error) {
+      console.error("Error changing lesson:", error);
+    }
+  };
+
   return (
     <section className="flex flex-col-reverse gap-8 xl:flex-row">
       <div className="w-full">
@@ -104,7 +132,9 @@ const Main = ({
                 className="flex justify-between gap-4 text-sm text-start md:text-sm lg:text-sm"
                 asChild
               >
-                <AccordionTrigger>{section.section}</AccordionTrigger>
+                <AccordionTrigger className="whitespace-normal">
+                  {section.section}
+                </AccordionTrigger>
               </Button>
               <AccordionContent className="p-0 -mt-2 space-y-1 overflow-hidden bg-transparent ps-4 rounded-2xl">
                 {section.lessons?.map((lesson, ind) => (
@@ -120,17 +150,16 @@ const Main = ({
                           className="flex justify-between gap-4 text-sm whitespace-normal text-start md:text-sm low lg:text-sm"
                           asChild
                         >
-                          <AccordionTrigger>{lesson.title}</AccordionTrigger>
+                          <AccordionTrigger className="whitespace-normal">
+                            {lesson.title}
+                          </AccordionTrigger>
                         </Button>
                         <AccordionContent className="p-0 -mt-2 space-y-1 overflow-hidden bg-transparent rounded-2xl">
                           <button
                             key={ind}
-                            onClick={() => {
-                              setSearchParams({
-                                lesson: lesson._id,
-                                display: "lesson",
-                              });
-                            }}
+                            onClick={() =>
+                              handleLessonChange(lesson._id, "lesson")
+                            }
                             disabled={!lesson.videoUrl}
                             className={cn(
                               "flex items-center justify-between disabled:cursor-not-allowed   w-full disabled:opacity-50 gap-2 px-4 py-3 rounded-md hover:bg-primary bg-clear-ground hover:text-clear-ground text-start",
@@ -149,13 +178,13 @@ const Main = ({
                           </button>
                           <button
                             key={ind}
-                            onClick={() => {
-                              setSearchParams({
-                                lesson: lesson._id,
-                                display: "quiz",
-                                lessonTitle: lesson.title,
-                              });
-                            }}
+                            onClick={() =>
+                              handleLessonChange(
+                                lesson._id,
+                                "quiz",
+                                lesson.title
+                              )
+                            }
                             disabled={!lesson.videoUrl}
                             className={cn(
                               "flex disabled:cursor-not-allowed justify-between items-center disabled:opacity-50 w-full gap-2 px-4 py-3 rounded-md hover:bg-primary bg-clear-ground hover:text-clear-ground text-start",
@@ -176,11 +205,11 @@ const Main = ({
                             <button
                               key={ind}
                               onClick={() => {
-                                setSearchParams({
-                                  lesson: lesson._id,
-                                  display: "practice",
-                                  lessonTitle: lesson.title,
-                                });
+                                handleLessonChange(
+                                  lesson._id,
+                                  "practice",
+                                  lesson.title
+                                );
                               }}
                               disabled={!lesson.videoUrl}
                               className={cn(
@@ -204,9 +233,7 @@ const Main = ({
                               <button
                                 key={ind}
                                 onClick={() => {
-                                  setSearchParams({
-                                    display: "final_exam",
-                                  });
+                                  handleLessonChange("", "final_exam");
                                 }}
                                 disabled={!lesson.videoUrl}
                                 className={cn(

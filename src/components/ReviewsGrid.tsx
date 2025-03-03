@@ -25,7 +25,11 @@ const ReviewsGrid = ({
     <div>
       <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3 ">
         {reviews.slice(0, 6).map((review) => (
-          <TestimonialCard2 key={review._id} {...review} />
+          <TestimonialCard2
+            reviewType="course"
+            key={review._id}
+            review={review}
+          />
         ))}
       </div>
       {isAll && (
@@ -44,7 +48,11 @@ const ReviewsGrid = ({
                 <DialogTitle>{dialogHeader}</DialogTitle>
               </DialogHeader>
               {reviews.map((review) => (
-                <TestimonialCard2 key={review._id} {...review} />
+                <TestimonialCard2
+                  reviewType="course"
+                  key={review._id}
+                  review={review}
+                />
               ))}
             </DialogContent>
           </Dialog>

@@ -16,7 +16,7 @@ import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { useAuth } from "@/components/auth-provider";
 import { useAnalyticsStore } from "@/stores/AnalyticsStore";
 import { useLocale, useTranslations } from "next-intl";
-import WeekSelector from "@/components/WeekSelector";
+import MonthSelector from "@/components/MonthSelector"; // Updated import
 import TrendBadge from "@/components/TrendBadge";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { IAnalytic } from "@/types";
@@ -69,19 +69,21 @@ const chartConfig: ChartConfig = {
     color: "#FF4D4F",
   },
 };
-const getWeekDaysFromRange = (selectedWeek: string): Date[] => {
-  const [startDate] = selectedWeek.split(" - ");
-  const [startDay, startMonth, startYear] = startDate.split("/").map(Number);
-  const start = new Date(startYear, startMonth - 1, startDay); // month is 0-based
-  const weekDays: Date[] = [];
-  for (let i = 0; i < 7; i++) {
-    const day = new Date(start);
-    day.setDate(start.getDate() + i);
-    weekDays.push(day);
-  }
 
-  return weekDays;
+// Helper function to get all days in a month
+const getMonthDays = (selectedMonth: string): Date[] => {
+  const [month, year] = selectedMonth.split("/").map(Number);
+  const startDate = new Date(year, month - 1, 1); // Month is 0-based
+  const endDate = new Date(year, month, 0); // Last day of the month
+  const days: Date[] = [];
+  for (let i = 0; i < endDate.getDate(); i++) {
+    const day = new Date(startDate);
+    day.setDate(startDate.getDate() + i);
+    days.push(day);
+  }
+  return days;
 };
+
 const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
   const text = useTranslations("analytics");
   if (!active || !payload || !payload.length) return null;
@@ -152,11 +154,11 @@ const StatBlock: React.FC<StatBlockProps> = ({
 
 const processAnalyticsData = (
   analyticsDocs: IAnalytic[],
-  selectedWeek: string
+  selectedMonth: string
 ): ChartDataPoint[] => {
-  const weekDays = getWeekDaysFromRange(selectedWeek);
+  const monthDays = getMonthDays(selectedMonth);
   const initialData: Record<string, ChartDataPoint> = {};
-  weekDays.forEach((date) => {
+  monthDays.forEach((date) => {
     const normalizedDate = new Date(date);
     normalizedDate.setHours(0, 0, 0, 0);
     const dateKey = normalizedDate.toISOString();
@@ -179,7 +181,7 @@ const processAnalyticsData = (
       }
     }
   });
-  return weekDays
+  return monthDays
     .map((date) => {
       const normalizedDate = new Date(date);
       normalizedDate.setHours(0, 0, 0, 0);
@@ -190,27 +192,32 @@ const processAnalyticsData = (
       (a, b) => new Date(a.fullDate).getTime() - new Date(b.fullDate).getTime()
     );
 };
+
 const Practice: React.FC = () => {
   const { token } = useAuth();
   const { selectedUser, selectedUserObject } = useAnalyticsStore();
   const [data, setData] = useState<AnalyticsResponse | null>(null);
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
-  const [weekDays, setWeekDays] = useState<Date[]>([]);
+  const [monthDays, setMonthDays] = useState<Date[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedWeek, setSelectedWeek] = useState<string>("");
+  const [selectedMonth, setSelectedMonth] = useState<string>(""); // Updated state for month
   const text = useTranslations("analytics");
+
   useEffect(() => {
     const getData = async () => {
       try {
         setIsLoading(true);
         const axiosInstance = createClientAxiosInstance();
-        if (!selectedWeek) return;
+        if (!selectedMonth || !selectedUser) return;
 
-        const [start, end] = selectedWeek.split(" - ");
-        if (!start || !end) return;
+        const [month, year] = selectedMonth.split("/").map(Number);
+        const startDate = new Date(year, month - 1, 1);
+        const endDate = new Date(year, month, 0);
 
         const res = await axiosInstance.get<AnalyticsResponse>(
-          `/analytics/user-analytic-performance/${selectedUser}?startDate=${start}&endDate=${end}`,
+          `/analytics/user-analytic-performance/${selectedUser}?startDate=${
+            startDate.toISOString().split("T")[0]
+          }&endDate=${endDate.toISOString().split("T")[0]}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -219,14 +226,14 @@ const Practice: React.FC = () => {
         );
         setData(res.data);
 
-        // Get week days and set them in state
-        const days = getWeekDaysFromRange(selectedWeek);
-        setWeekDays(days);
+        // Get month days and set them in state
+        const days = getMonthDays(selectedMonth);
+        setMonthDays(days);
 
-        // Process analytics data for chart with selected week
+        // Process analytics data for chart with selected month
         const processedData = processAnalyticsData(
           res.data?.analyticsDocs || [],
-          selectedWeek
+          selectedMonth
         );
         setChartData(processedData);
       } catch (err) {
@@ -236,8 +243,8 @@ const Practice: React.FC = () => {
       }
     };
 
-    if (selectedUser && selectedWeek) getData();
-  }, [selectedUser, token, selectedWeek]);
+    if (selectedUser && selectedMonth) getData();
+  }, [selectedUser, token, selectedMonth]);
 
   return (
     <Card>
@@ -246,10 +253,10 @@ const Practice: React.FC = () => {
           <div>
             <CardTitle className="h3">{text("practice")}</CardTitle>
           </div>
-          <WeekSelector
+          <MonthSelector // Updated component
             selectedUserObject={selectedUserObject}
-            selectedWeek={selectedWeek}
-            setSelectedWeek={setSelectedWeek}
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
           />
         </div>
       </CardHeader>
@@ -272,13 +279,13 @@ const Practice: React.FC = () => {
                 base="200"
               />
               <StatBlock
-                title={text("thisWeekPracticeNumber")}
+                title={text("thisMonthPracticeNumber")} // Updated text
                 value={data?.analyticsDocs?.length || 0}
                 difference={0}
                 total={20}
               />
               <StatBlock
-                title={text("thisWeekWrongPracticeNumber")}
+                title={text("thisMonthWrongPracticeNumber")} // Updated text
                 value={data?.failedDocs || 0}
                 difference={0}
                 total={20}
@@ -290,20 +297,20 @@ const Practice: React.FC = () => {
         {isLoading ? (
           <>
             <div
-              className="w-full rounded-md bg-muted animate-pulse"
+              className="w-full rounded-md animate-pulse bg-muted"
               style={{ height: "400px" }}
             />
             <table className="w-full mt-2 animate-pulse">
               <thead>
                 <tr>
                   <th className="p-2">
-                    <div className="w-1/2 h-4 rounded-full bg-muted "></div>
+                    <div className="w-1/2 h-4 rounded-full bg-muted"></div>
                   </th>
                   <th className="p-2">
-                    <div className="w-1/2 h-4 rounded-full bg-muted "></div>
+                    <div className="w-1/2 h-4 rounded-full bg-muted"></div>
                   </th>{" "}
                   <th className="p-2">
-                    <div className="w-1/2 h-4 rounded-full bg-muted "></div>
+                    <div className="w-1/2 h-4 rounded-full bg-muted"></div>
                   </th>
                 </tr>
               </thead>
@@ -311,13 +318,13 @@ const Practice: React.FC = () => {
                 {Array.from({ length: 5 }).map((_, index) => (
                   <tr key={index}>
                     <td className="p-2">
-                      <div className="w-1/3 h-4 rounded-full bg-muted "></div>
+                      <div className="w-1/3 h-4 rounded-full bg-muted"></div>
                     </td>
                     <td className="p-2">
-                      <div className="w-1/3 h-4 rounded-full bg-muted "></div>
+                      <div className="w-1/3 h-4 rounded-full bg-muted"></div>
                     </td>
                     <td className="p-2">
-                      <div className="w-1/3 h-4 rounded-full bg-muted "></div>
+                      <div className="w-1/3 h-4 rounded-full bg-muted"></div>
                     </td>
                   </tr>
                 ))}
@@ -326,7 +333,6 @@ const Practice: React.FC = () => {
           </>
         ) : data?.analyticsDocs.length ? (
           <>
-            {" "}
             <ChartContainer config={chartConfig}>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={chartData}>
@@ -338,7 +344,7 @@ const Practice: React.FC = () => {
                     axisLine={false}
                     tickFormatter={(value) => {
                       if (value) {
-                        const dayIndex = weekDays.findIndex(
+                        const dayIndex = monthDays.findIndex(
                           (d) => d.toISOString() === value
                         );
                         return `${dayIndex + 1}`;
@@ -376,7 +382,6 @@ const Practice: React.FC = () => {
                 <thead>
                   <tr>
                     <th className="p-2 font-medium text-start">
-                      {" "}
                       {text("practice")}
                     </th>
                     <th className="p-2 font-medium text-start">
@@ -424,7 +429,7 @@ const Practice: React.FC = () => {
             </div>
           </>
         ) : (
-          <p className="py-8 text-center">{text("noPracticeForThisWeek")}</p>
+          <p className="py-8 text-center">{text("noPracticeForThisMonth")}</p> // Updated text
         )}
       </CardContent>
     </Card>

@@ -77,7 +77,7 @@ const AuthReviewSlider = ({ reviews }: { reviews: IReview[] }) => {
                 );
               })}
             </div>
-            <p className="my-4 text-white">{review.title}</p>
+            <p className="my-4 text-white line-clamp-2">{review.title}</p>
             <div className="flex items-center gap-2 text-white">
               <UserAvatar user={review.user} />
               {review.user.name}

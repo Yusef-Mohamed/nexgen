@@ -52,7 +52,6 @@ const LinksTable = ({ links }: { links: string[] }) => {
 
     if (token) fetchData();
   }, [token, user?._id, t]);
-  console.log(data);
   return (
     <Card className="mb-4 border-none">
       <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4">

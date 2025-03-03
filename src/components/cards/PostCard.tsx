@@ -5,10 +5,31 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { FaRegComment } from "react-icons/fa6";
-import { AiOutlineLike } from "react-icons/ai";
-import { useState } from "react";
+import { AiFillDelete, AiOutlineLike } from "react-icons/ai";
+import { useEffect, useState } from "react";
 import FocusedPostCard from "./FocusedPostCard";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
+import { useAuth } from "../auth-provider";
+import { createClientAxiosInstance } from "@/app/lib/utils";
+import { toast } from "react-toastify";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { BsThreeDots } from "react-icons/bs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
 interface PostCardProps {
   post: IPost;
   inCommunity?: boolean;
@@ -20,7 +41,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
 
   return (
     <>
-      <div className="w-full p-3 rounded-md cardShadow sm:p-6 bg-background">
+      <div className="relative w-full p-3 rounded-md cardShadow sm:p-6 bg-background">
+        <PostAction post={post} />
         {inCommunity ? (
           <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
             <Link href={`/dashboard/community/profile/${post.user._id}`}>
@@ -153,3 +175,89 @@ export const SkeletonPostCard = () => {
 };
 
 export default PostCard;
+const PostAction: React.FC<{
+  post: IPost;
+}> = ({ post }) => {
+  const [isInClient, setIsInClient] = useState(false);
+  useEffect(() => {
+    setIsInClient(true);
+  }, []);
+
+  const router = useRouter();
+  const text = useTranslations("postAction");
+  const { user: thisUser, token } = useAuth();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const handleDelete = async () => {
+    setIsLoading(true);
+    try {
+      const axiosInstance = await createClientAxiosInstance();
+      await axiosInstance.delete(`/posts/${post._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setIsDeleting(false);
+      toast.success(text("delete_success"));
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      toast.error(text("something_wrong"));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (thisUser?.role !== "admin" || !isInClient) return null;
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            size={"sm"}
+            variant="outline"
+            className="absolute top-4 left-4"
+          >
+            <BsThreeDots />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel asChild>
+            <button
+              onClick={() => {
+                setIsDeleting(true);
+              }}
+              className="flex w-full gap-2"
+            >
+              <AiFillDelete size={18} />
+              {text("delete")}
+            </button>
+          </DropdownMenuLabel>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <AlertDialog open={isDeleting}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{text("are_you_sure")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {text("delete_confirmation")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              disabled={isLoading}
+              onClick={() => {
+                setIsDeleting(false);
+              }}
+            >
+              {text("cancel")}
+            </AlertDialogCancel>
+            <AlertDialogAction disabled={isLoading} onClick={handleDelete}>
+              {text("continue")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+};

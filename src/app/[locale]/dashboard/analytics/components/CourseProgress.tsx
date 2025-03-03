@@ -168,8 +168,19 @@ const CircleCell = ({
   className?: string;
 }) => {
   const text = useTranslations("analytics");
+  const locale = useLocale();
   return (
-    <div className={cn("p-4 rounded-md bg-clear-ground", className)}>
+    <div className={cn("p-4 rounded-md bg-clear-ground relative", className)}>
+      {title === "timeSpent" && (
+        <div
+          className="absolute top-0 right-0 z-10 flex items-center justify-center w-full h-full font-semibold"
+          style={{
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          {locale === "ar" ? "قريبا ..." : "Coming soon ..."}
+        </div>
+      )}
       <div className="flex items-start justify-between ">
         <div>
           <div

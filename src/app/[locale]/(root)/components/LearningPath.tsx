@@ -43,7 +43,7 @@ const LearningPath: React.FC<ICoursePackage> = ({
             >
               {levels.map((level, index) => (
                 <React.Fragment key={index}>
-                  <div className="self-stretch my-auto">{level}</div>
+                  <div className="self-stretch my-auto">{text(level)}</div>
                   {index < levels.length - 1 && (
                     <div>
                       {locale === "ar" ? (

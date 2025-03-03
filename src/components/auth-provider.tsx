@@ -63,13 +63,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-        const user = res?.data.data;
-        setUser(user);
-        setCookie("user", JSON.stringify(user), { maxAge: 60 * 60 * 24 });
-
-        if (user.emailVerified === false) {
-          handleNotActive();
-        }
+        const user = res?.data.data as IUser;
+        updateUser({
+          userData: user,
+        });
         router.refresh();
       } catch (err) {
         const typedError = err as AxiosError;
@@ -90,7 +87,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
     fetchUser();
   }, []);
-
   const updateUser = ({
     userData,
     token,
@@ -106,7 +102,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
     if (userData.emailVerified === false) {
       handleNotActive();
+    } else if (userData.active === false) {
+      router.push("/banned");
+      setStatus(405);
+    } else if (userData.idVerification !== "verified") {
+      setShowIdVerificationModal(true);
+      setStatus(406);
     }
+
     router.refresh();
   };
 
@@ -138,6 +141,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(null);
       setToken("");
       setStatus(undefined);
+      setShowIdVerificationModal(false);
       deleteCookie("user");
       deleteCookie("token");
       router.refresh();

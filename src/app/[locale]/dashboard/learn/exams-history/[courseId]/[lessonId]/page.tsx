@@ -10,7 +10,7 @@ const getData = async (lessonId: string, token: string, userId: string) => {
   try {
     const axiosInstance = await createServerAxiosInstance();
     const data = await axiosInstance.get(
-      `/exams/getLessonPerformance/${lessonId}/${userId}`,
+      `/exams/getLpessonPerformance/${lessonId}/${userId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -20,6 +20,7 @@ const getData = async (lessonId: string, token: string, userId: string) => {
     return data;
   } catch (error) {
     console.error(error);
+    return null;
   }
 };
 const CourseExams = async ({
@@ -37,16 +38,19 @@ const CourseExams = async ({
       lessonQuestions: IQuestion[];
     };
   };
+  if (!data) {
+    return null;
+  }
   const { lessonQuestions } = data.data;
   return (
     <main>
       <section className="py-16">
-        <div className="container max-w-4xl mx-auto ">
+        <div className="container mx-auto max-w-4xl">
           <h1 className="mb-2 text-4xl font-semibold">{text("examDetails")}</h1>
           <div className="mt-8 space-y-6 sm:space-y-8">
             {lessonQuestions.map((question, index) => (
               <div className="space-y-4 sm:space-y-6" key={question._id}>
-                <h2 className="flex items-start gap-2 text-2xl font-semibold text-text-2">
+                <h2 className="flex gap-2 items-start text-2xl font-semibold text-text-2">
                   <span>{index + 1}. </span> <p>{question?.question}</p>
                 </h2>
                 {question?.questionImage && (

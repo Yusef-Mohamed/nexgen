@@ -193,7 +193,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
           setIsOpen(value);
         }}
       >
-        <DialogContent className="sm:max-w-2xl max-h-[95vh] overflow-hidden bg-clear-ground p-0 gap-0">
+        <DialogContent className="sm:max-w-2xl flex flex-col max-h-[95vh] overflow-hidden bg-clear-ground p-0 gap-0">
           <DialogHeader className="sticky top-0 z-10 p-4 text-center border-b bg-clear-ground">
             <DialogTitle className="text-center">
               {text("userPost", {
@@ -201,7 +201,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
               })}
             </DialogTitle>
           </DialogHeader>
-          <div className="w-full rounded-md max-h-[80vh] overflow-auto">
+          <div className="flex-grow w-full overflow-auto rounded-md">
             <div className="p-3 sm:p-6">
               {inCommunity ? (
                 <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">

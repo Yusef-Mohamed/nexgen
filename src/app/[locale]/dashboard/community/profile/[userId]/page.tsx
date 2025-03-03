@@ -76,9 +76,7 @@ const CommunityPage = async ({
           </div>
           <div className="p-6 pt-0">
             <h2 className="mt-6 font-semibold">{thisUser.name}</h2>
-            <p className="mt-2 text-text-3 md:text-lg">
-              {/* {thisUser.description} */}
-            </p>
+            <p className="mt-2 text-text-3 md:text-lg">{thisUser.bio || ""}</p>
           </div>
         </div>
         <DisplayPosts userId={userId} />

@@ -36,8 +36,11 @@ const BlogsPage = async ({
     const text = await getTranslations("blogs");
     const axiosInstance = createServerAxiosInstance();
     const blogRes = await axiosInstance.get("/articals/" + params.blogId);
+    const otherBlogsRes = await axiosInstance.get("/articals?limit=3");
     const blogData = blogRes.data.data as IBlog;
-
+    const otherBlogs = (otherBlogsRes.data.data as IBlog[])
+      .filter((b) => b._id !== blogData._id)
+      .slice(0, 3);
     return (
       <main>
         <section className="container secPadding">
@@ -60,9 +63,9 @@ const BlogsPage = async ({
             <p className="text-text-2">{text("relatedBlogsDescription")}</p>
           </div>
           <div className="grid gap-6 mt-8 md:grid-cols-2 lg:grid-cols-3">
-            <BlogCard {...blogData} />
-            <BlogCard {...blogData} />
-            <BlogCard {...blogData} />
+            {otherBlogs.map((blog) => (
+              <BlogCard key={blog._id} {...blog} />
+            ))}
           </div>{" "}
         </section>
       </main>

@@ -45,7 +45,6 @@ const CoursesPage = async ({
     const axiosInstance = createServerAxiosInstance();
     const courseRes = await axiosInstance.get("/courses/" + params.courseId);
     const courseData = courseRes.data.data as ICourse;
-    console.log(courseData);
     return (
       <main>
         <section className="container flex gap-20 secPadding">

@@ -45,6 +45,7 @@ const SidebarLink: React.FC<{
           <FaChevronDown
             className={cn("transition-transform w-3 h-3 rotate-90", {
               "transform rotate-0": isOpen,
+              "-rotate-90": locale === "en" && !isOpen,
             })}
           />
         </button>

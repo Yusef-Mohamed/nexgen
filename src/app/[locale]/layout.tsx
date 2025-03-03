@@ -81,6 +81,10 @@ export default function RootLayout({
       }}
     >
       <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
         <Script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-CQS7J6MTDF"
@@ -95,7 +99,7 @@ export default function RootLayout({
         `}
         </Script>
       </head>
-      <body className={alexandria.className}>
+      <body className={`${alexandria.className} overflow-x-hidden`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -106,7 +110,7 @@ export default function RootLayout({
             <AuthProvider>
               <SocketWrapper>
                 <ToastProvider />
-                {children}
+                <div className="min-h-screen w-full">{children}</div>
                 <div
                   style={{
                     pointerEvents: "none",

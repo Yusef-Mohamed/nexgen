@@ -7,12 +7,14 @@ const GridSection = ({
   button,
   href,
   id,
+  onClick,
 }: {
   children: React.ReactNode;
   heading: string;
   button?: string;
   href?: string;
   id?: string;
+  onClick?: () => void;
 }) => {
   return (
     <section id={id} className="container secPadding">
@@ -26,6 +28,7 @@ const GridSection = ({
           variant={"outline"}
           size={"lg"}
           asChild={!!href}
+          onClick={onClick}
         >
           {href ? <Link href={href}>{button}</Link> : button}
         </Button>

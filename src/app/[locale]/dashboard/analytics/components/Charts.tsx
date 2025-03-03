@@ -192,7 +192,7 @@ const Charts = () => {
                 <SelectContent>
                   <SelectItem
                     className="flex items-center gap-4 text-sm"
-                    value={myAccount?._id || ""}
+                    value={myAccount?._id || "me"}
                   >
                     <UserAvatar
                       className="max-sm:w-8 max-sm:h-8"
@@ -211,7 +211,7 @@ const Charts = () => {
                           className="max-sm:w-8 max-sm:h-8"
                           user={user}
                         />
-                        {user.email}
+                        {user.name}
                       </SelectItem>
                     );
                   })}

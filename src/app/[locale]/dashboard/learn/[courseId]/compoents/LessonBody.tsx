@@ -2,7 +2,7 @@ import { createClientAxiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { ILesson } from "@/types";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 const LessonBody = ({
@@ -33,8 +33,14 @@ const LessonBody = ({
     };
     fetchData();
   }, [token, setData, lessonId]);
+  const locale = useLocale();
   return (
     <div>
+      <p className="mb-4 text-center text-destructive">
+        {locale === "ar"
+          ? "تسريب اي فيديو يعرضك للمسائلة القانونية"
+          : "Any video leak will expose you to legal accountability"}
+      </p>
       {data?.otp ? (
         <iframe
           className="w-full aspect-video"

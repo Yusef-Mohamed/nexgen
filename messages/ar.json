@@ -3,7 +3,7 @@
     "please_verify_your_email": "يرجى التحقق من بريدك الإلكتروني",
     "id_verification": {
       "title": "مطلوب التحقق من الهوية",
-      "description": "لأسباب أمنية، تحتاج إلى التحقق من هويتك قبل المتابعة. سيتم توجيهك إلى صفحة التحقق.",
+      "description": "نطلب التحقق من الهوية لضمان حماية حقوق المحتوى وحقوق المستخدمين، وللتأكد من أن المحتوى المقدم يبقى حصرياً ومخصصاً للمشتركين فقط!",
       "button": "الذهاب إلى التحقق من الهوية"
     },
     "banned": {
@@ -89,7 +89,8 @@
   },
   "learnerReviews": {
     "heading": "تقيم طلابنا",
-    "exploreAllReviews": "استكشف جميع التقيمات"
+    "exploreAllReviews": "استكشف جميع التقيمات",
+    "loadMore": "تحميل المزيد"
   },
   "featuredInstructors": {
     "heading": "تعرفوا على مدربينا المتميزين لهذا الأسبوع",
@@ -97,7 +98,7 @@
   },
   "blogs": {
     "heading": "ابقَ متقدّمًا مع مدوناتنا",
-    "exploreAllBlogs": "استكشف جميع المدونات",
+    "exploreAllBlogs": "عرض المزيد",
     "heading2": "مدونتنا",
     "description": "تعلم، تداول، وحقق النجاح: بناء مهاراتك في سوق الفوركس.",
     "latestBlogs": "أحدث المدونات",
@@ -158,7 +159,7 @@
     "ourLearners": "نجاح طلابنا."
   },
   "aboutPartnersPage": {
-    "heading": "موثوق به من أفضل الشركات العالمية."
+    "heading": "شركاؤنا من الجامعات والشركات"
   },
   "aboutOurValuesPage": {
     "ourValues": "قيمنا.",
@@ -289,7 +290,16 @@
     "profile_updated": "تم تحديث الملف الشخصي",
     "changePassword": "تغيير كلمة المرور",
     "password_updated": "تم تحديث كلمة المرور",
-    "change_password_failed": "فشل تغيير كلمة المرور"
+    "change_password_failed": "فشل تغيير كلمة المرور",
+    "passwordTooShort": "كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل",
+    "passwordRequiresUppercase": "كلمة المرور يجب أن تحتوي على حرف كبير واحد على الأقل",
+    "passwordRequiresLowercase": "كلمة المرور يجب أن تحتوي على حرف صغير واحد على الأقل",
+    "passwordRequiresNumber": "كلمة المرور يجب أن تحتوي على رقم واحد على الأقل",
+    "passwordRequiresSpecialChar": "كلمة المرور يجب أن تحتوي على حرف خاص واحد على الأقل @ # _",
+    "invalidEmail": "البريد الإلكتروني غير صحيح",
+    "enterPhone": "أدخل رقم الهاتف",
+    "bio": "السيرة الذاتية",
+    "enterBio": "أدخل السيرة الذاتية"
   },
   "reviewsSectionAboutPage": {
     "heading": "أراء المتعلمين.",
@@ -365,7 +375,7 @@
     "lives": "البث المباشر",
     "chat": "الدردشة",
     "settings": "الإعدادات",
-    "marketing": "التسويق",
+    "marketing": "لوحة القيادة",
     "community": "المجتمع",
     "practice": "التدريب",
     "notifications": "الإشعارات",
@@ -571,7 +581,10 @@
     "courseFailed": "عزيزي الطالب، لم تجتز الامتحان النهائي هذه المرة، لكن هذه ليست النهاية! 🚀 استغل فرصتك لإعادة المحاولة، وثق أن كل خطوة تقربك أكثر من النجاح. نحن واثقون بقدرتك على تحقيقه!",
     "placementPassed": "🎉 مبروك! لقد اجتزت امتحان تحديد المستوى بنجاح. يمكنك الآن التوجه لشراء الكورس والانطلاق في رحلتك التعليمية بثقة! 🚀",
     "placementFailed": "عزيزي الطالب، لم تتمكن من اجتياز امتحان تحديد المستوى. نوصيك بالالتحاق بالكورس التأسيسي لتعزيز مهاراتك. إذا قررت الاستمرار في هذا الكورس المتقدم، سيكون ذلك على مسؤوليتك الكاملة. نحن هنا لدعمك دائمًا!",
-    "yourScoreIs": "درجتك هي"
+    "yourScoreIs": "درجتك هي",
+    "retake": "إعادة",
+    "quiz_not_found": "لا يوجد اختبار",
+    "loading": "جاري التحميل..."
   },
   "settings": {
     "myProfile": "الملف الشخصي",
@@ -644,6 +657,7 @@
     "pending": "قيد الانتظار",
     "paid": "تم الدفع",
     "rejected": "مرفوض",
+    "unpaid": "غير مدفوع",
     "stats": {
       "totalSales": "إجمالي المبيعات",
       "profit": "الربح",
@@ -757,7 +771,10 @@
     "course": "الدورة",
     "percentage": "النسبة",
     "noOrdersFound": "لا توجد طلبات",
-    "total": "المجموع"
+    "total": "المجموع",
+    "nCourse": "دورة",
+    "path": "مسار",
+    "service": "خدمة"
   },
   "teamManagement": {
     "showLess": "عرض أقل",
@@ -841,7 +858,11 @@
     "copyTheLink": "نسخ الرابط",
     "copy": "نسخ",
     "link": "الرابط",
-    "linkCopied": "تم نسخ الرابط"
+    "linkCopied": "تم نسخ الرابط",
+    "allItems": "جميع العناصر",
+    "course": "دورة",
+    "service": "خدمة",
+    "path": "مسار"
   },
   "analytics": {
     "outTopStudentsInThisCourse": "أفضل الطلاب في هذه الدورة",
@@ -874,6 +895,34 @@
     "noVideosForThisWeek": "لا توجد فيديوهات لهذا الأسبوع",
     "passed": "نجح",
     "notPassed": "لم ينجح",
-    "quizzes": "الاختبارات"
+    "quizzes": "الاختبارات",
+    "thisMonthPracticeNumber": "تدريبات هذا الشهر",
+    "thisMonthWrongPracticeNumber": "التدريبات الخاطئة هذا الشهر",
+    "noPracticeForThisMonth": "لا توجد تدريبات لهذا الشهر",
+    "selectMonth": "اختر الشهر",
+    "month": "الشهر",
+    "noVideosForThisMonth": "لا توجد فيديوهات لهذا الشهر"
+  },
+  "reviews": {
+    "reply": "الرد",
+    "delete": "حذف",
+    "review_reply": "الرد على التقييم",
+    "submit": "إرسال",
+    "cancel": "إلغاء",
+    "are_you_sure": "هل انت متاكد",
+    "delete_confirmation": "هل انت متاكد انك تريد حذف هذا التقييم",
+    "continue": "إكمال",
+    "delete_success": "تم حذف التقييم بنجاح",
+    "reply_success": "تم الرد على التقييم بنجاح",
+    "something_wrong": "حدث خطأ ما"
+  },
+  "postAction": {
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "areYouSure": "هل أنت متأكد؟",
+    "delete_confirmation": "هل أنت متأكد من حذف هذا؟",
+    "continue": "متابعة",
+    "something_wrong": "حدث خطأ ما",
+    "delete_success": "تم الحذف بنجاح"
   }
 }

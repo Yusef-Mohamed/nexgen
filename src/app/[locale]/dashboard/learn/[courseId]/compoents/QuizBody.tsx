@@ -10,7 +10,7 @@ import { IExam } from "@/types";
 import { AxiosError } from "axios";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 interface QuizBodyProps {
@@ -50,24 +50,26 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, title }) => {
     default:
       endpoint = "placement";
   }
-
+  const getQuiz = useCallback(async () => {
+    try {
+      if (!token) return;
+      setIsLoading(true);
+      const axiosInstance = await createClientAxiosInstance();
+      const response = await axiosInstance.get(`/exams/${endpoint}/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setQuiz(response.data.exam);
+    } catch (error) {
+      console.log(error);
+    }
+    setIsLoading(false);
+  }, [endpoint, id, token]);
   useEffect(() => {
-    const getQuiz = async () => {
-      try {
-        if (!token) return;
-        const axiosInstance = await createClientAxiosInstance();
-        const response = await axiosInstance.get(`/exams/${endpoint}/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setQuiz(response.data.exam);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    if (!id) return;
     getQuiz();
-  }, [endpoint, id, setQuiz, token, quizType]);
+  }, [getQuiz, id]);
   const handleSubmit = async () => {
     // check all questions are answered
     const answeredQuestions = Object.keys(answers).length;
@@ -107,15 +109,41 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, title }) => {
     setIsLoading(false);
   };
   useEffect(() => {
+    if (!id) return;
+
+    // Reset all states in a controlled manner
     setIsStarted(false);
     setAnswers({});
     setError("");
+    setSubmitError("");
     setSubmitData({
       passed: false,
       totalScore: 0,
       score: 0,
     });
   }, [id]);
+
+  // Add early return if quiz data is not ready
+  if (!quiz && isLoading) {
+    return (
+      <section className="py-16">
+        <div className="container max-w-4xl mx-auto">
+          <p>{text("loading")}</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!quiz && !isLoading) {
+    return (
+      <section className="py-16">
+        <div className="container max-w-4xl mx-auto">
+          <p>{text("quiz_not_found")}</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-16">
       <div className="container max-w-4xl mx-auto ">
@@ -143,6 +171,27 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, title }) => {
             )}
             <br />
             {text("yourScoreIs")} : {submitData.score} / {submitData.totalScore}
+            {!submitData.passed ? (
+              <>
+                <Button
+                  className="mt-2 sm:mt-4 "
+                  size={"lg"}
+                  isLoading={isLoading}
+                  onClick={async () => {
+                    await getQuiz();
+                    setIsStarted(false);
+                    setAnswers({});
+                    setSubmitData({
+                      passed: false,
+                      totalScore: 0,
+                      score: 0,
+                    });
+                  }}
+                >
+                  {text("retake")}
+                </Button>
+              </>
+            ) : null}
           </p>
         ) : (
           <>

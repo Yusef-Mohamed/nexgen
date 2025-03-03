@@ -22,12 +22,14 @@ const Main = () => {
     email: string;
     profileImage: null | File;
     coverImage: null | File;
+    bio: string;
   }>({
     name: "",
     phone: "",
     email: "",
     profileImage: null,
     coverImage: null,
+    bio: "",
   });
   const profileImageRef = useRef<HTMLInputElement>(null);
   const coverImageRef = useRef<HTMLInputElement>(null);
@@ -52,6 +54,7 @@ const Main = () => {
         email: user.email,
         profileImage: null,
         coverImage: null,
+        bio: user.bio || "",
       });
     }
   }, [user]);
@@ -64,6 +67,7 @@ const Main = () => {
       if (data.phone) formData.append("phone", data.phone);
       if (data.profileImage) formData.append("profileImg", data.profileImage);
       if (data.coverImage) formData.append("coverImg", data.coverImage);
+      if (data.bio) formData.append("bio", data.bio);
       const axiosInstance = await createClientAxiosInstance();
       const res = await axiosInstance.put(`/users/changeMyData`, formData, {
         headers: {
@@ -183,13 +187,28 @@ const Main = () => {
               disabled={isLoading}
             />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="phone">{text("phone")} :</Label>
             <Input
               id="phone"
+              placeholder={text("enterPhone")}
               value={data.phone}
               onChange={(e) =>
                 setData((prev) => ({ ...prev, phone: e.target.value }))
+              }
+              disabled={isLoading}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="bio">{text("bio")} :</Label>
+            <Input
+              id="bio"
+              placeholder={text("enterBio")}
+              value={data.bio}
+              onChange={(e) =>
+                setData((prev) => ({ ...prev, bio: e.target.value }))
               }
               disabled={isLoading}
             />
