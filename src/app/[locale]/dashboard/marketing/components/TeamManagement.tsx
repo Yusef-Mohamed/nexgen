@@ -132,7 +132,7 @@ const TeamManagement: React.FC = () => {
       setIsLoading(false);
     }
   };
-
+  console.log(marketLog);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,

@@ -8,16 +8,21 @@ import { createClientAxiosInstance } from "@/app/lib/utils";
 import CustomForm from "./CustomForm";
 import { useAuth } from "../auth-provider";
 import { useEffect } from "react";
+import { countries } from "@/data/countries";
+import { useLocale } from "next-intl";
 
 const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
   const t = useTranslations("SignUp");
   const inputs = useTranslations("Forms");
   const router = useRouter();
+  const locale = useLocale();
   const formSchema = z
     .object({
       name: z.string({ message: inputs("thisFieldIsRequired") }),
       email: z.string().email({ message: inputs("invalidEmail") }),
-      phone: z.string({ message: inputs("thisFieldIsRequired") }),
+      phone: z
+        .string({ message: inputs("thisFieldIsRequired") })
+        .min(8, { message: inputs("phoneTooShort") }),
       country: z.string({ message: inputs("thisFieldIsRequired") }),
       password: z
         .string({ message: inputs("thisFieldIsRequired") })
@@ -47,7 +52,7 @@ const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
       invitationKey?: string | null;
     } = { ...data };
     if (inviteKey) {
-      formattedData.invitationKey = inviteKey;
+      formattedData.invitationKey = inviteKey.toLowerCase();
     }
 
     const response = await axiosInstance.post("/auth/signup", formattedData);
@@ -77,18 +82,23 @@ const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
       required: true,
     },
     {
-      type: "text",
+      type: "phone",
       label: inputs("phone"),
       placeholder: inputs("phone"),
       name: "phone" as const,
       required: true,
     },
     {
-      type: "text",
+      type: "select",
       label: inputs("country"),
       placeholder: inputs("country"),
       name: "country" as const,
       required: true,
+      values: countries.map((country) => ({
+        value: country.slug,
+        label: country.name[locale as "ar" | "en"],
+        image: `https://flagcdn.com/24x18/${country.slug}.png`,
+      })),
     },
     {
       type: "password",
@@ -105,6 +115,7 @@ const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
       required: true,
     },
   ];
+
   useEffect(() => {
     const axiosInstance = createClientAxiosInstance();
     if (inviteKey)
@@ -112,6 +123,7 @@ const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
         `/marketingAnalytics/incrementSignUpClicks/${inviteKey}`
       );
   }, [inviteKey]);
+
   return (
     <CustomForm
       schema={formSchema}

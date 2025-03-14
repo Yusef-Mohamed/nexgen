@@ -71,9 +71,10 @@ const NotificationDropDownMenu = () => {
             key={n._id}
             notification={n}
             readNotification={async () => {
-              await readNotification({
-                id: n._id as string,
-              });
+              if (!n.read)
+                await readNotification({
+                  id: n._id as string,
+                });
               if (n.type === "chat" && n.chat)
                 router.push(`/dashboard/chat?selectedChat=${n.chat._id}`);
               else if (n.type === "follow" && n.followedUser)

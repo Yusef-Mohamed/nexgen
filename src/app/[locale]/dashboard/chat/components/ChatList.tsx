@@ -23,7 +23,7 @@ export function ChatList() {
   React.useEffect(() => {
     if (messagesContainerRef.current && messages.length <= 10) {
       messagesContainerRef.current.scrollTop =
-        messagesContainerRef.current.scrollHeight;
+        messagesContainerRef.current?.scrollHeight || 0;
     }
   }, [messages]);
   const getNextMessages = async () => {
@@ -57,9 +57,9 @@ export function ChatList() {
   const handleScroll = async () => {
     if (messagesContainerRef.current)
       if (messagesContainerRef.current.scrollTop === 0) {
-        const currentHeight = messagesContainerRef.current.scrollHeight;
+        const currentHeight = messagesContainerRef.current?.scrollHeight || 0;
         await getNextMessages();
-        const newHeight = messagesContainerRef.current.scrollHeight;
+        const newHeight = messagesContainerRef.current?.scrollHeight || 0;
         messagesContainerRef.current.scrollTop = newHeight - currentHeight;
       }
   };

@@ -160,21 +160,6 @@ body {
 .cardShadow {
   box-shadow: 2px 6px 32px 0px #1b7df51f;
 }
-/* Hide the built-in password icon for most browsers */
-input[type="password"]::-ms-reveal,
-input[type="password"]::-ms-clear {
-  display: none;
-}
-
-/* Hide the built-in password icon for WebKit browsers (Chrome, Safari) */
-input[type="password"]::-webkit-textfield-decoration-container {
-  display: none;
-}
-
-/* Hide the built-in password icon for Firefox */
-input[type="password"] {
-  -moz-appearance: textfield;
-}
 .prose {
   @apply prose-headings:text-text-1 prose-p:text-text-2 prose-li:text-text-2 prose-a:text-primary;
 }

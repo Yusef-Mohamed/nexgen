@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ILesson } from "@/types";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import VideoPlayer from "./VideoPlayer";
 
 const LessonBody = ({
   lessonId,
@@ -18,6 +19,7 @@ const LessonBody = ({
   } | null>(null);
   const { token } = useAuth();
   const text = useTranslations("learn");
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await createClientAxiosInstance().get(
@@ -33,6 +35,12 @@ const LessonBody = ({
     };
     fetchData();
   }, [token, setData, lessonId]);
+
+  const handleVideoEnd = () => {
+    // Handle video end event here
+    console.log("Video ended");
+  };
+
   const locale = useLocale();
   return (
     <div>
@@ -42,11 +50,10 @@ const LessonBody = ({
           : "Any video leak will expose you to legal accountability"}
       </p>
       {data?.otp ? (
-        <iframe
-          className="w-full aspect-video"
-          src={`https://player.vdocipher.com/v2/?otp=${data?.otp}&playbackInfo=${data?.playbackInfo}`}
-          allow="encrypted-media"
-          allowFullScreen
+        <VideoPlayer
+          otp={data.otp}
+          playbackInfo={data.playbackInfo}
+          onVideoEnd={handleVideoEnd}
         />
       ) : (
         <div className="w-full bg-input animate-pulse aspect-video" />

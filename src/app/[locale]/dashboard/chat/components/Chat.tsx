@@ -6,6 +6,7 @@ import { createClientAxiosInstance } from "@/app/lib/utils";
 import ChatTopbar from "./ChatTopbar";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/components/auth-provider";
+import { useLocale } from "next-intl";
 
 interface ChatProps {
   selectedChat?: string;
@@ -24,7 +25,6 @@ export function Chat({ selectedChat }: ChatProps) {
     deleteMessage,
     setMessagesPagination,
     setMessageCurrentPage,
-    chats,
     selectedChatId,
     setSelectedChatId,
   } = useChatStore();
@@ -88,8 +88,8 @@ export function Chat({ selectedChat }: ChatProps) {
     };
   }, [socket, selectedChatId]);
   useEffect(() => {
-    setSelectedChatId(selectedChat ?? chats[0]?._id);
-  }, [selectedChat, chats, setSelectedChatId]);
+    if (selectedChat) setSelectedChatId(selectedChat);
+  }, [selectedChat, setSelectedChatId]);
   useEffect(() => {
     if (socket) {
       socket.on(
@@ -124,14 +124,27 @@ export function Chat({ selectedChat }: ChatProps) {
       }
     };
   }, [socket, messages]);
+  const locale = useLocale();
   return (
     <div
       className={cn("flex flex-col justify-between flex-1 w-full h-full", {
-        "max-lg:hidden": !selectedChat,
+        "max-xl:hidden": !selectedChat,
       })}
     >
-      <ChatTopbar />
-      <ChatList />
+      {selectedChat ? (
+        <>
+          <ChatTopbar />
+          <ChatList />
+        </>
+      ) : (
+        <div className="flex flex-col items-center justify-center h-full">
+          <h1 className="text-xl font-bold">
+            {locale === "ar"
+              ? "اختر المحادثة التي تريدها"
+              : "Select the chat you want"}
+          </h1>
+        </div>
+      )}
     </div>
   );
 }

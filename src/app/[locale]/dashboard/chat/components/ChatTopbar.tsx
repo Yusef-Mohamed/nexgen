@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useEffect, useState } from "react";
-import { Info } from "lucide-react";
+import { Info, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UserAvatar from "@/components/UserAvatar";
 import { useChatStore } from "@/stores/ChatStore";
@@ -36,11 +36,18 @@ import {
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import InputField from "@/components/InputField";
 import { useAuth } from "@/components/auth-provider";
+import useCustomSearchParams from "@/hooks/useSearchParams";
 export default function ChatTopbar() {
   const inputs = useTranslations("Forms");
   const locale = useLocale();
-  const { isFetchingThisChat, thisChat, setThisChat, setChats, chats } =
-    useChatStore();
+  const {
+    isFetchingThisChat,
+    thisChat,
+    setThisChat,
+    setChats,
+    chats,
+    setSelectedChatId,
+  } = useChatStore();
   const { user: thisUser, token } = useAuth();
   const anotherUser = thisChat?.participants.find(
     (user) => user.user !== thisUser?._id
@@ -212,6 +219,7 @@ export default function ChatTopbar() {
       });
     }
   }, [thisChat]);
+  const { setSearchParams } = useCustomSearchParams();
   return (
     <>
       <div className="flex items-center justify-between w-full h-20 p-4 border-b">
@@ -271,12 +279,28 @@ export default function ChatTopbar() {
               onClick={() => setIsInfoOpen(true)}
               className={cn(
                 "h-9 w-9",
-                "dark:bg-muted flex items-center justify-center rounded-md dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
+                "dark:bg-muted flex items-center ms-4 justify-center rounded-md dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
               )}
             >
               <Info size={20} className="text-muted-foreground" />
             </button>
           </div>
+        )}
+        {thisChat && (
+          <button
+            onClick={() => {
+              setSelectedChatId("");
+              setSearchParams({ selectedChat: "" });
+            }}
+            className="ms-4"
+          >
+            <LogOut
+              size={20}
+              className={cn("text-muted-foreground", {
+                "-scale-x-100": locale === "ar",
+              })}
+            />
+          </button>
         )}
       </div>{" "}
       <Sheet open={isInfoOpen} onOpenChange={setIsInfoOpen}>

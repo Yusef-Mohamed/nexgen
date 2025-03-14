@@ -8,6 +8,8 @@ import { FieldValues, Path } from "react-hook-form";
 import { Checkbox } from "../ui/checkbox";
 import { useLocale } from "next-intl";
 import { Link } from "@/i18n/routing";
+import { PhoneInput } from "../ui/phone-input";
+import { CountryInput } from "../ui/country-input";
 
 interface CustomFormProps<T extends FieldValues> {
   schema: ZodSchema<T>;
@@ -18,6 +20,11 @@ interface CustomFormProps<T extends FieldValues> {
     placeholder: string;
     name: keyof T;
     required?: boolean;
+    values?: {
+      value: string;
+      label: string;
+      image?: string;
+    }[];
   }>;
   submitLabel: string;
   onSubmit: (data: T) => Promise<void>;
@@ -40,23 +47,53 @@ function CustomForm<T extends FieldValues>({
     onSubmit,
   });
   const locale = useLocale();
+
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {fields.map((field) => (
-          <CustomFormField
-            key={String(field.name)}
-            input={{
-              type: field.type,
-              label: field.label,
-              placeholder: field.placeholder,
-              name: field.name as Path<T>,
-              required: field.required,
-            }}
-            form={form}
-            loading={isLoading}
-          />
-        ))}
+        {fields.map((field) =>
+          field.type === "phone" ? (
+            <PhoneInput
+              key={String(field.name)}
+              input={{
+                type: field.type,
+                label: field.label,
+                placeholder: field.placeholder,
+                name: field.name as Path<T>,
+                required: field.required,
+              }}
+              form={form}
+              loading={isLoading}
+            />
+          ) : field.type === "select" && field.values?.some((v) => v.image) ? (
+            <CountryInput
+              key={String(field.name)}
+              input={{
+                type: field.type,
+                label: field.label,
+                placeholder: field.placeholder,
+                name: field.name as Path<T>,
+                required: field.required,
+              }}
+              form={form}
+              loading={isLoading}
+            />
+          ) : (
+            <CustomFormField
+              key={String(field.name)}
+              input={{
+                type: field.type,
+                label: field.label,
+                placeholder: field.placeholder,
+                name: field.name as Path<T>,
+                required: field.required,
+                values: field.values,
+              }}
+              form={form}
+              loading={isLoading}
+            />
+          )
+        )}
 
         {formError && (
           <div className="text-sm text-destructive">{formError}</div>

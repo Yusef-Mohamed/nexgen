@@ -34,7 +34,7 @@ const SignInForm = () => {
       router.refresh();
       router.push("/email-verification");
       return;
-    } else router.push("/");
+    } else router.push("/dashboard");
     router.refresh();
   };
 
@@ -62,6 +62,10 @@ const SignInForm = () => {
       submitLabel={t("heading")}
       onSubmit={onSubmit}
       extraComponents={<GoogleAuthBtn />}
+      defaultValues={{
+        email: "",
+        password: "",
+      }}
     />
   );
 };

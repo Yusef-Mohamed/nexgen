@@ -299,7 +299,12 @@
     "invalidEmail": "Invalid email",
     "enterPhone": "Enter phone number",
     "bio": "Bio",
-    "enterBio": "Enter bio"
+    "enterBio": "Enter bio",
+    "searchCountry": "Search country",
+    "phoneTooShort": "Phone number is too short",
+    "invalidPhoneCode": "Invalid phone code",
+    "countryRequired": "Country is required",
+    "selectCountry": "Select country"
   },
   "reviewsSectionAboutPage": {
     "heading": "Learner Reviews",

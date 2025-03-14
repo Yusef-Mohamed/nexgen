@@ -62,6 +62,7 @@ export interface IUser {
   role: "user" | "admin" | "marketer" | "customer" | "instructor";
   _id: string;
   phone: string;
+  country?: string;
   createdAt: string;
   updatedAt: string;
   active: boolean;
@@ -80,6 +81,7 @@ export interface IUser {
   isMarketer: boolean;
   bio?: string;
   __v: number;
+  lang: "ar" | "en";
 }
 export interface InputData {
   name: string;

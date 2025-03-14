@@ -16,8 +16,8 @@ export function Sidebar({ selectedChat }: SidebarProps) {
         maxHeight: "calc(100vh - 124px)",
         height: "calc(100vh - 124px)",
       }}
-      className={cn("relative w-full flex flex-col lg:w-80 border-e group", {
-        "max-lg:hidden": selectedChat,
+      className={cn("relative w-full flex flex-col xl:w-80 border-e group", {
+        "max-xl:hidden": selectedChat,
       })}
     >
       <div className="flex items-center justify-between h-20 px-4 border-b">

@@ -13,6 +13,8 @@ import ImageWithZoom from "../ImageWithZoom";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { Link } from "@/i18n/routing";
 import { useAuth } from "../auth-provider";
+import { MdClose } from "react-icons/md";
+import { Button } from "../ui/button";
 interface FocusedPostCardProps {
   post: IPost;
   isOpen: boolean;
@@ -193,13 +195,21 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
           setIsOpen(value);
         }}
       >
-        <DialogContent className="sm:max-w-2xl flex flex-col max-h-[95vh] overflow-hidden bg-clear-ground p-0 gap-0">
-          <DialogHeader className="sticky top-0 z-10 p-4 text-center border-b bg-clear-ground">
-            <DialogTitle className="text-center">
+        <DialogContent className="sm:max-w-2xl flex flex-col max-h-[95%] overflow-hidden bg-clear-ground p-0 gap-0">
+          <DialogHeader className="sticky top-0 z-10 flex flex-row items-center justify-between p-4 space-y-0 text-center border-b bg-clear-ground">
+            <DialogTitle>
               {text("userPost", {
                 name: post.user?.name,
               })}
             </DialogTitle>
+            <Button
+              onClick={() => setIsOpen(false)}
+              variant="ghost"
+              className="text-xl"
+              size="icon"
+            >
+              <MdClose />
+            </Button>
           </DialogHeader>
           <div className="flex-grow w-full overflow-auto rounded-md">
             <div className="p-3 sm:p-6">

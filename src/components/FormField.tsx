@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   FieldValues,
   Path,
@@ -14,7 +14,6 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { cn } from "@/lib/utils";
-import { Eye, EyeOff } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -24,6 +23,7 @@ import {
 } from "./ui/select";
 import { useLocale } from "next-intl";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
+import Image from "next/image";
 
 interface Input<T extends FieldValues> {
   name: Path<T>;
@@ -33,6 +33,7 @@ interface Input<T extends FieldValues> {
   values?: {
     value: string;
     label: string;
+    image?: string;
   }[];
   required?: boolean;
 }
@@ -48,7 +49,6 @@ const CustomFormField = <T extends FieldValues>({
   form,
   loading,
 }: FormFieldProps<T>) => {
-  const [isShow, setIsShow] = useState(false);
   const { errors } = useFormState({ control: form.control });
   const locale = useLocale();
   return (
@@ -65,47 +65,28 @@ const CustomFormField = <T extends FieldValues>({
             {input.label}{" "}
             {input.required && <span className="text-destructive">*</span>}
           </FormLabel>
-          {(input.type === "password" ||
-            input.type === "email" ||
-            input.type === "text") && (
+          {(input.type === "email" ||
+            input.type === "text" ||
+            input.type === "password") && (
             <FormControl>
               <div className="relative">
-                <div
-                  style={{
-                    pointerEvents: "none",
-                  }}
-                  className="absolute flex items-center justify-end w-full h-full px-4"
-                >
-                  {input.type === "password" && (
-                    <button
-                      type="button"
-                      onClick={() => setIsShow((prev) => !prev)}
-                      className="focus:outline-none text-subText"
-                      tabIndex={-1}
-                      style={{
-                        pointerEvents: "auto",
-                      }}
-                    >
-                      {isShow ? <EyeOff /> : <Eye />}
-                    </button>
-                  )}
-                </div>
                 <Input
                   className={cn({
-                    "pe-12": input.type === "password",
                     "border-destructive": errors[input.name],
                   })}
-                  type={
-                    input.type === "password" && isShow ? "text" : input.type
-                  }
+                  type={input.type}
                   placeholder={input.placeholder}
                   disabled={loading}
                   id={input.name}
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck="false"
                   {...field}
                 />
               </div>
             </FormControl>
           )}
+
           {input.type === "select" && (
             <FormControl>
               <div className="relative">
@@ -125,13 +106,47 @@ const CustomFormField = <T extends FieldValues>({
                         "border-destructive": errors[input.name],
                       })}
                     >
-                      <SelectValue placeholder={input.placeholder} />
+                      <SelectValue placeholder={input.placeholder}>
+                        {field.value &&
+                          input.values?.find((v) => v.value === field.value)
+                            ?.image && (
+                            <div className="flex items-center gap-2">
+                              <Image
+                                src={
+                                  input.values.find(
+                                    (v) => v.value === field.value
+                                  )?.image || ""
+                                }
+                                alt=""
+                                width={20}
+                                height={15}
+                              />
+                              <span>
+                                {
+                                  input.values.find(
+                                    (v) => v.value === field.value
+                                  )?.label
+                                }
+                              </span>
+                            </div>
+                          )}
+                      </SelectValue>
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     {input.values?.map((value) => (
                       <SelectItem key={value.value} value={value.value}>
-                        {value.label}
+                        <div className="flex items-center gap-2">
+                          {value.image && (
+                            <Image
+                              src={value.image}
+                              alt=""
+                              width={20}
+                              height={15}
+                            />
+                          )}
+                          <span>{value.label}</span>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>

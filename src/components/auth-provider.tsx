@@ -12,7 +12,7 @@ import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { IUser } from "@/types";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { AxiosError } from "axios";
 import {
   AlertDialog,
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const text = useTranslations("common");
   const router = useRouter();
   const [status, setStatus] = useState<number>();
-
+  const locale = useLocale();
   useLayoutEffect(() => {
     const fetchUser = async () => {
       try {
@@ -64,6 +64,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           },
         });
         const user = res?.data.data as IUser;
+        if (user.lang && user.lang !== locale) {
+          try {
+            await axiosInstance.put(
+              "/users/changeMyData",
+              { lang: locale },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            user.lang = locale as "ar" | "en";
+          } catch (error) {
+            console.error("Failed to update user language:", error);
+          }
+        }
+
         updateUser({
           userData: user,
         });
@@ -134,7 +151,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log(err);
     }
   };
-
   const logout = () => {
     router.push("/");
     setTimeout(() => {
