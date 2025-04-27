@@ -211,7 +211,7 @@ const CourseCard: React.FC<{
         ) : null}
       </div>
       <CourseHeading courseData={courseData} className="lg:hidden" />
-      <BuyCourse id={courseData._id} />
+      <BuyCourse id={courseData._id} price={courseData.price} />
       <div>
         <h4 className="mb-4 md:mb-6">{text("thisCourseIncludes")}</h4>
         <ul className="space-y-2 md:space-y-4">

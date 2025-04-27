@@ -88,7 +88,14 @@ const DisplayCommunityAnalytics = () => {
       ))}
       {isLoading &&
         Array.from({ length: 1 }).map((_, i) => <SkeletonPostCard key={i} />)}
-      {!haveError && <div ref={observerRef} />}
+      {!haveError && (
+        <div
+          ref={observerRef}
+          className="h-24 w-full my-8"
+          style={{ visibility: posts.length > 0 ? "visible" : "hidden" }}
+          data-testid="scroll-observer"
+        />
+      )}
     </section>
   );
 };

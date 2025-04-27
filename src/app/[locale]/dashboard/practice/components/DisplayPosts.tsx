@@ -120,7 +120,14 @@ const DisplayPosts = () => {
             Array.from({ length: 4 }).map((_, i) => (
               <AnalyticCardSkeleton key={i} />
             ))}
-          {!haveError && <div ref={observerRef} />}
+          {!haveError && (
+            <div
+              ref={observerRef}
+              className="h-24 w-full my-8"
+              style={{ visibility: posts.length > 0 ? "visible" : "hidden" }}
+              data-testid="scroll-observer"
+            />
+          )}
         </div>
       )}
     </section>
