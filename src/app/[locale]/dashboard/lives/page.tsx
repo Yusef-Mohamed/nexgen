@@ -7,6 +7,8 @@ import { Metadata } from "next";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import LiveCard from "@/components/cards/LiveCard";
 import LiveFilters from "./components/LiveFilters";
+import { format } from "date-fns";
+import { arSA, enUS } from "date-fns/locale";
 
 export async function generateMetadata({
   params,
@@ -69,49 +71,86 @@ const Lives = async ({
   searchParams: { date: string; course: string };
 }) => {
   unstable_setRequestLocale(locale);
+  const isArabic = locale === "ar";
 
-  const lives = await getLives({ date: date, course: course });
+  // Fetch all lives for the calendar
+  const allLives = await getLives({ date: "", course: course });
+
+  // Filter lives based on selected date if exists
+  const filteredLives = date
+    ? allLives.filter(
+        (live) => format(new Date(live.date), "yyyy-MM-dd") === date
+      )
+    : allLives;
+
   const text = await getTranslations("lives");
-  const { thisWeek, upcoming } = groupLivesByTime(lives);
+  const { thisWeek, upcoming } = groupLivesByTime(filteredLives);
   return (
     <main className="flex flex-col-reverse w-full gap-8 p-8 lg:flex-row lg:gap-10 lg:p-10">
       <div className="flex-1 w-full">
-        <div className="px-6 py-4 mb-4 bg-clear-ground rounded-xl h-fit">
-          <h2 className="mb-4 font-medium md:mb-6">{text("thisWeek")}</h2>
-          {thisWeek.length !== 0 ? (
-            <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
-              {thisWeek.map((live) => (
-                <LiveCard key={live._id} live={live} />
-              ))}
+        {date ? (
+          <div className="px-6 py-4 mb-4 bg-clear-ground rounded-xl h-fit">
+            <h2 className="mb-4 font-medium md:mb-6">
+              {format(new Date(date), "EEEE, MMMM d, yyyy", {
+                locale: isArabic ? arSA : enUS,
+              })}
+            </h2>
+            {filteredLives.length !== 0 ? (
+              <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
+                {filteredLives.map((live) => (
+                  <LiveCard key={live._id} live={live} />
+                ))}
+              </div>
+            ) : (
+              <div>
+                <p className="text-lg font-medium text-center text-text-3">
+                  {text("noLivesThisDay")}
+                </p>
+              </div>
+            )}
+          </div>
+        ) : (
+          <>
+            <div className="px-6 py-4 mb-4 bg-clear-ground rounded-xl h-fit">
+              <h2 className="mb-4 font-medium md:mb-6">{text("thisWeek")}</h2>
+              {thisWeek.length !== 0 ? (
+                <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
+                  {thisWeek.map((live) => (
+                    <LiveCard key={live._id} live={live} />
+                  ))}
+                </div>
+              ) : (
+                <div>
+                  <p className="text-lg font-medium text-center text-text-3">
+                    {text("noLivesThisWeek")}
+                  </p>
+                </div>
+              )}
             </div>
-          ) : (
-            <div>
-              <p className="text-lg font-medium text-center text-text-3">
-                {text("noLivesThisWeek")}
-              </p>
+            <div className="px-6 py-4 mb-4 bg-clear-ground rounded-xl h-fit">
+              <h2 className="mb-4 font-medium md:mb-6">
+                {text("upcomingWeeks")}
+              </h2>
+              {upcoming.length !== 0 ? (
+                <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
+                  {upcoming.map((live) => (
+                    <LiveCard key={live._id} live={live} />
+                  ))}
+                </div>
+              ) : (
+                <div>
+                  <p className="text-lg font-medium text-center text-text-3">
+                    {text("noUpcomingLives")}
+                  </p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        <div className="px-6 py-4 mb-4 bg-clear-ground rounded-xl h-fit">
-          <h2 className="mb-4 font-medium md:mb-6">{text("upcomingWeeks")}</h2>
-          {upcoming.length !== 0 ? (
-            <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
-              {upcoming.map((live) => (
-                <LiveCard key={live._id} live={live} />
-              ))}
-            </div>
-          ) : (
-            <div>
-              <p className="text-lg font-medium text-center text-text-3">
-                {text("noUpcomingLives")}
-              </p>
-            </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
       <div className="xl:w-[25rem] lg:w-[20rem]">
         <LiveFilters />
-        <LivesCalender />
+        <LivesCalender lives={allLives} />
       </div>
     </main>
   );

@@ -46,7 +46,8 @@
     "ourPopularCourses": "Our Popular Courses",
     "beginner": "Beginner",
     "intermediate": "Intermediate",
-    "advanced": "Advanced"
+    "advanced": "Advanced",
+    "free": "Free"
   },
   "learningPaths": {
     "heading": "Advance Your Forex Trading Career",
@@ -354,7 +355,8 @@
     "thereIsNoReview": "No reviews",
     "startLearning": "Start Learning",
     "viewAllReviews": "View All Reviews",
-    "reviews": "Reviews"
+    "reviews": "Reviews",
+    "free": "Free"
   },
   "contact": {
     "contactFormTitle": "Contact Us",
@@ -478,7 +480,8 @@
     "noUpcomingLives": "No upcoming live streams",
     "thisWeek": "This Week",
     "noLivesThisWeek": "No live streams this week",
-    "upcomingWeeks": "Upcoming Weeks"
+    "upcomingWeeks": "Upcoming Weeks",
+    "noLivesThisDay": "No live streams this day"
   },
   "community": {
     "filters": "Filters",
@@ -785,6 +788,7 @@
     "showLess": "Show Less",
     "showMore": "Show More",
     "showAll": "Show All",
+    "exportToExcel": "Export to Excel",
     "createLink": {
       "error": "Error occurred while creating the link",
       "title": "Create Invitation Link",
@@ -927,6 +931,7 @@
     "delete_confirmation": "Are you sure you want to delete this?",
     "continue": "Continue",
     "something_wrong": "Something went wrong",
-    "delete_success": "Deleted successfully"
+    "delete_success": "Deleted successfully",
+    "are_you_sure": "Are you sure?"
   }
 }

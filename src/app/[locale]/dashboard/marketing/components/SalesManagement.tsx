@@ -60,7 +60,11 @@ const SalesManagement = () => {
         setIsLoading(true);
         const axiosInstance = await createClientAxiosInstance();
         const res = await axiosInstance.get(
-          "/marketingAnalytics/total?locale=en",
+          `/marketingAnalytics/total?locale=en&month=${
+            new Date().getFullYear() +
+            "-" +
+            String(new Date().getMonth() + 1).padStart(2, "0")
+          }`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -124,7 +128,7 @@ const StatBlock: React.FC<StatBlockProps> = ({
     <div>
       <div>
         <p className="mb-2 font-medium sm:text-lg text-text-3">{title}</p>
-        <h3 className="flex gap-1 items-end mt-1 mb-2 font-semibold h1-5">
+        <h3 className="flex items-end gap-1 mt-1 mb-2 font-semibold h1-5">
           {mark}
           {value?.toLocaleString()}
         </h3>
@@ -241,7 +245,7 @@ const MainComponent = ({
   }, [item, token]);
   return (
     <Card className="mb-4 border-none">
-      <CardHeader className="flex flex-row flex-wrap gap-4 justify-between items-center py-4">
+      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4 py-4">
         <CardTitle className="h2">{t("salesAnalytics")}</CardTitle>
         <div className="flex flex-wrap gap-4">
           <Select
@@ -304,10 +308,10 @@ const MainComponent = ({
           startDate={date?.from || new Date()}
           endDate={date?.to || new Date()}
         />
-        <div className="overflow-x-auto relative whitespace-nowrap">
+        <div className="relative overflow-x-auto whitespace-nowrap">
           <div className="mt-8">
             <h3 className="mb-4">{t("topCoursesSell")}</h3>
-            <div className="overflow-auto max-w-full">
+            <div className="max-w-full overflow-auto">
               <table className="w-full whitespace-nowrap text-text-2">
                 <thead>
                   <tr>
@@ -417,7 +421,7 @@ const OrdersChart = ({
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     return (
-                      <div className="p-2 rounded-lg border shadow-sm bg-background">
+                      <div className="p-2 border rounded-lg shadow-sm bg-background">
                         <div className="flex flex-col gap-2">
                           <span className="text-center text-muted-foreground">
                             {new Date(
@@ -471,7 +475,7 @@ const LoadingState = () => (
       {Array.from({ length: 4 }).map((_, i) => (
         <Card key={i}>
           <CardContent className="p-4">
-            <Skeleton className="mb-2 w-24 h-4" />
+            <Skeleton className="w-24 h-4 mb-2" />
             <Skeleton className="w-32 h-8" />
           </CardContent>
         </Card>
@@ -479,7 +483,7 @@ const LoadingState = () => (
     </div>
     <Card>
       <CardContent className="p-4">
-        <Skeleton className="mb-4 w-48 h-8" />
+        <Skeleton className="w-48 h-8 mb-4" />
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className="w-full h-12" />
@@ -554,7 +558,7 @@ const StatCard = ({
       <CardContent className="p-4">
         <div>
           <p className="mb-4 max-sm:text-sm text-muted-foreground">{title}</p>
-          <h3 className="flex gap-1 items-end mt-1 mb-2 font-semibold h1-5">
+          <h3 className="flex items-end gap-1 mt-1 mb-2 font-semibold h1-5">
             {mark}
             {value?.toLocaleString()}
             {base && (
@@ -581,7 +585,7 @@ const MyTeam = () => {
   return (
     <Card className="p-4">
       <CardHeader className="p-0 mb-6">
-        <CardTitle className="flex gap-2 items-center h2">
+        <CardTitle className="flex items-center gap-2 h2">
           <RiTeamFill className="text-xl" />
           {text("myTeam")}
         </CardTitle>
@@ -644,13 +648,13 @@ const AffiliateMarketing = () => {
   return (
     <Card className="p-4">
       <CardHeader className="p-0 mb-6">
-        <CardTitle className="flex gap-2 items-center h2">
+        <CardTitle className="flex items-center gap-2 h2">
           <FaMoneyBill className="text-xl" />
           {text("affiliateMarketing")}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <Button className="mb-2 w-full" variant={"outline"} asChild>
+        <Button className="w-full mb-2" variant={"outline"} asChild>
           <Link href="/dashboard/marketing/coupons">{text("coupons")}</Link>
         </Button>
         <Button className="w-full" asChild>

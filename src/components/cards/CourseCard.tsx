@@ -44,7 +44,7 @@ const CourseCard: React.FC<ICourse> = ({
               <del className="h4 text-text-3">${price}</del>
             </>
           ) : (
-            <div className="h3">${price}</div>
+            <div className="h3">{price ? <>${price}</> : text("free")}</div>
           )}
         </div>
       </div>

@@ -4,6 +4,7 @@ import { createClientAxiosInstance } from "@/app/lib/utils";
 interface FollowingState {
   followingUsers: { user: string }[];
   lastFetched: number | null;
+  isLoading: boolean;
   fetchFollowingUsers: (token: string | undefined) => Promise<void>;
   addFollowingUser: (userId: string) => void;
   removeFollowingUser: (userId: string) => void;
@@ -12,16 +13,18 @@ interface FollowingState {
 export const useFollowingStore = create<FollowingState>((set, get) => ({
   followingUsers: [],
   lastFetched: null,
+  isLoading: false,
 
   fetchFollowingUsers: async (token) => {
     if (!token) return;
-    const { followingUsers, lastFetched } = get();
+    const { followingUsers, lastFetched, isLoading } = get();
     const now = Date.now();
     const shouldRefetch = !lastFetched || now - lastFetched > 5 * 60 * 1000;
-    if (followingUsers.length > 0 && !shouldRefetch) {
+    if ((followingUsers.length > 0 && !shouldRefetch) || isLoading) {
       return;
     }
     try {
+      set({ isLoading: true });
       const response = await createClientAxiosInstance().get(
         `/users/follow/followersAndFollowing`,
         {
@@ -33,9 +36,11 @@ export const useFollowingStore = create<FollowingState>((set, get) => ({
       set({
         followingUsers: response.data.data.following || [],
         lastFetched: now,
+        isLoading: false,
       });
     } catch (error) {
       console.error(error);
+      set({ isLoading: false });
     }
   },
   addFollowingUser: (userId) => {

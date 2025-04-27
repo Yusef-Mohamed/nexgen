@@ -46,7 +46,8 @@
     "ourPopularCourses": "دوراتنا الرائجة",
     "beginner": "مبتدئ",
     "intermediate": "متوسط",
-    "advanced": "متقدم"
+    "advanced": "متقدم",
+    "free": "مجاني"
   },
   "learningPaths": {
     "heading": "ارتقِ بمسيرتك في تداول الفوركس",
@@ -354,7 +355,8 @@
     "thereIsNoReview": "لا توجد تقييمات",
     "startLearning": "ابدأ التعلم",
     "viewAllReviews": "عرض جميع التقييمات",
-    "reviews": "التقييمات"
+    "reviews": "التقييمات",
+    "free": "مجاني"
   },
   "contact": {
     "contactFormTitle": "تواصل معنا",
@@ -478,7 +480,8 @@
     "noUpcomingLives": "لا توجد بثوث مباشرة قادمة",
     "thisWeek": "هذا الأسبوع",
     "noLivesThisWeek": "لا توجد بثوث مباشرة هذا الأسبوع",
-    "upcomingWeeks": "الأسابيع القادمة"
+    "upcomingWeeks": "الأسابيع القادمة",
+    "noLivesThisDay": "لا توجد بثوث مباشرة هذا اليوم"
   },
   "community": {
     "filters": "الفلاتر",
@@ -785,6 +788,7 @@
     "showLess": "عرض أقل",
     "showMore": "عرض المزيد",
     "showAll": "عرض الكل",
+    "exportToExcel": "تصدير إلى Excel",
     "createLink": {
       "error": "حدث خطأ أثناء إنشاء الرابط",
       "title": "إنشاء رابط دعوة",
@@ -928,6 +932,7 @@
     "delete_confirmation": "هل أنت متأكد من حذف هذا؟",
     "continue": "متابعة",
     "something_wrong": "حدث خطأ ما",
-    "delete_success": "تم الحذف بنجاح"
+    "delete_success": "تم الحذف بنجاح",
+    "are_you_sure": "هل أنت متأكد؟"
   }
 }

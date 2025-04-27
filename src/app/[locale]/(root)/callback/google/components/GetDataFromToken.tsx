@@ -16,7 +16,7 @@ const GetDataFromToken = () => {
     if (!token) return;
     const getToken = async () => {
       const axiosInstance = createClientAxiosInstance();
-      const response = await axiosInstance.get("/users/getMe", {
+      const response = await axiosInstance.get("/auth/getMe", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

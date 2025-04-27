@@ -9,7 +9,11 @@ type MyCoursesStore = {
   isLoading: boolean;
   lastFetched: number | null;
   setCourses: (courses: ICourse[]) => void;
-  getCourses: (token: string, selectedUser: string) => Promise<void>;
+  getCourses: (
+    token: string,
+    selectedUser: string,
+    skipValidation?: boolean
+  ) => Promise<void>;
 };
 
 export const useMyCoursesStore = create<MyCoursesStore>((set, get) => ({
@@ -18,13 +22,12 @@ export const useMyCoursesStore = create<MyCoursesStore>((set, get) => ({
   lastFetched: null,
 
   setCourses: (courses) => set({ courses }),
-
-  getCourses: async (token, selectedUser) => {
+  getCourses: async (token, selectedUser, skipValidation = false) => {
     const { isLoading, lastFetched } = get();
     if (!token || isLoading || !selectedUser) return;
     const now = Date.now();
     const isFresh = lastFetched && now - lastFetched < FIVE_MINUTES;
-    if (isFresh) return;
+    if (isFresh && !skipValidation) return;
     try {
       set({ isLoading: true });
       const axiosInstance = await createClientAxiosInstance();

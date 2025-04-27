@@ -1,12 +1,10 @@
-import { IComment, IPost, IReact } from "@/types";
-import { SetStateAction, useEffect, useMemo, useRef, useState } from "react";
+import { IComment, IPost } from "@/types";
+import { SetStateAction, useEffect, useRef, useState } from "react";
 import UserAvatar from "../UserAvatar";
-import { emojis } from "@/constants";
 import { FaChevronLeft, FaChevronRight, FaRegComment } from "react-icons/fa";
 import { useTranslations } from "next-intl";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import CommentCard from "./CommentCard";
-import { cn } from "@/lib/utils";
 import TextWithEmojiBox from "../TextWithEmojiBox";
 import { toast } from "react-toastify";
 import ImageWithZoom from "../ImageWithZoom";
@@ -15,12 +13,15 @@ import { Link } from "@/i18n/routing";
 import { useAuth } from "../auth-provider";
 import { MdClose } from "react-icons/md";
 import { Button } from "../ui/button";
+import ReactionComponent from "../ReactionComponent";
+
 interface FocusedPostCardProps {
   post: IPost;
   isOpen: boolean;
   setIsOpen: React.Dispatch<SetStateAction<boolean>>;
   inCommunity?: boolean;
 }
+
 const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
   post,
   isOpen,
@@ -31,8 +32,8 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
   const [selectedImage, setSelectedImage] = useState(0);
   const allImages = [post.imageCover, ...post.images];
   const [comments, setComments] = useState<IComment[]>([]);
-  const [reacts, setReacts] = useState<IReact[]>([]);
   const { token, user } = useAuth();
+
   useEffect(() => {
     const axiosInstance = createClientAxiosInstance();
     if (isOpen && post) {
@@ -45,22 +46,15 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
         .then((res) => {
           setComments(res.data.data);
         });
-      axiosInstance
-        .get(`reacts/post/${post?._id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          setReacts(res.data.data);
-        });
     }
   }, [isOpen, post]);
+
   // create & update comment
   const [isLoading, setIsLoading] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [media, setMedia] = useState<File | null>(null);
   const inputRef = useRef(null);
+
   const handleCommentSubmit = async () => {
     if (!user?.authToReview) {
       toast.error(text("youShouldBuyCourseOrServiceToDoThisAction"));
@@ -111,82 +105,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
       setIsLoading(false);
     }
   };
-  // create react
-  const [isReacting, setIsReacting] = useState(false);
-  const myReact: IReact | undefined = useMemo(() => {
-    return reacts.find((react) => react?.user?._id === user?._id);
-  }, [reacts]);
-  const addReactToPost = async (type: keyof typeof emojis) => {
-    if (!user?.authToReview) {
-      toast.error(text("youShouldBuyCourseOrServiceToDoThisAction"));
-      return;
-    }
-    setIsReacting(true);
-    const axiosInstance = createClientAxiosInstance();
-    let actionType = "create";
-    let thisReact = myReact;
-    if (thisReact) {
-      if (thisReact.type === type) {
-        actionType = "delete";
-      } else {
-        actionType = "update";
-      }
-    }
-    if (actionType === "create") {
-      thisReact = {
-        _id: Date.now().toString(), // Temporary ID for optimistic update
-        type,
-        user,
-        post: post._id,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-    }
-    if (thisReact && actionType === "delete") {
-      setReacts((prev) =>
-        prev.filter((react) => react?._id !== thisReact?._id)
-      );
-    }
-    if (thisReact && actionType === "update") {
-      setReacts((prev) =>
-        prev.map((react) =>
-          react?._id === thisReact?._id ? { ...react, type } : react
-        )
-      );
-    }
-    if (thisReact && actionType === "create") {
-      setReacts((prev) => [...prev, thisReact]);
-    }
-    try {
-      await axiosInstance.post(
-        `reacts/post/${post?._id}`,
-        { type },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-    } catch (error) {
-      console.log(error);
-      if (actionType === "create") {
-        setReacts((prev) =>
-          prev.filter((react) => react?._id !== thisReact?._id)
-        );
-      }
-      if (actionType === "update") {
-        setReacts((prev) =>
-          prev.map((react) =>
-            react?._id === thisReact?._id ? thisReact : react
-          )
-        );
-      }
-      if (actionType === "delete" && thisReact) {
-        setReacts((prev) => [...prev, thisReact]);
-      }
-    }
-    setIsReacting(false);
-  };
+
   return (
     <>
       <Dialog
@@ -284,41 +203,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
               </div>
             </div>
             <div className="flex items-center mt-2 justify-evenly sm:mt-4">
-              <div className="relative w-full group/unit">
-                <div className="absolute items-center justify-center hidden gap-4 px-4 py-1 translate-x-1/2 border rounded-md bg-muted bottom-full right-1/2 group-hover/unit:flex">
-                  {Object.entries(emojis).map(([key, value]) => (
-                    <button
-                      className="relative text-lg hover:scale-125 group"
-                      key={key}
-                      disabled={isReacting}
-                      onClick={
-                        isReacting
-                          ? () => {}
-                          : () => {
-                              addReactToPost(key as keyof typeof emojis);
-                            }
-                      }
-                    >
-                      <span className="absolute hidden p-2 text-xs font-semibold scale-90 translate-x-1/2 rounded-md bg-muted -top-12 right-1/2 group-hover:block">
-                        {text(key)}
-                      </span>
-                      {value}
-                    </button>
-                  ))}
-                </div>
-                <button
-                  className={cn(
-                    "flex hover:bg-muted transition-all w-full items-center justify-center gap-2 text-lg py-1 rounded-md",
-                    {
-                      "bg-muted": myReact,
-                    }
-                  )}
-                >
-                  {emojis[myReact?.type ? myReact?.type : "like"]}
-                  {text(myReact?.type ? myReact?.type : "like")} (
-                  {reacts.length})
-                </button>
-              </div>
+              <ReactionComponent post={post} />
               <button className="flex items-center justify-center w-full gap-2 py-1 text-lg transition-all rounded-md hover:bg-muted">
                 <FaRegComment /> {text("comment")} ({comments.length})
               </button>

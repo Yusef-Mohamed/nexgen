@@ -55,6 +55,7 @@ const DisplayPosts = ({ userId }: { userId?: string }) => {
   } = useInfiniteScroll<IPost>({
     fetchData: fetchPosts,
   });
+  console.log(posts);
   if (!userId)
     return (
       <section className="flex-1 w-full max-w-2xl px-4 py-6 mx-auto space-y-3 sm:px-4 sm:py-12 sm:space-y-6">

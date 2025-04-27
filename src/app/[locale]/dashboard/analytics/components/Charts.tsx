@@ -21,7 +21,7 @@ import {
   BarElement,
 } from "chart.js";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 ChartJS.register(
   CategoryScale,
   BarElement,
@@ -139,6 +139,9 @@ const Charts = () => {
       getCourseDetails(selectedCourse as string);
     }
   }, [selectedCourse]);
+  const children = useMemo(() => {
+    return myChildren.filter((child) => child._id !== myAccount?._id);
+  }, [myChildren, myAccount]);
   return (
     <>
       <main className="flex w-full min-h-screen px-2 py-6 lg:px-6 sm:px-4">
@@ -200,7 +203,7 @@ const Charts = () => {
                     />
                     {inputs("me")}
                   </SelectItem>
-                  {myChildren?.map((user) => {
+                  {children?.map((user) => {
                     return (
                       <SelectItem
                         className="flex items-center gap-4 text-sm"

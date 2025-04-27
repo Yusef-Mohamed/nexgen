@@ -37,7 +37,6 @@ const InvoicesManagement = () => {
   const { token } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [marketLog, setMarketLog] = useState<IMarketLog | null>(null);
-  console.log("marketLog", marketLog);
   useEffect(() => {
     const fetchMarketLog = async () => {
       try {
@@ -110,7 +109,7 @@ const LoadingState = () => (
       {Array.from({ length: 4 }).map((_, i) => (
         <Card key={i}>
           <CardContent className="p-4">
-            <Skeleton className="mb-2 w-24 h-4" />
+            <Skeleton className="w-24 h-4 mb-2" />
             <Skeleton className="w-32 h-8" />
           </CardContent>
         </Card>
@@ -118,7 +117,7 @@ const LoadingState = () => (
     </div>
     <Card>
       <CardContent className="p-4">
-        <Skeleton className="mb-4 w-48 h-8" />
+        <Skeleton className="w-48 h-8 mb-4" />
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className="w-full h-12" />
@@ -239,7 +238,7 @@ const BalanceCard = ({
 
   return (
     <Card>
-      <CardContent className="flex flex-col justify-center items-center p-4 h-full">
+      <CardContent className="flex flex-col items-center justify-center h-full p-4">
         <div className="relative">
           <Image
             src={`/images/card_light_${locale === "ar" ? "en" : "ar"}.png`}
@@ -257,7 +256,7 @@ const BalanceCard = ({
             height={500}
             className={cn("w-full rounded-md aspect-[340/176] dark:hidden")}
           />
-          <div className="flex absolute top-0 right-0 flex-col justify-center items-start px-4 mt-2 w-full h-full">
+          <div className="absolute top-0 right-0 flex flex-col items-start justify-center w-full h-full px-4 mt-2">
             <p className="text-sm text-gray-200 dark:text-gray-700">
               {t("stats.currentBalance")}
             </p>
@@ -269,7 +268,7 @@ const BalanceCard = ({
 
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button className="mt-4 w-full" variant="outline">
+            <Button className="w-full mt-4" variant="outline">
               {t("stats.withdraw")}
             </Button>
           </DialogTrigger>
@@ -326,8 +325,8 @@ const MarketingTabs = ({
       <TableWithModal
         header={
           <TabsList>
-            <TabsTrigger value="commission">{t("tabs.commission")}</TabsTrigger>
-            <TabsTrigger value="sales">{t("tabs.sales")}</TabsTrigger>
+            <TabsTrigger value="commission">{t("tabs.sales")}</TabsTrigger>
+            <TabsTrigger value="sales">{t("tabs.commission")}</TabsTrigger>
           </TabsList>
         }
         modalContent={
@@ -676,7 +675,7 @@ const TableWithModal = ({
 }) => {
   return (
     <>
-      <CardHeader className="flex flex-row justify-between items-center">
+      <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex-1">{header}</div>
         {!hideModal && (
           <Dialog>

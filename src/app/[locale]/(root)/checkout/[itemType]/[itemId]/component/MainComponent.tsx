@@ -9,7 +9,7 @@ import { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { ItemType } from "../page";
 import { Input } from "@/components/ui/input";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { toast } from "react-toastify";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { AxiosError } from "axios";
@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useAuth } from "@/components/auth-provider";
+import { useMyCoursesStore } from "@/stores/MyCoursesStore";
 const methods = [
   {
     label: "card",
@@ -49,7 +50,9 @@ const MainComponent = ({
   const [needPlacementExams, setNeedPlacementExams] = useState(false);
   const [discount, setDiscount] = useState(0);
   const [selectedCoupon, setSelectedCoupon] = useState("");
-  const { token } = useAuth();
+  const { token, user } = useAuth();
+  const { getCourses } = useMyCoursesStore();
+  const router = useRouter();
   const handelPayment = async () => {
     if (!token) {
       toast.error(text("loginFirst"));
@@ -59,44 +62,61 @@ const MainComponent = ({
       toast.error(text("verifyRecaptcha"));
       return;
     }
-
     if (!selectedMethod) {
       toast.error(text("selectPaymentMethod"));
       return;
     }
-
     if (!thisItem) {
       toast.error(text("invalidItem"));
       return;
     }
     try {
       setIsLoading(true);
-      let endpoint =
-        itemType === "course"
-          ? `/orders/plisio/courseCheckout/${thisItem._id}`
-          : itemType === "learning-path"
-          ? `/orders/plisio/coursePackageCheckout/${thisItem._id}`
-          : `/orders/plisio/packageCheckout/${thisItem._id}`;
-      if (selectedMethod === "card") {
-        endpoint =
+      if (
+        itemType === "course" &&
+        (thisItem.priceAfterDiscount == 0 || thisItem.price == 0)
+      ) {
+        const axiosInstance = await createClientAxiosInstance();
+        await axiosInstance.put(
+          `/orders/createUnPaidOrder/${thisItem._id}`,
+          {},
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        getCourses(token, user?._id || "", true);
+        router.push(`/courses/${thisItem._id}`);
+      } else {
+        let endpoint =
           itemType === "course"
-            ? `/orders/lahza/courseCheckout/${thisItem._id}`
+            ? `/orders/plisio/courseCheckout/${thisItem._id}`
             : itemType === "learning-path"
-            ? `/orders/lahza/coursePackageCheckout/${thisItem._id}`
-            : `/orders/lahza/packageCheckout/${thisItem._id}`;
-      }
-      const axiosInstance = await createClientAxiosInstance();
-      const res = await axiosInstance.put(
-        endpoint,
-        { paymentMethod: selectedMethod, couponName: selectedCoupon },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+            ? `/orders/plisio/coursePackageCheckout/${thisItem._id}`
+            : `/orders/plisio/packageCheckout/${thisItem._id}`;
+        if (selectedMethod === "card") {
+          endpoint =
+            itemType === "course"
+              ? `/orders/lahza/courseCheckout/${thisItem._id}`
+              : itemType === "learning-path"
+              ? `/orders/lahza/coursePackageCheckout/${thisItem._id}`
+              : `/orders/lahza/packageCheckout/${thisItem._id}`;
         }
-      );
-      window.location.href = res.data.redirectUrl;
+        const axiosInstance = await createClientAxiosInstance();
+        const res = await axiosInstance.put(
+          endpoint,
+          { paymentMethod: selectedMethod, couponName: selectedCoupon },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        window.location.href = res.data.redirectUrl;
+      }
     } catch (err) {
       const typedError = err as AxiosError<{ error?: string }>;
       if (typedError.response?.status === 403 && itemType === "course") {

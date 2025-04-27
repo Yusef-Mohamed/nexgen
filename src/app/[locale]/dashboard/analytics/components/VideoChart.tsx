@@ -50,7 +50,6 @@ const VideoChart = () => {
         dayIndex: i + 1,
       };
     });
-
     // Aggregate exam counts by day
     courseProgress.progress
       .filter((exam: { status: string }) => {

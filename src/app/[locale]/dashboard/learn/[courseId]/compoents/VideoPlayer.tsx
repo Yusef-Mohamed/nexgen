@@ -34,7 +34,7 @@ const VideoPlayer = ({ otp, playbackInfo, onVideoEnd }: VideoPlayerProps) => {
       document.body.removeChild(script);
     };
   }, [onVideoEnd]);
-
+  if (!otp || !playbackInfo) return null;
   return (
     <iframe
       ref={iframeRef}

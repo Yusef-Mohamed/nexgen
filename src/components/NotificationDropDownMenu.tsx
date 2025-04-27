@@ -26,6 +26,7 @@ const NotificationDropDownMenu = () => {
     setupSocket,
     readNotification,
     getUnReadCount,
+    clearAllUnread,
   } = useNotificationStore();
   useEffect(() => {
     if (token) {
@@ -53,17 +54,23 @@ const NotificationDropDownMenu = () => {
   }, [fetchNotifications, observerRef.current, observerRef]);
 
   useEffect(() => {
+    if (isOpened && unReadCount > 0) {
+      clearAllUnread();
+    }
     if (isOpened) fetchNotifications(true);
-  }, [fetchNotifications, isOpened]);
+  }, [fetchNotifications, isOpened, unReadCount, clearAllUnread]);
   return (
     <DropdownMenu onOpenChange={setIsOpened}>
       <DropdownMenuTrigger className="relative flex items-center justify-center h-[2.5rem] w-[2.5rem] bg-primary-faded border-none text-xl border rounded-full">
-        <IoIosNotifications />{" "}
-        {unReadCount > 0 && (
-          <div className="absolute flex items-center justify-center w-5 h-5 text-xs rounded-full -top-2 -right-2 bg-primary text-clear-ground">
-            {unReadCount}
-          </div>
-        )}
+        <IoIosNotifications /> {/* {unReadCount > 0 && ( */}
+        {unReadCount ? (
+          <>
+            <div className="absolute z-10 flex items-center justify-center w-5 h-5 text-xs rounded-full -top-2 -right-2 bg-primary text-clear-ground">
+              {unReadCount}
+            </div>
+            <div className="absolute flex items-center justify-center w-5 h-5 text-xs rounded-full animate-ping -top-2 -right-2 bg-primary "></div>
+          </>
+        ) : null}
       </DropdownMenuTrigger>
       <DropdownMenuContent className="max-w-[90vw] sm:w-[450px] w-full max-h-[60vh] overflow-auto">
         {notifications.map((n) => (

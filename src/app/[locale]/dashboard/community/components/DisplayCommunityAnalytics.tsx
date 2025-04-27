@@ -2,7 +2,7 @@
 import PostCard, { SkeletonPostCard } from "@/components/cards/PostCard";
 import useCustomSearchParams from "@/hooks/useSearchParams";
 import { IPost } from "@/types";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CommunityFilters from "./CommunityFilters";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
@@ -24,14 +24,16 @@ const DisplayCommunityAnalytics = () => {
         let sharedTo = filtersParams.get("sharedTo");
         filtersParams.delete("sharedTo");
         if (sharedTo === "services") {
-          sharedTo = "/packages";
-          if (!filtersParams.get("service")) return [];
-          filtersParams.set("package", filtersParams.get("service") as string);
+          const serviceId = filtersParams.get("service");
+          if (!serviceId) return [];
           filtersParams.delete("service");
+          sharedTo = `/packages/${serviceId}`;
         } else if (sharedTo === "students") sharedTo = "?type=profile";
         else if (sharedTo === "courses") {
-          sharedTo = "/courses";
-          if (!filtersParams.get("course")) return [];
+          const courseId = filtersParams.get("course");
+          if (!courseId) return [];
+          filtersParams.delete("course");
+          sharedTo = `/courses/${courseId}`;
         } else {
           return [];
         }
@@ -67,6 +69,11 @@ const DisplayCommunityAnalytics = () => {
     fetchData: fetchPosts,
     search: searchParams.toString(),
   });
+
+  useEffect(() => {
+    setData([]); // Reset data when filters change
+  }, [searchParams.toString(), setData]);
+
   return (
     <section className="flex-1 w-full max-w-2xl px-4 py-6 mx-auto space-y-3 sm:px-4 sm:py-12 sm:space-y-6">
       <CommunityFilters />

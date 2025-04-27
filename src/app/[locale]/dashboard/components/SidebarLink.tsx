@@ -17,7 +17,8 @@ const SidebarLink: React.FC<{
       icon: React.ReactNode;
     }[];
   };
-}> = ({ link }) => {
+  isPinging?: boolean;
+}> = ({ link, isPinging }) => {
   const pathname = usePathname();
   const text = useTranslations("dashboard");
   const [isOpen, setIsOpen] = useState(false);
@@ -84,7 +85,7 @@ const SidebarLink: React.FC<{
         href={link.href}
         target={link.target}
         className={cn(
-          "flex w-full items-center gap-2 px-3 hover:text-clear-ground rounded-md py-2 hover:bg-primary transition-all",
+          "flex w-full items-center gap-2 px-3 hover:text-clear-ground rounded-md py-2 hover:bg-primary justify-between transition-all",
           {
             "bg-primary text-clear-ground":
               link.href !== "/dashboard"
@@ -93,8 +94,13 @@ const SidebarLink: React.FC<{
           }
         )}
       >
-        {link.icon}
-        {text(link.label)}
+        <div className="flex items-center gap-2">
+          {link.icon}
+          {text(link.label)}
+        </div>
+        {isPinging && (
+          <div className="w-6 h-6 rounded-full bg-primary animate-ping" />
+        )}
       </Link>
     );
 };

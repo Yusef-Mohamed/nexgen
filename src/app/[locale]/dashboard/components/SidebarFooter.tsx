@@ -60,7 +60,7 @@ const SidebarFooter = () => {
     }
   }, [systemReviewCreatedAt]);
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 ">
       {showSystemReview && user?.authToReview && (
         <SidebarLink
           link={{
@@ -68,6 +68,7 @@ const SidebarFooter = () => {
             label: "systemReview",
             icon: <BsChatLeftDots />,
           }}
+          isPinging
         />
       )}
 

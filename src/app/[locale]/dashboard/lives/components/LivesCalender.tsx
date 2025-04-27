@@ -16,11 +16,16 @@ import { arSA, enUS } from "date-fns/locale";
 import { useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import useCustomSearchParams from "@/hooks/useSearchParams";
+import { ILive } from "@/types";
+
 const WEEKDAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
-const LivesCalender = () => {
-  // const { setSearchParams, getSearchParam } = useCustomSearchParams();
-  const { getSearchParam } = useCustomSearchParams();
+interface LivesCalenderProps {
+  lives: ILive[];
+}
+
+const LivesCalender = ({ lives }: LivesCalenderProps) => {
+  const { setSearchParams, getSearchParam } = useCustomSearchParams();
   const locale = useLocale();
   const isArabic = locale === "ar";
   const currentDate = new Date();
@@ -33,6 +38,14 @@ const LivesCalender = () => {
   const daysInMonth = useMemo(() => {
     return eachDayOfInterval({ start: firstDayOfMonth, end: lastDayOfMonth });
   }, [firstDayOfMonth, lastDayOfMonth]);
+
+  const getLivesForDate = (date: Date) => {
+    const dateKey = format(date, "yyyy-MM-dd");
+    return lives.filter(
+      (live) => format(new Date(live.date), "yyyy-MM-dd") === dateKey
+    );
+  };
+
   return (
     <div dir="ltr" className="w-full bg-clear-ground rounded-xl h-fit">
       <div className="p-4">
@@ -92,23 +105,58 @@ const LivesCalender = () => {
           })}
           {daysInMonth.map((day, index) => {
             const dateKey = format(day, "yyyy-MM-dd");
+            const dayLives = getLivesForDate(day);
             return (
-              <button
-                onClick={() => {
-                  // setSearchParams({ date: dateKey });
-                }}
-                key={index}
-                className={clsx(
-                  " rounded-full transition-all px-5 py-1 w-full flex justify-center items-center text-center",
-                  {
-                    "bg-primary text-white": isToday(day),
-                    "bg-primary/70 text-white":
-                      getSearchParam("date") === dateKey,
-                  }
-                )}
-              >
-                {format(day, "d")}
-              </button>
+              <div key={index}>
+                <button
+                  onClick={() => {
+                    const currentDate = getSearchParam("date");
+                    if (currentDate === dateKey) {
+                      setSearchParams({ date: "" });
+                    } else {
+                      setSearchParams({ date: dateKey });
+                    }
+                  }}
+                  className={clsx(
+                    "rounded-md flex-col transition-all px-1 py-1 w-full flex justify-center items-center text-center border-2",
+                    {
+                      "border-primary": isToday(day),
+                      "border-[#FFD700]": getSearchParam("date") === dateKey,
+                      "border-transparent":
+                        !isToday(day) && getSearchParam("date") !== dateKey,
+                    }
+                  )}
+                >
+                  {format(day, "d")}{" "}
+                  {dayLives.length > 0 && (
+                    <div className="bottom-0 flex justify-center gap-1 transform -translate-x-1/2 left-1/2">
+                      {dayLives.map((live, liveIndex) =>
+                        live.package.map((pkg, pkgIndex) => {
+                          const courseColor =
+                            pkg.course.colors.bgColor || "#000000";
+                          const courseDarkColor =
+                            pkg.course.colors.bgDarkMode || "#000000";
+                          return (
+                            <div
+                              key={`${liveIndex}-${pkgIndex}`}
+                              className="flex gap-1"
+                            >
+                              <div
+                                className="w-1.5 h-1.5 rounded-full dark:hidden"
+                                style={{ backgroundColor: courseColor }}
+                              />
+                              <div
+                                className="w-1.5 h-1.5 rounded-full dark:block hidden"
+                                style={{ backgroundColor: courseDarkColor }}
+                              />
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  )}
+                </button>
+              </div>
             );
           })}
         </div>
@@ -116,4 +164,5 @@ const LivesCalender = () => {
     </div>
   );
 };
+
 export default LivesCalender;

@@ -222,7 +222,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, base, mark }) => {
       <CardContent className="p-4">
         <div>
           <p className="mb-4 max-sm:text-sm text-muted-foreground">{title}</p>
-          <h3 className="flex gap-1 items-end mt-1 mb-2 font-semibold h1-5">
+          <h3 className="flex items-end gap-1 mt-1 mb-2 font-semibold h1-5">
             {mark}
             {value?.toLocaleString()}
             {base && (

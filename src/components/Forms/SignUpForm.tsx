@@ -52,7 +52,7 @@ const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
       invitationKey?: string | null;
     } = { ...data };
     if (inviteKey) {
-      formattedData.invitationKey = inviteKey.toLowerCase();
+      formattedData.invitationKey = inviteKey;
     }
 
     const response = await axiosInstance.post("/auth/signup", formattedData);

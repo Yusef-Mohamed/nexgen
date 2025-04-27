@@ -56,6 +56,11 @@ const CreatePractice = ({
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        params: lessonId
+          ? {
+              lesson: lessonId,
+            }
+          : undefined,
       });
       router.refresh();
       setContent("");

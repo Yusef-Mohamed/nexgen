@@ -18,6 +18,7 @@ type NotificationStore = {
   setPaginationData: (data: IPagination) => void;
   getUnReadCount: () => void;
   haveError: boolean;
+  clearAllUnread: () => void;
 };
 export const useNotificationStore = create<NotificationStore>((set, get) => ({
   notifications: [],
@@ -109,6 +110,20 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
     } catch (error) {
       console.error(error);
       set({ gotUnReadCount: true, unReadCount: 0 });
+    }
+  },
+  clearAllUnread: async () => {
+    const axiosInstance = createClientAxiosInstance();
+    const token = getCookie("token");
+    try {
+      await axiosInstance.put("/notifications", null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      set({ unReadCount: 0 });
+    } catch (error) {
+      console.error(error);
     }
   },
 }));

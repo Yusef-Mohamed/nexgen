@@ -19,33 +19,34 @@ export function useInfiniteScroll<T>({
   const [paginationData, setPaginationData] = useState<IPagination | null>(
     null
   );
+  const [currentPage, setCurrentPage] = useState(initialPage);
   const observerRef = useRef<HTMLDivElement | null>(null);
 
   const loadMoreData = useCallback(async () => {
     if (
       isLoading ||
-      (paginationData &&
-        paginationData.numberOfPages <= paginationData.currentPage)
+      (paginationData && paginationData.numberOfPages <= currentPage)
     ) {
       return;
     }
     setIsLoading(true);
     try {
-      const fetchedData = await fetchData(
-        (paginationData?.currentPage || 0) + 1 || initialPage,
-        search
-      );
-      if (!paginationData) setData(fetchedData);
-      else setData((prevData) => [...prevData, ...fetchedData]);
+      const fetchedData = await fetchData(currentPage, search);
+      if (currentPage === initialPage) {
+        setData(fetchedData);
+      } else {
+        setData((prevData) => [...prevData, ...fetchedData]);
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, fetchData, paginationData, search, initialPage]);
+  }, [isLoading, fetchData, paginationData, search, currentPage, initialPage]);
 
   const resetData = useCallback(() => {
     setData([]);
     setPaginationData(null);
-  }, []);
+    setCurrentPage(initialPage);
+  }, [initialPage]);
 
   // Reset data when dependencies change
   useEffect(() => {
@@ -56,8 +57,8 @@ export function useInfiniteScroll<T>({
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          loadMoreData();
+        if (entries[0].isIntersecting && currentPage !== initialPage) {
+          setCurrentPage((prev) => prev + 1);
         }
       },
       { threshold: 1.0 }
@@ -67,7 +68,7 @@ export function useInfiniteScroll<T>({
       if (observerRef.current) observer.unobserve(observerRef.current);
       observer.disconnect();
     };
-  }, [loadMoreData]);
+  }, [currentPage, initialPage]);
 
   return {
     data,

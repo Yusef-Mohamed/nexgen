@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         if (!token) return;
         const axiosInstance = createClientAxiosInstance();
-        const res = await axiosInstance.get("/users/getMe", {
+        const res = await axiosInstance.get("/auth/getMe", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

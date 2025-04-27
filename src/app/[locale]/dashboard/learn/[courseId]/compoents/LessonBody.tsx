@@ -31,6 +31,7 @@ const LessonBody = ({
         }
       );
       const data = response.data.data.videoData;
+
       setData(data);
     };
     fetchData();

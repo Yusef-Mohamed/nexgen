@@ -164,6 +164,11 @@ export interface IPost {
   package: IPackage[];
   reactionsCount: number;
   commentsCount: number;
+  reactionTypes: string[];
+  loggedUserReaction?: {
+    type: keyof typeof emojis;
+    _id: string;
+  };
   _id: string;
   createdAt: string;
   updatedAt: string;

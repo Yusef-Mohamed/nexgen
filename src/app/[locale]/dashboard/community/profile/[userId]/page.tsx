@@ -29,6 +29,10 @@ const getThisUser = async (userId: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log({
+      response: response.data.data,
+      userId,
+    });
     return response.data.data;
   } catch (e) {
     console.log(e);

@@ -26,6 +26,7 @@ import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { ICourse, ICoursePackage, IPackage } from "@/types";
 import { createClientAxiosInstance } from "@/app/lib/utils";
+import * as XLSX from "xlsx";
 const formatDate = (date: Date) => {
   return format(date, "yyyy MM dd").split(" ").join("-");
 };
@@ -115,10 +116,49 @@ const TeamTable = ({ data }: { data: TeamData }) => {
     selectedItem,
   ]);
 
+  console.log(filteredUsers);
+
+  const handleExportToExcel = () => {
+    const exportData = filteredUsers.map((user) => ({
+      Name: user.name,
+      Email: user.email,
+      Phone: user.phone || "+000000000",
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Team Members");
+    XLSX.writeFile(wb, "team_members.xlsx");
+  };
+
   return (
     <Card className="mb-4 border-none">
       <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4">
-        <CardTitle>{t("myTeamMembers")}</CardTitle>
+        <div className="flex items-center gap-4">
+          <CardTitle>{t("myTeamMembers")}</CardTitle>
+          <Button
+            onClick={handleExportToExcel}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            {t("exportToExcel")}
+          </Button>
+        </div>
         <div className="flex flex-wrap gap-4">
           <Select
             value={selectedItem}
@@ -258,6 +298,9 @@ const UserRow = ({ member, index }: { member: User; index: number }) => {
           <div>
             <p className="font-semibold">{member.name}</p>
             <p className="text-muted-foreground">{member.email}</p>
+            <p className="text-muted-foreground w-fit" dir="ltr">
+              {member.phone || "+000000000"}
+            </p>
           </div>
         </Link>
       </TableCell>

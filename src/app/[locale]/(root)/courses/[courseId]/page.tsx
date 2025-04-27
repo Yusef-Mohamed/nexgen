@@ -28,6 +28,7 @@ export async function generateMetadata({
   const axiosInstance = createServerAxiosInstance();
   const courseRes = await axiosInstance.get("/courses/" + params.courseId);
   const courseData = courseRes.data.data as ICourse;
+
   return getMetadataCoursePage({
     params,
     course: courseData,
@@ -60,7 +61,9 @@ const CoursesPage = async ({
                     className="flex items-start gap-2 text-sm text-text-2 md:text-base"
                   >
                     <div className="w-1 h-1 mt-2 rounded-full bg-text-2"></div>
-                    <p className="flex-1 ">{highlight}</p>
+                    <p className="flex-1 ">
+                      {typeof highlight === "string" ? highlight : null}
+                    </p>
                   </li>
                 ))}
               </ul>
@@ -81,7 +84,7 @@ const CoursesPage = async ({
                         target="_blank"
                         className="flex-1 font-semibold underline md:text-lg"
                       >
-                        {course.title}
+                        {typeof course.title === "string" ? course.title : null}
                       </Link>
                     </li>
                   ))
@@ -182,7 +185,9 @@ const CourseCard: React.FC<{
               <del className="h3 text-text-3">${courseData.price}</del>
             </>
           ) : (
-            <div className="h2">${courseData.price}</div>
+            <div className="h2">
+              {courseData.price ? <>${courseData.price}</> : text("free")}
+            </div>
           )}
         </div>
         {courseData.priceAfterDiscount ? (

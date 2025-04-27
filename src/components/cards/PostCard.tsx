@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { FaRegComment } from "react-icons/fa6";
-import { AiFillDelete, AiOutlineLike } from "react-icons/ai";
+import { AiFillDelete } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import FocusedPostCard from "./FocusedPostCard";
 import { Link, useRouter } from "@/i18n/routing";
@@ -30,6 +30,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
+import ReactionComponent from "../ReactionComponent";
+
 interface PostCardProps {
   post: IPost;
   inCommunity?: boolean;
@@ -122,19 +124,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
           )}
         </div>
         <div className="flex items-center mt-2 justify-evenly sm:mt-4">
+          <ReactionComponent post={post} />
           <button
             onClick={() => {
               setIsOpen(true);
             }}
-            className="flex items-center justify-center gap-2 px-2 py-1 text-lg transition-all rounded-md sm:px-4 sm:py-2 max-sm:text-sm hover:bg-muted"
-          >
-            <AiOutlineLike /> {text("like")} ({post.reactionsCount})
-          </button>
-          <button
-            onClick={() => {
-              setIsOpen(true);
-            }}
-            className="flex items-center justify-center gap-2 px-2 py-1 text-lg transition-all rounded-md sm:px-4 sm:py-2 max-sm:text-sm hover:bg-muted"
+            className="flex items-center justify-center w-full gap-2 py-1 text-lg transition-all rounded-md hover:bg-muted"
           >
             <FaRegComment /> {text("comment")} ({post.commentsCount})
           </button>
