@@ -45,7 +45,7 @@ const MainComponent = ({
   const [selectedMethod, setSelectedMethod] = useState<"card" | "crypto" | "">(
     ""
   );
-  const [isVerified, setIsVerified] = useState(true);
+  const [isVerified, setIsVerified] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [needPlacementExams, setNeedPlacementExams] = useState(false);
   const [discount, setDiscount] = useState(0);

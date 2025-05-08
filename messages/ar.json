@@ -75,7 +75,9 @@
     "save": "وفر",
     "weOffer": "نحن نقدم",
     "exploreAllServices": "استكشف جميع الخدمات",
-    "day": "يوم"
+    "day": "يوم",
+    "showLess": "عرض أقل",
+    "showMore": "عرض المزيد"
   },
   "promoBanner": {
     "heading": "سجل الآن واحصل على ٤ أشهر من خدماتنا مجاناً",
@@ -356,7 +358,9 @@
     "startLearning": "ابدأ التعلم",
     "viewAllReviews": "عرض جميع التقييمات",
     "reviews": "التقييمات",
-    "free": "مجاني"
+    "free": "مجاني",
+    "loginFirst": "يجب عليك تسجيل الدخول أولا للتسجيل في هذه الدورة",
+    "enrollmentFailed": "فشل التسجيل، يرجى المحاولة مرة أخرى"
   },
   "contact": {
     "contactFormTitle": "تواصل معنا",
@@ -442,7 +446,8 @@
     "userPost": "منشور المستخدم {name}",
     "commentFailed": "فشلت عملية إضافة التعليق",
     "youShouldBuyCourseOrServiceToDoThisAction": "يجب عليك شراء دورة أو خدمة للقيام بهذا الإجراء",
-    "something_went_wrong": "حدث خطأ ما"
+    "something_went_wrong": "حدث خطأ ما",
+    "no_posts_found": "لا يوجد منشورات"
   },
   "chat": {
     "chats": "الدردشات",
@@ -883,6 +888,7 @@
     "score": "الدرجة",
     "quiz": "اختبار",
     "noExamsForThisWeek": "لا توجد امتحانات لهذا الأسبوع",
+    "noExamsForThisMonth": "لا توجد امتحانات لهذا الشهر",
     "practice": "التدريب",
     "totalPracticeNumber": "إجمالي عدد التدريبات",
     "thisWeekPracticeNumber": "عدد التدريبات لهذا الأسبوع",

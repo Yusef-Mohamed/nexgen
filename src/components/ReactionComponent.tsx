@@ -18,6 +18,9 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
 }) => {
   const text = useTranslations("post");
   const [isReacting, setIsReacting] = useState(false);
+  const [reaction, setReaction] = useState<string | null>(
+    post.loggedUserReaction?.type || null
+  );
   const { user, token } = useAuth();
 
   const addReactToPost = async (type: keyof typeof emojis) => {
@@ -55,6 +58,12 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
           onReactionUpdate(type);
         }
       }
+
+      if (actionType === "delete") {
+        setReaction(null);
+      } else {
+        setReaction(type);
+      }
     } catch (error) {
       console.log(error);
       toast.error(text("reactionFailed"));
@@ -90,21 +99,12 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
         className={cn(
           "flex hover:bg-muted transition-all w-full items-center justify-center gap-2 text-lg py-1 rounded-md",
           {
-            "bg-muted": post.loggedUserReaction,
+            "bg-muted": reaction,
           }
         )}
       >
-        {
-          emojis[
-            post.loggedUserReaction?.type
-              ? post.loggedUserReaction.type
-              : "like"
-          ]
-        }
-        {text(
-          post.loggedUserReaction?.type ? post.loggedUserReaction.type : "like"
-        )}{" "}
-        ({post.reactionsCount})
+        {emojis[reaction ? (reaction as keyof typeof emojis) : "like"]}
+        {text(reaction ? reaction : "like")}
       </button>
     </div>
   );

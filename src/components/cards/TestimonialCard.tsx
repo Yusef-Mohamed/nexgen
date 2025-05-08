@@ -44,7 +44,12 @@ const TestimonialCard: React.FC<TestimonialsProps> = ({
   return (
     <div className="relative flex flex-col items-center gap-4 px-4 py-6 text-center sm:gap-5 sm:px-6 sm:py-8 bg-muted rounded-3xl">
       <ReviewActions reviewType={reviewType} review={review} />
-      <UserAvatar user={user} size="lg" className="w-20 h-20" />
+      <UserAvatar
+        user={user}
+        size="lg"
+        className="w-20 h-20 "
+        innerClassName="bg-background"
+      />
       <h4>{user?.name}</h4>
       <div className="flex items-center gap-2">
         {Array.from({ length: 5 }).map((_, index) => {

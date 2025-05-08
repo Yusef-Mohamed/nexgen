@@ -1,8 +1,9 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 import { IPackage } from "@/types";
 import { useTranslations } from "next-intl";
-import React from "react";
+import React, { useState } from "react";
 import { FaRegCircleCheck } from "react-icons/fa6";
 
 const ServiceCard: React.FC<IPackage> = ({
@@ -14,6 +15,12 @@ const ServiceCard: React.FC<IPackage> = ({
   subscriptionDurationDays,
 }) => {
   const text = useTranslations("services");
+  const [showAllHighlights, setShowAllHighlights] = useState(false);
+  const visibleHighlights = showAllHighlights
+    ? highlights
+    : highlights.slice(0, 5);
+  const hasMoreHighlights = highlights.length > 5;
+
   return (
     <div
       className={
@@ -42,12 +49,23 @@ const ServiceCard: React.FC<IPackage> = ({
       <div>
         <h4>{text("weOffer")}</h4>
         <ul className="flex flex-col sm:mt-3 mt-1.5 sm:space-y-2 space-y-1">
-          {highlights.map((highlight, index) => (
-            <li key={index} className="flex items-center gap-1 sm:gap-2 ">
-              <FaRegCircleCheck /> {highlight}
-            </li>
-          ))}
+          {visibleHighlights.map((highlight, index) =>
+            highlight.length > 0 ? (
+              <li key={index} className="">
+                <FaRegCircleCheck className="inline text-primary" /> {highlight}
+              </li>
+            ) : null
+          )}
         </ul>
+        {hasMoreHighlights && (
+          <Button
+            variant="ghost"
+            className="mt-2 text-primary hover:text-primary/80"
+            onClick={() => setShowAllHighlights(!showAllHighlights)}
+          >
+            {showAllHighlights ? text("showLess") : text("showMore")}
+          </Button>
+        )}
       </div>
     </div>
   );

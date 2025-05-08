@@ -37,7 +37,7 @@ const CourseProgress = () => {
       getCourseScore(selectedCourse);
     }
   }, [selectedCourse, selectedUser]);
-
+  console.log(selectedUserObject);
   return (
     <div>
       {courseProgress.certificate.isTake && (
@@ -114,12 +114,14 @@ const CourseProgress = () => {
           title="timeSpent"
           color="#9747FF"
           value={Number(
-            (
+            Math.min(
               ((selectedUserObject?.timeSpent?.monthlyTimeSpent || 0) /
-                (50 * 60 * 60 * 1000)) *
+                (100 * 60 * 60)) *
+                100,
               100
             ).toFixed(2)
           )}
+          timeSpent={selectedUserObject?.timeSpent?.monthlyTimeSpent}
           isFetching={isFetching}
         />
         <CircleCell
@@ -152,6 +154,19 @@ const CourseProgress = () => {
 };
 
 export default CourseProgress;
+const formatTimeSpent = (seconds: number, locale: string) => {
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+
+  if (hours > 0) {
+    return locale === "ar" ? `${hours} ساعة` : `${hours}h`;
+  } else if (minutes > 0) {
+    return locale === "ar" ? `${minutes} دقيقة` : `${minutes}m`;
+  } else {
+    return locale === "ar" ? `${seconds} ثانية` : `${seconds}s`;
+  }
+};
+
 const CircleCell = ({
   title,
   value,
@@ -159,6 +174,7 @@ const CircleCell = ({
   icon,
   color,
   className,
+  timeSpent,
 }: {
   title: string;
   value: number;
@@ -166,21 +182,12 @@ const CircleCell = ({
   icon: JSX.Element;
   isFetching: boolean;
   className?: string;
+  timeSpent?: number;
 }) => {
   const text = useTranslations("analytics");
   const locale = useLocale();
   return (
     <div className={cn("p-4 rounded-md bg-clear-ground relative", className)}>
-      {title === "timeSpent" && (
-        <div
-          className="absolute top-0 right-0 z-10 flex items-center justify-center w-full h-full font-semibold"
-          style={{
-            backdropFilter: "blur(10px)",
-          }}
-        >
-          {locale === "ar" ? "قريبا ..." : "Coming soon ..."}
-        </div>
-      )}
       <div className="flex items-start justify-between ">
         <div>
           <div
@@ -199,9 +206,6 @@ const CircleCell = ({
           ) : (
             <div className="w-20 h-3 mb-1 font-semibold rounded-md bg-muted animate-pulse" />
           )}
-          <h4 className="text-muted-foreground max-sm:text-sm">
-            {text(title)}
-          </h4>
         </div>
         <div className="w-[90px]">
           {!isFetching ? (
@@ -210,7 +214,15 @@ const CircleCell = ({
             <div className="font-semibold w-[90px] aspect-square rounded-full bg-muted animate-pulse" />
           )}
         </div>
-      </div>
+      </div>{" "}
+      <h4 className="text-muted-foreground max-sm:text-sm">
+        {text(title)}{" "}
+        {title === "timeSpent" && timeSpent && (
+          <span className="ml-1 text-primary">
+            ({formatTimeSpent(timeSpent, locale)})
+          </span>
+        )}
+      </h4>
     </div>
   );
 };

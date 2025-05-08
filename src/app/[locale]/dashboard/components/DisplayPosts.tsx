@@ -116,7 +116,7 @@ const DisplayPosts = ({ userId }: { userId?: string }) => {
 
         <div
           ref={observerRef}
-          className="h-24 w-full my-8"
+          className="w-full h-24 my-8"
           style={{ visibility: hasMore ? "visible" : "hidden" }}
           data-testid="scroll-observer"
         />
@@ -145,7 +145,7 @@ const DisplayPosts = ({ userId }: { userId?: string }) => {
 
       <div
         ref={observerRef}
-        className="h-24 w-full my-8"
+        className="w-full h-24 my-8"
         style={{ visibility: hasMore ? "visible" : "hidden" }}
         data-testid="scroll-observer"
       />

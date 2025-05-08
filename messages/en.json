@@ -75,7 +75,9 @@
     "save": "Save",
     "weOffer": "We Offer",
     "exploreAllServices": "Explore All Services",
-    "day": "Day"
+    "day": "Day",
+    "showLess": "Show Less",
+    "showMore": "Show More"
   },
   "promoBanner": {
     "heading": "Register Now and Get 4 Months of Our Services Free",
@@ -356,7 +358,9 @@
     "startLearning": "Start Learning",
     "viewAllReviews": "View All Reviews",
     "reviews": "Reviews",
-    "free": "Free"
+    "free": "Free",
+    "loginFirst": "You must login first to enroll in this course",
+    "enrollmentFailed": "Enrollment failed, please try again"
   },
   "contact": {
     "contactFormTitle": "Contact Us",
@@ -442,7 +446,8 @@
     "userPost": "{name}'s post",
     "commentFailed": "Comment failed to add",
     "youShouldBuyCourseOrServiceToDoThisAction": "You should buy a course or service to do this action",
-    "something_went_wrong": "Something went wrong"
+    "something_went_wrong": "Something went wrong",
+    "no_posts_found": "No posts found"
   },
   "chat": {
     "chats": "Chats",
@@ -883,6 +888,7 @@
     "score": "Score",
     "quiz": "Quiz",
     "noExamsForThisWeek": "No Exams for This Week",
+    "noExamsForThisMonth": "No Exams for This Month",
     "practice": "Practice",
     "totalPracticeNumber": "Total Practice Number",
     "thisWeekPracticeNumber": "This Week's Practice Number",

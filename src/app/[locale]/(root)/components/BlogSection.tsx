@@ -40,7 +40,7 @@ export const BlogSection2: React.FC = async () => {
         ))}{" "}
       </div>
       <Button
-        className="block mx-auto text-center exploreAllReviews w-80"
+        className="flex mx-auto text-center exploreAllReviews w-80"
         variant={"outline"}
         size={"lg"}
         asChild={true}

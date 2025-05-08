@@ -1,9 +1,9 @@
 "use client";
 import { IPost } from "@/types";
 import UserAvatar from "../UserAvatar";
-import { cn } from "@/lib/utils";
+import { cn, getCommentText } from "@/lib/utils";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { FaRegComment } from "react-icons/fa6";
 import { AiFillDelete } from "react-icons/ai";
 import { useEffect, useState } from "react";
@@ -31,6 +31,7 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 import ReactionComponent from "../ReactionComponent";
+import { emojis } from "@/constants";
 
 interface PostCardProps {
   post: IPost;
@@ -40,6 +41,7 @@ interface PostCardProps {
 const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
   const text = useTranslations("post");
   const [isOpen, setIsOpen] = useState(false);
+  const locale = useLocale();
 
   return (
     <>
@@ -123,7 +125,22 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
             </div>
           )}
         </div>
-        <div className="flex items-center mt-2 justify-evenly sm:mt-4">
+        <div className="flex items-center justify-between pt-2">
+          <div className="flex items-center">
+            {post.reactionTypes && post.reactionTypes.length > 0 && (
+              <>
+                {post.reactionTypes.map((reaction) => (
+                  <span key={reaction}>{emojis[reaction]}</span>
+                ))}
+                <span className="px-2">{post.reactionsCount}</span>
+              </>
+            )}
+          </div>
+          <div className="flex items-center gap-1 text-sm">
+            {getCommentText(post.commentsCount ?? 0, locale)}
+          </div>
+        </div>
+        <div className="flex items-center mt-2 border-t justify-evenly sm:mt-4 ">
           <ReactionComponent post={post} />
           <button
             onClick={() => {
@@ -131,7 +148,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
             }}
             className="flex items-center justify-center w-full gap-2 py-1 text-lg transition-all rounded-md hover:bg-muted"
           >
-            <FaRegComment /> {text("comment")} ({post.commentsCount})
+            <FaRegComment /> {text("comment")}
           </button>
         </div>
       </div>

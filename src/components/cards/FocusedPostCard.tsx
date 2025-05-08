@@ -2,7 +2,7 @@ import { IComment, IPost } from "@/types";
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import UserAvatar from "../UserAvatar";
 import { FaChevronLeft, FaChevronRight, FaRegComment } from "react-icons/fa";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import CommentCard from "./CommentCard";
 import TextWithEmojiBox from "../TextWithEmojiBox";
@@ -14,6 +14,8 @@ import { useAuth } from "../auth-provider";
 import { MdClose } from "react-icons/md";
 import { Button } from "../ui/button";
 import ReactionComponent from "../ReactionComponent";
+import { getCommentText } from "@/lib/utils";
+import { emojis } from "@/constants";
 
 interface FocusedPostCardProps {
   post: IPost;
@@ -105,7 +107,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
       setIsLoading(false);
     }
   };
-
+  const locale = useLocale();
   return (
     <>
       <Dialog
@@ -202,10 +204,30 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
                 />
               </div>
             </div>
-            <div className="flex items-center mt-2 justify-evenly sm:mt-4">
+            <div className="flex items-center justify-between pt-3">
+              <div className="flex items-center px-4">
+                {post.reactionTypes && post.reactionTypes.length > 0 && (
+                  <>
+                    {post.reactionTypes.map((reaction) => (
+                      <span key={reaction}>{emojis[reaction]}</span>
+                    ))}
+                    <span className="px-2">{post.reactionsCount}</span>
+                  </>
+                )}
+              </div>
+              <div className="flex items-center gap-1 text-sm">
+                {getCommentText(post.commentsCount ?? 0, locale)}
+              </div>
+            </div>
+            <div className="flex items-center px-4 py-2 mt-2 border-y justify-evenly sm:mt-4 ">
               <ReactionComponent post={post} />
-              <button className="flex items-center justify-center w-full gap-2 py-1 text-lg transition-all rounded-md hover:bg-muted">
-                <FaRegComment /> {text("comment")} ({comments.length})
+              <button
+                onClick={() => {
+                  setIsOpen(true);
+                }}
+                className="flex items-center justify-center w-full gap-2 py-1 text-lg transition-all rounded-md hover:bg-muted"
+              >
+                <FaRegComment /> {text("comment")}
               </button>
             </div>
             <ul className="px-6 pt-4 mb-8">
