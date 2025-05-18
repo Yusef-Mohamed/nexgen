@@ -115,13 +115,13 @@ const CourseProgress = () => {
           color="#9747FF"
           value={Number(
             Math.min(
-              ((selectedUserObject?.timeSpent?.monthlyTimeSpent || 0) /
+              ((selectedUserObject?.timeSpent?.totalTimeSpent || 0) /
                 (100 * 60 * 60)) *
                 100,
               100
             ).toFixed(2)
           )}
-          timeSpent={selectedUserObject?.timeSpent?.monthlyTimeSpent}
+          timeSpent={selectedUserObject?.timeSpent?.totalTimeSpent}
           isFetching={isFetching}
         />
         <CircleCell

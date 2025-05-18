@@ -68,6 +68,7 @@ const CoursesPage = async ({
         modelExam: string;
       }[];
     };
+    console.log(data);
     const courseRes = await axiosInstance.get("/courses/" + params.courseId);
     const courseData = courseRes.data.data as ICourse;
     const text = await getTranslations("learn");

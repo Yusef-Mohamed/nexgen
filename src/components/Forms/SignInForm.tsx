@@ -7,6 +7,9 @@ import GoogleAuthBtn from "../GoogleAuthBtn";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import CustomForm from "./CustomForm";
 import { useAuth } from "../auth-provider";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 const SignInForm = () => {
   const t = useTranslations("SignIn");
@@ -17,6 +20,13 @@ const SignInForm = () => {
     password: z.string({ message: inputs("thisFieldIsRequired") }),
   });
   const { updateUser } = useAuth();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
+  useEffect(() => {
+    if (redirect) {
+      toast.error(t("pleaseLoginFirstSoYouCanAccessThisPage"));
+    }
+  }, [redirect]);
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const axiosInstance = createClientAxiosInstance();
     const formattedData: {
@@ -34,7 +44,7 @@ const SignInForm = () => {
       router.refresh();
       router.push("/email-verification");
       return;
-    } else router.push("/dashboard");
+    } else router.push(redirect || "/dashboard");
     router.refresh();
   };
 

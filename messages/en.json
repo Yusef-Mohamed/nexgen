@@ -6,6 +6,12 @@
       "description": "We require identity verification to ensure the protection of content rights and user rights, and to make sure that the provided content remains exclusive and dedicated to subscribers only!",
       "button": "Go to ID Verification"
     },
+    "profile": {
+      "title": "Complete Your Profile",
+      "country_required": "Please complete your profile by adding your country information to continue using the platform.",
+      "update_button": "Update Profile",
+      "dismiss": "Dismiss"
+    },
     "banned": {
       "title": "Account Suspended",
       "description": "Your account has been suspended by the administrator. Please contact support for more information about your account status.",
@@ -191,7 +197,8 @@
     "sign_up_with_google": "Sign in with Google",
     "sign_up_with_facebook": "Sign in with Facebook",
     "forgot_password": "Forgot Password?",
-    "reset_password": "Reset Password"
+    "reset_password": "Reset Password",
+    "pleaseLoginFirstSoYouCanAccessThisPage": "Please login first so you can access this page"
   },
   "ForgotPassword": {
     "heading": "Forgot Password",

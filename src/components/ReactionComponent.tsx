@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { useAuth } from "../components/auth-provider";
 import { toast } from "react-toastify";
+import { AiOutlineLike } from "react-icons/ai";
 
 interface ReactionComponentProps {
   post: IPost;
@@ -103,7 +104,11 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
           }
         )}
       >
-        {emojis[reaction ? (reaction as keyof typeof emojis) : "like"]}
+        {reaction ? (
+          emojis[reaction ? (reaction as keyof typeof emojis) : "like"]
+        ) : (
+          <AiOutlineLike />
+        )}
         {text(reaction ? reaction : "like")}
       </button>
     </div>

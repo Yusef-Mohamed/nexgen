@@ -42,7 +42,6 @@ const CourseExams = async ({
     return null;
   }
   const { lessonQuestions } = data.data;
-  console.log(lessonQuestions);
   return (
     <main>
       <section className="py-16">

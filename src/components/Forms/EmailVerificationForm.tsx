@@ -12,6 +12,7 @@ import { Form } from "../ui/form";
 import CustomFormField from "../FormField";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { AxiosError } from "axios";
+import { useAuth } from "../auth-provider";
 const EmailVerificationForm = () => {
   const t = useTranslations("ResetCode");
   const inputs = useTranslations("Forms");
@@ -22,6 +23,7 @@ const EmailVerificationForm = () => {
       message: inputs("otpMustBe6Digits"),
     }),
   });
+  const { setStatus } = useAuth();
   type VerificationFormValue = z.infer<typeof formSchema>;
   const [formError, setFormError] = useState<string | null>(null);
   const form = useForm<VerificationFormValue>({
@@ -35,6 +37,7 @@ const EmailVerificationForm = () => {
       await axiosInstance.post("/auth/verifyEmail", {
         code: data.otp,
       });
+      setStatus(406);
       router.push("/");
       toast.success(inputs("your_email_have_been_verified"));
     } catch (err) {

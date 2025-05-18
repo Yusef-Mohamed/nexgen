@@ -34,6 +34,7 @@ const AuthContext = createContext<{
   }) => void;
   token: string;
   logout: () => void;
+  setStatus: (status: number) => void;
 } | null>(null);
 
 export const useAuth = () => {
@@ -48,6 +49,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
   const [token, setToken] = useState(getCookie("token"));
   const [showIdVerificationModal, setShowIdVerificationModal] = useState(false);
+  const [showCountryAlert, setShowCountryAlert] = useState(false);
+  const [countryAlertDismissed, setCountryAlertDismissed] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("countryAlertDismissed") === "true";
+    }
+    return false;
+  });
   const pathname = usePathname();
   const text = useTranslations("common");
   const router = useRouter();
@@ -125,6 +133,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } else if (userData.idVerification !== "verified") {
       setShowIdVerificationModal(true);
       setStatus(406);
+    } else if (!userData.country && !countryAlertDismissed) {
+      setShowCountryAlert(true);
     }
 
     router.refresh();
@@ -183,13 +193,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!token) {
       if (pathname.includes("dashboard") || pathname.includes("checkout")) {
-        router.push("/");
+        router.push("/sign-in" + "?redirect=" + pathname);
       }
     }
   }, [token, pathname]);
   return (
     <AuthContext.Provider
-      value={{ user, updateUser, token: token || "", logout }}
+      value={{ user, updateUser, token: token || "", logout, setStatus }}
     >
       <AlertDialog
         open={
@@ -209,6 +219,40 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               {text("id_verification.button")}
             </Link>
           </Button>{" "}
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={
+          showCountryAlert &&
+          pathname !== "/dashboard/settings/profile" &&
+          !countryAlertDismissed
+        }
+      >
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{text("profile.title")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {text("profile.country_required")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="flex flex-col gap-4">
+            <Button asChild>
+              <Link href={"/dashboard/settings/profile"}>
+                {text("profile.update_button")}
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setCountryAlertDismissed(true);
+                localStorage.setItem("countryAlertDismissed", "true");
+                setShowCountryAlert(false);
+              }}
+            >
+              {text("profile.dismiss")}
+            </Button>
+          </div>
         </AlertDialogContent>
       </AlertDialog>
       {children}
