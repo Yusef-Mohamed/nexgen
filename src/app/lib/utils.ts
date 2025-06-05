@@ -9,13 +9,32 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const createClientAxiosInstance = () => {
-  return axios.create({
+  const instance = axios.create({
     baseURL: API_URL,
     headers: {
       "Accept-Language": getCookie("NEXT_LOCALE"),
     },
   });
+
+  instance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response?.status === 406) {
+        const pathname = window.location.pathname;
+        const locale = getCookie("NEXT_LOCALE");
+        if (
+          pathname !== `/${locale}/dashboard/settings/identity-verification`
+        ) {
+          window.location.href = `/${locale}/dashboard/settings/identity-verification`;
+        }
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  return instance;
 };
+
 export const getClientCookie = (name: string, isObject?: boolean) => {
   const string = getCookie(name);
   if (string) {

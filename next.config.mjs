@@ -9,6 +9,7 @@ const nextConfig = {
       "api.nexgen-academy.com",
       "pre.nexgen-academy.com",
       "flagcdn.com",
+      "localhost",
     ],
   },
 };

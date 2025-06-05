@@ -46,7 +46,7 @@ const AuthReviewSlider = ({ reviews }: { reviews: IReview[] }) => {
       className="w-full"
     >
       <CarouselContent>
-        {reviews.map((review, index) => (
+        {reviews?.map((review, index) => (
           <CarouselItem
             className="flex flex-col items-center justify-center text-background"
             dir={locale === "ar" ? "rtl" : "ltr"}

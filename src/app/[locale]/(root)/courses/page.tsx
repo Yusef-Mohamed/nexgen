@@ -3,7 +3,6 @@ import { Metadata } from "next";
 
 import { unstable_setRequestLocale } from "next-intl/server";
 import { useTranslations } from "next-intl";
-import LearningPaths from "../components/LearningPaths";
 import PopularCourses from "../components/PopularCourses";
 import Features from "../components/Features";
 import Services from "../components/Services";
@@ -32,7 +31,7 @@ const CoursesPage = ({ params }: { params: { locale: string } }) => {
       </section>
       <Features />
       <PopularCourses viewAll />
-      <LearningPaths viewAll />
+      {/* <LearningPaths viewAll /> */}
       <Services viewAll />
       <FAQ />
     </main>

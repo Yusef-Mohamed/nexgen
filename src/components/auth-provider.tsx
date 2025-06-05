@@ -130,9 +130,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } else if (userData.active === false) {
       router.push("/banned");
       setStatus(405);
-    } else if (userData.idVerification !== "verified") {
-      setShowIdVerificationModal(true);
-      setStatus(406);
     } else if (!userData.country && !countryAlertDismissed) {
       setShowCountryAlert(true);
     }
@@ -238,7 +235,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           </AlertDialogHeader>
           <div className="flex flex-col gap-4">
             <Button asChild>
-              <Link href={"/dashboard/settings/profile"}>
+              <Link href={"/dashboard/settings"}>
                 {text("profile.update_button")}
               </Link>
             </Button>

@@ -217,7 +217,7 @@ const Main = () => {
                 name: "phone",
                 required: true,
                 defValue: user?.phone,
-                disabled: !!user?.phone,
+                disabled: !!user?.phone?.length && user?.phone?.length > 10,
               }}
               form={form}
               loading={isLoading}

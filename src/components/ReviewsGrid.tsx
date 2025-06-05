@@ -17,14 +17,14 @@ const ReviewsGrid = ({
 }) => {
   const text = useTranslations("coursePage");
   const [isShowAll, setIsShowAll] = useState(false);
-  return reviews.length === 0 ? (
+  return reviews?.length === 0 ? (
     <div>
       <h3 className="text-center text-text-2">{text("thereIsNoReview")}</h3>
     </div>
   ) : (
     <div>
       <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3 ">
-        {reviews.slice(0, 6).map((review) => (
+        {reviews?.slice(0, 6).map((review) => (
           <TestimonialCard2
             reviewType="course"
             key={review._id}
@@ -47,7 +47,7 @@ const ReviewsGrid = ({
               <DialogHeader>
                 <DialogTitle>{dialogHeader}</DialogTitle>
               </DialogHeader>
-              {reviews.map((review) => (
+              {reviews?.map((review) => (
                 <TestimonialCard2
                   reviewType="course"
                   key={review._id}

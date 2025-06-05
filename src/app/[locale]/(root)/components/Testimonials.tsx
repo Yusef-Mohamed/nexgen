@@ -63,7 +63,7 @@ const Testimonials: React.FC = () => {
         heading={text("heading")}
         onClick={() => setShowDialog(true)}
       >
-        {reviews.slice(0, 3).map((testimonial, index) => (
+        {reviews?.slice(0, 3).map((testimonial, index) => (
           <TestimonialCard
             reviewType="system"
             key={testimonial._id || index}
@@ -77,7 +77,7 @@ const Testimonials: React.FC = () => {
           <DialogHeader>
             <DialogTitle>{text("heading")}</DialogTitle>
           </DialogHeader>
-          {reviews.map((testimonial, index) => (
+          {reviews?.map((testimonial, index) => (
             <TestimonialCard2
               reviewType="system"
               key={testimonial._id || index}

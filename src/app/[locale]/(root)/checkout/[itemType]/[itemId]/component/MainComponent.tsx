@@ -154,7 +154,6 @@ const MainComponent = ({
         toast.error(text("couponExceeded"));
       }
     } catch (err) {
-      console.log(err);
       const typedError = err as AxiosError<{
         error?: string;
         message?: string;

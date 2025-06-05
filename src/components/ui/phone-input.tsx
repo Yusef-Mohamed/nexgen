@@ -43,14 +43,6 @@ const PhoneInput = <T extends FieldValues>({
     return palestine || countries[0];
   });
 
-  // Initialize form value with country code
-  React.useEffect(() => {
-    form.setValue(
-      input.name,
-      selectedCountry.phoneCode as unknown as PathValue<T, Path<T>>
-    );
-  }, [selectedCountry, form, input.name]);
-
   // Handle phone number changes
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
