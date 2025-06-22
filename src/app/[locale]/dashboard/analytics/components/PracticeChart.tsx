@@ -224,15 +224,6 @@ const Practice: React.FC = () => {
             },
           }
         );
-        const res2 = await axiosInstance.get<AnalyticsResponse>(
-          `/analytics/user-analytic-performance/${selectedUser}?startDate=2021-01-31&endDate=2026-02-27`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log(res2.data);
         setData(res.data);
 
         // Get month days and set them in state

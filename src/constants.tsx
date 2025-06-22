@@ -1,8 +1,8 @@
 import { FaTelegramPlane } from "react-icons/fa";
 import { MdOutlineMailOutline } from "react-icons/md";
-// export const API_URL = "https://api.nexgen-academy.com/api/v1";
+export const API_URL = "https://api.nexgen-academy.com/api/v1";
 // export const API_URL = "https://pre.nexgen-academy.com/api/v1";
-export const API_URL = "http://localhost:8000/api/v1";
+// export const API_URL = "http://localhost:8000/api/v1";
 export const SOCKET_URL = "https://api.nexgen-academy.com";
 
 export const mainLinks = [

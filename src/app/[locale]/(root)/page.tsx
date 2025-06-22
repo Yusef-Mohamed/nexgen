@@ -11,7 +11,7 @@ import FAQ from "./components/FAQ";
 import { Metadata } from "next";
 import { getMetadataLandingPage } from "@/getMetaData";
 import { unstable_setRequestLocale } from "next-intl/server";
-// import LearningPaths from "./components/LearningPaths";
+import LearningPaths from "./components/LearningPaths";
 export function generateMetadata({
   params,
 }: {
@@ -30,7 +30,7 @@ const LandingPage = ({ params }: { params: { locale: string } }) => {
       <Hero />
       <Features />
       <PopularCourses />
-      {/* <LearningPaths /> */}
+      <LearningPaths />
       <WhyChooseUs />
       <Services />
       <PromoBanner />

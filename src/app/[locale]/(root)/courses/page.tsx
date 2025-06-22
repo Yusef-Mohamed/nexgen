@@ -7,6 +7,7 @@ import PopularCourses from "../components/PopularCourses";
 import Features from "../components/Features";
 import Services from "../components/Services";
 import FAQ from "../components/FAQ";
+import LearningPaths from "../components/LearningPaths";
 
 export function generateMetadata({
   params,
@@ -31,7 +32,7 @@ const CoursesPage = ({ params }: { params: { locale: string } }) => {
       </section>
       <Features />
       <PopularCourses viewAll />
-      {/* <LearningPaths viewAll /> */}
+      <LearningPaths viewAll />
       <Services viewAll />
       <FAQ />
     </main>

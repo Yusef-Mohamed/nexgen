@@ -4,13 +4,24 @@ import { getTranslations } from "next-intl/server";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { ICourse } from "@/types";
 import GridSection from "@/components/GridSection";
+
+const getCourses = async (viewAll?: boolean): Promise<ICourse[]> => {
+  try {
+    const axiosInstance = createServerAxiosInstance();
+    const coursesRes = await axiosInstance.get(
+      `/courses?sort=-ratingsQuantity${viewAll ? "&limit=5" : "&limit=3"}`
+    );
+    return coursesRes.data.data as ICourse[];
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    return [];
+  }
+};
+
 const PopularCourses: React.FC<{ viewAll?: boolean }> = async ({ viewAll }) => {
   const text = await getTranslations("popularCourses");
-  const axiosInstance = createServerAxiosInstance();
-  const coursesRes = await axiosInstance.get(
-    `/courses?sort=-ratingsQuantity${viewAll ? "" : "&limit=3"}`
-  );
-  const coursesData = coursesRes.data.data as ICourse[];
+  const coursesData = await getCourses(viewAll);
+
   return (
     <GridSection
       id="courses-section"

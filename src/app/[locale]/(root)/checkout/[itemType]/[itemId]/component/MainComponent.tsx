@@ -221,6 +221,7 @@ const MainComponent = ({
               </button>
             ))}
           </div>
+
           <div className="mt-3 max-lg:hidden w-fit ms-auto min-w-72">
             {selectedMethod && (
               <div>

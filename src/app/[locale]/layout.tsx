@@ -10,6 +10,7 @@ import { FaTelegramPlane } from "react-icons/fa";
 import ToastProvider from "@/components/ToastProvider";
 import dynamic from "next/dynamic";
 import { AuthProvider } from "@/components/auth-provider";
+import { GoogleTagManager } from "@next/third-parties/google";
 const SocketWrapper = dynamic(() => import("@/components/SocketWrapper"), {
   ssr: false,
 });
@@ -106,11 +107,38 @@ export default function RootLayout({
           if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
           n.queue=[];t=b.createElement(e);t.async=!0;
           t.src=v;s=b.getElementsByTagName(e)[0];
-          s.parentNode.insertBefore(t,s)}(window, 
+          s.parentNode.insertBefore(t,s)}(window,
           document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
           fbq('init', '681168971375494');
           fbq('track', 'PageView');
+          `}
+        </Script>
+        <Script id="tiktok-pixel" strategy="afterInteractive">
+          {`
+!function (w, d, t) {
+ w.TiktokAnalyticsObject=t;var 
+ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","
+debug","on","off","once","ready","alias","group","enableCookie","di
+sableCookie","holdConsent","revokeConsent","grantConsent"],ttq.
+setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.p
+rototype.slice.call(arguments,0)))}};for(var 
+i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq
+.instance=function(t){for(
+var 
+e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.
+methods[n]);return e},ttq.load=function(e,n){var 
+r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partne
+r;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+n
+ew 
+Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("s
+cript")
+;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t
+;e=document.getElementsByTagName("script")[0];e.parentNode.i
+nsertBefore(n,e)};
+ ttq.load('D1BHKSJC77U6QA6T05A0');
+ ttq.page();
+}(window, document, 'ttq');
           `}
         </Script>
         <noscript>
@@ -123,6 +151,7 @@ export default function RootLayout({
           />
         </noscript>
       </head>
+      <GoogleTagManager gtmId="GTM-WTJFT9FN" />
       <body className={`${alexandria.className} overflow-x-hidden`}>
         <ThemeProvider
           attribute="class"

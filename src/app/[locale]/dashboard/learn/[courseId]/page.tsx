@@ -61,6 +61,7 @@ const CoursesPage = async ({
     const courseRes = await createServerAxiosInstance().get(
       "/courses/" + params.courseId
     );
+    console.log(sections[0].lessons);
     const courseData = courseRes.data.data as ICourse;
     return (
       <main
