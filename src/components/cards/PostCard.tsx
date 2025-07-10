@@ -45,7 +45,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
 
   return (
     <>
-      <div className="relative w-full p-3 rounded-md cardShadow sm:p-6 bg-background">
+      <div className="relative p-3 w-full rounded-md cardShadow sm:p-6 bg-background">
         <PostAction post={post} />
         {inCommunity ? (
           <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
@@ -73,7 +73,14 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
           </div>
         )}
 
-        <p className="my-2 sm:my-4 max-sm:text-sm">{post.content}</p>
+        <p className="my-2 sm:my-4 max-sm:text-sm">
+          {post.content.split("\n").map((line, index) => (
+            <span key={index}>
+              {line}
+              {index !== post.content.split("\n").length - 1 && <br />}
+            </span>
+          ))}
+        </p>
         <div
           onClick={() => {
             setIsOpen(true);
@@ -125,7 +132,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
             </div>
           )}
         </div>
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex justify-between items-center pt-2">
           <div className="flex items-center">
             {post.reactionTypes && post.reactionTypes.length > 0 && (
               <>
@@ -136,17 +143,17 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
               </>
             )}
           </div>
-          <div className="flex items-center gap-1 text-sm">
+          <div className="flex gap-1 items-center text-sm">
             {getCommentText(post.commentsCount ?? 0, locale)}
           </div>
         </div>
-        <div className="flex items-center mt-2 border-t justify-evenly sm:mt-4 ">
+        <div className="flex justify-evenly items-center mt-2 border-t sm:mt-4">
           <ReactionComponent post={post} />
           <button
             onClick={() => {
               setIsOpen(true);
             }}
-            className="flex items-center justify-center w-full gap-2 py-1 text-lg transition-all rounded-md hover:bg-muted"
+            className="flex gap-2 justify-center items-center py-1 w-full text-lg rounded-md transition-all hover:bg-muted"
           >
             <FaRegComment /> {text("comment")}
           </button>
@@ -164,22 +171,22 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
 export const SkeletonPostCard = () => {
   return (
     <>
-      <div className="w-full rounded-md bg-background animate-pulse">
-        <div className="flex items-center gap-2 px-4 pt-4 my-2 sm:my-4">
-          <div className="w-12 h-12 rounded-full bg-muted-foreground animate-pulse"></div>
+      <div className="w-full rounded-md animate-pulse bg-background">
+        <div className="flex gap-2 items-center px-4 pt-4 my-2 sm:my-4">
+          <div className="w-12 h-12 rounded-full animate-pulse bg-muted-foreground"></div>
           <div className="flex flex-col gap-2">
-            <div className="w-12 h-2 rounded-xl bg-muted-foreground animate-pulse" />
-            <div className="w-16 h-1 rounded-xl bg-muted-foreground animate-pulse" />
+            <div className="w-12 h-2 rounded-xl animate-pulse bg-muted-foreground" />
+            <div className="w-16 h-1 rounded-xl animate-pulse bg-muted-foreground" />
           </div>
         </div>
         <div className="px-5 my-2 sm:my-4">
-          <div className="w-full h-2 mb-2 rounded-xl bg-muted-foreground animate-pulse" />
-          <div className="w-1/2 h-2 rounded-xl bg-muted-foreground animate-pulse" />
+          <div className="mb-2 w-full h-2 rounded-xl animate-pulse bg-muted-foreground" />
+          <div className="w-1/2 h-2 rounded-xl animate-pulse bg-muted-foreground" />
         </div>
-        <div className="w-full aspect-video bg-muted-foreground animate-pulse" />
-        <div className="flex items-center justify-center gap-4 p-2 m-2 border-t">
-          <button className="w-full h-8 py-1 rounded-md bg-muted-foreground animate-pulse"></button>
-          <button className="w-full h-8 py-1 rounded-md bg-muted-foreground animate-pulse"></button>
+        <div className="w-full animate-pulse aspect-video bg-muted-foreground" />
+        <div className="flex gap-4 justify-center items-center p-2 m-2 border-t">
+          <button className="py-1 w-full h-8 rounded-md animate-pulse bg-muted-foreground"></button>
+          <button className="py-1 w-full h-8 rounded-md animate-pulse bg-muted-foreground"></button>
         </div>
       </div>
     </>
@@ -239,7 +246,7 @@ const PostAction: React.FC<{
               onClick={() => {
                 setIsDeleting(true);
               }}
-              className="flex w-full gap-2"
+              className="flex gap-2 w-full"
             >
               <AiFillDelete size={18} />
               {text("delete")}

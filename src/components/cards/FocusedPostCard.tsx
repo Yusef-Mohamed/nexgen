@@ -117,7 +117,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
         }}
       >
         <DialogContent className="sm:max-w-2xl flex flex-col max-h-[95%] overflow-hidden bg-clear-ground p-0 gap-0">
-          <DialogHeader className="sticky top-0 z-10 flex flex-row items-center justify-between p-4 space-y-0 text-center border-b bg-clear-ground">
+          <DialogHeader className="flex sticky top-0 z-10 flex-row justify-between items-center p-4 space-y-0 text-center border-b bg-clear-ground">
             <DialogTitle>
               {text("userPost", {
                 name: post.user?.name,
@@ -132,7 +132,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
               <MdClose />
             </Button>
           </DialogHeader>
-          <div className="flex-grow w-full overflow-auto rounded-md">
+          <div className="overflow-auto flex-grow w-full rounded-md">
             <div className="p-3 sm:p-6">
               {inCommunity ? (
                 <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
@@ -161,12 +161,19 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
                   </div>
                 </div>
               )}
-              <p className="my-2 sm:my-4 max-sm:text-sm">{post.content}</p>
+              <p className="my-2 sm:my-4 max-sm:text-sm">
+                {post.content.split("\n").map((line, index) => (
+                  <span key={index}>
+                    {line}
+                    {index !== post.content.split("\n").length - 1 && <br />}
+                  </span>
+                ))}
+              </p>{" "}
             </div>
             <div className={"relative"}>
               {allImages.length > 1 && (
                 <div
-                  className="absolute right-0 flex justify-between w-full px-4 -translate-y-1/2 top-1/2 "
+                  className="flex absolute right-0 top-1/2 justify-between px-4 w-full -translate-y-1/2"
                   style={{
                     direction: "ltr",
                   }}
@@ -177,7 +184,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
                         prev === 0 ? allImages.length - 1 : prev - 1
                       );
                     }}
-                    className="flex items-center justify-center w-8 h-8 rounded-full bg-fade text-clearbg-clear-ground"
+                    className="flex justify-center items-center w-8 h-8 rounded-full bg-fade text-clearbg-clear-ground"
                   >
                     <FaChevronLeft />
                   </button>
@@ -187,14 +194,14 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
                         prev === allImages.length - 1 ? 0 : prev + 1
                       );
                     }}
-                    className="flex items-center justify-center w-8 h-8 rounded-full bg-fade text-clearbg-clear-ground"
+                    className="flex justify-center items-center w-8 h-8 rounded-full bg-fade text-clearbg-clear-ground"
                   >
                     <FaChevronRight />
                   </button>
                 </div>
               )}
 
-              <div className="flex items-center justify-center bg-muted">
+              <div className="flex justify-center items-center bg-muted">
                 <ImageWithZoom
                   width={600}
                   height={600}
@@ -204,7 +211,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
                 />
               </div>
             </div>
-            <div className="flex items-center justify-between pt-3">
+            <div className="flex justify-between items-center pt-3">
               <div className="flex items-center px-4">
                 {post.reactionTypes && post.reactionTypes.length > 0 && (
                   <>
@@ -215,17 +222,17 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
                   </>
                 )}
               </div>
-              <div className="flex items-center gap-1 text-sm">
+              <div className="flex gap-1 items-center text-sm">
                 {getCommentText(post.commentsCount ?? 0, locale)}
               </div>
             </div>
-            <div className="flex items-center px-4 py-2 mt-2 border-y justify-evenly sm:mt-4 ">
+            <div className="flex justify-evenly items-center px-4 py-2 mt-2 border-y sm:mt-4">
               <ReactionComponent post={post} />
               <button
                 onClick={() => {
                   setIsOpen(true);
                 }}
-                className="flex items-center justify-center w-full gap-2 py-1 text-lg transition-all rounded-md hover:bg-muted"
+                className="flex gap-2 justify-center items-center py-1 w-full text-lg rounded-md transition-all hover:bg-muted"
               >
                 <FaRegComment /> {text("comment")}
               </button>

@@ -74,7 +74,8 @@ const MainComponent = ({
       setIsLoading(true);
       if (
         itemType === "course" &&
-        (thisItem.priceAfterDiscount == 0 || thisItem.price == 0)
+        ((thisItem.priceAfterDiscount && thisItem.priceAfterDiscount == 0) ||
+          thisItem.price == 0)
       ) {
         const axiosInstance = await createClientAxiosInstance();
         await axiosInstance.put(

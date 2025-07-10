@@ -15,11 +15,8 @@ const VideoPlayer = ({ otp, playbackInfo, onVideoEnd }: VideoPlayerProps) => {
     script.src = "https://player.vdocipher.com/v2/api.js";
     script.async = true;
     document.body.appendChild(script);
-
     script.onload = () => {
-      // @ts-expect-error - Vdocipher types are not available
       if (window.VdoPlayer && iframeRef.current) {
-        // @ts-expect-error - Vdocipher types are not available
         const player = window.VdoPlayer.getInstance(iframeRef.current);
 
         // Add event listener for video end

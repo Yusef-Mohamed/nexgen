@@ -54,6 +54,8 @@ export interface ILesson {
   isRequireAnalytic: boolean;
   lessonDuration?: number;
   order: number;
+  passedExam?: boolean;
+  passedAnalyticsTask?: boolean;
 }
 
 export interface IUser {

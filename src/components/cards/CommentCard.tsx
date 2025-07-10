@@ -89,21 +89,21 @@ const CommentCard: React.FC<CommentCardProps> = ({
             />
           )}
         </div>
-        <div className="w-full p-2 rounded-md bg-muted">
-          <h3 className="font-semibold ">{comment.user?.name}</h3>
-          <p>{comment.content}</p>
+        <div className="p-2 w-full rounded-md bg-muted">
+          <h3 className="font-semibold">{comment.user?.name}</h3>
+          <p>{formatContentWithLinks(comment.content)}</p>
           {comment.image && (
             <Image
               src={comment.image}
               alt="comment"
               width={400}
               height={400}
-              className="mt-2 rounded-md max-h-64 "
+              className="mt-2 max-h-64 rounded-md"
             />
           )}
         </div>
       </div>
-      <div className="flex items-center gap-4 mt-1 text-xs ms-14">
+      <div className="flex gap-4 items-center mt-1 text-xs ms-14">
         <button
           onClick={() => {
             setIsReplying((prev) => !prev);
@@ -159,7 +159,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
         </div>
       )}
       {isFetchingReplies && (
-        <div className="flex items-center justify-center mt-2 mb-3">
+        <div className="flex justify-center items-center mt-2 mb-3">
           <FaSpinner className="animate-spin" />
         </div>
       )}
@@ -174,7 +174,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
         </p>
       )}
       {replies?.length !== 0 && (
-        <ul className="ps-10 ">
+        <ul className="ps-10">
           {replies?.map((item, index) => (
             <CommentCard
               key={index}
@@ -384,6 +384,53 @@ const DeleteComment: React.FC<{
       </AlertDialogContent>
     </AlertDialog>
   );
+};
+
+// Utility function to detect and format links
+const formatContentWithLinks = (content: string) => {
+  // Split content by newlines first
+  const lines = content.split("\n");
+
+  return lines.map((line, lineIndex) => {
+    // Split each line by spaces to get words
+    const words = line.split(" ");
+
+    const formattedWords = words.map((word, wordIndex) => {
+      // Check if word is a URL (starts with http://, https://, or www.)
+      const urlRegex = /^(https?:\/\/|www\.)/i;
+      const isUrl = urlRegex.test(word);
+
+      if (isUrl) {
+        // Ensure URL has protocol
+        const url = word.startsWith("www.") ? `https://${word}` : word;
+        return (
+          <a
+            key={`${lineIndex}-${wordIndex}`}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            {word}
+          </a>
+        );
+      }
+
+      return <span key={`${lineIndex}-${wordIndex}`}>{word}</span>;
+    });
+
+    return (
+      <span key={lineIndex}>
+        {formattedWords.map((word, index) => (
+          <span key={index}>
+            {word}
+            {index < formattedWords.length - 1 && " "}
+          </span>
+        ))}
+        {lineIndex < lines.length - 1 && <br />}
+      </span>
+    );
+  });
 };
 
 export default CommentCard;

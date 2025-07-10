@@ -13,6 +13,7 @@ import { useTranslations } from "next-intl";
 import {
   MdMenu,
   MdOutlineAssignment,
+  MdOutlineErrorOutline,
   MdPlayCircleOutline,
 } from "react-icons/md";
 import { PiExam } from "react-icons/pi";
@@ -200,6 +201,9 @@ const Main = ({
                               {lesson.title} - {text("quiz")}
                             </div>{" "}
                             {!lesson.videoUrl && <FaLock />}
+                            {lesson.videoUrl && !lesson.passedExam && (
+                              <MdOutlineErrorOutline className="text-destructive" />
+                            )}
                           </button>
                           {lesson.isRequireAnalytic && (
                             <button
@@ -211,7 +215,7 @@ const Main = ({
                                   lesson.title
                                 );
                               }}
-                              disabled={!lesson.videoUrl}
+                              disabled={!lesson.videoUrl || !lesson.passedExam}
                               className={cn(
                                 "flex disabled:cursor-not-allowed justify-between items-center disabled:opacity-50 w-full gap-2 px-4 py-3 rounded-md hover:bg-primary bg-clear-ground hover:text-clear-ground text-start",
                                 {
@@ -225,7 +229,12 @@ const Main = ({
                                 <MdOutlineAssignment className="w-6 h-6" />
                                 {lesson.title} - {text("practice")}
                               </div>{" "}
-                              {!lesson.videoUrl && <FaLock />}
+                              {!lesson.videoUrl && <FaLock />}{" "}
+                              {lesson.videoUrl &&
+                                lesson.passedExam &&
+                                !lesson.passedAnalyticsTask && (
+                                  <MdOutlineErrorOutline className="text-destructive" />
+                                )}
                             </button>
                           )}
                           {sections.length - 1 === index &&
