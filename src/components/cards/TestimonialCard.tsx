@@ -8,15 +8,8 @@ import { useAuth } from "../auth-provider";
 import { useRouter } from "@/i18n/routing";
 import { createClientAxiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+
 import { Button } from "../ui/button";
-import { BsThreeDots } from "react-icons/bs";
 import { AiFillDelete } from "react-icons/ai";
 import {
   AlertDialog,
@@ -30,6 +23,13 @@ import {
 } from "../ui/alert-dialog";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "../ui/dialog";
 type ReviewType = "system" | "course";
 interface TestimonialsProps {
   reviewType: ReviewType;
@@ -42,16 +42,16 @@ const TestimonialCard: React.FC<TestimonialsProps> = ({
   const locale = useLocale();
   const { ratings, title, user } = review;
   return (
-    <div className="relative flex flex-col items-center gap-4 px-4 py-6 text-center sm:gap-5 sm:px-6 sm:py-8 bg-muted rounded-3xl">
+    <div className="flex relative flex-col gap-4 items-center px-4 py-6 text-center rounded-3xl sm:gap-5 sm:px-6 sm:py-8 bg-muted">
       <ReviewActions reviewType={reviewType} review={review} />
       <UserAvatar
         user={user}
         size="lg"
-        className="w-20 h-20 "
+        className="w-20 h-20"
         innerClassName="bg-background"
       />
       <h4>{user?.name}</h4>
-      <div className="flex items-center gap-2">
+      <div className="flex gap-2 items-center">
         {Array.from({ length: 5 }).map((_, index) => {
           const starFillPercentage = Math.max(
             0,
@@ -83,9 +83,9 @@ export const TestimonialCard2: React.FC<TestimonialsProps> = ({
 }) => {
   const { ratings, title, user } = review;
   return (
-    <div className="relative flex flex-col gap-2 px-4 py-2 border sm:gap-3 sm:px-6 sm:p-4 rounded-xl">
+    <div className="flex relative flex-col gap-2 px-4 py-2 rounded-xl border sm:gap-3 sm:px-6 sm:p-4">
       <ReviewActions reviewType={reviewType} review={review} />
-      <div className="flex items-center gap-2">
+      <div className="flex gap-2 items-center">
         <UserAvatar className="w-12 h-12" user={user} />
         <div className="flex flex-col">
           <h4
@@ -125,7 +125,7 @@ const DisplayReviewsStarts = ({
           Math.min(100, (ratings - index) * 100)
         );
         return (
-          <div key={index} className={cn("relative ", className)}>
+          <div key={index} className={cn("relative", className)}>
             <FaStar className={cn("text-gray-300 p-0.5", className)} />
             <div
               className={cn("absolute top-0 overflow-hidden", {
@@ -219,47 +219,35 @@ const ReviewActions: React.FC<ReviewActionsProps> = ({
   if (thisUser?.role !== "admin" || !isInClient) return null;
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            size={"sm"}
-            variant="outline"
-            className="absolute top-4 left-4"
-          >
-            <BsThreeDots />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel asChild>
-            <button
-              onClick={() => {
-                setIsReplying(true);
-              }}
-              className="flex items-center w-full gap-2 justify-normal"
-            >
-              <FaReply size={18} />
-              {text("reply")}
-            </button>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuLabel asChild>
-            <button
-              onClick={() => {
-                setIsDeleting(true);
-              }}
-              className="flex items-center w-full gap-2 justify-normal"
-            >
-              <AiFillDelete size={18} />
-              {text("delete")}
-            </button>
-          </DropdownMenuLabel>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <AlertDialog open={isReplying}>
-        <AlertDialogContent className="max-h-[80vh] overflow-y-auto">
-          <AlertDialogHeader>
-            <AlertDialogTitle>{text("review_reply")}</AlertDialogTitle>
-          </AlertDialogHeader>
+      <div className="flex absolute top-2 gap-2 end-2">
+        <Button
+          onClick={() => {
+            setIsReplying(true);
+          }}
+          size={"icon"}
+          variant={"outline"}
+          className="flex justify-center items-center"
+        >
+          <FaReply size={18} />
+          <span className="sr-only">{text("reply")}</span>
+        </Button>
+        <Button
+          onClick={() => {
+            setIsDeleting(true);
+          }}
+          size={"icon"}
+          variant={"outline"}
+          className="flex justify-center items-center"
+        >
+          <AiFillDelete size={18} />
+          <span className="sr-only">{text("delete")}</span>
+        </Button>
+      </div>
+      <Dialog open={isReplying} onOpenChange={setIsReplying}>
+        <DialogContent className="max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{text("review_reply")}</DialogTitle>
+          </DialogHeader>
           <form
             className="space-y-5"
             onSubmit={(e) => {
@@ -281,26 +269,27 @@ const ReviewActions: React.FC<ReviewActionsProps> = ({
               {text("submit")}
             </button>
           </form>
-          <AlertDialogFooter>
-            <AlertDialogCancel
+          <DialogFooter>
+            <Button
+              variant="outline"
               disabled={isLoading}
               onClick={() => {
                 setIsReplying(false);
               }}
             >
               {text("cancel")}
-            </AlertDialogCancel>
-            <AlertDialogAction
+            </Button>
+            <Button
               disabled={isLoading}
               onClick={() => {
                 replySubmitButtonRef.current?.click();
               }}
             >
               {text("reply")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <AlertDialog open={isDeleting}>
         <AlertDialogContent>
           <AlertDialogHeader>

@@ -1,6 +1,7 @@
 import { API_URL } from "@/constants";
 import axios from "axios";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 export const getServerCookie = (key: string, isObject?: boolean) => {
   const cookiesStore = cookies();
   const cookie = cookiesStore.get(key)?.value;
@@ -10,10 +11,25 @@ export const getServerCookie = (key: string, isObject?: boolean) => {
   return cookie;
 };
 export const createServerAxiosInstance = () => {
-  return axios.create({
+  const instance = axios.create({
     baseURL: API_URL,
     headers: {
       "Accept-Language": getServerCookie("NEXT_LOCALE"),
     },
   });
+
+  instance.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      if (error.response?.status === 406) {
+        const locale = getServerCookie("NEXT_LOCALE") || "en";
+        redirect(`/${locale}/dashboard/settings/identity-verification`);
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  return instance;
 };

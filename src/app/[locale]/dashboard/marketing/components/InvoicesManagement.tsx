@@ -109,7 +109,7 @@ const LoadingState = () => (
       {Array.from({ length: 4 }).map((_, i) => (
         <Card key={i}>
           <CardContent className="p-4">
-            <Skeleton className="w-24 h-4 mb-2" />
+            <Skeleton className="mb-2 w-24 h-4" />
             <Skeleton className="w-32 h-8" />
           </CardContent>
         </Card>
@@ -117,7 +117,7 @@ const LoadingState = () => (
     </div>
     <Card>
       <CardContent className="p-4">
-        <Skeleton className="w-48 h-8 mb-4" />
+        <Skeleton className="mb-4 w-48 h-8" />
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className="w-full h-12" />
@@ -238,7 +238,7 @@ const BalanceCard = ({
 
   return (
     <Card>
-      <CardContent className="flex flex-col items-center justify-center h-full p-4">
+      <CardContent className="flex flex-col justify-center items-center p-4 h-full">
         <div className="relative">
           <Image
             src={`/images/card_light_${locale === "ar" ? "en" : "ar"}.png`}
@@ -256,7 +256,7 @@ const BalanceCard = ({
             height={500}
             className={cn("w-full rounded-md aspect-[340/176] dark:hidden")}
           />
-          <div className="absolute top-0 right-0 flex flex-col items-start justify-center w-full h-full px-4 mt-2">
+          <div className="flex absolute top-0 right-0 flex-col justify-center items-start px-4 mt-2 w-full h-full">
             <p className="text-sm text-gray-200 dark:text-gray-700">
               {t("stats.currentBalance")}
             </p>
@@ -268,7 +268,7 @@ const BalanceCard = ({
 
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button className="w-full mt-4" variant="outline">
+            <Button className="mt-4 w-full" variant="outline">
               {t("stats.withdraw")}
             </Button>
           </DialogTrigger>
@@ -325,8 +325,8 @@ const MarketingTabs = ({
       <TableWithModal
         header={
           <TabsList>
-            <TabsTrigger value="commission">{t("tabs.sales")}</TabsTrigger>
-            <TabsTrigger value="sales">{t("tabs.commission")}</TabsTrigger>
+            <TabsTrigger value="sales">{t("tabs.sales")}</TabsTrigger>
+            <TabsTrigger value="commission">{t("tabs.commission")}</TabsTrigger>
           </TabsList>
         }
         modalContent={
@@ -393,9 +393,6 @@ const InvoicesTabs = ({
             <TabsTrigger value="regular">
               {t("invoices.tabs.regular")}
             </TabsTrigger>
-            <TabsTrigger value="wallet">
-              {t("invoices.tabs.wallet")}
-            </TabsTrigger>
             <TabsTrigger value="commission">
               {t("invoices.tabs.commission")}
             </TabsTrigger>
@@ -410,13 +407,7 @@ const InvoicesTabs = ({
               formatDate={formatDate}
               all
             />
-            <WalletInvoicesTab
-              marketLog={marketLog}
-              t={t}
-              formatDate={formatDate}
-              getStatusColor={getStatusColor}
-              all
-            />
+
             <CommissionInvoicesTab
               marketLog={marketLog}
               t={t}
@@ -435,12 +426,7 @@ const InvoicesTabs = ({
           getStatusColor={getStatusColor}
           formatDate={formatDate}
         />
-        <WalletInvoicesTab
-          marketLog={marketLog}
-          t={t}
-          formatDate={formatDate}
-          getStatusColor={getStatusColor}
-        />
+
         <CommissionInvoicesTab
           marketLog={marketLog}
           t={t}
@@ -572,49 +558,6 @@ const RegularInvoicesTab = ({
   </TabsContent>
 );
 
-const WalletInvoicesTab = ({
-  marketLog,
-  t,
-  formatDate,
-  getStatusColor,
-  all,
-}: {
-  marketLog: IMarketLog | null;
-  t: (key: string) => string;
-  formatDate: (dateString: string) => string;
-  getStatusColor: (status: string) => string;
-  all?: boolean;
-}) => (
-  <TabsContent value="wallet">
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>{t("invoices.period")}</TableHead>
-          <TableHead>{t("invoices.profit")}</TableHead>
-          <TableHead>{t("invoices.status")}</TableHead>
-          <TableHead>{t("invoices.date")}</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {marketLog?.walletInvoices
-          ?.slice(0, all ? marketLog.walletInvoices.length : 5)
-          .map((invoice) => (
-            <TableRow key={invoice._id}>
-              <TableCell>{invoice.desc}</TableCell>
-              <TableCell>${invoice.profits.toLocaleString()}</TableCell>
-              <TableCell>
-                <Badge className={getStatusColor(invoice.status)}>
-                  {t(invoice.status)}
-                </Badge>
-              </TableCell>
-              <TableCell>{formatDate(invoice.createdAt)}</TableCell>
-            </TableRow>
-          ))}
-      </TableBody>
-    </Table>
-  </TabsContent>
-);
-
 const CommissionInvoicesTab = ({
   marketLog,
   t,
@@ -675,7 +618,7 @@ const TableWithModal = ({
 }) => {
   return (
     <>
-      <CardHeader className="flex flex-row items-center justify-between">
+      <CardHeader className="flex flex-row justify-between items-center">
         <div className="flex-1">{header}</div>
         {!hideModal && (
           <Dialog>

@@ -22,19 +22,26 @@ const LessonBody = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await createClientAxiosInstance().get(
-        `/lessons/${lessonId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      try {
+        const response = await createClientAxiosInstance().get(
+          `/lessons/${lessonId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const videoData = response.data?.data?.videoData;
+        if (videoData) {
+          setData(videoData);
         }
-      );
-      const data = response.data.data.videoData;
-
-      setData(data);
+      } catch (error) {
+        console.error("Failed to fetch lesson data:", error);
+      }
     };
-    fetchData();
+    if (token && lessonId) {
+      fetchData();
+    }
   }, [token, setData, lessonId]);
 
   const handleVideoEnd = () => {
@@ -57,23 +64,24 @@ const LessonBody = ({
           onVideoEnd={handleVideoEnd}
         />
       ) : (
-        <div className="w-full bg-input animate-pulse aspect-video" />
+        <div className="w-full animate-pulse bg-input aspect-video" />
       )}
       <div className="my-6">
         <h2 className="font-semibold">{lesson?.title}</h2>
         <p className="mt-4 mb-4 text-lg text-text-3">{lesson?.description}</p>
-        {lesson?.attachments?.map((attachment, ind) => (
-          <Button
-            key={ind}
-            className="block px-0 w-fit"
-            asChild
-            variant={"link"}
-          >
-            <a href={attachment} target="_blank" rel="noreferrer">
-              {text("attachment")} {ind + 1}
-            </a>
-          </Button>
-        ))}
+        {Array.isArray(lesson?.attachments) &&
+          lesson?.attachments?.map((attachment, ind) => (
+            <Button
+              key={ind}
+              className="block px-0 w-fit"
+              asChild
+              variant={"link"}
+            >
+              <a href={attachment} target="_blank" rel="noreferrer">
+                {text("attachment")} {ind + 1}
+              </a>
+            </Button>
+          ))}
       </div>
     </div>
   );

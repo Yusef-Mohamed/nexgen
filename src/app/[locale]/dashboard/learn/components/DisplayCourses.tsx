@@ -38,7 +38,6 @@ const DisplayCourses = () => {
       );
     }
   }, [show, courses]);
-  console.log(toShowCourses);
   return (
     <section className="space-y-4">
       <div className="flex items-center overflow-hidden border rounded-full w-fit">

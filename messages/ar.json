@@ -768,6 +768,7 @@
     "completedPercentage": "نسبة الانتهاء"
   },
   "salesManagement": {
+    "selectItemToViewAnalytics": "اختر عنصر لعرض التحليلات",
     "totalResales": "إجمالي إعادة البيع",
     "selectedPeriodOrders": "الطلبات في الفترة المحددة",
     "coupons": "الكوبونات",

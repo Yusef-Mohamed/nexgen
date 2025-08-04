@@ -36,14 +36,19 @@ const Header = () => {
   const text = useTranslations("header");
   const { token } = useAuth();
   return (
-    <header className="sticky top-0 z-50 w-full py-1 shadow-md md:py-2 bg-clear-ground">
-      <div className="container flex items-center justify-between gap-10">
-        <nav className="flex items-center gap-10">
-          <div className="flex items-center gap-4">
+    <header className="sticky top-0 z-50 py-1 w-full shadow-md md:py-2 bg-clear-ground">
+      <div className="container flex gap-10 justify-between items-center">
+        <nav className="flex gap-10 items-center">
+          <div className="flex gap-4 items-center">
             <MobileHeader headerLinks={headerLinks} />
             <Logo />
+            {token && (
+              <Button size={"sm"} asChild>
+                <Link href="/dashboard">{text("dashboard")}</Link>
+              </Button>
+            )}
           </div>
-          <ul className="items-center hidden gap-3 whitespace-nowrap xl:flex ">
+          <ul className="hidden gap-3 items-center whitespace-nowrap xl:flex">
             {headerLinks.map((link) => (
               <NavItem
                 className="gap-2.5 self-stretch px-2.5 py-2 my-auto hover:text-primary transition-colors"
@@ -55,7 +60,7 @@ const Header = () => {
             ))}
           </ul>
         </nav>
-        <div className="items-center hidden gap-2 lg:gap-3 md:flex ">
+        <div className="hidden gap-2 items-center lg:gap-3 md:flex">
           {token && (
             <Button size={"sm"} asChild>
               <Link href="/dashboard">{text("dashboard")}</Link>

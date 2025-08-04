@@ -1,3 +1,5 @@
+"use client";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
@@ -18,25 +20,38 @@ const SuccessStories: React.FC = () => {
           {text("description")}
         </p>
 
-        <Button size={"lg"} className="block w-full mx-auto">
+        <Button size={"lg"} className="block mx-auto w-full">
           <Link href={"/sign-up"}>{text("startYourJourney")}</Link>
         </Button>
       </div>
-      <div className="  aspect-[75/45] relative overflow-hidden rounded-3xl">
-        <Image
-          loading="lazy"
-          src="/images/success.jpeg"
-          alt="Success story background"
-          width={825}
-          height={500}
-          className="aspect-[75/45] w-full object-cover"
-        />
-        <div className="absolute top-0 right-0 flex items-center justify-center w-full h-full bg-foreground/30">
-          <div className="flex items-center justify-center w-16 h-16 p-3 rounded-full sm:w-20 sm:h-20 bg-background/20">
-            <AiOutlinePlayCircle className="w-full h-full text-background" />
+      <Dialog>
+        <DialogTrigger asChild>
+          <div className="  aspect-[75/45] relative overflow-hidden rounded-3xl cursor-pointer">
+            <Image
+              loading="lazy"
+              src="/images/success.jpeg"
+              alt="Success story background"
+              width={825}
+              height={500}
+              className="aspect-[75/45] w-full object-cover"
+            />
+            <div className="flex absolute top-0 right-0 justify-center items-center w-full h-full bg-foreground/30">
+              <div className="flex justify-center items-center p-3 w-16 h-16 rounded-full sm:w-20 sm:h-20 bg-background/20">
+                <AiOutlinePlayCircle className="w-full h-full text-background" />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </DialogTrigger>
+        <DialogContent className="p-0 max-w-4xl bg-transparent border-none">
+          <iframe
+            className="w-full aspect-video"
+            src="https://www.youtube.com/embed/PrpYc-IaUlk?si=z0s9FHtgJIEuPPTG"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          ></iframe>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

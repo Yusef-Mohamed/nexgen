@@ -22,7 +22,6 @@ const getThisItem = async (
       return res.data.data;
     } else if (itemType === "learning-path") {
       const res = await axiosInstance.get(`/coursePackages/${itemId}`);
-      console.log(res);
       return res.data.data;
     } else if (itemType === "service") {
       const res = await axiosInstance.get(`/packages/${itemId}`);

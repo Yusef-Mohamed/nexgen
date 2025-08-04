@@ -37,17 +37,16 @@ const CreatePractice = ({
         setIsLoading(false);
         return;
       }
-
-      const formData = new FormData();
-      if (media.length) {
-        media.forEach((file) => {
-          formData.append("media", file);
-        });
-      } else {
+      if (media.length === 0) {
         toast.error(text("pleaseSelectImage"));
         setIsLoading(false);
         return;
       }
+
+      const formData = new FormData();
+      media.forEach((file) => {
+        formData.append("media", file);
+      });
       if (lessonId) formData.append("lesson", lessonId);
       if (courseId) formData.append("course", courseId);
       formData.append("content", content);
@@ -106,12 +105,12 @@ const CreatePractice = ({
   };
   return (
     <div className="px-3 py-3 rounded-md bg-background">
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex gap-2 justify-between items-start">
         <UserAvatar user={user || undefined} size="md" />
         <TextWithEmojiBox
           text={content}
           setText={setContent}
-          className="w-full p-0 m-0 border-none"
+          className="p-0 m-0 w-full border-none"
           isLoading={isLoading}
           inputRef={inputRef}
         />
@@ -119,9 +118,9 @@ const CreatePractice = ({
 
       <div
         className={cn(
-          `relative mx-auto h-[220px] mt-4 w-full aspect-video rounded-3xl overflow-hidden`,
+          `overflow-hidden relative mx-auto mt-4 w-full rounded-3xl h-[220px] aspect-video`,
           {
-            "cursor-not-allowed opacity-60": isLoading,
+            "opacity-60 cursor-not-allowed": isLoading,
             "cursor-pointer": !isLoading,
             "border-2 border-dashed border-primary bg-primary/10": isDragging,
             "border-2 border-dashed": !isDragging,
@@ -132,8 +131,8 @@ const CreatePractice = ({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-input/20">
-          <FaCloudArrowUp className="w-12 h-12 mb-2 text-primary" />
+        <div className="flex absolute inset-0 flex-col justify-center items-center bg-input/20">
+          <FaCloudArrowUp className="mb-2 w-12 h-12 text-primary" />
           <p className="text-sm">{text("clickOrDragImageToUpload")}</p>
           <p className="mt-1 text-xs text-text-3">
             {text("acceptedFormats")} <b>.png, .jpg, .jpeg</b>
@@ -157,13 +156,13 @@ const CreatePractice = ({
           <li
             key={media.name}
             className={cn(
-              "flex items-center justify-between px-4 py-3 mt-2 border rounded-sm",
+              "flex justify-between items-center px-4 py-3 mt-2 rounded-sm border",
               {
                 "opacity-50": isLoading,
               }
             )}
           >
-            <div className="flex items-center gap-4">
+            <div className="flex gap-4 items-center">
               {media.type.includes("image") && <FaImage className="w-10 h-6" />}
               {media.type.includes("pdf") && (
                 <svg

@@ -766,6 +766,7 @@
     "completedPercentage": "Completion Percentage"
   },
   "salesManagement": {
+    "selectItemToViewAnalytics": "Select item to view analytics",
     "totalResales": "Total Resales",
     "selectedPeriodOrders": "Orders in Selected Period",
     "coupons": "Coupons",
