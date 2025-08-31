@@ -6,6 +6,7 @@ import { useMyCoursesStore } from "@/stores/MyCoursesStore";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo } from "react";
 import FollowBtn from "../community/profile/[userId]/components/FollowBtn";
+import { IUser } from "@/types";
 
 const CommunitySidebar = () => {
   const text = useTranslations("dashboard");
@@ -15,7 +16,9 @@ const CommunitySidebar = () => {
     if (token && user) getCourses(token, user._id);
   }, [token, user, getCourses]);
   const users = useMemo(() => {
-    const arrayOfArrayOfUsers = courses.map((course) => course.users);
+    const arrayOfArrayOfUsers = courses.map(
+      (course) => (course as unknown as { users: IUser[] })?.users
+    );
     const allUsers = arrayOfArrayOfUsers.flat();
 
     // Use a Set to filter out duplicate users based on _id

@@ -16,7 +16,7 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
-import { ISection, ILesson } from "@/types";
+import { ISection } from "@/types";
 import LessonItem from "./LessonItem";
 
 interface SectionItemProps {

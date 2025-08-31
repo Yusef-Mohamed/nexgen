@@ -57,6 +57,9 @@ export interface ICourse {
     ar: string;
     en: string;
   }[];
+  totalProgress: number;
+  userScore: IUserScore;
+  courseProgress: ICourseProgress;
 }
 export interface ILesson {
   course: ICourse;
