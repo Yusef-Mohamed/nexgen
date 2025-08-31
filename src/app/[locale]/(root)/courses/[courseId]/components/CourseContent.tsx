@@ -40,7 +40,6 @@ const FAQ: React.FC = () => {
       lessons: ILesson[];
     }[]
   >([]);
-  console.log(sections);
   const [loading, setLoading] = useState(true);
   const { courseId } = useParams();
   const locale = useLocale();

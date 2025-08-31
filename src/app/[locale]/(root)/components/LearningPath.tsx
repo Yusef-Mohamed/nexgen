@@ -1,100 +1,165 @@
+"use client";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@/i18n/routing";
 import { ICoursePackage } from "@/types";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import React from "react";
-import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
+import { FaRegClock } from "react-icons/fa";
+import Image from "next/image";
+import { LevelsIcons } from "@/components/icons";
+import { cn } from "@/lib/utils";
 
-const LearningPath: React.FC<ICoursePackage> = ({
+const LearningPath: React.FC<ICoursePackage & { className?: string }> = ({
   title,
-  description,
   courses,
   price,
   priceAfterDiscount,
   _id,
   type,
+  className,
+  image,
+  category,
 }) => {
-  const levels = [];
-  if (type === "beginnerToIntermediate") {
-    levels.push("beginner", "intermediate");
-  } else if (type === "intermediateToAdvanced") {
-    levels.push("intermediate", "advanced");
-  } else if (type === "beginnerToAdvanced") {
-    levels.push("beginner", "advanced");
-  }
-
-  const locale = useLocale();
   const text = useTranslations("learningPaths");
+  const popularText = useTranslations("popularCourses");
+
+  // Get difficulty level based on type
+  const getDifficultyLevel = (type: string) => {
+    switch (type?.toLowerCase()) {
+      case "beginnerToIntermediate":
+        return popularText("beginnerToIntermediate");
+      case "intermediateToAdvanced":
+        return popularText("intermediateToAdvanced");
+      case "beginnerToAdvanced":
+        return popularText("beginnerToAdvanced");
+      default:
+        return popularText("beginnerToIntermediate");
+    }
+  };
+
+  // Calculate total duration from all courses
+  const totalDuration = courses.reduce(
+    (total, course) => total + (course.courseDuration || 0),
+    0
+  );
+
+  // Use first course image or default image
+  const imageUrl = image || "/images/hero.png";
+
+  const isFree =
+    (priceAfterDiscount && priceAfterDiscount === "0") || price === "0";
+  console.log(courses);
   return (
     <div
-      className={
-        "flex flex-col cardShadow justify-between self-stretch sm:p-8 p-6 bg-background rounded-2xl border-4 border-solid border-primary/10 hover:border-primary/50 transition-colors shadow-[2px_8px_40px] shadow-primary/10 "
-      }
+      className={cn(
+        "flex flex-col w-full bg-white rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
+        className
+      )}
     >
-      <div>
-        <h3 className="h2-5">{title}</h3>
-        <div className="mt-4 sm:mt-6">
-          {levels.length ? (
-            <div
-              style={{
-                fontWeight: 500,
-              }}
-              className="flex items-center gap-2 sm:gap-4 text-text-1 h4 whitespace-nowrap"
-            >
-              {levels.map((level, index) => (
-                <React.Fragment key={index}>
-                  <div className="self-stretch my-auto">{text(level)}</div>
-                  {index < levels.length - 1 && (
-                    <div>
-                      {locale === "ar" ? (
-                        <FaArrowLeftLong />
-                      ) : (
-                        <FaArrowRightLong />
-                      )}
-                    </div>
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-          ) : null}
-          <p className={`sm:mt-4 text-text-2 `}>{description}</p>
-          <div className="mt-4">
-            <h4>{text("coursesCount", { count: courses.length })}</h4>
-            <ul className="flex flex-col sm:mt-3 mt-1.5">
-              {courses.map((course, index) => (
-                <li key={index}>
-                  <Link
-                    className="flex sm:gap-3 gap-1.5 items-center group sm:mt-2 mt-1"
-                    href={`/courses/${course._id}`}
-                  >
-                    <div className="text-primary group-hover:underline">
-                      {index + 1} - {course.title}
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>{" "}
-          <div className="flex items-end gap-1 mt-4 font-medium sm:mt-6 whitespace-nowrap">
-            {priceAfterDiscount ? (
-              <>
-                {" "}
-                <div className="h3">${priceAfterDiscount}</div>
-                <del className="h4 text-text-3">${price}</del>
-              </>
-            ) : (
-              <div className="h3">${price}</div>
-            )}
+      <Image
+        src={imageUrl}
+        alt={title}
+        width={430}
+        height={300}
+        className="object-cover w-full rounded-2xl courseImage bg-muted"
+      />
+
+      <div className="flex-1 md:space-y-4 space-y-2.5 sm:space-y-3 my-5">
+        <div className="flex flex-col space-y-1 sm:space-y-1.5">
+          {/* Difficulty Level */}
+          <div className="flex items-center text-text-2 gap-2">
+            <LevelsIcons />
+            <span className="h5 font-medium">{getDifficultyLevel(type)}</span>
           </div>
+
+          {/* Category */}
+          <div className="text-primary h5 capitalize underline">
+            {category?.title || type}
+          </div>
+
+          {/* Title */}
+          <h3 className="h3 font-bold">{title}</h3>
+
+          {/* Course Count and Duration */}
+          <p className="flex items-center gap-2 font-medium text-text-3">
+            {courses.length}{" "}
+            {text("coursesCount", { count: courses.length }).split(" ")[1]} •
+            <FaRegClock /> {totalDuration} {popularText("hours")}
+          </p>
+        </div>
+
+        {/* Pricing */}
+        <div className="flex items-center gap-2">
+          <span className="h3 font-bold">
+            {!isFree && "$"}
+            {isFree ? popularText("free") : priceAfterDiscount || price}
+          </span>
+          {priceAfterDiscount && priceAfterDiscount !== price && !isFree && (
+            <span className="text-text-3 line-through">${price}</span>
+          )}
         </div>
       </div>
-      <div>
-        <Button asChild size="lg" className="w-full mt-4 sm:mt-6 ">
-          <Link href={`/checkout/learning-path/${_id}`}>
-            {text("showDetails")}
-          </Link>
-        </Button>
+
+      {/* Call to Action Button */}
+      <Button size="lg" className="w-full" asChild>
+        <Link href={`/checkout/learning-path/${_id}`}>
+          {text("showDetails")}
+        </Link>
+      </Button>
+    </div>
+  );
+};
+
+export const LearningPathSkeleton: React.FC<{ className?: string }> = ({
+  className,
+}) => {
+  return (
+    <div
+      className={cn(
+        "flex flex-col w-full bg-white rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
+        className
+      )}
+    >
+      {/* Image skeleton */}
+      <div className="relative">
+        <Skeleton className="w-full courseImage rounded-2xl bg-muted" />
+        {/* New tag skeleton */}
+        <div className="absolute top-3 left-3">
+          <Skeleton className="w-16 h-6 rounded-lg" />
+        </div>
       </div>
+
+      <div className="flex-1 md:space-y-4 space-y-2.5 sm:space-y-3 my-5">
+        <div className="flex flex-col space-y-1 sm:space-y-1.5">
+          {/* Difficulty level skeleton */}
+          <div className="flex items-center gap-2">
+            <Skeleton className="w-4 h-4 rounded" />
+            <Skeleton className="h-4 w-20" />
+          </div>
+
+          {/* Category skeleton */}
+          <Skeleton className="h-5 w-24" />
+
+          {/* Title skeleton */}
+          <Skeleton className="h-6 w-full" />
+
+          {/* Duration skeleton */}
+          <div className="flex items-center gap-2">
+            <Skeleton className="w-4 h-4 rounded" />
+            <Skeleton className="h-4 w-16" />
+          </div>
+        </div>
+
+        {/* Pricing skeleton */}
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-6 w-16" />
+          <Skeleton className="h-4 w-12" />
+        </div>
+      </div>
+
+      {/* Button skeleton */}
+      <Skeleton className="w-full h-12 rounded-lg" />
     </div>
   );
 };

@@ -7,40 +7,56 @@ export interface ICategory {
   updatedAt: string;
 }
 export interface ICourse {
-  title: string;
-  description: string;
-  courseDuration: number;
-  image: string;
-  price: number;
-  priceAfterDiscount?: number;
-  category: ICategory;
-  accessibleCourses?: ICourse[];
-  coursePercentage: number;
-  highlights: string[];
+  ratingsAverage: number;
   colors: {
     bgColor: string;
     bgDarkMode: string;
     fontColor: string;
     fontDarkMode: string;
   };
-  reviews: IReview[];
-  ratingsQuantity: number;
-  ratingsAverage: number;
-  progressPercentage?: number;
-  totalProgress?: number;
-  userScore?: IUserScore;
-  courseProgress?: ICourseProgress;
+  title: string;
+  description: string;
   _id: string;
-  createdAt: string;
-  instructor: IUser;
-  updatedAt: string;
-  users: {
-    email: string;
+  category: {
+    title: string;
     _id: string;
-    profileImg: string;
+  };
+  instructor: {
+    _id: string;
     name: string;
+    email: string;
+    profileImg: string;
+  };
+  slug: string;
+  rating: number;
+  type: string;
+  highlights: string[];
+  image: string;
+  price: number;
+  priceAfterDiscount: number;
+  coursePercentage: number;
+  courseDuration: number;
+  ratingsQuantity: number;
+  needAccessibleCourse: boolean;
+  accessibleCourses: ICourse[];
+  status: "inActive" | "active";
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  reviews: [];
+  id: string;
+  translationTitle: {
+    en: string;
+    ar: string;
+  };
+  translationDescription: {
+    ar: string;
+    en: string;
+  };
+  translationHighlights: {
+    ar: string;
+    en: string;
   }[];
-  type: "beginner" | "intermediate" | "advanced";
 }
 export interface ILesson {
   course: ICourse;
@@ -73,6 +89,7 @@ export interface IUser {
   authToReview: boolean;
   startMarketing: boolean;
   emailVerified: boolean;
+  isInstructor?: boolean;
   idVerification: "pending" | "rejected" | "verified";
   note?: string;
   idDocuments: string[];
@@ -155,6 +172,8 @@ export interface ICoursePackage {
   _id: string;
   createdAt: string;
   updatedAt: string;
+  category: ICategory;
+  image: string;
 }
 export interface IPost {
   content: string;
@@ -401,10 +420,18 @@ export interface IProgress {
 }
 export interface ISection {
   title: string;
+  section: string;
   _id: string;
+  sectionId: string;
   course: ICourse;
   createdAt: string;
   updatedAt: string;
+  order: number;
+  status: "active" | "inActive";
+  translationTitle?: {
+    ar: string;
+    en: string;
+  };
   lessons?: ILesson[];
 }
 export interface ICourseProgress {

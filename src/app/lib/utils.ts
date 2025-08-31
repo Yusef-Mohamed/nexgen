@@ -45,3 +45,43 @@ export const getClientCookie = (name: string, isObject?: boolean) => {
   }
   return null;
 };
+
+export const axiosInstance = axios.create({
+  baseURL: API_URL,
+});
+
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const language = getCookie("NEXT_LOCALE") || "en";
+    const token = getCookie("token");
+    config.headers["Accept-Language"] = language;
+    if (token && !config.headers["Authorization"]) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error: unknown) => {
+    return Promise.reject(error);
+  }
+);
+
+// // Response interceptor to handle errors
+// axiosInstance.interceptors.response.use(
+//   (response: AxiosResponse) => response,
+//   (error: unknown) => {
+//     if (axios.isAxiosError(error) && error.response?.status === 401) {
+//       // Handle unauthorized access
+//       localStorage.setItem("error", JSON.stringify(error));
+//       const language = Cookies.get("NEXT_LOCALE") || "en";
+//       const pathName = window.location.pathname;
+//       const pathNameWithoutLocale = pathName.replace(`/${language}`, "");
+//       sessionStorage.setItem("redirect", pathNameWithoutLocale);
+//       sessionStorage.setItem("lastError", JSON.stringify(error));
+//       window.location.href = `/${language}/sign-in`;
+//       Cookies.remove("token");
+//       Cookies.remove("user");
+//     }
+//     return Promise.reject(error);
+//   }
+// );

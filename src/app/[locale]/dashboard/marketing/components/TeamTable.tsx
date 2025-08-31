@@ -116,8 +116,6 @@ const TeamTable = ({ data }: { data: TeamData }) => {
     selectedItem,
   ]);
 
-  console.log(filteredUsers);
-
   const handleExportToExcel = () => {
     const exportData = filteredUsers.map((user) => ({
       Name: user.name,

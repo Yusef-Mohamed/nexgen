@@ -37,7 +37,6 @@ const CourseProgress = () => {
       getCourseScore(selectedCourse);
     }
   }, [selectedCourse, selectedUser]);
-  console.log(selectedUserObject);
   return (
     <div>
       {courseProgress.certificate.isTake && (

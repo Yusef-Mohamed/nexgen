@@ -12,6 +12,7 @@ const LearningPaths: React.FC<{ viewAll?: boolean }> = async ({ viewAll }) => {
     `/coursePackages${viewAll ? "" : "?limit=3"}`
   );
   const coursePackages = coursePackagesRes.data.data as ICoursePackage[];
+  console.log(coursePackagesRes);
   return (
     <GridSection
       id="learning-paths-section"

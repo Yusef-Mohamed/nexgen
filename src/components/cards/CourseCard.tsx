@@ -1,59 +1,107 @@
+"use client";
 import { ICourse } from "@/types";
-import Image from "next/image";
 import React from "react";
 import { Button } from "../ui/button";
-import { FaStar } from "react-icons/fa";
+import { Skeleton } from "../ui/skeleton";
+import { FaStar, FaRegClock } from "react-icons/fa";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
+import Image from "next/image";
+import { LevelsIcons } from "../icons";
+import StarRating from "../StarRating";
+import { cn } from "@/lib/utils";
 
-const CourseCard: React.FC<ICourse> = ({
-  image,
+const CourseCard: React.FC<ICourse & { className?: string }> = ({
   title,
-  ratingsAverage,
   ratingsQuantity,
   price,
   priceAfterDiscount,
   _id,
   type,
+  courseDuration,
+  category,
+  image,
+  ratingsAverage,
+  className,
 }) => {
   const text = useTranslations("popularCourses");
+
+  // Get difficulty level based on type
+  const getDifficultyLevel = (type: string) => {
+    switch (type?.toLowerCase()) {
+      case "beginner":
+        return text("beginner");
+      case "intermediate":
+        return text("intermediate");
+      case "advanced":
+        return text("advanced");
+      default:
+        return text("beginner");
+    }
+  };
+  const isFree =
+    (priceAfterDiscount && priceAfterDiscount === 0) || price === 0;
   return (
-    <div className="flex flex-col w-full p-4 border bg-clear-ground cardShadow sm:p-6 rounded-2xl">
+    <div
+      className={cn(
+        "flex flex-col w-full bg-white rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
+        className
+      )}
+    >
       <Image
-        loading="lazy"
         src={image}
         alt={title}
-        width={600}
-        height={600}
-        className="object-cover w-full aspect-[1656/931] rounded-xl"
+        width={430}
+        height={300}
+        className="object-cover w-full rounded-2xl courseImage bg-muted"
       />
-      <div className="w-full my-4 sm:my-5">
-        {type && (
-          <h4 className="mb-2 font-semibold text-text-3">{text(type)}</h4>
-        )}
-        <h3 className="font-semibold sm:mt-1">{title}</h3>
-        <CourseReviewOverView
-          ratingsAverage={ratingsAverage}
-          ratingsQuantity={ratingsQuantity}
+
+      <div className="flex-1 md:space-y-4 space-y-2.5 sm:space-y-3 my-5">
+        <div className=" flex flex-col space-y-1 sm:space-y-1.5">
+          <div className="flex items-center text-text-2 gap-2">
+            <LevelsIcons />
+            <span className="h5 font-medium">{getDifficultyLevel(type)}</span>
+          </div>
+          <h3>{title}</h3>
+          <div className="text-primary h5 capitalize underline">
+            {category?.title || type}
+          </div>{" "}
+          <p className="flex items-center gap-2 font-medium text-text-3">
+            <FaRegClock /> {courseDuration} {text("hours")}
+          </p>
+        </div>
+
+        <StarRating
+          rating={ratingsAverage}
+          containerClassName="flex items-center gap-1"
+          iconClassName="size-5"
+          showRating={true}
+          showCount={true}
+          count={ratingsQuantity}
+          countClassName="h5"
+          ratingClassName="h4"
         />
-        <div className="flex items-end gap-1 font-medium whitespace-nowrap">
-          {priceAfterDiscount ? (
-            <>
-              {" "}
-              <div className="h3">${priceAfterDiscount}</div>
-              <del className="h4 text-text-3">${price}</del>
-            </>
-          ) : (
-            <div className="h3">{price ? <>${price}</> : text("free")}</div>
+
+        {/* Pricing */}
+        <div className="flex items-center gap-2">
+          <span className="h3 font-bold">
+            {!isFree && "$"}
+            {isFree ? text("free") : priceAfterDiscount || price}
+          </span>
+          {priceAfterDiscount > 0 && !isFree && (
+            <span className="text-text-3 line-through">${price}</span>
           )}
         </div>
       </div>
-      <Button size={"lg"} asChild>
+
+      {/* Call to Action Button */}
+      <Button size="lg" className="w-full" asChild>
         <Link href={`/courses/${_id}`}>{text("learnMore")}</Link>
       </Button>
     </div>
   );
 };
+
 export const CourseReviewOverView: React.FC<{
   ratingsAverage: number;
   ratingsQuantity: number;
@@ -68,4 +116,63 @@ export const CourseReviewOverView: React.FC<{
     </div>
   );
 };
+
+export const CourseCardSkeleton: React.FC<{ className?: string }> = ({
+  className,
+}) => {
+  return (
+    <div
+      className={cn(
+        "flex flex-col w-full bg-white rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
+        className
+      )}
+    >
+      {/* Image skeleton */}
+      <Skeleton className="w-full courseImage rounded-2xl bg-muted" />
+
+      <div className="flex-1 md:space-y-4 space-y-2.5 sm:space-y-3 my-5">
+        <div className="flex flex-col space-y-1 sm:space-y-1.5">
+          {/* Difficulty level skeleton */}
+          <div className="flex items-center gap-2">
+            <Skeleton className="w-4 h-4 rounded" />
+            <Skeleton className="h-4 w-20" />
+          </div>
+
+          {/* Title skeleton */}
+          <Skeleton className="h-6 w-full" />
+
+          {/* Category skeleton */}
+          <Skeleton className="h-5 w-24" />
+
+          {/* Duration skeleton */}
+          <div className="flex items-center gap-2">
+            <Skeleton className="w-4 h-4 rounded" />
+            <Skeleton className="h-4 w-16" />
+          </div>
+        </div>
+
+        {/* Star rating skeleton */}
+        <div className="flex items-center gap-1">
+          <div className="flex gap-1">
+            {[...Array(5)].map((_, index) => (
+              <Skeleton key={index} className="w-5 h-5 rounded" />
+            ))}
+          </div>
+          <Skeleton className="h-4 w-8" />
+          <Skeleton className="h-4 w-12" />
+        </div>
+
+        {/* Pricing skeleton */}
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-6 w-16" />
+          <Skeleton className="h-4 w-12" />
+        </div>
+      </div>
+
+      {/* Button skeleton */}
+      <Skeleton className="w-full h-12 rounded-lg" />
+    </div>
+  );
+};
+
 export default CourseCard;

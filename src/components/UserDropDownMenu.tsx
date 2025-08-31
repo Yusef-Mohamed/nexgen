@@ -39,6 +39,14 @@ const UserDropDownMenu = () => {
             {text("dashboard")}
           </Link>
         </DropdownMenuItem>
+        {user?.isInstructor && (
+          <DropdownMenuItem>
+            <Link href="/instructor-dashboard" className="block w-full">
+              {text("instructorDashboard")}
+            </Link>
+          </DropdownMenuItem>
+        )}
+
         <DropdownMenuItem onClick={logout}>{text("logout")}</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

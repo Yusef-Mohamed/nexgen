@@ -39,7 +39,6 @@ export const useCourseReviewStore = create<CourseReviewState>((set, get) => ({
     const shouldRefetch = !lastFetched || now - lastFetched > 5 * 60 * 1000;
 
     if (!shouldRefetch) {
-      console.log("Skipping fetch, data is fresh.");
       return;
     }
 

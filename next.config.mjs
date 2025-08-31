@@ -7,7 +7,7 @@ const nextConfig = {
   images: {
     domains: [
       "api.nexgen-academy.com",
-      "pre.nexgen-academy.com",
+      "development.nexgen-academy.com",
       "flagcdn.com",
       "localhost",
     ],

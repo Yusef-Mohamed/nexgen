@@ -1,41 +1,55 @@
 "use client";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useRef, useState } from "react";
-import emailjs from "@emailjs/browser";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import * as z from "zod";
+import { createClientAxiosInstance } from "@/app/lib/utils";
+import CustomForm from "@/components/Forms/CustomForm";
 import { toast } from "react-toastify";
 
 const ContactForm = () => {
   const text = useTranslations("contact");
-  const form = useRef<HTMLFormElement | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const inputs = useTranslations("Forms");
-  const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!form.current) return;
-    setIsLoading(true);
-    emailjs
-      .sendForm("service_zux03ei", "template_a3ow78q", form.current, {
-        publicKey: "VMBcAEntptjUutBix",
-      })
-      .then(
-        () => {
-          toast.success(text("yourMessageHasBeenSent"));
-          form.current?.reset();
-        },
-        (error) => {
-          console.log("FAILED...", error.text);
-          toast.error(text("something_went_wrong"));
-        }
-      )
-      .finally(() => {
-        setIsLoading(false);
-      });
+
+  const formSchema = z.object({
+    name: z.string({ message: inputs("thisFieldIsRequired") }),
+    email: z.string().email({ message: inputs("invalidEmail") }),
+    message: z.string({ message: inputs("thisFieldIsRequired") }),
+  });
+
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      const axiosInstance = createClientAxiosInstance();
+      await axiosInstance.post("/contactUs", data);
+      toast.success(text("yourMessageHasBeenSent"));
+    } catch (error) {
+      console.log("FAILED...", error);
+      toast.error(text("something_went_wrong"));
+    }
   };
+
+  const fields = [
+    {
+      type: "text",
+      label: inputs("name"),
+      placeholder: inputs("name"),
+      name: "name" as const,
+      required: true,
+    },
+    {
+      type: "email",
+      label: inputs("email"),
+      placeholder: inputs("email"),
+      name: "email" as const,
+      required: true,
+    },
+    {
+      type: "textarea",
+      label: inputs("message"),
+      placeholder: inputs("message"),
+      name: "message" as const,
+      required: true,
+    },
+  ];
 
   return (
     <section className="container grid gap-20 lg:grid-cols-2 secPadding">
@@ -49,50 +63,14 @@ const ContactForm = () => {
         >
           {text("contactFormDescription")}
         </p>
-        <form ref={form} className="mt-6 space-y-4" onSubmit={sendEmail}>
-          <div className="space-y-2">
-            <Label htmlFor="user_name" className="font-semibold text-text-2">
-              {inputs("name")}
-              <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="user_name"
-              type="text"
-              placeholder={inputs("name")}
-              name="user_name"
-              disabled={isLoading}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="user_email" className="font-semibold text-text-2">
-              {inputs("email")}
-              <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              type="email"
-              id="user_email"
-              placeholder={inputs("email")}
-              name="user_email"
-              disabled={isLoading}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="message" className="font-semibold text-text-2">
-              {inputs("message")}
-              <span className="text-destructive">*</span>
-            </Label>
-            <Textarea
-              name="message"
-              id="message"
-              placeholder={inputs("message")}
-              className="h-32"
-              disabled={isLoading}
-            />
-          </div>
-          <Button isLoading={isLoading} type="submit">
-            {inputs("send")}
-          </Button>
-        </form>
+        <div className="mt-6">
+          <CustomForm
+            schema={formSchema}
+            fields={fields}
+            submitLabel={inputs("send")}
+            onSubmit={onSubmit}
+          />
+        </div>
       </div>
       <div className="relative overflow-hidden max-lg:hidden rounded-3xl ">
         <div className="bg-[#011F4333] absolute w-full h-full" />

@@ -12,8 +12,19 @@ import { CiMoneyBill } from "react-icons/ci";
 import { RiDiscountPercentLine, RiTeamFill } from "react-icons/ri";
 import { useAuth } from "@/components/auth-provider";
 import { reqAuthToReview } from "@/constants";
-const Sidebar: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
+import Logo from "@/components/logo";
+
+const Sidebar: React.FC<
+  React.ButtonHTMLAttributes<HTMLButtonElement> & {
+    collapsed?: boolean;
+    onToggle?: () => void;
+    isCollapsable?: boolean;
+  }
+> = ({
   className,
+  collapsed = false,
+  onToggle,
+  isCollapsable = false,
   ...props
 }) => {
   const { user } = useAuth();
@@ -101,20 +112,59 @@ const Sidebar: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
     <aside
       {...props}
       className={cn(
-        "py-4 px-3 sm:px-6 sm:py-8 flex flex-col justify-between bg-clear-ground h-screen max-h-screen overflow-auto top-0 sticky w-80",
+        "py-4 flex flex-col justify-between bg-clear-ground h-screen max-h-screen overflow-auto top-0 sticky transition-all duration-300",
+        collapsed ? "w-16 px-2" : "w-80 px-3 sm:px-6 ",
         className
       )}
     >
-      <nav className="mb-2">
-        <ul className="space-y-2 ">
-          {links.map((link) => (
-            <li key={link.href}>
-              <SidebarLink link={link} />
-            </li>
-          ))}
-        </ul>
-      </nav>
-      <SidebarFooter />
+      <div className="flex flex-col h-full">
+        <div className="flex justify-between items-center flex-wrap mb-4 gap-4">
+          <Logo size="sm" isIconic={collapsed} />
+
+          {isCollapsable && (
+            <button
+              onClick={onToggle}
+              className="w-12 h-12 p-0 flex items-center justify-center rounded-full"
+            >
+              <svg
+                width="44"
+                height="44"
+                viewBox="0 0 44 44"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="43"
+                  height="43"
+                  rx="21.5"
+                  stroke="#1B7DF5"
+                />
+                <path
+                  d="M13 22H31M13 16H31M19 28H31"
+                  stroke="#14191F"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          )}
+        </div>
+
+        <nav className="mb-2 flex-1">
+          <ul className="space-y-2">
+            {links.map((link) => (
+              <li key={link.href}>
+                <SidebarLink link={link} collapsed={collapsed} />
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <SidebarFooter collapsed={collapsed} />
+      </div>
     </aside>
   );
 };
