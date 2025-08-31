@@ -18,7 +18,7 @@ const MobileHeader = ({
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const text = useTranslations("header");
-  const { token, logout } = useAuth();
+  const { token, logout, user } = useAuth();
   const handleClickOutside = (event: MouseEvent) => {
     if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
       setIsOpen(false);
@@ -91,6 +91,18 @@ const MobileHeader = ({
             </div>
             {token ? (
               <>
+                {user?.isInstructor && (
+                  <Button
+                    onClick={() => {
+                      setIsOpen(false);
+                    }}
+                    asChild
+                  >
+                    <Link href="/instructor-dashboard">
+                      {text("instructorDashboard")}
+                    </Link>
+                  </Button>
+                )}
                 <Button
                   onClick={() => {
                     setIsOpen(false);

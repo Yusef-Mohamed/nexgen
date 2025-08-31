@@ -12,7 +12,6 @@ const BlogSection: React.FC = async () => {
   const axiosInstance = createServerAxiosInstance();
   const blogsRes = await axiosInstance.get("/articals?limit=3");
   const blogsData = blogsRes.data.data as IBlog[];
-  console.log(blogsData);
   return (
     <GridSection
       heading={text("heading")}

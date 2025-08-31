@@ -10,7 +10,7 @@ import {
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { IUser } from "@/types";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import { useLocale, useTranslations } from "next-intl";
 import { AxiosError } from "axios";
@@ -62,10 +62,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [status, setStatus] = useState<number>();
   const locale = useLocale();
   useLayoutEffect(() => {
+    if (token) {
+      axiosInstance.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${token}`;
+      axiosInstance.defaults.headers.common["Accept-Language"] = locale;
+    }
+  }, [token]);
+  useLayoutEffect(() => {
     const fetchUser = async () => {
       try {
         if (!token) return;
-        const axiosInstance = createClientAxiosInstance();
         const res = await axiosInstance.get("/auth/getMe", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -88,7 +95,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             console.error("Failed to update user language:", error);
           }
         }
-
         updateUser({
           userData: user,
         });
@@ -140,7 +146,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const handleNotActive = async () => {
     try {
       if (pathname === "/email-verification") return;
-      const axiosInstance = createClientAxiosInstance();
       await axiosInstance.post(
         "auth/resendEmailCode",
         {

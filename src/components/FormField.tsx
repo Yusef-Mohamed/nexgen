@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 import { cn } from "@/lib/utils";
 import {
   Select,
@@ -81,6 +82,22 @@ const CustomFormField = <T extends FieldValues>({
                   autoCapitalize="none"
                   autoCorrect="off"
                   spellCheck="false"
+                  {...field}
+                />
+              </div>
+            </FormControl>
+          )}
+
+          {input.type === "textarea" && (
+            <FormControl>
+              <div className="relative">
+                <Textarea
+                  className={cn("h-32", {
+                    "border-destructive": errors[input.name],
+                  })}
+                  placeholder={input.placeholder}
+                  disabled={loading}
+                  id={input.name}
                   {...field}
                 />
               </div>

@@ -21,7 +21,6 @@ const DisplayPosts = () => {
 
   const fetchPosts = useCallback(
     async (page: number, search?: string): Promise<IAnalytic[]> => {
-      console.log("fetchPosts");
       try {
         if (haveError) {
           return [];

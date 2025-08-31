@@ -46,7 +46,6 @@ const LessonBody = ({
 
   const handleVideoEnd = () => {
     // Handle video end event here
-    console.log("Video ended");
   };
 
   const locale = useLocale();

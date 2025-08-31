@@ -15,8 +15,10 @@ import { createClientAxiosInstance } from "@/app/lib/utils";
 import { IReview } from "@/types";
 import { BsChatLeftDots } from "react-icons/bs";
 
-const SidebarFooter = () => {
-  const { setTheme } = useTheme();
+const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
+  collapsed = false,
+}) => {
+  const { setTheme, theme } = useTheme();
   const { logout, token, user } = useAuth();
   const text = useTranslations("dashboard");
   const pathname = usePathname();
@@ -69,6 +71,7 @@ const SidebarFooter = () => {
             icon: <BsChatLeftDots />,
           }}
           isPinging
+          collapsed={collapsed}
         />
       )}
 
@@ -78,6 +81,7 @@ const SidebarFooter = () => {
           label: "settings",
           icon: <IoMdSettings />,
         }}
+        collapsed={collapsed}
       />
       {/* <SidebarLink
         link={{
@@ -89,58 +93,86 @@ const SidebarFooter = () => {
       <button
         onClick={logout}
         className={cn(
-          "flex w-full items-center gap-2 px-3 hover:text-clear-ground rounded-md py-2 hover:bg-primary transition-all"
+          "flex w-full items-center gap-2 px-3 hover:text-clear-ground rounded-md py-2 hover:bg-primary transition-all",
+          {
+            "justify-center w-10 h-10 p-0 flex items-center": collapsed,
+          }
         )}
+        title={collapsed ? text("logout") : undefined}
       >
         {locale === "ar" ? <RiLogoutBoxLine /> : <RiLogoutBoxRLine />}
-        {text("logout")}
+        {!collapsed && text("logout")}
       </button>
-      <div className="flex items-center gap-2 p-2 rounded-lg bg-muted">
-        <button
-          onClick={() => {
-            setTheme("light");
-          }}
-          className="flex items-center w-full gap-2 px-3 py-2 rounded-md bg-clear-ground dark:bg-muted"
-        >
-          <FaSun />
-          <span className="text-xs">{text("lightMode")}</span>
-        </button>
-        <button
-          onClick={() => {
-            setTheme("dark");
-          }}
-          className="flex items-center w-full gap-2 px-2 py-2 rounded-md dark:bg-clear-ground"
-        >
-          <IoMoon />
-          <span className="text-xs">{text("darkMode")}</span>
-        </button>
-      </div>
-      <div className="flex items-center gap-2 p-2 rounded-lg bg-muted">
-        <Link
-          locale="ar"
-          href={pathname}
-          className={cn(
-            "flex items-center text-xs w-full gap-2 px-3 py-2 rounded-md ",
-            {
-              "bg-clear-ground": locale === "ar",
+      {!collapsed ? (
+        <>
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-muted">
+            <button
+              onClick={() => {
+                setTheme("light");
+              }}
+              className="flex items-center w-full gap-2 px-3 py-2 rounded-md bg-clear-ground dark:bg-muted"
+            >
+              <FaSun />
+              <span className="text-xs">{text("lightMode")}</span>
+            </button>
+            <button
+              onClick={() => {
+                setTheme("dark");
+              }}
+              className="flex items-center w-full gap-2 px-2 py-2 rounded-md dark:bg-clear-ground"
+            >
+              <IoMoon />
+              <span className="text-xs">{text("darkMode")}</span>
+            </button>
+          </div>
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-muted">
+            <Link
+              locale="ar"
+              href={pathname}
+              className={cn(
+                "flex items-center text-xs w-full gap-2 px-3 py-2 rounded-md ",
+                {
+                  "bg-clear-ground": locale === "ar",
+                }
+              )}
+            >
+              العربية
+            </Link>
+            <Link
+              locale="en"
+              href={pathname}
+              className={cn(
+                "flex items-center text-xs w-full gap-2 px-3 py-2 rounded-md ",
+                {
+                  "bg-clear-ground": locale === "en",
+                }
+              )}
+            >
+              English
+            </Link>
+          </div>
+        </>
+      ) : (
+        <div className="space-y-2">
+          <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="flex items-center justify-center size-10 rounded-md hover:bg-primary hover:text-clear-ground transition-all"
+            title={theme === "dark" ? text("lightMode") : text("darkMode")}
+          >
+            {theme === "dark" ? <FaSun /> : <IoMoon />}
+          </button>
+          <Link
+            locale={locale === "ar" ? "en" : "ar"}
+            href={pathname}
+            className="flex items-center justify-center size-10 rounded-md hover:bg-primary hover:text-clear-ground transition-all text-xs"
+            title={
+              locale === "ar" ? "Switch to English" : "التبديل إلى العربية"
             }
-          )}
-        >
-          العربية
-        </Link>
-        <Link
-          locale="en"
-          href={pathname}
-          className={cn(
-            "flex items-center text-xs w-full gap-2 px-3 py-2 rounded-md ",
-            {
-              "bg-clear-ground": locale === "en",
-            }
-          )}
-        >
-          English
-        </Link>
-      </div>
+          >
+            {locale === "ar" ? "E" : "ع"}
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

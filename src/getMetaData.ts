@@ -462,3 +462,97 @@ export function getMetadataTermsOfServicePage({
     };
   }
 }
+
+// Instructor Dashboard Metadata Functions
+export function getMetadataInstructorDashboardPage({
+  params,
+}: {
+  params: { locale: string };
+}): Metadata {
+  if (params.locale === "ar") {
+    return {
+      title: getTitle("لوحة تحكم المدرب", "ar"),
+      description: "إدارة دوراتك ومحتواك التعليمي في أكاديمية نكستجن.",
+    };
+  } else {
+    return {
+      title: getTitle("Instructor Dashboard", "en"),
+      description:
+        "Manage your courses and educational content at Nexgen Academy.",
+    };
+  }
+}
+
+export function getMetadataInstructorCoursePage({
+  params,
+}: {
+  params: { locale: string; courseId: string };
+}): Metadata {
+  if (params.locale === "ar") {
+    return {
+      title: getTitle("تفاصيل الدورة", "ar"),
+      description: "إدارة تفاصيل الدورة والمحتوى التعليمي في أكاديمية نكستجن.",
+    };
+  } else {
+    return {
+      title: getTitle("Course Details", "en"),
+      description:
+        "Manage course details and educational content at Nexgen Academy.",
+    };
+  }
+}
+
+export function getMetadataInstructorFinalExamPage({
+  params,
+}: {
+  params: { locale: string; courseId: string };
+}): Metadata {
+  if (params.locale === "ar") {
+    return {
+      title: getTitle("الامتحان النهائي", "ar"),
+      description: "إدارة الامتحان النهائي للدورة في أكاديمية نكستجن.",
+    };
+  } else {
+    return {
+      title: getTitle("Final Exam", "en"),
+      description: "Manage the final exam for the course at Nexgen Academy.",
+    };
+  }
+}
+
+export function getMetadataInstructorPlacementExamPage({
+  params,
+}: {
+  params: { locale: string; courseId: string };
+}): Metadata {
+  if (params.locale === "ar") {
+    return {
+      title: getTitle("امتحان تحديد المستوى", "ar"),
+      description: "إدارة امتحان تحديد المستوى للدورة في أكاديمية نكستجن.",
+    };
+  } else {
+    return {
+      title: getTitle("Placement Exam", "en"),
+      description:
+        "Manage the placement exam for the course at Nexgen Academy.",
+    };
+  }
+}
+
+export function getMetadataInstructorLessonExamsPage({
+  params,
+}: {
+  params: { locale: string; courseId: string; lessonId: string };
+}): Metadata {
+  if (params.locale === "ar") {
+    return {
+      title: getTitle("امتحانات الدرس", "ar"),
+      description: "إدارة امتحانات الدرس في أكاديمية نكستجن.",
+    };
+  } else {
+    return {
+      title: getTitle("Lesson Exams", "en"),
+      description: "Manage lesson exams at Nexgen Academy.",
+    };
+  }
+}

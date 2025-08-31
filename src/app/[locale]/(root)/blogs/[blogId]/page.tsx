@@ -70,8 +70,7 @@ const BlogsPage = async ({
         </section>
       </main>
     );
-  } catch (e) {
-    console.log(e);
+  } catch {
     return notFound();
   }
 };

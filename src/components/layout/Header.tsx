@@ -43,7 +43,7 @@ const Header = () => {
             <MobileHeader headerLinks={headerLinks} />
             <Logo />
             {token && (
-              <Button size={"sm"} asChild>
+              <Button size={"sm"} className="lg:hidden" asChild>
                 <Link href="/dashboard">{text("dashboard")}</Link>
               </Button>
             )}

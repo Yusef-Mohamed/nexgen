@@ -1,8 +1,6 @@
 import Hero from "./components/Hero";
 import Features from "./components/Features";
-import PopularCourses from "./components/PopularCourses";
 import WhyChooseUs from "./components/WhyChooseUs";
-import Services from "./components/Services";
 import PromoBanner from "./components/PromoBanner";
 import SuccessStories from "./components/SuccessStories";
 import Testimonials from "./components/Testimonials";
@@ -11,7 +9,9 @@ import FAQ from "./components/FAQ";
 import { Metadata } from "next";
 import { getMetadataLandingPage } from "@/getMetaData";
 import { unstable_setRequestLocale } from "next-intl/server";
-import LearningPaths from "./components/LearningPaths";
+import OurLearningPaths from "./components/OurLearningPaths";
+import OurCourses from "./components/OurCourses";
+import OurServices from "./components/OurServices";
 export function generateMetadata({
   params,
 }: {
@@ -29,10 +29,10 @@ const LandingPage = ({ params }: { params: { locale: string } }) => {
     <main className="max-w-full overflow-hidden">
       <Hero />
       <Features />
-      <PopularCourses />
-      <LearningPaths />
+      <OurCourses />
+      <OurLearningPaths />
       <WhyChooseUs />
-      <Services />
+      <OurServices />
       <PromoBanner />
       <SuccessStories />
       <Testimonials />

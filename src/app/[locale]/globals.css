@@ -160,6 +160,9 @@ body {
 .cardShadow {
   box-shadow: 2px 6px 32px 0px #1b7df51f;
 }
+.courseImage {
+  aspect-ratio: 381/295;
+}
 .prose {
   @apply prose-headings:text-text-1 prose-p:text-text-2 prose-li:text-text-2 prose-a:text-primary;
 }

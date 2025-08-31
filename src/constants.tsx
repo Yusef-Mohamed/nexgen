@@ -1,6 +1,7 @@
 import { FaTelegramPlane } from "react-icons/fa";
 import { MdOutlineMailOutline } from "react-icons/md";
-export const API_URL = "https://api.nexgen-academy.com/api/v1";
+// export const API_URL = "https://api.nexgen-academy.com/api/v1";
+export const API_URL = "https://development.nexgen-academy.com/api/v1";
 // export const API_URL = "https://pre.nexgen-academy.com/api/v1";
 // export const API_URL = "http://localhost:8000/api/v1";
 export const SOCKET_URL = "https://api.nexgen-academy.com";
@@ -240,3 +241,5 @@ export const countries = [
   "Zimbabwe",
 ];
 export const reqAuthToReview = ["community", "practice", "chat", "live"];
+export const adToken =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE5MWNiZWIyYTU0NDg2ZGJjYzQzOWUiLCJpYXQiOjE3NTU3OTE3MTgsImV4cCI6MTc2MzU2NzcxOH0.z_ZYcE5e2_gxsaZnuyIGaKovUM6sLPtG557q_xcdJsU";

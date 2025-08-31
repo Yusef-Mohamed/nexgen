@@ -43,6 +43,7 @@ function useCustomForm<T extends FieldValues>({
 
     try {
       await onSubmit(data);
+      form.reset(); // Reset form after successful submission
     } catch (err) {
       const typedError = err as AxiosError<{
         message?: string;
