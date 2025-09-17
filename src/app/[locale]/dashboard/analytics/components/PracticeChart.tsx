@@ -18,7 +18,7 @@ import { useAnalyticsStore } from "@/stores/AnalyticsStore";
 import { useLocale, useTranslations } from "next-intl";
 import MonthSelector from "@/components/MonthSelector"; // Updated import
 import TrendBadge from "@/components/TrendBadge";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { IAnalytic } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -207,7 +207,7 @@ const Practice: React.FC = () => {
     const getData = async () => {
       try {
         setIsLoading(true);
-        const axiosInstance = createClientAxiosInstance();
+
         if (!selectedMonth || !selectedUser) return;
 
         const [month, year] = selectedMonth.split("/").map(Number);

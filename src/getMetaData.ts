@@ -103,6 +103,40 @@ export function getMetadataCoursePage({
     description: course.description,
   };
 }
+
+// Learning Path Details Page Metadata
+export function getMetadataLearningPathPage({
+  params,
+  learningPath,
+}: {
+  params: { locale: string };
+  learningPath: {
+    title: string;
+    description: string;
+  };
+}): Metadata {
+  return {
+    title: getTitle(learningPath.title, params.locale),
+    description: learningPath.description,
+  };
+}
+
+// Service (Package) Details Page Metadata
+export function getMetadataServicePage({
+  params,
+  service,
+}: {
+  params: { locale: string };
+  service: {
+    title: string;
+    description: string;
+  };
+}): Metadata {
+  return {
+    title: getTitle(service.title, params.locale),
+    description: service.description,
+  };
+}
 export function getMetadataCourseExamPage({
   params,
   course,

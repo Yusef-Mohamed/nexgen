@@ -1,6 +1,6 @@
 "use client";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import PostCard, { SkeletonPostCard } from "@/components/cards/PostCard";
 import GetFocusedPost from "./GetFocusedPost";
 import { IPost } from "@/types";
@@ -35,7 +35,6 @@ const DisplayPosts = ({ userId }: { userId?: string }) => {
         if (search) filtersParams.append("search", search);
 
         const filters = filtersParams.toString();
-        const axiosInstance = createClientAxiosInstance();
 
         const res = await axiosInstance(
           `/posts${filters ? "?" + filters : ""}`,

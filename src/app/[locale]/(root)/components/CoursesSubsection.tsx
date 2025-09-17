@@ -27,7 +27,9 @@ const CoursesSubsection: React.FC<CoursesSubsectionProps> = ({
   title,
 }) => {
   const text = useTranslations("popularCourses");
-  if (courses.length === 0)
+
+  // Show "No courses found" only when not loading and no courses exist
+  if (!loading && courses.length === 0) {
     return (
       <div className="relative">
         {title && <h2 className="mb-6 capitalize">{title}</h2>}
@@ -37,10 +39,11 @@ const CoursesSubsection: React.FC<CoursesSubsectionProps> = ({
         </h3>
       </div>
     );
+  }
   if (theme === "carousel") {
     return (
       <div className="relative">
-        {title && <h2 className="mb-6 capitalize">{title}</h2>}
+        {title && <h2 className="mb-6 capitalize font-semibold">{title}</h2>}
         <Carousel
           opts={{
             align: "start",
@@ -73,9 +76,8 @@ const CoursesSubsection: React.FC<CoursesSubsectionProps> = ({
   if (theme === "grid") {
     return (
       <div>
-        {title && (
-          <h2 className="text-2xl font-bold mb-6 text-center">{title}</h2>
-        )}
+        {title && <h2 className="mb-6 capitalize">{title}</h2>}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (

@@ -28,9 +28,7 @@ export const useLessonEditDialog = ({
 }: UseLessonEditDialogProps) => {
   const text = useTranslations("courses");
   const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState<File | null>(null);
   const [attachments, setAttachments] = useState<File[]>([]);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const createValidationSchema = () =>
     z.object({
@@ -94,49 +92,8 @@ export const useLessonEditDialog = ({
       });
     }
     // Reset file states
-    setImage(null);
     setAttachments([]);
-    setImagePreview(null);
   }, [isEdit, lesson, form]);
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const validTypes = ["image/jpeg", "image/jpg", "image/png"];
-      if (!validTypes.includes(file.type)) {
-        alert(text("validation.image_invalid"));
-        return;
-      }
-      setImage(file);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-    // Clear input value to avoid lingering filename display on the input
-    if (e.target) {
-      try {
-        e.target.value = "";
-      } catch {}
-    }
-  };
-
-  const handleImageFilesSelected = (files: File[]) => {
-    const file = files?.[0];
-    if (!file) return;
-    const validTypes = ["image/jpeg", "image/jpg", "image/png"];
-    if (!validTypes.includes(file.type)) {
-      alert(text("validation.image_invalid"));
-      return;
-    }
-    setImage(file);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setImagePreview(e.target?.result as string);
-    };
-    reader.readAsDataURL(file);
-  };
 
   const handleAttachmentsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -177,11 +134,6 @@ export const useLessonEditDialog = ({
     setAttachments((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const resetImage = () => {
-    setImage(null);
-    setImagePreview(null);
-  };
-
   const onSubmit = async (
     data: z.infer<ReturnType<typeof createValidationSchema>>
   ) => {
@@ -211,9 +163,6 @@ export const useLessonEditDialog = ({
       formData.append("course", courseId);
 
       // Add files
-      if (image) {
-        formData.append("image", image);
-      }
       attachments.forEach((attachment) => {
         formData.append("attachments", attachment);
       });
@@ -244,21 +193,16 @@ export const useLessonEditDialog = ({
   return {
     // State
     loading,
-    image,
     attachments,
-    imagePreview,
 
     // Form
     form,
 
     // Actions
     onSubmit,
-    handleImageChange,
-    handleImageFilesSelected,
     handleAttachmentsChange,
     handleAttachmentFilesSelected,
     removeAttachment,
-    resetImage,
 
     // Text
     text,

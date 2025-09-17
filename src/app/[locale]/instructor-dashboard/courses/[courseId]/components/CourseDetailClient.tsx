@@ -4,11 +4,13 @@ import { useParams } from "next/navigation";
 import { ILesson, ISection } from "@/types";
 import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/auth-provider";
 import { notFound } from "next/navigation";
 import SectionEditDialog from "./SectionEditDialog";
 import LessonEditDialog from "./LessonEditDialog";
 import { useCourseDetail } from "../hooks/useCourseDetail";
+import { useReorder } from "../hooks/useReorder";
 import CourseEditDialog from "./CourseEditDialog/component";
 import { toast } from "react-toastify";
 
@@ -18,6 +20,7 @@ import CourseSkeleton from "./CourseSkeleton";
 import LessonListCard from "./LessonListCard";
 import SectionItem from "./SectionItem";
 import DeleteConfirmationDialogs from "./DeleteConfirmationDialogs";
+import { axiosInstance } from "@/app/lib/utils";
 
 const CourseDetailClient = () => {
   const postActionText = useTranslations("postAction");
@@ -33,6 +36,7 @@ const CourseDetailClient = () => {
     error,
     expandedSections,
     updateSections,
+    updateSectionsOrder,
     toggleSection,
     updateCourse,
     deleteSectionById,
@@ -40,6 +44,24 @@ const CourseDetailClient = () => {
     updateLessonInSections,
     deleteLessonById,
   } = useCourseDetail(courseId);
+
+  // Track if order has changed
+  const [hasOrderChanged, setHasOrderChanged] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Use the reorder hook for drag and drop functionality
+  const {
+    dropTarget,
+    handleDragStart,
+    handleDragOver,
+    handleDragLeave,
+    handleDragEnd,
+    handleDrop,
+  } = useReorder({
+    sections,
+    onSectionsReorder: updateSectionsOrder,
+    onOrderChanged: () => setHasOrderChanged(true),
+  });
 
   // Dialog states
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -187,6 +209,39 @@ const CourseDetailClient = () => {
     }
   };
 
+  const handleSaveOrder = async () => {
+    try {
+      setIsSaving(true);
+
+      // Prepare the data structure for the API
+      const sectionsData = sections.map((section, sectionIndex) => ({
+        sectionId: section.sectionId || section._id,
+        order: sectionIndex + 1,
+        lessons: (section.lessons || []).map((lesson, lessonIndex) => ({
+          lessonId: lesson._id,
+          order: lessonIndex + 1,
+        })),
+      }));
+
+      const response = await axiosInstance.put(
+        `/sections/update-sections-and-lessons`,
+        { sections: sectionsData }
+      );
+
+      if (response.status === 200) {
+        toast.success("Order saved successfully!");
+        setHasOrderChanged(false); // Reset the change flag
+      } else {
+        toast.error(response.data?.message || "Failed to save order");
+      }
+    } catch (error) {
+      console.error("Error saving order:", error);
+      toast.error("Failed to save order. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <div className="container mx-auto p-6">
@@ -211,8 +266,35 @@ const CourseDetailClient = () => {
                 onAddLesson={handleAddNewLesson}
                 onEditLesson={handleEditLesson}
                 onDeleteLesson={handleDeleteLesson}
+                // Drag and drop props
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDragEnd={handleDragEnd}
+                onDrop={handleDrop}
+                dropTarget={dropTarget}
               />
             ))}
+
+            {/* Save Button - Only show when order has changed */}
+            {hasOrderChanged && (
+              <div className="mt-6 flex justify-center">
+                <Button
+                  onClick={handleSaveOrder}
+                  className="px-8 py-3 text-lg font-semibold"
+                  disabled={isSaving}
+                >
+                  {isSaving ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                      Saving...
+                    </>
+                  ) : (
+                    "Save Changes"
+                  )}
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

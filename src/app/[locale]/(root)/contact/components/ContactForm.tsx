@@ -2,9 +2,9 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import * as z from "zod";
-import { createClientAxiosInstance } from "@/app/lib/utils";
 import CustomForm from "@/components/Forms/CustomForm";
 import { toast } from "react-toastify";
+import { axiosInstance } from "@/app/lib/utils";
 
 const ContactForm = () => {
   const text = useTranslations("contact");
@@ -18,7 +18,6 @@ const ContactForm = () => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
-      const axiosInstance = createClientAxiosInstance();
       await axiosInstance.post("/contactUs", data);
       toast.success(text("yourMessageHasBeenSent"));
     } catch (error) {

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useChatStore } from "@/stores/ChatStore";
 import { ChatList } from "./ChatList";
 import { IMessage } from "@/types";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import ChatTopbar from "./ChatTopbar";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/components/auth-provider";
@@ -32,7 +32,6 @@ export function Chat({ selectedChat }: ChatProps) {
   const getMessages = async () => {
     setIsFetchingMessages(true);
     try {
-      const axiosInstance = await createClientAxiosInstance();
       const res = await axiosInstance(
         `/messages/${selectedChatId}?limit=10&sort=-createdAt`,
         {
@@ -52,7 +51,7 @@ export function Chat({ selectedChat }: ChatProps) {
   };
   const getThisChat = async () => {
     setIsFetchingThisChat(true);
-    const axiosInstance = await createClientAxiosInstance();
+
     const res = await axiosInstance(`/chats/${selectedChatId}/details`, {
       headers: {
         Authorization: `Bearer ${token}`,

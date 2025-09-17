@@ -33,7 +33,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import InputField from "@/components/InputField";
 import { useAuth } from "@/components/auth-provider";
 import useCustomSearchParams from "@/hooks/useSearchParams";
@@ -71,7 +71,6 @@ export default function ChatTopbar() {
     try {
       setIsLoading(true);
       if (action === "remove") {
-        const axiosInstance = await createClientAxiosInstance();
         await axiosInstance.put(
           `/chats/${thisChat?._id}/removeParticipant`,
           {
@@ -93,7 +92,6 @@ export default function ChatTopbar() {
         };
         setThisChat(newChat);
       } else {
-        const axiosInstance = await createClientAxiosInstance();
         await axiosInstance.put(
           `/chats/${thisChat?._id}/updateParticipantRole`,
           {
@@ -140,7 +138,6 @@ export default function ChatTopbar() {
   const [isAddToChatOpen, setIsAddToChatOpen] = useState(false);
   const handleAddToChat = async () => {
     try {
-      const axiosInstance = await createClientAxiosInstance();
       await axiosInstance.put(
         `/chats/${thisChat?._id}/addParticipant`,
         {
@@ -182,7 +179,7 @@ export default function ChatTopbar() {
       }
       formData.append("description", editData.description);
       formData.append("groupName", editData.groupName);
-      const axiosInstance = await createClientAxiosInstance();
+
       const res = await axiosInstance.put(
         `/chats/${thisChat?._id}/updateGroup`,
         formData,

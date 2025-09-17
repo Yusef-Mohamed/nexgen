@@ -37,7 +37,6 @@ ChartJS.register(
 import { ICourse, IUser } from "@/types";
 import { useAnalyticsStore } from "@/stores/AnalyticsStore";
 import PracticeChart from "./PracticeChart";
-import { createClientAxiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import UserAvatar from "@/components/UserAvatar";
 import ProgressCircle from "@/components/ProgressCircle";
@@ -46,6 +45,7 @@ import CourseProgress from "./CourseProgress";
 import ExamsChart from "./ExamsChart";
 import VideoChart from "./VideoChart";
 import { useSearchParams } from "next/navigation";
+import { axiosInstance } from "@/app/lib/utils";
 const Charts = () => {
   const inputs = useTranslations("Forms");
   const text = useTranslations("analytics");
@@ -71,7 +71,6 @@ const Charts = () => {
   const getCourses = async () => {
     if (selectedUser) {
       try {
-        const axiosInstance = createClientAxiosInstance();
         const res = await axiosInstance.get(
           `/courses/myCourses/${selectedUser}`,
           {
@@ -90,7 +89,6 @@ const Charts = () => {
     if (!myAccount) return;
     const accountId = selectedUserParam || myAccount._id;
     setSelectedUser(accountId);
-    const axiosInstance = createClientAxiosInstance();
     axiosInstance
       .get(`/marketing/getMarketerChildren/${myAccount._id}`, {
         headers: {
@@ -118,7 +116,6 @@ const Charts = () => {
   }, [courses, selectedCourseParam]);
   const getCourseDetails = async (courseId: string) => {
     try {
-      const axiosInstance = createClientAxiosInstance();
       const courseDetails = await axiosInstance.get(
         `/courses/courseDetails/${courseId}`,
         {

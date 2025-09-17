@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { ICourse, ISection, ILesson } from "@/types";
 import { useAuth } from "@/components/auth-provider";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { AxiosError } from "axios";
 
 export const useCourseDetail = (courseId: string) => {
@@ -20,7 +20,6 @@ export const useCourseDetail = (courseId: string) => {
     try {
       setLoading(true);
 
-      const axiosInstance = createClientAxiosInstance();
       // Fetch course data
       const courseResponse = await axiosInstance.get(`/courses/${courseId}`);
       setCourse(courseResponse.data.data);
@@ -80,6 +79,17 @@ export const useCourseDetail = (courseId: string) => {
     // You can implement state update logic here later if needed
   };
 
+  // Update sections order for drag and drop
+  const updateSectionsOrder = (newSections: ISection[]) => {
+    setSections(newSections);
+
+    // TODO: Add API call to update sections order on the server
+    // This would typically involve calling an endpoint like:
+    // PUT /courses/${courseId}/sections/order
+    // with the new order of section IDs
+    console.log("Sections order updated:", newSections);
+  };
+
   // Toggle section expansion
   const toggleSection = (sectionId: string) => {
     const newExpanded = new Set(expandedSections);
@@ -136,7 +146,6 @@ export const useCourseDetail = (courseId: string) => {
   ): Promise<{ success: boolean; error?: string }> => {
     if (!token) return { success: false, error: "No authentication token" };
     try {
-      const axiosInstance = createClientAxiosInstance();
       await axiosInstance.delete(`/lessons/${lessonId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -168,7 +177,6 @@ export const useCourseDetail = (courseId: string) => {
   ): Promise<{ success: boolean; error?: string }> => {
     if (!token) return { success: false, error: "No authentication token" };
     try {
-      const axiosInstance = createClientAxiosInstance();
       await axiosInstance.delete(`/sections/${sectionId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -218,6 +226,7 @@ export const useCourseDetail = (courseId: string) => {
 
     // Actions
     updateSections,
+    updateSectionsOrder,
     toggleSection,
     updateCourse,
     deleteSectionById,

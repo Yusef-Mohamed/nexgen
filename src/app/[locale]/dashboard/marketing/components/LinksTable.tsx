@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/auth-provider";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import { IUser } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,6 @@ const LinksTable = ({ links }: { links: string[] }) => {
     const fetchData = async () => {
       if (!user?._id) return;
       try {
-        const axiosInstance = createClientAxiosInstance();
         const res = await axiosInstance.get(
           `/marketingAnalytics/getInvitationsAnalytics/${user._id}`,
           {

@@ -7,6 +7,7 @@ import useEmblaCarousel, {
 
 import { cn } from "@/lib/utils";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useLocale } from "next-intl";
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -57,10 +58,12 @@ const Carousel = React.forwardRef<
     },
     ref
   ) => {
+    const locale = useLocale();
     const [carouselRef, api] = useEmblaCarousel(
       {
         ...opts,
         axis: orientation === "horizontal" ? "x" : "y",
+        direction: locale === "ar" ? "rtl" : "ltr",
       },
       plugins
     );
@@ -136,7 +139,7 @@ const Carousel = React.forwardRef<
         <div
           ref={ref}
           style={{
-            direction: "ltr",
+            direction: locale === "ar" ? "rtl" : "ltr",
           }}
           onKeyDownCapture={handleKeyDown}
           className={cn("relative", className)}

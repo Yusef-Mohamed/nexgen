@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { ICourse } from "@/types";
 import { useLocale, useTranslations } from "next-intl";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -168,7 +168,6 @@ export const useCourseEditDialog = ({
   // Fetch categories
   const fetchCategories = useCallback(async () => {
     try {
-      const axiosInstance = createClientAxiosInstance();
       const categoriesResponse = await axiosInstance.get(
         "/categories?limit=1000"
       );
@@ -181,7 +180,6 @@ export const useCourseEditDialog = ({
   // Fetch all courses for accessible courses selection
   const fetchCourses = useCallback(async () => {
     try {
-      const axiosInstance = createClientAxiosInstance();
       const coursesResponse = await axiosInstance.get("/courses?limit=1000");
       setCourses(coursesResponse.data.data);
     } catch (error) {
@@ -247,7 +245,6 @@ export const useCourseEditDialog = ({
 
     setLoading(true);
     try {
-      const axiosInstance = createClientAxiosInstance();
       const formDataToSend = new FormData();
 
       // Add multilingual fields

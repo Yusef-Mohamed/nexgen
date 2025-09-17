@@ -11,7 +11,6 @@ import { ItemType } from "../page";
 import { Input } from "@/components/ui/input";
 import { Link, useRouter } from "@/i18n/routing";
 import { toast } from "react-toastify";
-import { createClientAxiosInstance } from "@/app/lib/utils";
 import { AxiosError } from "axios";
 import {
   Dialog,
@@ -22,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { useAuth } from "@/components/auth-provider";
 import { useMyCoursesStore } from "@/stores/MyCoursesStore";
+import { axiosInstance } from "@/app/lib/utils";
 const methods = [
   {
     label: "card",
@@ -77,7 +77,6 @@ const MainComponent = ({
         ((thisItem.priceAfterDiscount && thisItem.priceAfterDiscount == 0) ||
           thisItem.price == 0)
       ) {
-        const axiosInstance = await createClientAxiosInstance();
         await axiosInstance.put(
           `/orders/createUnPaidOrder/${thisItem._id}`,
           {},
@@ -105,7 +104,6 @@ const MainComponent = ({
               ? `/orders/lahza/coursePackageCheckout/${thisItem._id}`
               : `/orders/lahza/packageCheckout/${thisItem._id}`;
         }
-        const axiosInstance = await createClientAxiosInstance();
         const res = await axiosInstance.put(
           endpoint,
           { paymentMethod: selectedMethod, couponName: selectedCoupon },
@@ -137,7 +135,6 @@ const MainComponent = ({
     e.preventDefault();
     try {
       setIsLoading(true);
-      const axiosInstance = await createClientAxiosInstance();
       const res = await axiosInstance.get(
         `/coupons/getCouponDetails/${coupon}`,
         {

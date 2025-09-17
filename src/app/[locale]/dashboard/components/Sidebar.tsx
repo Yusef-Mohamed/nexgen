@@ -13,6 +13,7 @@ import { RiDiscountPercentLine, RiTeamFill } from "react-icons/ri";
 import { useAuth } from "@/components/auth-provider";
 import { reqAuthToReview } from "@/constants";
 import Logo from "@/components/logo";
+import { usePathname } from "@/i18n/routing";
 
 const Sidebar: React.FC<
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -28,6 +29,8 @@ const Sidebar: React.FC<
   ...props
 }) => {
   const { user } = useAuth();
+  const pathname = usePathname();
+
   let links = [
     {
       href: "/dashboard",
@@ -98,6 +101,22 @@ const Sidebar: React.FC<
       icon: <FaUser />,
     },
   ];
+
+  if (pathname.includes("instructor-dashboard")) {
+    links = [
+      {
+        href: "/instructor-dashboard/courses",
+        label: "myCourses",
+        icon: <IoBookOutline />,
+      },
+      {
+        href: "/instructor-dashboard/wallet",
+        label: "wallet",
+        icon: <CiMoneyBill />,
+      },
+    ];
+  }
+
   if (user && !user.authToReview) {
     links = links.filter((link) => {
       return !reqAuthToReview?.includes(link.label);

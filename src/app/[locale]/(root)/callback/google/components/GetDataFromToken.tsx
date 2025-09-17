@@ -1,6 +1,6 @@
 "use client";
 
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { useRouter } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
@@ -15,7 +15,6 @@ const GetDataFromToken = () => {
   useEffect(() => {
     if (!token) return;
     const getToken = async () => {
-      const axiosInstance = createClientAxiosInstance();
       const response = await axiosInstance.get("/auth/getMe", {
         headers: {
           Authorization: `Bearer ${token}`,

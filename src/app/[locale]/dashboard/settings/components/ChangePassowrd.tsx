@@ -1,6 +1,6 @@
 "use client";
 
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,7 +57,6 @@ const ChangePassword = () => {
 
     setIsLoading(true);
     try {
-      const axiosInstance = await createClientAxiosInstance();
       const res = await axiosInstance.put(
         `/users/changeMyPassword`,
         {

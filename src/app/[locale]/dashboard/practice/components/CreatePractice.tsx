@@ -1,6 +1,6 @@
 "use client";
 
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import TextWithEmojiBox from "@/components/TextWithEmojiBox";
 import UserAvatar from "@/components/UserAvatar";
@@ -50,7 +50,7 @@ const CreatePractice = ({
       if (lessonId) formData.append("lesson", lessonId);
       if (courseId) formData.append("course", courseId);
       formData.append("content", content);
-      const axiosInstance = await createClientAxiosInstance();
+
       await axiosInstance.post("/analytics", formData, {
         headers: {
           Authorization: `Bearer ${token}`,

@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import * as z from "zod";
 import GoogleAuthBtn from "../GoogleAuthBtn";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import CustomForm from "./CustomForm";
 import { useAuth } from "../auth-provider";
 import { useEffect } from "react";
@@ -40,7 +40,6 @@ const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
   const { updateUser } = useAuth();
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const axiosInstance = createClientAxiosInstance();
     const formattedData: {
       name: string;
       email: string;
@@ -120,7 +119,6 @@ const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
   ];
 
   useEffect(() => {
-    const axiosInstance = createClientAxiosInstance();
     if (inviteKey)
       axiosInstance.put(
         `/marketingAnalytics/incrementSignUpClicks/${inviteKey}`

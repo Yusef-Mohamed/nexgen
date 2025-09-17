@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useCallback, useState } from "react";
 import CreatePractice from "./CreatePractice";
 import { IAnalytic } from "@/types";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import AnalyticCard, {
   AnalyticCardSkeleton,
@@ -38,7 +38,7 @@ const DisplayPosts = () => {
         if (user?.isMarketer) filtersParams.append("asMarketer", "1");
 
         const filters = filtersParams.toString();
-        const axiosInstance = createClientAxiosInstance();
+
         const res = await axiosInstance(
           `/analytics/user-analytic/${user?._id}${
             filters ? "?" + filters : ""

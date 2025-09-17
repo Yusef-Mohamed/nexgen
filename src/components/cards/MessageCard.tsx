@@ -23,7 +23,7 @@ import {
 import { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { MdDelete, MdEdit } from "react-icons/md";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useTranslations } from "next-intl";
 import { useAuth } from "../auth-provider";
 import ImageWithZoom from "../ImageWithZoom";
@@ -50,7 +50,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
   const deleteMessageAction = async () => {
     try {
       setIsLoading(true);
-      const axiosInstance = await createClientAxiosInstance();
+
       await axiosInstance.delete(`/messages/${message._id}`, {
         headers: {
           Authorization: `Bearer ${token}`,

@@ -8,7 +8,7 @@ import CommentCard from "./CommentCard";
 import TextWithEmojiBox from "../TextWithEmojiBox";
 import { toast } from "react-toastify";
 import ImageWithZoom from "../ImageWithZoom";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { Link } from "@/i18n/routing";
 import { useAuth } from "../auth-provider";
 import { MdClose } from "react-icons/md";
@@ -37,7 +37,6 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
   const { token, user } = useAuth();
 
   useEffect(() => {
-    const axiosInstance = createClientAxiosInstance();
     if (isOpen && post) {
       axiosInstance
         .get(`comments/post/${post?._id}`, {
@@ -76,7 +75,6 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
 
     setComments((prev) => [...prev, newComment]); // Optimistically update comments
 
-    const axiosInstance = createClientAxiosInstance();
     try {
       const formData = new FormData();
 

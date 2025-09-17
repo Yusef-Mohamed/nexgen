@@ -1,6 +1,6 @@
 "use client";
 
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import TextWithEmojiBox from "@/components/TextWithEmojiBox";
 import UserAvatar from "@/components/UserAvatar";
@@ -48,7 +48,7 @@ const CreatePost = ({
         setIsLoading(false);
         return;
       }
-      const axiosInstance = await createClientAxiosInstance();
+
       const res = await axiosInstance.post("/posts", formData, {
         headers: {
           Authorization: `Bearer ${token}`,

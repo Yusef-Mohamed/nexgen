@@ -98,7 +98,7 @@ const MobileHeader = ({
                     }}
                     asChild
                   >
-                    <Link href="/instructor-dashboard">
+                    <Link href="/instructor-dashboard/courses">
                       {text("instructorDashboard")}
                     </Link>
                   </Button>

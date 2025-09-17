@@ -1,6 +1,6 @@
 "use client";
 
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Link, useRouter } from "@/i18n/routing";
@@ -87,7 +87,7 @@ const IdentityVerification = () => {
     } else if (currentStep === 3 && data.selfieImage) {
       try {
         setIsLoading(true);
-        const axiosInstance = createClientAxiosInstance();
+
         const formData = new FormData();
         formData.append("idDocuments", data.frontImage as Blob);
         formData.append("idDocuments", data.backImage as Blob);

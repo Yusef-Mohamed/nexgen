@@ -1,6 +1,6 @@
 "use client";
 
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -29,7 +29,6 @@ const SystemReview = () => {
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const getCurrentReview = async () => {
-      const axiosInstance = createClientAxiosInstance();
       axiosInstance
         .get("/systemReviews/myReviews", {
           headers: {
@@ -59,7 +58,7 @@ const SystemReview = () => {
     if (token) {
       try {
         setIsLoading(true);
-        const axiosInstance = createClientAxiosInstance();
+
         if (idToEdit) {
           await axiosInstance.put(`/systemReviews/${idToEdit}`, data, {
             headers: {
@@ -92,7 +91,6 @@ const SystemReview = () => {
     if (token) {
       setIsLoading(true);
       try {
-        const axiosInstance = createClientAxiosInstance();
         await axiosInstance.delete(`/systemReviews/${idToEdit}`, {
           headers: {
             Authorization: `Bearer ${token}`,

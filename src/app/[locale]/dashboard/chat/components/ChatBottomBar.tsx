@@ -6,7 +6,7 @@ import { IMessage } from "@/types";
 import { useTranslations } from "next-intl";
 import { IoMdClose } from "react-icons/io";
 import TextWithEmojiBox from "@/components/TextWithEmojiBox";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
@@ -53,7 +53,6 @@ export default function ChatBottombar() {
       if (media) data.append("media", media);
       try {
         if (!actionOnMessage) {
-          const axiosInstance = await createClientAxiosInstance();
           const res = await axiosInstance.post(
             "/messages/" + selectedChatId,
             data,
@@ -66,7 +65,6 @@ export default function ChatBottombar() {
           addMessage(res.data);
           sendMessageToSocket(res.data, "new");
         } else if (actionOnMessage.action === "edit") {
-          const axiosInstance = await createClientAxiosInstance();
           const res = await axiosInstance.put(
             "/messages/" + actionOnMessage.message._id,
             data,
@@ -79,7 +77,6 @@ export default function ChatBottombar() {
           updateMessage(res.data);
           sendMessageToSocket(res.data, "edit");
         } else if (actionOnMessage.action === "reply") {
-          const axiosInstance = await createClientAxiosInstance();
           const res = await axiosInstance.post(
             "/messages/" + actionOnMessage.message._id + "/reply",
             data,

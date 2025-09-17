@@ -6,7 +6,7 @@ import { FaReply, FaStar } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import { useAuth } from "../auth-provider";
 import { useRouter } from "@/i18n/routing";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 
 import { Button } from "../ui/button";
@@ -168,7 +168,6 @@ const ReviewActions: React.FC<ReviewActionsProps> = ({
   const handleDelete = async () => {
     setIsLoading(true);
     try {
-      const axiosInstance = await createClientAxiosInstance();
       await axiosInstance.delete(
         `/${reviewType === "system" ? "systemReviews" : "reviews"}/${
           review._id
@@ -192,7 +191,6 @@ const ReviewActions: React.FC<ReviewActionsProps> = ({
   const handleReply = async () => {
     setIsLoading(true);
     try {
-      const axiosInstance = await createClientAxiosInstance();
       await axiosInstance.put(
         `/${reviewType === "system" ? "systemReviews" : "reviews"}/${
           review._id

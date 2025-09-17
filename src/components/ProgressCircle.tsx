@@ -3,7 +3,7 @@ import "../chart.css";
 import { ICourse, ICourseProgress } from "@/types";
 import ProgressUnit from "./ProgressUnit";
 import { useAnalyticsStore } from "@/stores/AnalyticsStore";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "./auth-provider";
 const ProgressCircle: FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +24,7 @@ const ProgressCircle: FC = () => {
   const { token } = useAuth();
   const getData = async () => {
     setIsLoading(true);
-    const axiosInstance = await createClientAxiosInstance();
+
     const coursesRes = await axiosInstance.get("/courses");
     const coursesList = coursesRes.data.data as ICourse[];
 

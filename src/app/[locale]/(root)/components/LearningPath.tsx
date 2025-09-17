@@ -74,9 +74,11 @@ const LearningPath: React.FC<ICoursePackage & { className?: string }> = ({
           </div>
 
           {/* Category */}
-          <div className="text-primary h5 capitalize underline">
-            {category?.title || type}
-          </div>
+          {category?.title && (
+            <div className="text-primary h5 capitalize underline">
+              {category?.title}
+            </div>
+          )}
 
           {/* Title */}
           <h3 className="h3 font-bold">{title}</h3>
@@ -103,9 +105,7 @@ const LearningPath: React.FC<ICoursePackage & { className?: string }> = ({
 
       {/* Call to Action Button */}
       <Button size="lg" className="w-full" asChild>
-        <Link href={`/checkout/learning-path/${_id}`}>
-          {text("showDetails")}
-        </Link>
+        <Link href={`/learning-paths/${_id}`}>{text("showDetails")}</Link>
       </Button>
     </div>
   );

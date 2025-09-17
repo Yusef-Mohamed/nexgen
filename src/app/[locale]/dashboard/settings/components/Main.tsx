@@ -1,6 +1,6 @@
 "use client";
 
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,7 +85,6 @@ const Main = () => {
       if (coverImage) formData.append("coverImg", coverImage);
       if (data.bio) formData.append("bio", data.bio);
 
-      const axiosInstance = await createClientAxiosInstance();
       const res = await axiosInstance.put(`/users/changeMyData`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,

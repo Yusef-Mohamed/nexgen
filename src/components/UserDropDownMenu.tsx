@@ -41,7 +41,7 @@ const UserDropDownMenu = () => {
         </DropdownMenuItem>
         {user?.isInstructor && (
           <DropdownMenuItem>
-            <Link href="/instructor-dashboard" className="block w-full">
+            <Link href="/instructor-dashboard/courses" className="block w-full">
               {text("instructorDashboard")}
             </Link>
           </DropdownMenuItem>

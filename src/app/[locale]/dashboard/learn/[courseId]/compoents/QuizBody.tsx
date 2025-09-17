@@ -1,6 +1,6 @@
 "use client";
 
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import ImageWithZoom from "@/components/ImageWithZoom";
 import { Button } from "@/components/ui/button";
@@ -54,7 +54,7 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, title }) => {
     try {
       if (!token) return;
       setIsLoading(true);
-      const axiosInstance = await createClientAxiosInstance();
+
       const response = await axiosInstance.get(`/exams/${endpoint}/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -83,7 +83,6 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, title }) => {
     }
     setIsSubmitting(true);
     try {
-      const axiosInstance = await createClientAxiosInstance();
       const formattedAnswers = Object.keys(answers).map((key) => {
         return {
           questionId: key,

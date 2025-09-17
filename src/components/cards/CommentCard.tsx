@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import { useAuth } from "../auth-provider";
 
@@ -47,7 +47,6 @@ const CommentCard: React.FC<CommentCardProps> = ({
       setIsRepliesFetched(true);
       setIsFetchingReplies(true);
       try {
-        const axiosInstance = createClientAxiosInstance();
         const res = await axiosInstance.get(`comments/replies/${comment._id}`);
         setReplies(res.data.data);
       } catch (err) {
@@ -239,7 +238,7 @@ const CommentAction: React.FC<{
       return;
     }
     setIsLoading(true);
-    const axiosInstance = createClientAxiosInstance();
+
     try {
       if (type === "reply") {
         const newReply: IComment = {
@@ -337,7 +336,7 @@ const DeleteComment: React.FC<{
       return;
     }
     setIsLoading(true);
-    const axiosInstance = createClientAxiosInstance();
+
     const tempCommentId = comment._id;
 
     setComments((prev) => prev.filter((item) => item._id !== tempCommentId)); // Optimistic update

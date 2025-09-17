@@ -1,15 +1,17 @@
-import React from "react";
-import CourseCard from "../../../../components/cards/CourseCard";
-import { getTranslations } from "next-intl/server";
-import { createServerAxiosInstance } from "@/app/lib/serverUtils";
-import { ICourse } from "@/types";
-import GridSection from "@/components/GridSection";
+"use client";
 
-const getCourses = async (viewAll?: boolean): Promise<ICourse[]> => {
+import React from "react";
+import { useTranslations } from "next-intl";
+import { useQuery } from "@tanstack/react-query";
+import { axiosInstance } from "@/app/lib/utils";
+import { ICourse } from "@/types";
+import OneSidedContainer from "@/components/OneSidedContainer";
+import CoursesSubsection from "./CoursesSubsection";
+
+const getCourses = async (): Promise<ICourse[]> => {
   try {
-    const axiosInstance = createServerAxiosInstance();
     const coursesRes = await axiosInstance.get(
-      `/courses?sort=-ratingsQuantity${viewAll ? "&limit=5" : "&limit=3"}`
+      `/courses?sort=-ratingsQuantity`
     );
     return coursesRes.data.data as ICourse[];
   } catch (error) {
@@ -18,23 +20,25 @@ const getCourses = async (viewAll?: boolean): Promise<ICourse[]> => {
   }
 };
 
-const PopularCourses: React.FC<{ viewAll?: boolean }> = async ({ viewAll }) => {
-  const text = await getTranslations("popularCourses");
-  const coursesData = await getCourses(viewAll);
+const PopularCourses: React.FC<{ viewAll?: boolean }> = () => {
+  const text = useTranslations("popularCourses");
+
+  const { data: coursesData = [], isLoading } = useQuery({
+    queryKey: ["popularCourses"],
+    queryFn: () => getCourses(),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
 
   return (
-    <GridSection
-      id="courses-section"
-      heading={
-        viewAll ? text("ourPopularCourses") : text("exploreOurPopularCourses")
-      }
-      button={!viewAll ? text("exploreAllCourses") : ""}
-      href="/courses#courses-section"
-    >
-      {coursesData.map((course, index) => (
-        <CourseCard key={index} {...course} />
-      ))}
-    </GridSection>
+    <OneSidedContainer className="pb-8">
+      <CoursesSubsection
+        courses={coursesData}
+        loading={isLoading}
+        theme={"carousel"}
+        title={text("ourPopularCourses")}
+      />
+    </OneSidedContainer>
   );
 };
 

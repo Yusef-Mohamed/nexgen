@@ -26,7 +26,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { IMarketLog } from "@/types";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
@@ -41,7 +41,7 @@ const InvoicesManagement = () => {
     const fetchMarketLog = async () => {
       try {
         setIsLoading(true);
-        const axiosInstance = await createClientAxiosInstance();
+
         const res = await axiosInstance.get("/marketing/getMyMarketLog", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -214,7 +214,6 @@ const BalanceCard = ({
 
     setIsLoading(true);
     try {
-      const axiosInstance = await createClientAxiosInstance();
       await axiosInstance.put(
         `/marketing/withdrawMoney/${user?._id}`,
         {

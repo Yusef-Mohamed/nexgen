@@ -1,13 +1,13 @@
 "use client";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { ICourse } from "@/types";
 import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Edit } from "lucide-react";
+import { Search, Edit, Plus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
@@ -217,7 +217,6 @@ const MyCourses = () => {
         }
 
         const filters = filtersParams.toString();
-        const axiosInstance = createClientAxiosInstance();
 
         const res = await axiosInstance(
           // `/courses/instructorCourses/${user._id}${filters ? "?" + filters : ""}`,
@@ -255,8 +254,21 @@ const MyCourses = () => {
     dependencies: [user?._id, filterType],
   });
 
+  const text = useTranslations("courses");
+
   return (
     <div className="w-full container mx-auto sm:py-8 py-6 space-y-6">
+      {/* Header with Add Course Button */}
+      <div className="flex justify-between items-center gap-4">
+        <h1 className="text-2xl font-bold">{text("my_courses")}</h1>
+        <Button asChild className="flex items-center gap-2">
+          <Link href="/instructor-dashboard/courses/add-course">
+            <Plus className="w-4 h-4" />
+            {text("add_new_course")}
+          </Link>
+        </Button>
+      </div>
+
       {/* Search and Filters */}
       <div className="space-y-4">
         <SearchAndFilters

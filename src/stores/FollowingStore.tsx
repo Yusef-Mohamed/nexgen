@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 
 interface FollowingState {
   followingUsers: { user: string }[];
@@ -25,7 +25,7 @@ export const useFollowingStore = create<FollowingState>((set, get) => ({
     }
     try {
       set({ isLoading: true });
-      const response = await createClientAxiosInstance().get(
+      const response = await axiosInstance.get(
         `/users/follow/followersAndFollowing`,
         {
           headers: {

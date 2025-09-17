@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { emojis } from "@/constants";
 import { cn } from "@/lib/utils";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "../components/auth-provider";
 import { toast } from "react-toastify";
 import { AiOutlineLike } from "react-icons/ai";
@@ -30,7 +30,7 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
       return;
     }
     setIsReacting(true);
-    const axiosInstance = createClientAxiosInstance();
+
     let actionType = "create";
 
     if (post.loggedUserReaction) {

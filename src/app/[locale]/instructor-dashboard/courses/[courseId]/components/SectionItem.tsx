@@ -15,9 +15,11 @@ import {
   MoreVertical,
   Plus,
   Trash2,
+  GripVertical,
 } from "lucide-react";
 import { ISection } from "@/types";
 import LessonItem from "./LessonItem";
+import { DropTargetIndicator } from "./DropTargetIndicator";
 
 interface SectionItemProps {
   section: ISection;
@@ -30,6 +32,20 @@ interface SectionItemProps {
   onAddLesson: (sectionId: string) => void;
   onEditLesson: (lessonId: string) => void;
   onDeleteLesson: (lessonId: string) => void;
+  onDragStart: (
+    e: React.DragEvent,
+    id: string,
+    type: "section" | "lesson"
+  ) => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDragLeave: (e: React.DragEvent) => void;
+  onDragEnd: (e: React.DragEvent) => void;
+  onDrop: (e: React.DragEvent, id: string, type: "section" | "lesson") => void;
+  dropTarget: {
+    id: string;
+    type: "section" | "lesson";
+    position: "above" | "below" | "inside";
+  } | null;
 }
 
 const SectionItem = ({
@@ -43,6 +59,12 @@ const SectionItem = ({
   onAddLesson,
   onEditLesson,
   onDeleteLesson,
+  onDragStart,
+  onDragOver,
+  onDragLeave,
+  onDragEnd,
+  onDrop,
+  dropTarget,
 }: SectionItemProps) => {
   const text = useTranslations("courses");
   const locale = useLocale();
@@ -71,10 +93,30 @@ const SectionItem = ({
   const sectionId = section?.sectionId || section?._id || "";
 
   return (
-    <div className="mb-8 last:mb-0">
+    <div className="mb-8 last:mb-0 relative">
+      {/* Drop target indicator for sections */}
+      {dropTarget?.id === sectionId && dropTarget.type === "section" && (
+        <DropTargetIndicator position={dropTarget.position} />
+      )}
+
       {/* Section Header */}
-      <div className="flex items-center justify-between mb-4 p-4 bg-gray-50 rounded-lg">
+      <div
+        className="flex items-center justify-between mb-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
+        onDrop={(e) => onDrop(e, sectionId, "section")}
+        data-section-id={sectionId}
+        data-section-header="true"
+      >
         <div className="flex items-center gap-3">
+          <div
+            draggable
+            onDragStart={(e) => onDragStart(e, sectionId, "section")}
+            onDragEnd={onDragEnd}
+            className="cursor-move"
+          >
+            <GripVertical className="w-4 h-4 text-gray-400" />
+          </div>
           <FileText className="w-5 h-5 text-gray-600" />
           <h2 className="text-xl font-bold">
             {text("section_number", { number: sectionIndex + 1 })}:{" "}
@@ -125,7 +167,13 @@ const SectionItem = ({
 
       {/* Section Content */}
       {isExpanded && (
-        <div className="ml-6 space-y-4">
+        <div
+          className="ml-6 space-y-4"
+          onDragOver={onDragOver}
+          onDragLeave={onDragLeave}
+          onDrop={(e) => onDrop(e, sectionId, "section")}
+          data-section-id={sectionId}
+        >
           {section?.lessons?.map((lesson, index) => (
             <LessonItem
               key={lesson._id}
@@ -134,6 +182,13 @@ const SectionItem = ({
               courseId={courseId}
               onEdit={onEditLesson}
               onDelete={onDeleteLesson}
+              // Drag and drop props
+              onDragStart={onDragStart}
+              onDragOver={onDragOver}
+              onDragLeave={onDragLeave}
+              onDragEnd={onDragEnd}
+              onDrop={onDrop}
+              dropTarget={dropTarget}
             />
           ))}
 

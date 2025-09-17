@@ -3,8 +3,8 @@ import { ICourseProgress } from "@/types";
 import { useEffect, useState } from "react";
 import { getCookie } from "cookies-next";
 import { useAnalyticsStore } from "@/stores/AnalyticsStore";
-import { createClientAxiosInstance } from "@/app/lib/utils";
 import { cn } from "@/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 const CourseProgress = () => {
   const token = getCookie("token");
   const [isFetching, setIsFetching] = useState(true);
@@ -16,7 +16,6 @@ const CourseProgress = () => {
   const getCourseScore = async (course: string) => {
     setIsFetching(true);
     try {
-      const axiosInstance = createClientAxiosInstance();
       const courseScore = await axiosInstance.get(
         `/exams/userScore/${course}/${selectedUser}`,
         {

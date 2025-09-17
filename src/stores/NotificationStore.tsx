@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { io, Socket } from "socket.io-client";
 import { SOCKET_URL } from "@/constants";
 import { INotification, IPagination } from "@/types";
@@ -44,7 +44,7 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
       return;
     const token = getCookie("token");
     set({ isLoading: true });
-    const axiosInstance = createClientAxiosInstance();
+
     try {
       const nextPage = (paginationData?.currentPage || 0) + 1 || 1;
       const res = await axiosInstance(
@@ -85,7 +85,7 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
   },
   readNotification: async ({ id }: { id: string }) => {
     const token = getCookie("token");
-    const axiosInstance = createClientAxiosInstance();
+
     await axiosInstance.put(`/notifications/${id}`, null, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -98,7 +98,7 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
   },
   getUnReadCount: async () => {
     if (get().gotUnReadCount) return;
-    const axiosInstance = createClientAxiosInstance();
+
     const token = getCookie("token");
     try {
       const res = await axiosInstance("/notifications/unreadCount", {
@@ -113,7 +113,6 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
   clearAllUnread: async () => {
-    const axiosInstance = createClientAxiosInstance();
     const token = getCookie("token");
     try {
       await axiosInstance.put("/notifications", null, {

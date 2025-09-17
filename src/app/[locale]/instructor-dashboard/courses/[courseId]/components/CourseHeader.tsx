@@ -29,7 +29,7 @@ const CourseHeader = ({ course, onEdit }: CourseHeaderProps) => {
   return (
     <div className="flex items-center gap-4 mb-4">
       <button className="h-10 w-10 flex items-center justify-center">
-        <Link href="/instructor-dashboard">
+        <Link href="/instructor-dashboard/courses">
           {locale === "ar" ? (
             <ArrowRight className="w-4 h-4 " />
           ) : (

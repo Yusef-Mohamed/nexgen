@@ -76,9 +76,7 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
   if (theme === "grid") {
     return (
       <div>
-        {title && (
-          <h2 className="text-2xl font-bold mb-6 text-center">{title}</h2>
-        )}
+        {title && <h2 className="mb-6 capitalize">{title}</h2>}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (

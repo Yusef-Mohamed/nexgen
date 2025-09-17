@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLocale } from "next-intl";
 import { useAuth } from "@/components/auth-provider";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import { IMarketLog, IOrder, IUser } from "@/types";
 import TeamTable from "./TeamTable";
@@ -72,7 +72,6 @@ const TeamManagement: React.FC = () => {
 
       setIsFetching(true);
       try {
-        const axiosInstance = createClientAxiosInstance();
         const logRes = await axiosInstance.get<{
           marketLog: IMarketLog;
         }>(`/marketing/getMarketLog/${user._id}`, {
@@ -108,7 +107,7 @@ const TeamManagement: React.FC = () => {
 
     try {
       setIsLoading(true);
-      const axiosInstance = createClientAxiosInstance();
+
       await axiosInstance.put(
         `/marketing/modifyInvitationKeys/${user._id}`,
         {

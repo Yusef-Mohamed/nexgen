@@ -6,7 +6,7 @@ import { Chat } from "./Chat";
 import { useChatStore } from "@/stores/ChatStore";
 import { io } from "socket.io-client";
 import { SOCKET_URL } from "@/constants";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 
 interface ChatLayoutProps {
@@ -18,7 +18,7 @@ export function ChatLayout({ selectedChat }: ChatLayoutProps) {
   const { user, token } = useAuth();
   const getChats = async () => {
     setIsFetchingChats(true);
-    const axiosInstance = createClientAxiosInstance();
+
     const res = await axiosInstance("/chats/myChats", {
       headers: {
         Authorization: `Bearer ${token}`,

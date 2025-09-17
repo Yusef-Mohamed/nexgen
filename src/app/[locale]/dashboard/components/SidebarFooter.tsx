@@ -11,7 +11,7 @@ import { IoMdSettings } from "react-icons/io";
 import { RiLogoutBoxLine, RiLogoutBoxRLine } from "react-icons/ri";
 import { useAuth } from "@/components/auth-provider";
 import { useEffect, useMemo, useState } from "react";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { IReview } from "@/types";
 import { BsChatLeftDots } from "react-icons/bs";
 
@@ -26,7 +26,6 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
   const [systemReviewCreatedAt, setSystemReviewCreatedAt] = useState("");
   useEffect(() => {
     const getCurrentReview = async () => {
-      const axiosInstance = createClientAxiosInstance();
       axiosInstance
         .get("/systemReviews/myReviews", {
           headers: {

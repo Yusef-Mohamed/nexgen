@@ -11,7 +11,7 @@ import {
   ChartContainer,
   ChartTooltip,
 } from "@/components/ui/chart";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useTranslations } from "next-intl";
 import MonthSelector from "@/components/MonthSelector"; // Updated import
 
@@ -58,7 +58,7 @@ const ExamsChart = () => {
     const getExams = async () => {
       try {
         setIsCourseProgressLoading(true);
-        const axiosInstance = createClientAxiosInstance();
+        
         const res = await axiosInstance.get(
           `/exams/courseProgress/${selectedCourse}/${selectedUser}`,
           {

@@ -19,10 +19,10 @@ body {
 .main {
   h1,
   .h1 {
-    @apply leading-[2.25rem] text-3xl sm:text-4xl sm:leading-[3rem] md:text-5xl md:leading-[3.75rem] lg:text-6xl lg:leading-[4.5rem];
+    @apply text-3xl sm:text-4xl md:text-5xl lg:text-[3rem];
   }
   .h1-5 {
-    @apply leading-[2.25rem] text-2xl sm:text-3xl sm:leading-[3rem] md:text-4xl md:leading-[3.75rem] lg:text-5xl lg:leading-[4.5rem];
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-[1.5];
   }
   h2,
   .h2 {
@@ -209,7 +209,9 @@ body {
     width: calc(100vw - 320px);
   }
 }
-
+main {
+  background-color: hsl(var(--clear-ground));
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;

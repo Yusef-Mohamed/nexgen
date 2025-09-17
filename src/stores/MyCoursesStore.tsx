@@ -1,4 +1,4 @@
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { ICourse, IProgress, IUserScore } from "@/types";
 import { create } from "zustand";
 
@@ -30,7 +30,7 @@ export const useMyCoursesStore = create<MyCoursesStore>((set, get) => ({
     if (isFresh && !skipValidation) return;
     try {
       set({ isLoading: true });
-      const axiosInstance = await createClientAxiosInstance();
+
       const res = await axiosInstance.get("/courses/MyCourses", {
         headers: {
           Authorization: `Bearer ${token}`,

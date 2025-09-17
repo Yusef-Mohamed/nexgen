@@ -48,16 +48,12 @@ const LessonEditDialog = ({
 }: LessonEditDialogProps) => {
   const {
     loading,
-    image,
     attachments,
-    imagePreview,
     form,
     onSubmit,
-    handleImageFilesSelected,
     handleAttachmentFilesSelected,
     removeAttachment,
     text,
-    resetImage,
   } = useLessonEditDialog({
     lesson,
     courseId,
@@ -252,37 +248,6 @@ const LessonEditDialog = ({
                 </FormItem>
               )}
             />
-
-            {/* Image Upload */}
-            <div className="space-y-2">
-              <FormLabel>{text("validation.image")}</FormLabel>
-              <FileInput
-                accept="image/png,image/jpeg"
-                multiple={false}
-                onFilesSelected={handleImageFilesSelected}
-                description={text("validation.image")}
-              />
-              {(imagePreview || lesson?.image) && (
-                <div className="relative inline-block">
-                  <img
-                    src={imagePreview || lesson?.image}
-                    alt={text("validation.image_preview")}
-                    className="w-32 h-32 object-cover rounded-md border"
-                  />
-                  {image && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        resetImage();
-                      }}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
 
             {/* Attachments Upload */}
             <div className="space-y-2">

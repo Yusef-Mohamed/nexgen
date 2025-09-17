@@ -9,17 +9,15 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { ILesson } from "@/types";
-import { createClientAxiosInstance } from "@/app/lib/utils";
 import { useParams } from "next/navigation";
 import { FiPlayCircle } from "react-icons/fi";
+import { axiosInstance } from "@/app/lib/utils";
 async function getSections(courseId: string): Promise<
   {
     section: string;
     lessons: ILesson[];
   }[]
 > {
-  const axiosInstance = createClientAxiosInstance();
-
   try {
     const sectionsRes = await axiosInstance.get(
       `/lessons/sectionLessons/${courseId}/public`

@@ -8,100 +8,67 @@ import { cn } from "@/lib/utils";
 
 const Hero: React.FC = () => {
   const text = useTranslations("hero");
-  // hero_person.png
-  // revenue.png
-  // win.png
-  // chart.png
   const locale = useLocale();
   return (
-    <section className="bg-primary-faded overflow-hidden">
-      <div className="container grid items-center gap-6 lg:grid-cols-2">
+    <section className="pt-8 max-xl:px-4">
+      <div className="container px-4 sm:px-8 md:px-16 lg:px-20 py-10 sm:pt-16 md:py-20 lg:py-[5.5rem] rounded-3xl bg-primary-faded lg:items-center gap-6 flex max-lg:flex-col lg:justify-between">
         <TransitionBox
-          className="py-10"
           containerClassName="overflow-visible"
           fromValue="200%"
           transitionType="fromRight"
         >
           <div>
-            <h2 className="text-primary-main h3">{text("subHeading")}</h2>
-            <h1 className="mt-4 ">{text("heading")}</h1>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-16 h-0.5 bg-primary"></div>
+              <h2 className="text-primary h4 font-medium">
+                {text("bestPlatform")}
+              </h2>
+            </div>
+            <h1
+              className={cn(
+                "mt-4",
+                locale === "ar" ? "space-y-5" : "space-y-2"
+              )}
+            >
+              <div className="block">{text("headingPart1")}</div>
+              <div className="block relative w-fit">
+                <div
+                  className={cn(
+                    "w-full h-full bg-primary/10 absolute top-0 left-0",
+                    locale === "ar" ? "h-[120%]" : "translate-y-[10%]"
+                  )}
+                />
+                <span className="text-primary rounded">
+                  {text("headingPart2")}
+                </span>
+              </div>
+              <div className="block">{text("headingPart3")}</div>
+              <div className="block">{text("headingPart4")}</div>
+            </h1>
           </div>
-          <p className="my-6 sm:my-10 sm:text-lg text-text-1">
-            {text("description")}
+          <p className="my-6 sm:my-10 !text-base md:!text-xl  text-text-1 max-w-xl">
+            {text("newDescription")}
           </p>
           <Button className="sm:min-w-52">
-            <Link href="/sign-up"> {text("startNow")}</Link>
+            <Link href="/sign-up">{text("getStarted")}</Link>
           </Button>
         </TransitionBox>
-        <div className="w-full lg:max-w-[650px] relative aspect-square">
+        <div className="w-full lg:max-w-[350px] max-w-[70%] max-lg:mx-auto relative aspect-square">
           <TransitionBox
-            className={cn(
-              "absolute z-10  top-[8.5%] w-[65%]  aspect-[464/517]",
-              {
-                "left-[8%]": locale === "ar",
-                "right-[8%]": locale !== "ar",
-              }
-            )}
+            className="w-full h-full"
             containerClassName="overflow-visible"
             transitionType="fromBottom"
             fromValue="200%"
           >
             <Image
-              src="/images/hero_person.png"
+              src="/images/new_hero.png"
               alt="hero"
-              className={cn("w-full aspect-[464/517]  object-cover", {
+              className={cn("w-full h-full object-contain", {
                 "-scale-x-100": locale === "ar",
               })}
-              width={464}
-              height={517}
+              width={650}
+              height={650}
             />
-          </TransitionBox>
-          <TransitionBox
-            className={cn("absolute bottom-[0%] w-[56%] aspect-[400/270]", {
-              "right-0": locale === "ar",
-              "left-0": locale !== "ar",
-            })}
-            containerClassName="overflow-visible"
-            fromValue="200%"
-            transitionType="fromBottom"
-          >
-            <Image
-              src="/images/revenue.png"
-              alt="hero"
-              width={400}
-              height={270}
-              className="w-full"
-            />
-          </TransitionBox>
-          <TransitionBox
-            className={cn("absolute top-0  w-[20%] aspect-[140/50]", {
-              "left-0": locale === "ar",
-              "right-0": locale !== "ar",
-            })}
-            containerClassName="overflow-visible"
-            fromValue="200%"
-            transitionType="fromLeft"
-          >
-            <Image src="/images/win.png" alt="hero" width={140} height={50} />
-          </TransitionBox>
-          <TransitionBox
-            className={cn("absolute top-[10%] w-[75%] aspect-[520/190]", {
-              " left-0": locale === "ar",
-              "right-0": locale !== "ar",
-            })}
-            containerClassName="overflow-visible"
-            fromValue="200%"
-            transitionType="fromLeft"
-          >
-            <Image
-              src="/images/chart.png"
-              alt="hero"
-              className={cn({
-                "-scale-x-100": locale !== "ar",
-              })}
-              width={520}
-              height={190}
-            />{" "}
           </TransitionBox>
         </div>
       </div>

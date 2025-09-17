@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/components/auth-provider";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { ICoupon } from "@/types";
 import { toast } from "react-toastify";
 
@@ -36,7 +36,6 @@ const CouponManagement = () => {
     const fetchCoupons = async () => {
       setIsFetching(true);
       try {
-        const axiosInstance = createClientAxiosInstance();
         const res = await axiosInstance.get("/coupons", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -62,7 +61,7 @@ const CouponManagement = () => {
     e.preventDefault();
     try {
       setIsLoading(true);
-      const axiosInstance = createClientAxiosInstance();
+
       const res = await axiosInstance.post(
         "/coupons",
         {

@@ -25,7 +25,7 @@ import { format } from "date-fns";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { ICourse, ICoursePackage, IPackage } from "@/types";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import * as XLSX from "xlsx";
 const formatDate = (date: Date) => {
   return format(date, "yyyy MM dd").split(" ").join("-");
@@ -47,7 +47,6 @@ const TeamTable = ({ data }: { data: TeamData }) => {
   const [packages, setPackages] = useState<IPackage[]>([]);
   useEffect(() => {
     const fetchCourses = async () => {
-      const axiosInstance = createClientAxiosInstance();
       try {
         const res = await axiosInstance.get("/courses");
         setCourses(res.data.data);

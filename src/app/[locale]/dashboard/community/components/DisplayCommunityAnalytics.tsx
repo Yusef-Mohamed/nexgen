@@ -4,7 +4,7 @@ import useCustomSearchParams from "@/hooks/useSearchParams";
 import { IPost } from "@/types";
 import { useCallback, useEffect, useState } from "react";
 import CommunityFilters from "./CommunityFilters";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useTranslations } from "next-intl";
 import CreatePost from "./CreatePost";
@@ -42,7 +42,7 @@ const DisplayCommunityAnalytics = () => {
         const filters = filtersParams.toString()
           ? `${sharedTo.startsWith("?") ? "&" : "?"}${filtersParams.toString()}`
           : "";
-        const axiosInstance = await createClientAxiosInstance();
+
         const res = await axiosInstance(`/posts${sharedTo}${filters}`, {
           headers: {
             Authorization: `Bearer ${token}`,

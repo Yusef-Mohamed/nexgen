@@ -1,5 +1,5 @@
 "use client";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { useFollowingStore } from "@/stores/FollowingStore";
@@ -31,7 +31,6 @@ const FollowBtn = ({ userId, sm }: { userId: string; sm?: boolean }) => {
     if (!token) return;
     setIsLoading(true);
     try {
-      const axiosInstance = createClientAxiosInstance();
       if (!isFollowed) {
         await axiosInstance.post(
           `/users/follow/${userId}`,

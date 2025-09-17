@@ -16,7 +16,10 @@ const SocketWrapper = dynamic(() => import("@/components/SocketWrapper"), {
   ssr: false,
 });
 
-const alexandria = Alexandria({ subsets: ["latin"] });
+const alexandria = Alexandria({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
 export async function generateMetadata({
   params,
 }: {

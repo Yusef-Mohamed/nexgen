@@ -17,6 +17,7 @@ interface CategoryFilterProps {
   showAllButton?: boolean;
   className?: string;
   loading?: boolean;
+  enableSearch?: boolean;
 }
 
 const CategoryFilter: React.FC<CategoryFilterProps> = ({
@@ -25,6 +26,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   onCategoryChange,
   className = "",
   loading = false,
+  enableSearch = false,
 }) => {
   return (
     <div className={cn("w-full", className)}>
@@ -36,6 +38,23 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
         className="w-full"
       >
         <CarouselContent className="-ml-2">
+          {/* All Button - only show when search is enabled */}
+          {enableSearch && (
+            <CarouselItem className="px-2 basis-auto">
+              <button
+                onClick={() => onCategoryChange(null)}
+                className={cn(
+                  "rounded-full px-4 py-2 h-auto text-base whitespace-nowrap transition-colors",
+                  !selectedCategory
+                    ? "bg-primary text-primary-foreground hover:bg-primary/80"
+                    : "bg-transparent border border-text-3 text-text-1 hover:bg-primary hover:border-primary hover:text-primary-foreground"
+                )}
+              >
+                All
+              </button>
+            </CarouselItem>
+          )}
+
           {categories.map((category) => (
             <CarouselItem key={category._id} className="px-2 basis-auto">
               <button

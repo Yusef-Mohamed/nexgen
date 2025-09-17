@@ -70,7 +70,7 @@ const ServiceCard: React.FC<IPackage & { className?: string }> = ({
 
       {/* Call to Action Button */}
       <Button size="lg" className="w-full" asChild>
-        <Link href={`/checkout/service/${_id}`}>{text("startNow")}</Link>
+        <Link href={`/services/${_id}`}>{text("startNow")}</Link>
       </Button>
     </div>
   );

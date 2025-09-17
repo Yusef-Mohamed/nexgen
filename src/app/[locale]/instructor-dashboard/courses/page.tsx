@@ -1,7 +1,7 @@
 import { unstable_setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
 import { getMetadataInstructorDashboardPage } from "@/getMetaData";
-import MyCourses from "./components/MyCourses";
+import MyCourses from "../components/MyCourses";
 
 export async function generateMetadata({
   params,

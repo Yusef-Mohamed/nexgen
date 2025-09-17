@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { IPackage } from "@/types";
@@ -8,21 +8,30 @@ import ServicesSubsection from "./ServicesSubsection";
 import OneSidedContainer from "@/components/OneSidedContainer";
 import { axiosInstance } from "@/app/lib/utils";
 import CategoryFilter from "./CategoryFilter";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+
+interface OurServicesProps {
+  enableSearch?: boolean;
+}
 
 // Function to fetch services by category
 const fetchServicesByCategory = async (
-  categoryId?: string
+  categoryId?: string,
+  searchKeyword?: string
 ): Promise<IPackage[]> => {
-  if (!categoryId) {
-    // If no category selected, fetch all services
-    const response = await axiosInstance.get("/packages?limit=50");
-    return response.data.data;
+  let url = "/packages?limit=50";
+  if (searchKeyword) {
+    url += `&keyword=${encodeURIComponent(searchKeyword)}`;
   }
 
-  // Fetch all services and filter by category on client side
-  // Since IPackage has a course field that contains category info
-  const response = await axiosInstance.get("/packages?limit=50");
+  const response = await axiosInstance.get(url);
   const allServices: IPackage[] = response.data.data;
+
+  if (!categoryId) {
+    return allServices;
+  }
 
   // Filter services where the course belongs to the selected category
   return allServices.filter(
@@ -30,14 +39,22 @@ const fetchServicesByCategory = async (
   );
 };
 
-// Function to fetch all services
-const fetchServices = async (): Promise<IPackage[]> => {
-  const response = await axiosInstance.get("/packages?limit=50");
+// Function to fetch popular services
+const fetchPopularServices = async (): Promise<IPackage[]> => {
+  const url = "/packages?sort=-ratingsQuantity&limit=50";
+  const response = await axiosInstance.get(url);
   return response.data.data;
 };
 
-const OurServices: React.FC = () => {
+const OurServices: React.FC<OurServicesProps> = ({ enableSearch = false }) => {
   const text = useTranslations("services");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const [searchKeyword, setSearchKeyword] = useState(
+    searchParams?.get("keyword") || ""
+  );
 
   // Get categories and selected category from the hook
   const {
@@ -45,21 +62,38 @@ const OurServices: React.FC = () => {
     selectedCategory,
     setSelectedCategory,
     loading: categoriesLoading,
-  } = useCategoryFilter();
+  } = useCategoryFilter(enableSearch);
+
+  // Update URL search params when search keyword changes
+  useEffect(() => {
+    if (!enableSearch) return;
+
+    const params = new URLSearchParams(searchParams?.toString());
+    if (searchKeyword) {
+      params.set("keyword", searchKeyword);
+    } else {
+      params.delete("keyword");
+    }
+
+    const newUrl = `${pathname}?${params.toString()}`;
+    router.replace(newUrl, { scroll: false });
+  }, [searchKeyword, searchParams, pathname, router, enableSearch]);
 
   // Fetch services filtered by category
   const { data: services = [], isLoading: servicesLoading } = useQuery({
-    queryKey: ["services", selectedCategory?._id],
-    queryFn: () => fetchServicesByCategory(selectedCategory?._id),
-    enabled: true,
+    queryKey: ["services", selectedCategory?._id, searchKeyword],
+    queryFn: () =>
+      fetchServicesByCategory(selectedCategory?._id, searchKeyword),
+    enabled: enableSearch ? true : !!selectedCategory,
   });
 
-  // Fetch all services
-  const { data: allServices = [], isLoading: allServicesLoading } = useQuery({
-    queryKey: ["allServices"],
-    queryFn: fetchServices,
-    enabled: true,
-  });
+  // Fetch popular services
+  const { data: popularServices = [], isLoading: popularServicesLoading } =
+    useQuery({
+      queryKey: ["popularServices"],
+      queryFn: () => fetchPopularServices(),
+      enabled: true,
+    });
 
   // Get category title for display
   const getCategoryTitle = () => {
@@ -73,37 +107,58 @@ const OurServices: React.FC = () => {
   };
 
   return (
-    <section className="py-16">
-      <OneSidedContainer>
-        <div className="mb-8">
-          <h2 className="h1-5 font-bold">{text("heading")}</h2>
-        </div>
+    <section className="py-12 space-y-8">
+      <div className="container">
+        <h2 className="h2 !font-bold mb-6">{text("heading")}</h2>
 
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-          <CategoryFilter
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-            showAllButton={true}
-            loading={categoriesLoading}
-          />
-        </div>
-
-        <ServicesSubsection
-          services={services}
-          loading={servicesLoading}
-          theme={"carousel"}
-          title={selectedCategory ? getCategoryTitle() : undefined}
+        {/* Search Bar */}
+        {enableSearch && (
+          <div className="relative mb-6 max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              type="text"
+              placeholder={text("searchCourses") || "Search courses..."}
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        )}
+        <CategoryFilter
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onCategoryChange={setSelectedCategory}
+          showAllButton={true}
+          loading={categoriesLoading}
+          enableSearch={enableSearch}
         />
-
-        <div className="mt-16">
+      </div>
+      {enableSearch ? (
+        <div className="container">
           <ServicesSubsection
-            services={allServices}
-            loading={allServicesLoading}
-            theme={"carousel"}
-            title={text("exploreAllServices")}
+            services={services}
+            loading={servicesLoading}
+            theme={"grid"}
+            title={selectedCategory ? getCategoryTitle() : undefined}
           />
         </div>
+      ) : (
+        <OneSidedContainer>
+          <ServicesSubsection
+            services={services}
+            loading={servicesLoading}
+            theme={"carousel"}
+            title={selectedCategory ? getCategoryTitle() : undefined}
+          />
+        </OneSidedContainer>
+      )}{" "}
+      <OneSidedContainer>
+        <ServicesSubsection
+          services={popularServices}
+          loading={popularServicesLoading}
+          theme={"carousel"}
+          title={text("ourPopularServices")}
+        />
       </OneSidedContainer>
     </section>
   );

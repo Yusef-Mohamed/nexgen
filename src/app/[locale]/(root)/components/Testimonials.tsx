@@ -8,13 +8,13 @@ import { useTranslations } from "next-intl";
 import GridSection from "@/components/GridSection";
 import { Button } from "@/components/ui/button";
 import { IReview } from "@/types";
-import { createClientAxiosInstance } from "@/app/lib/utils";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { axiosInstance } from "@/app/lib/utils";
 
 const Testimonials: React.FC = () => {
   const text = useTranslations("learnerReviews");
@@ -27,7 +27,6 @@ const Testimonials: React.FC = () => {
   const fetchReviews = async (pageNumber: number) => {
     try {
       setLoading(true);
-      const axiosInstance = await createClientAxiosInstance();
       const response = await axiosInstance.get(
         `/systemReviews?page=${pageNumber}&limit=4`
       );

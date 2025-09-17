@@ -1,4 +1,4 @@
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { IPackage } from "@/types";
 import { create } from "zustand";
 
@@ -29,7 +29,6 @@ export const usePackagesStore = create<PackagesStore>((set, get) => ({
 
     try {
       set({ isLoading: true });
-      const axiosInstance = await createClientAxiosInstance();
 
       const res = await axiosInstance.get("/userSubscriptions", {
         headers: {

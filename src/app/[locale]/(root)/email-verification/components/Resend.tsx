@@ -1,5 +1,5 @@
 "use client";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -10,7 +10,6 @@ const Resend = () => {
   const { user, token } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const handelNotActive = async () => {
-    const axiosInstance = createClientAxiosInstance();
     try {
       setIsLoading(true);
       await axiosInstance.post(

@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "../ui/form";
 import CustomFormField from "../FormField";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { AxiosError } from "axios";
 const EmailVerificationForm = () => {
   const t = useTranslations("ResetCode");
@@ -29,7 +29,6 @@ const EmailVerificationForm = () => {
     defaultValues: {},
   });
   const onSubmit = async (data: VerificationFormValue) => {
-    const axiosInstance = createClientAxiosInstance();
     setIsLoading(true);
     try {
       await axiosInstance.post("/auth/verifyEmail", {

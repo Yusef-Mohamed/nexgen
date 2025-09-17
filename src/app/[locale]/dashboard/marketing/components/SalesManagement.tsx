@@ -14,7 +14,7 @@ import { useAuth } from "@/components/auth-provider";
 import TrendBadge from "@/components/TrendBadge";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { RiTeamFill } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
@@ -58,7 +58,7 @@ const SalesManagement = () => {
     const fetchMarketLog = async () => {
       try {
         setIsLoading(true);
-        const axiosInstance = await createClientAxiosInstance();
+
         const res = await axiosInstance.get(
           `/marketingAnalytics/total?locale=en&month=${
             new Date().getFullYear() +
@@ -187,7 +187,6 @@ const MainComponent = ({
   const { token } = useAuth();
   useEffect(() => {
     const fetchCourses = async () => {
-      const axiosInstance = createClientAxiosInstance();
       try {
         const res = await axiosInstance.get("/courses");
         setCourses(res.data.data);
@@ -216,7 +215,6 @@ const MainComponent = ({
     const fetchData = async () => {
       if (!date?.from) return;
       try {
-        const axiosInstance = await createClientAxiosInstance();
         const res = await axiosInstance.get(
           `/marketingAnalytics/item/${item}?startDate=${date.from.toLocaleDateString(
             "en-GB"
@@ -609,7 +607,7 @@ const TopInstructors = () => {
       try {
         setIsLoading(true);
         console.log("");
-        const axiosInstance = await createClientAxiosInstance();
+
         const res = await axiosInstance.get("/leaderboard", {
           headers: {
             Authorization: `Bearer ${token}`,

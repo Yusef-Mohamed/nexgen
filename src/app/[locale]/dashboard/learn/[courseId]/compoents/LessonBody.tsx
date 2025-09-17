@@ -1,4 +1,4 @@
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { ILesson } from "@/types";
@@ -23,14 +23,11 @@ const LessonBody = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await createClientAxiosInstance().get(
-          `/lessons/${lessonId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axiosInstance.get(`/lessons/${lessonId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const videoData = response.data?.data?.videoData;
         if (videoData) {
           setData(videoData);

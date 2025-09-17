@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import * as z from "zod";
 import GoogleAuthBtn from "../GoogleAuthBtn";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import CustomForm from "./CustomForm";
 import { toast } from "react-toastify";
 
@@ -17,7 +17,6 @@ const ForgotPassword = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const axiosInstance = createClientAxiosInstance();
     await axiosInstance.post("/auth/forgotPassword", data);
     toast.success(inputs("reset_code_sent_to_email"));
     router.push("/reset-code");

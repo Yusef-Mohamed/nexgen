@@ -1,5 +1,5 @@
 "use client";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -18,7 +18,6 @@ const LiveFilters = () => {
   const [packages, setPackages] = useState<IPackage[]>([]);
   const { getSearchParam, setSearchParams } = useCustomSearchParams();
   useEffect(() => {
-    const axiosInstance = createClientAxiosInstance();
     axiosInstance
       .get("/packages")
       .then((res) => {

@@ -1,4 +1,4 @@
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { IReview } from "@/types";
 import { create } from "zustand";
 
@@ -45,12 +45,9 @@ export const useCourseReviewStore = create<CourseReviewState>((set, get) => ({
     set({ isLoading: true });
 
     try {
-      const response = await createClientAxiosInstance().get(
-        "/reviews/myReviews",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await axiosInstance.get("/reviews/myReviews", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       const allReviews = response.data.data as IReview[];
       const thisReview = allReviews.find(
@@ -82,7 +79,7 @@ export const useCourseReviewStore = create<CourseReviewState>((set, get) => ({
 
     try {
       if (idToEdit) {
-        await createClientAxiosInstance().put(
+        await axiosInstance.put(
           `/reviews/${idToEdit}`,
           { ...data, course: courseId },
           {
@@ -90,7 +87,7 @@ export const useCourseReviewStore = create<CourseReviewState>((set, get) => ({
           }
         );
       } else {
-        const response = await createClientAxiosInstance().post(
+        const response = await axiosInstance.post(
           `/reviews`,
           { ...data, course: courseId },
           {
@@ -114,7 +111,7 @@ export const useCourseReviewStore = create<CourseReviewState>((set, get) => ({
     setIsLoading(true);
 
     try {
-      await createClientAxiosInstance().delete(`/reviews/${idToEdit}`, {
+      await axiosInstance.delete(`/reviews/${idToEdit}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setIdToEdit("");

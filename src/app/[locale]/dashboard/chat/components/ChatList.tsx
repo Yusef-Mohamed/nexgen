@@ -4,7 +4,7 @@ import { IMessage } from "@/types";
 import MessageCard from "@/components/cards/MessageCard";
 import { useChatStore } from "@/stores/ChatStore";
 import { FaSpinner } from "react-icons/fa";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 export function ChatList() {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -32,7 +32,6 @@ export function ChatList() {
     if (isFetchingMessages) return;
     setIsFetchingMessages(true);
     try {
-      const axiosInstance = await createClientAxiosInstance();
       const res = await axiosInstance(
         `/messages/${selectedChatId}?limit=10&sort=-createdAt&page=${
           messageCurrentPage + 1

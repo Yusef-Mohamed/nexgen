@@ -1,4 +1,4 @@
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -38,7 +38,7 @@ const HomeEvents = () => {
     const getEvents = async () => {
       try {
         setIsGettingEvents(true);
-        const axiosInstance = createClientAxiosInstance();
+
         const res = await axiosInstance("/events", {
           headers: { Authorization: `Bearer ${token}` },
         });

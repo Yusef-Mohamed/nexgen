@@ -1,5 +1,4 @@
 "use client";
-import { createClientAxiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
@@ -8,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "@/i18n/routing";
+import { axiosInstance } from "@/app/lib/utils";
 
 const BuyCourse = ({ id, price }: { id: string; price: number }) => {
   const text = useTranslations("coursePage");
@@ -33,7 +33,6 @@ const BuyCourse = ({ id, price }: { id: string; price: number }) => {
     }
     try {
       setIsLoading(true);
-      const axiosInstance = await createClientAxiosInstance();
       await axiosInstance.put(
         `/orders/createUnPaidOrder/${id}`,
         {},

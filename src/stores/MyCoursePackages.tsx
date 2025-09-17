@@ -1,4 +1,4 @@
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { ICoursePackage } from "@/types";
 import { create } from "zustand";
 
@@ -16,7 +16,7 @@ export const useMyCoursePackagesStore = create<MyCoursePackagesStore>(
     getCoursePackages: async (token) => {
       try {
         set({ isLoading: true });
-        const axiosInstance = await createClientAxiosInstance();
+
         const res = await axiosInstance.get(
           "/coursePackages/MyCoursePackages",
           {

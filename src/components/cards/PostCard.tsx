@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import FocusedPostCard from "./FocusedPostCard";
 import { Link, useRouter } from "@/i18n/routing";
 import { useAuth } from "../auth-provider";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import {
   DropdownMenu,
@@ -210,7 +210,6 @@ const PostAction: React.FC<{
   const handleDelete = async () => {
     setIsLoading(true);
     try {
-      const axiosInstance = await createClientAxiosInstance();
       await axiosInstance.delete(`/posts/${post._id}`, {
         headers: {
           Authorization: `Bearer ${token}`,

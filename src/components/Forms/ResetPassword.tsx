@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import * as z from "zod";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import CustomForm from "./CustomForm";
 import { toast } from "react-toastify";
 
@@ -22,8 +22,6 @@ const ResetPassword = () => {
       .regex(/[@#_]/, { message: inputs("passwordRequiresSpecialChar") }),
   });
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const axiosInstance = createClientAxiosInstance();
-
     await axiosInstance.put("/auth/resetPassword", data);
     router.push("/sign-in");
     toast.success(inputs("password_reset_success_please_login"));

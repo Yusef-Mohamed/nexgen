@@ -1,4 +1,4 @@
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import FocusedPostCard from "@/components/cards/FocusedPostCard";
 import useCustomSearchParams from "@/hooks/useSearchParams";
@@ -13,7 +13,6 @@ const GetFocusedPost = () => {
   useEffect(() => {
     const post = searchParams.get("focusedPost");
     if (post) {
-      const axiosInstance = createClientAxiosInstance();
       axiosInstance
         .get(`/posts/${post}`, {
           headers: {

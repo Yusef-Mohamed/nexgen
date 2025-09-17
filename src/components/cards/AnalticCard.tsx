@@ -33,7 +33,7 @@ import UserAvatar from "../UserAvatar";
 import { toast } from "react-toastify";
 import { useTranslations } from "next-intl";
 import { IAnalytic } from "@/types";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import ImageWithZoom from "../ImageWithZoom";
 const isPDF = (url: string) => url.endsWith(".pdf");
 
@@ -63,7 +63,7 @@ const AnalyticCard = ({
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
-      const axiosInstance = createClientAxiosInstance();
+
       const res = await axiosInstance.put(
         `/analytics/${analytic._id}`,
         { marketerComment, isPassed, isSeen: true },
@@ -88,7 +88,7 @@ const AnalyticCard = ({
   const handleDelete = async () => {
     try {
       setIsLoading(true);
-      const axiosInstance = createClientAxiosInstance();
+
       await axiosInstance.delete(`/analytics/${analytic._id}`, {
         headers: { Authorization: `Bearer ${getCookie("token")}` },
       });

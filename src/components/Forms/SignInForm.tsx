@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import * as z from "zod";
 import GoogleAuthBtn from "../GoogleAuthBtn";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import CustomForm from "./CustomForm";
 import { useAuth } from "../auth-provider";
 import { useSearchParams } from "next/navigation";
@@ -28,7 +28,6 @@ const SignInForm = () => {
     }
   }, [redirect]);
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const axiosInstance = createClientAxiosInstance();
     const formattedData: {
       password: string;
       email: string;

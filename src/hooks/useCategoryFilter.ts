@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { createClientAxiosInstance } from "@/app/lib/utils";
+import { axiosInstance } from "@/app/lib/utils";
 import { ICategory } from "@/types";
 
 interface UseCategoryFilterReturn {
@@ -15,12 +15,13 @@ interface UseCategoryFilterReturn {
 }
 
 const fetchCategories = async (): Promise<ICategory[]> => {
-  const axiosInstance = createClientAxiosInstance();
   const response = await axiosInstance.get("/categories?limit=1000");
   return response.data.data as ICategory[];
 };
 
-export const useCategoryFilter = (): UseCategoryFilterReturn => {
+export const useCategoryFilter = (
+  enableSearch = false
+): UseCategoryFilterReturn => {
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
     null
   );
@@ -37,12 +38,18 @@ export const useCategoryFilter = (): UseCategoryFilterReturn => {
     gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
   });
 
-  // Auto-select first category if none is selected and categories are available
+  // Auto-select behavior based on search mode
   useEffect(() => {
-    if (!selectedCategory && categories.length > 0) {
-      setSelectedCategory(categories[0]);
+    if (categories.length > 0) {
+      if (enableSearch && selectedCategory === null) {
+        // For search mode, keep "All" (null) as default
+        return;
+      } else if (!enableSearch && !selectedCategory) {
+        // For non-search mode, select first category
+        setSelectedCategory(categories[0]);
+      }
     }
-  }, [categories, selectedCategory]);
+  }, [categories, selectedCategory, enableSearch]);
 
   return {
     categories,
