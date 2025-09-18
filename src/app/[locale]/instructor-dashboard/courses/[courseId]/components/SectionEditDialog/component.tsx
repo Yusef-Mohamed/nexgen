@@ -62,7 +62,7 @@ const SectionEditDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="sm:max-w-7xl max-h-[90vh] overflow-y-auto"
+        className="sm:max-w-4xl max-h-[90vh] overflow-y-auto"
         isOpen={open}
       >
         <DialogHeader>

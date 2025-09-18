@@ -20,14 +20,15 @@ import {
 } from "@/components/ui/form";
 import { X } from "lucide-react";
 import { ICourse } from "@/types";
-import { CourseFormData } from "../../types/formTypes";
+import { CourseFormSchema } from "../../hooks/useCourseForm";
 
 interface Step3PricingAccessProps {
-  form: UseFormReturn<CourseFormData>;
+  form: UseFormReturn<CourseFormSchema>;
   courses: ICourse[];
   accessibleCourses: ICourse[];
   setAccessibleCourses: React.Dispatch<React.SetStateAction<ICourse[]>>;
   commonFormStyles: string;
+  loading?: boolean;
 }
 
 const Step3PricingAccess: React.FC<Step3PricingAccessProps> = ({
@@ -36,6 +37,7 @@ const Step3PricingAccess: React.FC<Step3PricingAccessProps> = ({
   accessibleCourses,
   setAccessibleCourses,
   commonFormStyles,
+  loading = false,
 }) => {
   const text = useTranslations("courses");
 
@@ -43,10 +45,10 @@ const Step3PricingAccess: React.FC<Step3PricingAccessProps> = ({
     <div className="space-y-6">
       {/* Step Header */}
       <div className="text-center mb-6 sm:mb-8">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 className="text-xl sm:text-2xl font-bold text-foreground">
           {text("step3_title")}
         </h2>
-        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-2 px-2">
+        <p className="text-sm sm:text-base text-muted-foreground mt-2 px-2">
           {text("step3_description")}
         </p>
       </div>
@@ -65,6 +67,7 @@ const Step3PricingAccess: React.FC<Step3PricingAccessProps> = ({
                   {...field}
                   placeholder={text("enter_price")}
                   className={commonFormStyles}
+                  disabled={loading}
                 />
               </FormControl>
               <FormMessage />
@@ -83,6 +86,7 @@ const Step3PricingAccess: React.FC<Step3PricingAccessProps> = ({
                   {...field}
                   placeholder={text("enter_price_after_discount")}
                   className={commonFormStyles}
+                  disabled={loading}
                 />
               </FormControl>
               <FormMessage />
@@ -99,7 +103,11 @@ const Step3PricingAccess: React.FC<Step3PricingAccessProps> = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>{text("rating")}</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={loading}
+              >
                 <FormControl>
                   <SelectTrigger className={commonFormStyles}>
                     <SelectValue placeholder={text("select_rating")} />
@@ -136,6 +144,7 @@ const Step3PricingAccess: React.FC<Step3PricingAccessProps> = ({
                 <Switch
                   checked={field.value}
                   onCheckedChange={field.onChange}
+                  disabled={loading}
                 />
               </FormControl>
             </FormItem>
@@ -161,6 +170,7 @@ const Step3PricingAccess: React.FC<Step3PricingAccessProps> = ({
                   setAccessibleCourses((prev) => [...prev, selectedCourse]);
                 }
               }}
+              disabled={loading}
             >
               <SelectTrigger className={commonFormStyles}>
                 <SelectValue placeholder={text("select_accessible_courses")} />
@@ -181,7 +191,7 @@ const Step3PricingAccess: React.FC<Step3PricingAccessProps> = ({
               {accessibleCourses.map((course) => (
                 <div
                   key={course._id}
-                  className="flex items-center gap-2 p-2 border rounded-md bg-gray-50 dark:bg-gray-800"
+                  className="flex items-center gap-2 p-2 border rounded-md bg-muted/50"
                 >
                   <span className="text-sm">{course.title}</span>
                   <button
@@ -191,7 +201,8 @@ const Step3PricingAccess: React.FC<Step3PricingAccessProps> = ({
                       )
                     }
                     type="button"
-                    className="text-destructive hover:text-destructive/80"
+                    disabled={loading}
+                    className="text-destructive hover:text-destructive/80 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <X className="w-4 h-4" />
                   </button>

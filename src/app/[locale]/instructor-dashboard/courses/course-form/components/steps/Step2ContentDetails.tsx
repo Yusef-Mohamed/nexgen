@@ -11,17 +11,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { CourseFormData } from "../../types/formTypes";
+import { CourseFormSchema } from "../../hooks/useCourseForm";
 import ReorderableHighlightsList from "../ReorderableHighlightsList";
 
 interface Step2ContentDetailsProps {
-  form: UseFormReturn<CourseFormData>;
+  form: UseFormReturn<CourseFormSchema>;
   commonFormStyles: string;
+  loading?: boolean;
 }
 
 const Step2ContentDetails: React.FC<Step2ContentDetailsProps> = ({
   form,
   commonFormStyles,
+  loading = false,
 }) => {
   const text = useTranslations("courses");
 
@@ -29,10 +31,10 @@ const Step2ContentDetails: React.FC<Step2ContentDetailsProps> = ({
     <div className="space-y-6">
       {/* Step Header */}
       <div className="text-center mb-6 sm:mb-8">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 className="text-xl sm:text-2xl font-bold text-foreground">
           {text("step2_title")}
         </h2>
-        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-2 px-2">
+        <p className="text-sm sm:text-base text-muted-foreground mt-2 px-2">
           {text("step2_description")}
         </p>
       </div>
@@ -51,6 +53,7 @@ const Step2ContentDetails: React.FC<Step2ContentDetailsProps> = ({
                 placeholder={text("enter_highlights_english")}
                 error={fieldState.error?.message}
                 commonFormStyles={commonFormStyles}
+                disabled={loading}
               />
             </FormItem>
           )}
@@ -67,6 +70,7 @@ const Step2ContentDetails: React.FC<Step2ContentDetailsProps> = ({
                 placeholder={text("enter_highlights_arabic")}
                 error={fieldState.error?.message}
                 commonFormStyles={commonFormStyles}
+                disabled={loading}
               />
             </FormItem>
           )}
@@ -89,6 +93,7 @@ const Step2ContentDetails: React.FC<Step2ContentDetailsProps> = ({
                   placeholder={text("enter_certificate_description_english")}
                   rows={4}
                   className={cn(commonFormStyles, "!rounded-e-none")}
+                  disabled={loading}
                 />
               </FormControl>
               <FormMessage />
@@ -109,6 +114,7 @@ const Step2ContentDetails: React.FC<Step2ContentDetailsProps> = ({
                   placeholder={text("enter_certificate_description_arabic")}
                   rows={4}
                   className={cn(commonFormStyles, "!rounded-e-none")}
+                  disabled={loading}
                 />
               </FormControl>
               <FormMessage />
@@ -133,6 +139,7 @@ const Step2ContentDetails: React.FC<Step2ContentDetailsProps> = ({
                   placeholder={text("enter_welcome_message_english")}
                   rows={4}
                   className={cn(commonFormStyles, "!rounded-e-none")}
+                  disabled={loading}
                 />
               </FormControl>
               <FormMessage />
@@ -153,6 +160,7 @@ const Step2ContentDetails: React.FC<Step2ContentDetailsProps> = ({
                   placeholder={text("enter_welcome_message_arabic")}
                   rows={4}
                   className={cn(commonFormStyles, "!rounded-e-none")}
+                  disabled={loading}
                 />
               </FormControl>
               <FormMessage />
@@ -177,6 +185,7 @@ const Step2ContentDetails: React.FC<Step2ContentDetailsProps> = ({
                   placeholder={text("enter_goodbye_message_english")}
                   rows={4}
                   className={cn(commonFormStyles, "!rounded-e-none")}
+                  disabled={loading}
                 />
               </FormControl>
               <FormMessage />
@@ -197,6 +206,7 @@ const Step2ContentDetails: React.FC<Step2ContentDetailsProps> = ({
                   placeholder={text("enter_goodbye_message_arabic")}
                   rows={4}
                   className={cn(commonFormStyles, "!rounded-e-none")}
+                  disabled={loading}
                 />
               </FormControl>
               <FormMessage />
@@ -221,6 +231,7 @@ const Step2ContentDetails: React.FC<Step2ContentDetailsProps> = ({
                   {...field}
                   placeholder={text("enter_duration")}
                   className={commonFormStyles}
+                  disabled={loading}
                 />
               </FormControl>
               <FormMessage />

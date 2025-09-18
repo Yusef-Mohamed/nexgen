@@ -590,3 +590,39 @@ export function getMetadataInstructorLessonExamsPage({
     };
   }
 }
+
+export function getMetadataInstructorCreateCoursePage({
+  params,
+}: {
+  params: { locale: string };
+}): Metadata {
+  if (params.locale === "ar") {
+    return {
+      title: getTitle("إنشاء دورة جديدة", "ar"),
+      description: "إنشاء دورة جديدة في أكاديمية نكستجن.",
+    };
+  } else {
+    return {
+      title: getTitle("Create New Course", "en"),
+      description: "Create a new course at Nexgen Academy.",
+    };
+  }
+}
+
+export function getMetadataInstructorEditCoursePage({
+  params,
+}: {
+  params: { locale: string };
+}): Metadata {
+  if (params.locale === "ar") {
+    return {
+      title: getTitle("تعديل الدورة", "ar"),
+      description: "تعديل تفاصيل الدورة في أكاديمية نكستجن.",
+    };
+  } else {
+    return {
+      title: getTitle("Edit Course", "en"),
+      description: "Edit course details at Nexgen Academy.",
+    };
+  }
+}

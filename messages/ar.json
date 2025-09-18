@@ -1,6 +1,9 @@
 {
   "common": {
     "please_verify_your_email": "يرجى التحقق من بريدك الإلكتروني",
+    "step": "خطوة",
+    "of": "من",
+    "complete": "مكتمل",
     "id_verification": {
       "title": "مطلوب التحقق من الهوية",
       "description": "نطلب التحقق من الهوية لضمان حماية حقوق المحتوى وحقوق المستخدمين، وللتأكد من أن المحتوى المقدم يبقى حصرياً ومخصصاً للمشتركين فقط!",
@@ -1028,9 +1031,15 @@
     "continue": "متابعة",
     "something_wrong": "حدث خطأ ما",
     "delete_success": "تم الحذف بنجاح",
-    "are_you_sure": "هل أنت متأكد؟"
+    "are_you_sure": "هل أنت متأكد؟",
+    "save_changes": "حفظ التغييرات",
+    "saving": "جاري الحفظ...",
+    "save_success": "تم حفظ التغييرات بنجاح!",
+    "update_success": "تم التحديث بنجاح!",
+    "create_success": "تم الإنشاء بنجاح!"
   },
   "courses": {
+    "my_courses": "دوراتي",
     "title": "الدورات",
     "search": "بحث",
     "all": "الكل",
@@ -1044,6 +1053,7 @@
     "finish_course": "إنهاء دورتك",
     "course_under_review": "الدورة قيد المراجعة.",
     "no_courses_found": "لم يتم العثور على دورات",
+    "no_sections_found": "لم يتم العثور على أقسام. أضف أول قسم لك لبدء بناء محتوى دورتك.",
     "something_went_wrong": "حدث خطأ أثناء جلب الدورات",
     "loading": "جاري التحميل...",
     "duration": "المدة",
@@ -1085,6 +1095,9 @@
     "exams": "الامتحانات",
     "lesson_exams": "امتحانات الدرس",
     "manage_lesson_exams": "إدارة امتحانات هذا الدرس",
+    "lesson_assessment": "تقييم الدرس",
+    "lesson_quiz": "اختبار الدرس",
+    "lesson": "الدرس",
     "retry": "إعادة المحاولة",
     "course_image": "صورة الدورة",
     "current_course_image": "صورة الدورة الحالية",
@@ -1123,9 +1136,8 @@
     "review_and_submit_description": "لقد أكملت جميع الخطوات! راجع معلوماتك وانقر على 'إنشاء الدورة' للنشر.",
     "previous": "السابق",
     "next": "التالي",
-    "step": "خطوة",
-    "of": "من",
     "save_draft": "حفظ كمسودة",
+    "save": "حفظ",
     "back": "رجوع",
     "create": "إنشاء",
     "add_highlight": "إضافة نقطة بارزة",
@@ -1142,13 +1154,10 @@
     "course_duration": "مدة الدورة",
     "minutes": "دقائق",
     "enter_duration": "أدخل المدة",
-    "price": "السعر",
     "enter_price": "أدخل السعر",
     "price_after_discount": "السعر بعد الخصم",
     "enter_price_after_discount": "أدخل السعر بعد الخصم",
-    "course_percentage": "نسبة الدورة",
     "enter_course_percentage": "أدخل نسبة الدورة",
-    "rating": "التقييم",
     "rating_hint": "هذا التقييم سيظهر على الشهادة",
     "need_accessible_course": "تحتاج متطلبات الدورة",
     "accessible_courses": "متطلبات الدورة",
@@ -1164,6 +1173,13 @@
     "authentication_required": "المصادقة مطلوبة",
     "course_created_successfully": "تم إنشاء الدورة بنجاح",
     "create_course_failed": "فشل في إنشاء الدورة",
+    "step_saved_successfully": "تم حفظ الخطوة بنجاح",
+    "no_changes_to_save": "لا توجد تغييرات للحفظ",
+    "no_course_to_save": "لا توجد دورة للحفظ",
+    "failed_to_load_course": "فشل في تحميل الدورة",
+    "save_step_failed": "فشل في حفظ الخطوة",
+    "course_completed_successfully": "تم إكمال الدورة بنجاح",
+    "validation_errors_found": "يرجى إصلاح أخطاء التحقق أدناه",
     "validation": {
       "title_required": "العنوان مطلوب",
       "title_min_length": "يجب أن يكون العنوان 3 أحرف على الأقل",
@@ -1214,8 +1230,19 @@
       "section_required": "القسم مطلوب",
       "image_preview": "معاينة الصورة",
       "enter_duration": "أدخل المدة",
-      "enter_order": "أدخل الترتيب"
-    }
+      "enter_order": "أدخل الترتيب",
+      "assignment_title": "عنوان المهمة",
+      "assignment_description": "وصف المهمة",
+      "assignment_file": "ملف المهمة",
+      "assignment_file_description": "رفع ملف المهمة (PDF, DOC, DOCX, الصور)",
+      "enter_assignment_title": "أدخل عنوان المهمة",
+      "enter_assignment_description": "أدخل وصف المهمة",
+      "current_assignment_file": "الملف الحالي"
+    },
+    "save_assessment": "حفظ التقييم",
+    "assessment_updated_successfully": "تم تحديث تفاصيل التقييم بنجاح",
+    "current_assignment_file": "الملف الحالي",
+    "add_new_lesson": "إضافة درس جديد"
   },
   "exams": {
     "final_exam": "الامتحان النهائي",
@@ -1312,12 +1339,21 @@
       "option": "الخيار {number}",
       "correct_answer": "الإجابة الصحيحة"
     },
+    "ui": {
+      "click_or_drop_image": "اضغط أو",
+      "drop_image_here": "اسحب الصورة",
+      "here": "هنا",
+      "write_question_placeholder": "اكتب سؤالك هنا",
+      "answer_number": "الإجابة {number}"
+    },
     "messages": {
       "question_added_success": "تم إضافة السؤال بنجاح",
       "question_updated_success": "تم تحديث السؤال بنجاح",
       "failed_to_add_question": "فشل في إضافة السؤال",
       "failed_to_submit_question": "فشل في إرسال السؤال {number}",
       "successfully_added_questions": "تم إضافة {count} أسئلة بنجاح"
-    }
+    },
+    "assessment_updated_successfully": "تم تحديث إعدادات التقييم بنجاح",
+    "quiz_updated_successfully": "تم تحديث إعدادات الاختبار بنجاح"
   }
 }

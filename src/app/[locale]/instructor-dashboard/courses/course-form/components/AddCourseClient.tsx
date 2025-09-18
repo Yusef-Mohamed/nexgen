@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { Form } from "@/components/ui/form";
 import { ArrowLeft, Plus } from "lucide-react";
-import { useAddCourse } from "../hooks/useAddCourse";
+import { useCourseForm } from "../hooks/useCourseForm";
 import { useMultiStepForm } from "../hooks/useMultiStepForm";
 import { Link } from "@/i18n/routing";
 import StepProgressIndicator from "./StepProgressIndicator";
@@ -11,7 +11,7 @@ import Step1BasicInfo from "./steps/Step1BasicInfo";
 import Step2ContentDetails from "./steps/Step2ContentDetails";
 import Step3PricingAccess from "./steps/Step3PricingAccess";
 import Step4AppearanceFinalization from "./steps/Step4AppearanceFinalization";
-import { CourseFormData } from "../types/formTypes";
+// Remove import since we'll use the form schema type directly
 
 const commonFormStyles =
   "!px-4 !py-3 !h-auto !rounded-md min-h-12 items-center";
@@ -25,34 +25,35 @@ const AddCourseClient = () => {
     setAccessibleCourses,
     imagePreview,
     form,
-    onSubmit,
+    submitStepData,
+    onFinalSubmit,
     handleImageFilesSelected,
     fetchCategories,
     fetchCourses,
     text,
-  } = useAddCourse();
+    isEditMode,
+    isInitialized,
+    initialStep,
+    courseId,
+  } = useCourseForm();
 
   // Define steps configuration
   const steps = [
     {
       id: "basic-info",
       title: text("step1_title"),
-      description: text("step1_description"),
     },
     {
       id: "content-details",
       title: text("step2_title"),
-      description: text("step2_description"),
     },
     {
       id: "pricing-access",
       title: text("step3_title"),
-      description: text("step3_description"),
     },
     {
       id: "appearance-finalization",
       title: text("step4_title"),
-      description: text("step4_description"),
     },
   ];
 
@@ -68,62 +69,17 @@ const AddCourseClient = () => {
     canGoToStep,
     completedSteps,
     markStepAsCompleted,
-  } = useMultiStepForm(steps);
+  } = useMultiStepForm(steps, initialStep);
 
   // Fetch categories and courses when component mounts
   useEffect(() => {
-    fetchCategories();
-    fetchCourses();
-  }, [fetchCategories, fetchCourses]);
-
-  // Validate current step before proceeding
-  const validateCurrentStep = async () => {
-    switch (currentStep) {
-      case 0: // Basic Info
-        return await form.trigger([
-          "title.en",
-          "title.ar",
-          "description.en",
-          "description.ar",
-          "category",
-          "type",
-        ]);
-      case 1: // Content Details
-        return await form.trigger([
-          "certificateDescription.en",
-          "certificateDescription.ar",
-          "courseDuration",
-        ]);
-      case 2: // Pricing Access
-        return await form.trigger(["price", "rating"]);
-      case 3: // Appearance
-        return await form.trigger([
-          "bgColor",
-          "bgDarkMode",
-          "fontColor",
-          "fontDarkMode",
-        ]);
-      default:
-        return true;
+    if (isInitialized) {
+      fetchCategories();
+      fetchCourses();
     }
-  };
+  }, [fetchCategories, fetchCourses, isInitialized]);
 
-  const handleNext = async () => {
-    const isValid = await validateCurrentStep();
-    if (isValid) {
-      // Clear any existing errors for the current step
-      form.clearErrors();
-      markStepAsCompleted(currentStep);
-      nextStep();
-    } else {
-      // Ensure errors are displayed for invalid fields
-      const fieldsToValidate = getCurrentStepFields();
-      for (const field of fieldsToValidate) {
-        await form.trigger(field as keyof CourseFormData);
-      }
-    }
-  };
-
+  // Get current step fields for validation
   const getCurrentStepFields = () => {
     switch (currentStep) {
       case 0: // Basic Info
@@ -150,12 +106,84 @@ const AddCourseClient = () => {
     }
   };
 
+  // Validate current step before proceeding
+  const validateCurrentStep = async () => {
+    const fieldsToValidate = getCurrentStepFields();
+    return await form.trigger(fieldsToValidate as never[]);
+  };
+
+  // Get step-specific data from form
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getStepData = (formData: Record<string, any>, stepNumber: number) => {
+    switch (stepNumber) {
+      case 0: // Basic Info
+        return {
+          title: formData.title,
+          description: formData.description,
+          category: formData.category,
+          type: formData.type,
+        };
+      case 1: // Content Details
+        return {
+          highlights: formData.highlights,
+          certificateDescription: formData.certificateDescription,
+          courseDuration: formData.courseDuration,
+          courseWelcomeMessage: formData.courseWelcomeMessage,
+          courseGoodByeMessage: formData.courseGoodByeMessage,
+        };
+      case 2: // Pricing Access
+        return {
+          price: formData.price,
+          priceAfterDiscount: formData.priceAfterDiscount,
+          rating: formData.rating,
+          needAccessibleCourse: formData.needAccessibleCourse,
+        };
+      case 3: // Appearance
+        return {
+          bgColor: formData.bgColor,
+          bgDarkMode: formData.bgDarkMode,
+          fontColor: formData.fontColor,
+          fontDarkMode: formData.fontDarkMode,
+        };
+      default:
+        return {};
+    }
+  };
+
+  const handleNext = async () => {
+    const isValid = await validateCurrentStep();
+    if (isValid) {
+      // Get current form data for this step
+      const formData = form.getValues();
+      const stepData = getStepData(formData, currentStep);
+
+      // Submit step data to server
+      const result = await submitStepData(stepData, currentStep);
+
+      if (result.success) {
+        // Clear any existing errors for the current step
+        form.clearErrors();
+        markStepAsCompleted(currentStep);
+        nextStep();
+      }
+    } else {
+      // Ensure errors are displayed for invalid fields
+      const fieldsToValidate = getCurrentStepFields();
+      for (const field of fieldsToValidate) {
+        await form.trigger(field as never);
+      }
+    }
+  };
+
   const handleSubmit = async () => {
     const isValid = await form.trigger(); // Validate all fields
     if (isValid) {
-      const formData = form.getValues();
-      await onSubmit(formData);
+      await onFinalSubmit();
     }
+  };
+
+  const handlePrevious = () => {
+    prevStep();
   };
 
   const canProceed = () => {
@@ -180,6 +208,7 @@ const AddCourseClient = () => {
             imagePreview={imagePreview}
             onImageFilesSelected={handleImageFilesSelected}
             commonFormStyles={commonFormStyles}
+            loading={loading}
           />
         );
       case 1:
@@ -187,6 +216,7 @@ const AddCourseClient = () => {
           <Step2ContentDetails
             form={form}
             commonFormStyles={commonFormStyles}
+            loading={loading}
           />
         );
       case 2:
@@ -197,6 +227,7 @@ const AddCourseClient = () => {
             accessibleCourses={accessibleCourses}
             setAccessibleCourses={setAccessibleCourses}
             commonFormStyles={commonFormStyles}
+            loading={loading}
           />
         );
       case 3:
@@ -204,6 +235,7 @@ const AddCourseClient = () => {
           <Step4AppearanceFinalization
             form={form}
             commonFormStyles={commonFormStyles}
+            loading={loading}
           />
         );
       default:
@@ -216,11 +248,14 @@ const AddCourseClient = () => {
       {/* Header */}
       <div className="flex items-center gap-2 sm:gap-4 mb-6 sm:mb-8">
         <Link
-          href="/instructor-dashboard/courses"
+          href={
+            isEditMode
+              ? `/instructor-dashboard/courses/${courseId}`
+              : "/instructor-dashboard/courses"
+          }
           className="flex items-center gap-1 sm:gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm sm:text-base"
         >
           <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-          <span className="hidden xs:inline">{text("back_to_courses")}</span>
           <span className="xs:hidden">{text("back")}</span>
         </Link>
       </div>
@@ -228,7 +263,7 @@ const AddCourseClient = () => {
       <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
         <Plus className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" />
         <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
-          {text("add_new_course")}
+          {isEditMode ? text("edit_course") : text("add_new_course")}
         </h1>
       </div>
 
@@ -239,7 +274,7 @@ const AddCourseClient = () => {
           currentStep={currentStep}
           completedSteps={completedSteps}
           canGoToStep={canGoToStep}
-          onStepClick={goToStep}
+          onStepClick={loading ? () => {} : goToStep}
         />
 
         <Form {...form}>
@@ -253,7 +288,7 @@ const AddCourseClient = () => {
           isFirstStep={isFirstStep}
           isLastStep={isLastStep}
           loading={loading}
-          onPrevious={prevStep}
+          onPrevious={handlePrevious}
           onNext={handleNext}
           onSubmit={handleSubmit}
           canProceed={canProceed()}

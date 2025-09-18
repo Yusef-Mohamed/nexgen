@@ -60,6 +60,14 @@ export interface ICourse {
   totalProgress: number;
   userScore: IUserScore;
   courseProgress: ICourseProgress;
+  translationCourseWelcomeMessage: {
+    ar: string;
+    en: string;
+  };
+  translationCourseGoodByeMessage: {
+    ar: string;
+    en: string;
+  };
 }
 export interface ILesson {
   course: ICourse;
@@ -70,11 +78,32 @@ export interface ILesson {
   videoUrl?: string;
   _id: string;
   type: string;
+  translationTitle: {
+    ar: string;
+    en: string;
+  };
+  translationDescription: {
+    ar: string;
+    en: string;
+  };
   isRequireAnalytic: boolean;
+  hasQuiz: boolean;
   lessonDuration?: number;
   order: number;
   passedExam?: boolean;
   passedAnalyticsTask?: boolean;
+  // Assignment fields
+  assignmentTitle?: string;
+  assignmentDescription?: string;
+  assignmentFile?: string;
+  translationAssignmentTitle?: {
+    en?: string;
+    ar?: string;
+  };
+  translationAssignmentDescription?: {
+    en?: string;
+    ar?: string;
+  };
 }
 
 export interface IUser {

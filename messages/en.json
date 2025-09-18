@@ -1,6 +1,9 @@
 {
   "common": {
     "please_verify_your_email": "Please verify your email",
+    "step": "Step",
+    "of": "of",
+    "complete": "Complete",
     "id_verification": {
       "title": "ID Verification Required",
       "description": "We require identity verification to ensure the protection of content rights and user rights, and to make sure that the provided content remains exclusive and dedicated to subscribers only!",
@@ -1027,7 +1030,12 @@
     "continue": "Continue",
     "something_wrong": "Something went wrong",
     "delete_success": "Deleted successfully",
-    "are_you_sure": "Are you sure?"
+    "are_you_sure": "Are you sure?",
+    "save_changes": "Save Changes",
+    "saving": "Saving...",
+    "save_success": "Changes saved successfully!",
+    "update_success": "Updated successfully!",
+    "create_success": "Created successfully!"
   },
   "courses": {
     "title": "Courses",
@@ -1039,11 +1047,13 @@
     "active": "Active",
     "inactive": "Inactive",
     "add_new_course": "Add new course",
+    "my_courses": "My Courses",
     "course_edit": "Edit your course",
     "course_details": "Course Details",
     "finish_course": "Finish your course",
     "course_under_review": "The course is under review.",
     "no_courses_found": "No courses found",
+    "no_sections_found": "No sections found. Add your first section to start building your course content.",
     "something_went_wrong": "Something went wrong while fetching courses",
     "loading": "Loading...",
     "duration": "Duration",
@@ -1085,6 +1095,9 @@
     "exams": "Exams",
     "lesson_exams": "Lesson Exams",
     "manage_lesson_exams": "Manage exams for this lesson",
+    "lesson_assessment": "Lesson Assessment",
+    "lesson_quiz": "Lesson Quiz",
+    "lesson": "Lesson",
     "retry": "Retry",
     "course_image": "Course Image",
     "current_course_image": "Current course image",
@@ -1125,7 +1138,9 @@
     "next": "Next",
     "step": "Step",
     "of": "of",
+    "complete": "Complete",
     "save_draft": "Save Draft",
+    "save": "Save",
     "back": "Back",
     "create": "Create",
     "add_highlight": "Add Highlight",
@@ -1142,13 +1157,10 @@
     "course_duration": "Course Duration",
     "minutes": "minutes",
     "enter_duration": "Enter duration",
-    "price": "Price",
     "enter_price": "Enter price",
     "price_after_discount": "Price After Discount",
     "enter_price_after_discount": "Enter price after discount",
-    "course_percentage": "Course Percentage",
     "enter_course_percentage": "Enter course percentage",
-    "rating": "Rating",
     "rating_hint": "This rating will appear on the certificate",
     "need_accessible_course": "Need Course Prerequisites",
     "accessible_courses": "Course Prerequisites",
@@ -1164,6 +1176,13 @@
     "authentication_required": "Authentication required",
     "course_created_successfully": "Course created successfully",
     "create_course_failed": "Failed to create course",
+    "step_saved_successfully": "Step saved successfully",
+    "no_changes_to_save": "No changes to save",
+    "no_course_to_save": "No course to save",
+    "failed_to_load_course": "Failed to load course",
+    "save_step_failed": "Failed to save step",
+    "course_completed_successfully": "Course completed successfully",
+    "validation_errors_found": "Please fix the validation errors below",
     "validation": {
       "title_required": "Title is required",
       "title_min_length": "Title must be at least 3 characters",
@@ -1214,8 +1233,19 @@
       "section_required": "Section is required",
       "image_preview": "Image Preview",
       "enter_duration": "Enter duration",
-      "enter_order": "Enter order"
-    }
+      "enter_order": "Enter order",
+      "assignment_title": "Assignment Title",
+      "assignment_description": "Assignment Description",
+      "assignment_file": "Assignment File",
+      "assignment_file_description": "Upload assignment file (PDF, DOC, DOCX, Images)",
+      "enter_assignment_title": "Enter assignment title",
+      "enter_assignment_description": "Enter assignment description",
+      "current_assignment_file": "Current file"
+    },
+    "save_assessment": "Save Assessment",
+    "assessment_updated_successfully": "Assessment details updated successfully",
+    "current_assignment_file": "Current file",
+    "add_new_lesson": "Add New Lesson"
   },
   "exams": {
     "final_exam": "Final Exam",
@@ -1312,12 +1342,21 @@
       "option": "Option {number}",
       "correct_answer": "Correct Answer"
     },
+    "ui": {
+      "click_or_drop_image": "Click or",
+      "drop_image_here": "drop image",
+      "here": "here",
+      "write_question_placeholder": "Write your Question here",
+      "answer_number": "Answer {number}"
+    },
     "messages": {
       "question_added_success": "Question added successfully",
       "question_updated_success": "Question updated successfully",
       "failed_to_add_question": "Failed to add question",
       "failed_to_submit_question": "Failed to submit question {number}",
       "successfully_added_questions": "Successfully added {count} questions"
-    }
+    },
+    "assessment_updated_successfully": "Assessment settings updated successfully",
+    "quiz_updated_successfully": "Quiz settings updated successfully"
   }
 }

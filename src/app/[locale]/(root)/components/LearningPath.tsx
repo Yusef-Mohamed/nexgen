@@ -49,7 +49,6 @@ const LearningPath: React.FC<ICoursePackage & { className?: string }> = ({
 
   const isFree =
     (priceAfterDiscount && priceAfterDiscount === "0") || price === "0";
-  console.log(courses);
   return (
     <div
       className={cn(

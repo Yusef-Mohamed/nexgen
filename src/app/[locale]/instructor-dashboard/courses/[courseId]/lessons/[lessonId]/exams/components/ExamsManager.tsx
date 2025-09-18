@@ -113,7 +113,7 @@ export const ExamsManager = ({
     if (loading && !selectedExam) {
       // Questions-style skeleton while loading a deep-linked exam
       return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen">
           <div className="container mx-auto p-6">
             <div className="flex items-center gap-4 mb-6">
               <Button
@@ -134,7 +134,7 @@ export const ExamsManager = ({
 
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="p-4 bg-white rounded-md shadow-sm">
+                <div key={i} className="p-4 rounded-md shadow-sm">
                   <div className="flex items-center justify-between mb-3">
                     <Skeleton className="h-4 w-32" />
                     <Skeleton className="h-5 w-16" />

@@ -8,8 +8,11 @@ export interface StepConfig {
   isCompleted?: boolean;
 }
 
-export const useMultiStepForm = (steps: StepConfig[]) => {
-  const [currentStep, setCurrentStep] = useState(0);
+export const useMultiStepForm = (
+  steps: StepConfig[],
+  initialStep: number = 0
+) => {
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
 
   const totalSteps = steps.length;

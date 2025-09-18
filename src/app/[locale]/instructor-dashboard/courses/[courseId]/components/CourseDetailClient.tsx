@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { ILesson, ISection } from "@/types";
 import { useTranslations } from "next-intl";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/auth-provider";
 import { notFound } from "next/navigation";
@@ -21,12 +20,16 @@ import LessonListCard from "./LessonListCard";
 import SectionItem from "./SectionItem";
 import DeleteConfirmationDialogs from "./DeleteConfirmationDialogs";
 import { axiosInstance } from "@/app/lib/utils";
+import { useRouter } from "@/i18n/routing";
 
 const CourseDetailClient = () => {
+  const text = useTranslations("courses");
   const postActionText = useTranslations("postAction");
+  const coursesText = useTranslations("courses");
   const params = useParams();
   const courseId = params.courseId as string;
   const { token } = useAuth();
+  const router = useRouter();
 
   // Use the custom hook for all course detail logic
   const {
@@ -173,7 +176,9 @@ const CourseDetailClient = () => {
   };
 
   const handleEdit = () => {
-    setEditDialogOpen(true);
+    router.push(
+      `/instructor-dashboard/courses/course-form?courseId=${courseId}`
+    );
   };
 
   const handleAddNewSection = () => {
@@ -229,14 +234,18 @@ const CourseDetailClient = () => {
       );
 
       if (response.status === 200) {
-        toast.success("Order saved successfully!");
+        toast.success(
+          postActionText("save_success") || "Order saved successfully!"
+        );
         setHasOrderChanged(false); // Reset the change flag
       } else {
-        toast.error(response.data?.message || "Failed to save order");
+        toast.error(
+          response.data?.message || postActionText("something_wrong")
+        );
       }
     } catch (error) {
       console.error("Error saving order:", error);
-      toast.error("Failed to save order. Please try again.");
+      toast.error(postActionText("something_wrong"));
     } finally {
       setIsSaving(false);
     }
@@ -246,12 +255,10 @@ const CourseDetailClient = () => {
     <div className="min-h-screen">
       <div className="container mx-auto p-6">
         <CourseHeader course={course} onEdit={handleEdit} />
-
-        <LessonListCard onAddNewSection={handleAddNewSection} />
-
-        <Card className="bg-white shadow-lg">
-          <CardContent className="p-6">
-            {sections.map((section, sectionIndex) => (
+        <LessonListCard />
+        <div className="my-10">
+          {sections.length > 0 ? (
+            sections.map((section, sectionIndex) => (
               <SectionItem
                 key={sectionIndex}
                 section={section}
@@ -274,29 +281,38 @@ const CourseDetailClient = () => {
                 onDrop={handleDrop}
                 dropTarget={dropTarget}
               />
-            ))}
-
-            {/* Save Button - Only show when order has changed */}
-            {hasOrderChanged && (
-              <div className="mt-6 flex justify-center">
-                <Button
-                  onClick={handleSaveOrder}
-                  className="px-8 py-3 text-lg font-semibold"
-                  disabled={isSaving}
-                >
-                  {isSaving ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Saving...
-                    </>
-                  ) : (
-                    "Save Changes"
-                  )}
-                </Button>
+            ))
+          ) : (
+            <div className="text-center py-12 bg-card rounded-2xl">
+              <div className="text-muted-foreground text-lg">
+                {coursesText("no_sections_found")}
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </div>
+          )}
+
+          {/* Save Button - Only show when order has changed */}
+          {hasOrderChanged && (
+            <div className="mt-6 flex justify-center">
+              <Button
+                onClick={handleSaveOrder}
+                className="px-8 py-3 text-lg font-semibold"
+                disabled={isSaving}
+              >
+                {isSaving ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary-foreground mr-2"></div>
+                    {postActionText("saving")}
+                  </>
+                ) : (
+                  postActionText("save_changes")
+                )}
+              </Button>
+            </div>
+          )}
+        </div>
+        <Button variant="primaryOutline" onClick={handleAddNewSection}>
+          {text("add_new_section")}
+        </Button>
       </div>
 
       <CourseEditDialog

@@ -19,14 +19,15 @@ import {
 } from "@/components/ui/form";
 import FileInput from "@/components/ui/file-input";
 import { cn } from "@/lib/utils";
-import { CourseFormData } from "../../types/formTypes";
+import { CourseFormSchema } from "../../hooks/useCourseForm";
 
 interface Step1BasicInfoProps {
-  form: UseFormReturn<CourseFormData>;
+  form: UseFormReturn<CourseFormSchema>;
   categories: Array<{ _id: string; title: string }>;
   imagePreview: string | null;
   onImageFilesSelected: (files: File[]) => void;
   commonFormStyles: string;
+  loading?: boolean;
 }
 
 const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
@@ -35,6 +36,7 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
   imagePreview,
   onImageFilesSelected,
   commonFormStyles,
+  loading = false,
 }) => {
   const text = useTranslations("courses");
 
@@ -42,10 +44,10 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
     <div className="space-y-6">
       {/* Step Header */}
       <div className="text-center mb-6 sm:mb-8">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 className="text-xl sm:text-2xl font-bold text-foreground">
           {text("step1_title")}
         </h2>
-        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-2 px-2">
+        <p className="text-sm sm:text-base text-muted-foreground mt-2 px-2">
           {text("step1_description")}
         </p>
       </div>
@@ -57,7 +59,7 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
             <img
               src={imagePreview}
               alt={text("course_image_preview")}
-              className="w-32 h-32 object-cover rounded-md border border-gray-300"
+              className="w-32 h-32 object-cover rounded-md border border-border"
             />
           </div>
         )}
@@ -66,6 +68,7 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
           accept="image/png,image/jpeg"
           multiple={false}
           onFilesSelected={onImageFilesSelected}
+          disabled={loading}
         />
       </div>
 
@@ -84,6 +87,7 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
                   {...field}
                   placeholder={text("enter_title_english")}
                   className={commonFormStyles}
+                  disabled={loading}
                 />
               </FormControl>
               <FormMessage />
@@ -103,6 +107,7 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
                   {...field}
                   placeholder={text("enter_title_arabic")}
                   className={commonFormStyles}
+                  disabled={loading}
                 />
               </FormControl>
               <FormMessage />
@@ -127,6 +132,7 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
                   placeholder={text("enter_description_english")}
                   rows={4}
                   className={cn(commonFormStyles, "!rounded-e-none")}
+                  disabled={loading}
                 />
               </FormControl>
               <FormMessage />
@@ -147,6 +153,7 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
                   placeholder={text("enter_description_arabic")}
                   rows={4}
                   className={cn(commonFormStyles, "!rounded-e-none")}
+                  disabled={loading}
                 />
               </FormControl>
               <FormMessage />
@@ -163,7 +170,11 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>{text("category")}</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={loading}
+              >
                 <FormControl>
                   <SelectTrigger className={commonFormStyles}>
                     <SelectValue placeholder={text("select_category")} />
@@ -187,7 +198,11 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>{text("type")}</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={loading}
+              >
                 <FormControl>
                   <SelectTrigger className={commonFormStyles}>
                     <SelectValue />

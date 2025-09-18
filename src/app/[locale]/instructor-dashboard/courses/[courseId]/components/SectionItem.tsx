@@ -93,21 +93,27 @@ const SectionItem = ({
   const sectionId = section?.sectionId || section?._id || "";
 
   return (
-    <div className="mb-8 last:mb-0 relative">
+    <div
+      onDragOver={(e) => {
+        e.preventDefault();
+        onDragOver(e);
+      }}
+      onDragLeave={(e) => onDragLeave(e)}
+      onDrop={(e) => {
+        e.preventDefault();
+        onDrop(e, sectionId, "section");
+      }}
+      data-section-id={sectionId}
+      data-section-header="true"
+      className="mb-8 last:mb-0 relative bg-card px-6 py-8 rounded-xl"
+    >
       {/* Drop target indicator for sections */}
       {dropTarget?.id === sectionId && dropTarget.type === "section" && (
         <DropTargetIndicator position={dropTarget.position} />
       )}
 
       {/* Section Header */}
-      <div
-        className="flex items-center justify-between mb-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-        onDragOver={onDragOver}
-        onDragLeave={onDragLeave}
-        onDrop={(e) => onDrop(e, sectionId, "section")}
-        data-section-id={sectionId}
-        data-section-header="true"
-      >
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div
             draggable
@@ -115,12 +121,14 @@ const SectionItem = ({
             onDragEnd={onDragEnd}
             className="cursor-move"
           >
-            <GripVertical className="w-4 h-4 text-gray-400" />
+            <GripVertical className="w-4 h-4 text-muted-foreground" />
           </div>
-          <FileText className="w-5 h-5 text-gray-600" />
-          <h2 className="text-xl font-bold">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
             {text("section_number", { number: sectionIndex + 1 })}:{" "}
-            {getSectionTitle(section)}
+            <FileText className="w-5 h-5 text-muted-foreground" />
+            <span className="text-muted-foreground font-medium">
+              {getSectionTitle(section)}
+            </span>
           </h2>
         </div>
         <div className="flex items-center gap-2">
@@ -155,7 +163,7 @@ const SectionItem = ({
                     onDelete(sectionId);
                   }, 100);
                 }}
-                className="text-red-600 focus:text-red-600"
+                className="text-destructive"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
                 {text("delete")}
@@ -168,10 +176,16 @@ const SectionItem = ({
       {/* Section Content */}
       {isExpanded && (
         <div
-          className="ml-6 space-y-4"
-          onDragOver={onDragOver}
-          onDragLeave={onDragLeave}
-          onDrop={(e) => onDrop(e, sectionId, "section")}
+          className="space-y-4 mt-8"
+          onDragOver={(e) => {
+            e.preventDefault();
+            onDragOver(e);
+          }}
+          onDragLeave={(e) => onDragLeave(e)}
+          onDrop={(e) => {
+            e.preventDefault();
+            onDrop(e, sectionId, "section");
+          }}
           data-section-id={sectionId}
         >
           {section?.lessons?.map((lesson, index) => (
@@ -182,24 +196,22 @@ const SectionItem = ({
               courseId={courseId}
               onEdit={onEditLesson}
               onDelete={onDeleteLesson}
-              // Drag and drop props
               onDragStart={onDragStart}
               onDragOver={onDragOver}
-              onDragLeave={onDragLeave}
+              onDragLeave={(e) => onDragLeave(e)}
               onDragEnd={onDragEnd}
               onDrop={onDrop}
               dropTarget={dropTarget}
             />
           ))}
 
-          {/* Add New Part Button */}
           <Button
             variant="outline"
             className="w-full"
             onClick={() => onAddLesson(sectionId)}
           >
             <Plus className="w-4 h-4 mr-2" />
-            {text("add_new_section")}
+            {text("add_new_lesson")}
           </Button>
         </div>
       )}

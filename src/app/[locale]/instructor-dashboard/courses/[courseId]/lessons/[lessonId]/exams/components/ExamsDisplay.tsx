@@ -159,7 +159,7 @@ export const ExamsDisplay = ({
   const locale = useLocale();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       <div className="container mx-auto p-6">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">

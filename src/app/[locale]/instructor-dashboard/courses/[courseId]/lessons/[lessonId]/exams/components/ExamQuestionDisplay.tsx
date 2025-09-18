@@ -50,6 +50,7 @@ export const ExamQuestionDisplay = ({
   onExamUpdate,
 }: ExamQuestionDisplayProps) => {
   const text = useTranslations("exams");
+  const ui = useTranslations("exams.ui");
   const [isAddingQuestion, setIsAddingQuestion] = useState(false);
   const [isEditingQuestion, setIsEditingQuestion] = useState(false);
   const [editingQuestionId, setEditingQuestionId] = useState<string | null>(
@@ -392,7 +393,7 @@ export const ExamQuestionDisplay = ({
   const locale = useLocale();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="container mx-auto p-6">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
@@ -472,8 +473,8 @@ export const ExamQuestionDisplay = ({
                             key={optionIndex}
                             className={`flex items-center gap-2 p-2 rounded ${
                               optionIndex + 1 === question.correctOption
-                                ? "bg-green-50 border border-green-200"
-                                : "bg-gray-50"
+                                ? "bg-fadedGreen border border-green/20"
+                                : "bg-muted"
                             }`}
                           >
                             <span className="font-medium">
@@ -556,7 +557,7 @@ export const ExamQuestionDisplay = ({
                 <form className="space-y-5">
                   <div className="space-y-3">
                     <Label>{text("form.question")}</Label>
-                    <Textarea
+                    <Input
                       placeholder={text("form.question_placeholder")}
                       disabled={isLoading}
                       required
@@ -630,61 +631,74 @@ export const ExamQuestionDisplay = ({
 
                   {formData.options.map((option, index) => (
                     <div key={index} className="space-y-3">
-                      <Label className="flex items-center justify-between">
-                        {text("form.option_placeholder", { number: index + 1 })}
-                        {formData.options.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeOption(index)}
-                            className="text-2xl text-destructive"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
+                      <Label className="text-text-2 font-medium">
+                        {ui("answer_number", { number: index + 1 })}
                       </Label>
-                      <div className="flex items-start gap-3">
-                        <input
-                          type="radio"
-                          name="single-correct-answer"
-                          className="mt-2"
-                          checked={formData.correctAnswer === index + 1}
-                          onChange={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              correctAnswer: index + 1,
-                            }))
-                          }
-                        />
-                        {formData.optionsType === "text" ? (
-                          <Textarea
-                            disabled={isLoading}
-                            required
-                            value={option as string}
-                            onChange={(e) =>
-                              updateOption(index, e.target.value)
+                      <div className="relative">
+                        <div className="flex items-center gap-3 p-3  border border-border rounded-lg">
+                          <input
+                            type="radio"
+                            name="single-correct-answer"
+                            className="w-4 h-4 text-primary bg-muted border-border focus:ring-primary"
+                            checked={formData.correctAnswer === index + 1}
+                            onChange={() =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                correctAnswer: index + 1,
+                              }))
                             }
                           />
-                        ) : (
-                          <div className="space-y-2">
-                            {typeof option === "string" &&
-                              option.includes("http") && (
-                                <img
-                                  src={option}
-                                  alt={`Option ${index + 1}`}
-                                  className="object-cover w-20 h-20"
-                                />
-                              )}
-                            <FileInput
-                              accept=".png,.jpe,.jpeg"
+                          {formData.optionsType === "text" ? (
+                            <input
+                              type="text"
                               disabled={isLoading}
-                              onFilesSelected={(files) => {
-                                if (files && files[0]) {
-                                  updateOption(index, files[0]);
-                                }
-                              }}
+                              required
+                              value={option as string}
+                              placeholder={ui("write_question_placeholder")}
+                              onChange={(e) =>
+                                updateOption(index, e.target.value)
+                              }
+                              className="flex-1 bg-transparent text-foreground placeholder-muted-foreground border-none outline-none"
                             />
-                          </div>
-                        )}
+                          ) : (
+                            <div className="space-y-2 flex-1">
+                              <div className="w-20 h-20 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center bg-muted/50">
+                                {typeof option === "string" &&
+                                option.includes("http") ? (
+                                  <img
+                                    src={option}
+                                    alt={`Option ${index + 1}`}
+                                    className="object-cover w-full h-full rounded-lg"
+                                  />
+                                ) : (
+                                  <div className="text-center text-muted-foreground text-xs">
+                                    <div>{ui("click_or_drop_image")}</div>
+                                    <div>{ui("drop_image_here")}</div>
+                                    <div>{ui("here")}</div>
+                                  </div>
+                                )}
+                              </div>
+                              <FileInput
+                                accept=".png,.jpe,.jpeg"
+                                disabled={isLoading}
+                                onFilesSelected={(files) => {
+                                  if (files && files[0]) {
+                                    updateOption(index, files[0]);
+                                  }
+                                }}
+                              />
+                            </div>
+                          )}
+                          {formData.options.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => removeOption(index)}
+                              className="text-destructive hover:text-destructive/80"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -811,80 +825,112 @@ export const ExamQuestionDisplay = ({
                     {questions[currentQuestionIndex].options.map(
                       (opt, index) => (
                         <div key={index} className="space-y-3">
-                          <Label className="flex items-center justify-between">
-                            {text("multiple_questions.option", {
-                              number: index + 1,
-                            })}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newOptions = [
-                                  ...questions[currentQuestionIndex].options,
-                                ];
-                                newOptions.splice(index, 1);
-                                updateQuestion(currentQuestionIndex, {
-                                  options: newOptions,
-                                });
-                              }}
-                              className="text-2xl text-destructive"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                          <Label className="text-text-2 font-medium">
+                            {ui("answer_number", { number: index + 1 })}
                           </Label>
-                          <div className="flex items-start gap-3">
-                            <input
-                              type="radio"
-                              name={`multi-correct-${currentQuestionIndex}`}
-                              className="mt-2"
-                              checked={
-                                questions[currentQuestionIndex]
-                                  .correctAnswer ===
-                                index + 1
-                              }
-                              onChange={() =>
-                                updateQuestion(currentQuestionIndex, {
-                                  correctAnswer: index + 1,
-                                })
-                              }
-                            />
-                            {questions[currentQuestionIndex].optionsType ===
-                            "text" ? (
-                              <Textarea
-                                disabled={isLoading}
-                                required
-                                value={
-                                  questions[currentQuestionIndex].options[
-                                    index
-                                  ] as string
+                          <div className="relative">
+                            <div className="flex items-center gap-3 p-3 bg-muted border border-border rounded-lg">
+                              <input
+                                type="radio"
+                                name={`multi-correct-${currentQuestionIndex}`}
+                                className="w-4 h-4 text-primary bg-muted border-border focus:ring-primary"
+                                checked={
+                                  questions[currentQuestionIndex]
+                                    .correctAnswer ===
+                                  index + 1
                                 }
-                                onChange={(e) => {
-                                  const newOptions = [
-                                    ...questions[currentQuestionIndex].options,
-                                  ];
-                                  newOptions[index] = e.target.value;
+                                onChange={() =>
                                   updateQuestion(currentQuestionIndex, {
-                                    options: newOptions,
-                                  });
-                                }}
+                                    correctAnswer: index + 1,
+                                  })
+                                }
                               />
-                            ) : (
-                              <FileInput
-                                accept=".png,.jpe,.jpeg"
-                                disabled={isLoading}
-                                onFilesSelected={(files) => {
-                                  if (files && files[0]) {
+                              {questions[currentQuestionIndex].optionsType ===
+                              "text" ? (
+                                <input
+                                  type="text"
+                                  disabled={isLoading}
+                                  required
+                                  value={
+                                    questions[currentQuestionIndex].options[
+                                      index
+                                    ] as string
+                                  }
+                                  placeholder={ui("write_question_placeholder")}
+                                  onChange={(e) => {
                                     const newOptions = [
                                       ...questions[currentQuestionIndex]
                                         .options,
                                     ];
-                                    newOptions[index] = files[0];
+                                    newOptions[index] = e.target.value;
                                     updateQuestion(currentQuestionIndex, {
                                       options: newOptions,
                                     });
-                                  }
-                                }}
-                              />
-                            )}
+                                  }}
+                                  className="flex-1 bg-transparent text-foreground placeholder-muted-foreground border-none outline-none"
+                                />
+                              ) : (
+                                <div className="flex-1">
+                                  <div className="w-20 h-20 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center bg-muted/50">
+                                    {typeof questions[currentQuestionIndex]
+                                      .options[index] === "string" &&
+                                    questions[currentQuestionIndex].options[
+                                      index
+                                    ].includes("http") ? (
+                                      <img
+                                        src={
+                                          questions[currentQuestionIndex]
+                                            .options[index] as string
+                                        }
+                                        alt={`Option ${index + 1}`}
+                                        className="object-cover w-full h-full rounded-lg"
+                                      />
+                                    ) : (
+                                      <div className="text-center text-muted-foreground text-xs">
+                                        <div>{ui("click_or_drop_image")}</div>
+                                        <div>{ui("drop_image_here")}</div>
+                                        <div>{ui("here")}</div>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <FileInput
+                                    accept=".png,.jpe,.jpeg"
+                                    disabled={isLoading}
+                                    onFilesSelected={(files) => {
+                                      if (files && files[0]) {
+                                        const newOptions = [
+                                          ...questions[currentQuestionIndex]
+                                            .options,
+                                        ];
+                                        newOptions[index] = files[0];
+                                        updateQuestion(currentQuestionIndex, {
+                                          options: newOptions,
+                                        });
+                                      }
+                                    }}
+                                  />
+                                </div>
+                              )}
+                              {questions[currentQuestionIndex].options.length >
+                                1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newOptions = [
+                                      ...questions[currentQuestionIndex]
+                                        .options,
+                                    ];
+                                    newOptions.splice(index, 1);
+                                    updateQuestion(currentQuestionIndex, {
+                                      options: newOptions,
+                                    });
+                                  }}
+                                  className="text-destructive hover:text-destructive/80"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              )}
+                            </div>
                           </div>
                         </div>
                       )

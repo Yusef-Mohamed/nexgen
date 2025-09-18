@@ -262,7 +262,7 @@ const MyCourses = () => {
       <div className="flex justify-between items-center gap-4">
         <h1 className="text-2xl font-bold">{text("my_courses")}</h1>
         <Button asChild className="flex items-center gap-2">
-          <Link href="/instructor-dashboard/courses/add-course">
+          <Link href="/instructor-dashboard/courses/course-form">
             <Plus className="w-4 h-4" />
             {text("add_new_course")}
           </Link>

@@ -97,7 +97,7 @@ body {
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 205 12% 95%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-foreground: 208 21% 34%;
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
@@ -133,7 +133,7 @@ body {
     --secondary: 210 40% 30%; /* Darker secondary color */
     --secondary-foreground: 0 0% 90%; /* Light text on secondary elements */
     --muted: 205 12% 25%; /* Muted background elements */
-    --muted-foreground: 0 0% 70%; /* Muted text */
+    --muted-foreground: 210 40% 96%; /* Muted text */
     --accent: 210 40% 30%; /* Accent color adjusted */
     --accent-foreground: 0 0% 90%; /* Light text on accents */
     --destructive: 0 84.2% 60.2%; /* Destructive action color */

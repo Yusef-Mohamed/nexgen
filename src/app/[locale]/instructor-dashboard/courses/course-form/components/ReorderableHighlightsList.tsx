@@ -13,6 +13,7 @@ interface ReorderableHighlightsListProps {
   label?: string;
   error?: string;
   commonFormStyles?: string;
+  disabled?: boolean;
 }
 
 const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
@@ -22,6 +23,7 @@ const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
   label,
   error,
   commonFormStyles,
+  disabled = false,
 }) => {
   const text = useTranslations("courses");
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -43,7 +45,7 @@ const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
 
   const moveHighlight = (fromIndex: number, toIndex: number) => {
     if (toIndex < 0 || toIndex >= value.length) return;
-    
+
     const newValue = [...value];
     const [movedItem] = newValue.splice(fromIndex, 1);
     newValue.splice(toIndex, 0, movedItem);
@@ -79,9 +81,9 @@ const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
           {label}
         </label>
       )}
-      
+
       <div className="space-y-2">
-        {value.map((highlight, index) => (
+        {value?.map((highlight, index) => (
           <div
             key={index}
             draggable
@@ -90,13 +92,13 @@ const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
             onDrop={(e) => handleDrop(e, index)}
             onDragEnd={handleDragEnd}
             className={cn(
-              "flex items-center gap-2 p-2 border rounded-md bg-white dark:bg-gray-800 transition-colors",
+              "flex items-center gap-2 p-2 border rounded-md bg-background transition-colors",
               draggedIndex === index && "opacity-50",
-              "hover:bg-gray-50 dark:hover:bg-gray-700"
+              "hover:bg-muted/50"
             )}
           >
             {/* Drag Handle */}
-            <div className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600">
+            <div className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
               <GripVertical className="w-4 h-4" />
             </div>
 
@@ -106,6 +108,7 @@ const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
               onChange={(e) => updateHighlight(index, e.target.value)}
               placeholder={placeholder || text("highlight_placeholder")}
               className={cn(commonFormStyles, "flex-1")}
+              disabled={disabled}
             />
 
             {/* Move Up/Down Buttons */}
@@ -115,7 +118,7 @@ const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={() => moveHighlight(index, index - 1)}
-                disabled={index === 0}
+                disabled={disabled || index === 0}
                 className="p-1 h-8 w-8"
                 title={text("move_up")}
               >
@@ -126,7 +129,7 @@ const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
                 variant="ghost"
                 size="sm"
                 onClick={() => moveHighlight(index, index + 1)}
-                disabled={index === value.length - 1}
+                disabled={disabled || index === value.length - 1}
                 className="p-1 h-8 w-8"
                 title={text("move_down")}
               >
@@ -140,7 +143,8 @@ const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
               variant="ghost"
               size="sm"
               onClick={() => removeHighlight(index)}
-              className="p-1 h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
+              disabled={disabled}
+              className="p-1 h-8 w-8 text-destructive hover:text-destructive/80 hover:bg-destructive/10"
               title={text("remove_highlight")}
             >
               <X className="w-3 h-3" />
@@ -149,7 +153,7 @@ const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
         ))}
 
         {value.length === 0 && (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-md">
+          <div className="text-center py-8 text-muted-foreground border-2 border-dashed border-border rounded-md">
             <p className="text-sm">{text("reorder_highlights")}</p>
           </div>
         )}
@@ -161,7 +165,7 @@ const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
         variant="outline"
         onClick={addHighlight}
         className="w-full flex items-center gap-2 border-dashed"
-        disabled={value.length >= 10}
+        disabled={disabled || value.length >= 10}
       >
         <Plus className="w-4 h-4" />
         {text("add_highlight")}
@@ -171,7 +175,7 @@ const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
       {error && <FormMessage>{error}</FormMessage>}
 
       {/* Helper Text */}
-      <p className="text-xs text-gray-500 dark:text-gray-400">
+      <p className="text-xs text-muted-foreground">
         {text("reorder_highlights")} • {value.length}/10
       </p>
     </div>
@@ -179,4 +183,3 @@ const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
 };
 
 export default ReorderableHighlightsList;
-

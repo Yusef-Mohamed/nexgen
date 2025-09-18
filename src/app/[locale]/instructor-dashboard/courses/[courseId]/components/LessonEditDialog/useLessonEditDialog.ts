@@ -29,6 +29,8 @@ export const useLessonEditDialog = ({
   const text = useTranslations("courses");
   const [loading, setLoading] = useState(false);
   const [attachments, setAttachments] = useState<File[]>([]);
+  const [fetchedLesson, setFetchedLesson] = useState<ILesson | null>(null);
+  const [fetchingLesson, setFetchingLesson] = useState(false);
 
   const createValidationSchema = () =>
     z.object({
@@ -50,7 +52,6 @@ export const useLessonEditDialog = ({
       videoUrl: z
         .string()
         .min(1, { message: text("validation.video_url_required") }),
-      isRequireAnalytic: z.boolean(),
     });
 
   const form = useForm<z.infer<ReturnType<typeof createValidationSchema>>>({
@@ -60,40 +61,68 @@ export const useLessonEditDialog = ({
       description: { en: "", ar: "" },
       lessonDuration: "",
       videoUrl: "",
-      isRequireAnalytic: false,
     },
   });
 
-  // Reset form when dialog opens/closes or lesson changes
+  // Fetch lesson data when dialog opens in edit mode
   useEffect(() => {
-    if (isEdit && lesson) {
-      // Edit mode - populate form with existing lesson data
+    if (isEdit && lesson?._id) {
+      console.log("Dialog opened in edit mode, fetching lesson:", lesson._id);
+      fetchLesson(lesson._id);
+    } else {
+      // Reset fetched lesson when not in edit mode
+      setFetchedLesson(null);
+    }
+  }, [isEdit, lesson?._id]);
+
+  // Update form with fetched lesson data when it's available
+  useEffect(() => {
+    if (isEdit && fetchedLesson) {
+      // Use localized data if available, fallback to regular fields
+      const titleEn =
+        fetchedLesson.translationTitle?.en || fetchedLesson.title || "";
+      const titleAr =
+        fetchedLesson.translationTitle?.ar || fetchedLesson.title || "";
+      const descriptionEn =
+        fetchedLesson.translationDescription?.en ||
+        fetchedLesson.description ||
+        "";
+      const descriptionAr =
+        fetchedLesson.translationDescription?.ar ||
+        fetchedLesson.description ||
+        "";
+
       form.reset({
         title: {
-          en: lesson.title,
-          ar: lesson.title,
+          en: titleEn,
+          ar: titleAr,
         },
         description: {
-          en: lesson.description,
-          ar: lesson.description,
+          en: descriptionEn,
+          ar: descriptionAr,
         },
-        lessonDuration: lesson.lessonDuration?.toString() || "",
-        videoUrl: lesson.videoUrl || "",
-        isRequireAnalytic: lesson.isRequireAnalytic || false,
+        lessonDuration: fetchedLesson.lessonDuration?.toString() || "",
+        videoUrl: fetchedLesson.videoUrl || "",
+      });
+
+      console.log("Form updated with localized data:", {
+        titleEn,
+        titleAr,
+        descriptionEn,
+        descriptionAr,
+        lessonDuration: fetchedLesson.lessonDuration,
+        videoUrl: fetchedLesson.videoUrl,
       });
     } else {
-      // Add mode - reset form to defaults
       form.reset({
         title: { en: "", ar: "" },
         description: { en: "", ar: "" },
         lessonDuration: "",
         videoUrl: "",
-        isRequireAnalytic: false,
       });
     }
-    // Reset file states
     setAttachments([]);
-  }, [isEdit, lesson, form]);
+  }, [isEdit, fetchedLesson, form]);
 
   const handleAttachmentsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -134,6 +163,29 @@ export const useLessonEditDialog = ({
     setAttachments((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // Fetch single lesson data
+  const fetchLesson = async (lessonId: string) => {
+    if (!lessonId) return;
+
+    setFetchingLesson(true);
+    try {
+      const response = await axiosInstance.get(`/lessons/${lessonId}`);
+      const lessonData = response?.data?.data.lesson;
+
+      if (lessonData) {
+        setFetchedLesson(lessonData);
+      }
+    } catch (error) {
+      console.error("Error fetching lesson:", error);
+      const typedError = error as AxiosError<{ message: string }>;
+      const errorMessage =
+        typedError?.response?.data?.message || typedError?.message;
+      console.error("Fetch error:", errorMessage);
+    } finally {
+      setFetchingLesson(false);
+    }
+  };
+
   const onSubmit = async (
     data: z.infer<ReturnType<typeof createValidationSchema>>
   ) => {
@@ -158,7 +210,6 @@ export const useLessonEditDialog = ({
       formData.append("order", computedOrder.toString());
 
       formData.append("videoUrl", data.videoUrl);
-      formData.append("isRequireAnalytic", data.isRequireAnalytic.toString());
       formData.append("section", sectionId);
       formData.append("course", courseId);
 
@@ -194,6 +245,8 @@ export const useLessonEditDialog = ({
     // State
     loading,
     attachments,
+    fetchedLesson,
+    fetchingLesson,
 
     // Form
     form,
@@ -203,6 +256,7 @@ export const useLessonEditDialog = ({
     handleAttachmentsChange,
     handleAttachmentFilesSelected,
     removeAttachment,
+    fetchLesson,
 
     // Text
     text,

@@ -55,6 +55,7 @@ export const useReorder = ({
   // Drag and drop handlers
   const handleDragStart = useCallback(
     (e: React.DragEvent, id: string, type: DragType) => {
+      console.log("Drag start:", { id, type });
       setDraggingId(id);
       setDraggingType(type);
       e.dataTransfer.effectAllowed = "move";
@@ -68,6 +69,9 @@ export const useReorder = ({
       ghost.style.top = "-1000px";
       ghost.style.pointerEvents = "none";
       ghost.style.zIndex = "9999";
+      ghost.style.backgroundColor = "rgba(59, 130, 246, 0.1)";
+      ghost.style.border = "2px solid rgba(59, 130, 246, 0.5)";
+      ghost.style.borderRadius = "8px";
       document.body.appendChild(ghost);
       e.dataTransfer.setDragImage(ghost, 10, 10);
 
@@ -79,7 +83,12 @@ export const useReorder = ({
       }, 0);
 
       // Add dragging class to the dragged element
-      draggedEl.classList.add("opacity-50", "scale-95");
+      draggedEl.classList.add(
+        "opacity-50",
+        "scale-95",
+        "ring-2",
+        "ring-blue-400"
+      );
     },
     []
   );
@@ -87,13 +96,17 @@ export const useReorder = ({
   const handleDragOver = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
+      e.stopPropagation();
       e.dataTransfer.dropEffect = "move";
 
       // Use closest to find the nearest element with the required data attributes
       const target = (e.target as HTMLElement).closest(
         "[data-section-id], [data-lesson-id]"
       ) as HTMLElement;
-      if (!target) return;
+      if (!target) {
+        console.log("No target found for drag over");
+        return;
+      }
 
       const rect = target.getBoundingClientRect();
       const y = e.clientY - rect.top;
@@ -107,7 +120,15 @@ export const useReorder = ({
         ? "section"
         : "lesson";
 
-      if (!targetId || !draggingId || targetId === draggingId) return;
+      if (!targetId || !draggingId || targetId === draggingId) {
+        console.log("Drag over cancelled:", {
+          targetId,
+          draggingId,
+          targetType,
+          draggingType,
+        });
+        return;
+      }
 
       // Prevent dropping into descendant sections
       if (descendantsMap.get(targetId)?.has(draggingId)) {
@@ -189,17 +210,26 @@ export const useReorder = ({
         setDropTarget({ id: targetId, type: "lesson", position });
       }
     },
-    [draggingId, draggingType, descendantsMap]
+    [draggingId, draggingType, descendantsMap, sections]
   );
 
-  const handleDragLeave = useCallback(() => {
-    setDropTarget(null);
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    // Only clear drop target if we're actually leaving the drop zone
+    // This prevents flickering when moving between child elements
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = e.clientX;
+    const y = e.clientY;
+
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+      setDropTarget(null);
+    }
   }, []);
 
   const handleDragEnd = useCallback(() => {
+    console.log("Drag end");
     // Remove dragging classes from all elements
     document.querySelectorAll(".opacity-50.scale-95").forEach((el) => {
-      el.classList.remove("opacity-50", "scale-95");
+      el.classList.remove("opacity-50", "scale-95", "ring-2", "ring-blue-400");
     });
 
     setDraggingId(null);
@@ -210,6 +240,7 @@ export const useReorder = ({
   const handleDrop = useCallback(
     (e: React.DragEvent, targetId: string, targetType: DragType) => {
       e.preventDefault();
+      e.stopPropagation();
 
       console.log("Drop operation:", {
         draggingId,
@@ -219,8 +250,15 @@ export const useReorder = ({
         dropTarget,
       });
 
-      if (!targetId || !draggingId || !draggingType || targetId === draggingId)
+      if (
+        !targetId ||
+        !draggingId ||
+        !draggingType ||
+        targetId === draggingId
+      ) {
+        console.log("Drop cancelled: invalid conditions");
         return;
+      }
 
       const draggedItem =
         draggingType === "section"

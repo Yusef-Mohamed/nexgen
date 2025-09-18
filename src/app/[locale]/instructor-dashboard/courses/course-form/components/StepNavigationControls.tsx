@@ -1,8 +1,8 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { useTranslations } from "next-intl";
-import { ArrowLeft, ArrowRight, Save, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 
 interface StepNavigationControlsProps {
   currentStep: number;
@@ -30,9 +30,9 @@ const StepNavigationControls: React.FC<StepNavigationControlsProps> = ({
   const text = useTranslations("courses");
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center pt-4 sm:pt-6 border-t bg-white dark:bg-gray-900 sticky bottom-0 z-10 px-4 py-3 sm:px-6 sm:py-4 -mx-4 sm:-mx-6 -mb-4 sm:-mb-6 gap-3 sm:gap-0">
+    <div className="flex flex-col mt-6 sm:flex-row justify-between items-stretch sm:items-center border-t bg-card rounded-b-2xl sticky bottom-0 z-10 px-4 py-3 sm:px-6 sm:py-4 -mx-4 sm:-mx-6 -mb-4 sm:-mb-6 gap-3 sm:gap-0">
       {/* Mobile step indicator */}
-      <div className="flex md:hidden items-center justify-center gap-2 text-xs text-gray-600 dark:text-gray-400 order-1 sm:order-none">
+      <div className="flex md:hidden items-center justify-center gap-2 text-xs text-text-2 order-1 sm:order-none">
         <span>
           {text("step")} {currentStep + 1} {text("of")} {totalSteps}
         </span>
@@ -68,7 +68,7 @@ const StepNavigationControls: React.FC<StepNavigationControlsProps> = ({
       </div>
 
       {/* Center - Desktop step indicator */}
-      <div className="hidden md:flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+      <div className="hidden md:flex items-center gap-2 text-sm text-text-2">
         <span>
           {text("step")} {currentStep + 1} {text("of")} {totalSteps}
         </span>
@@ -76,30 +76,19 @@ const StepNavigationControls: React.FC<StepNavigationControlsProps> = ({
 
       {/* Right side - Next/Submit button */}
       <div className="flex items-center gap-2 sm:gap-4 order-3 sm:order-none">
-        {/* Save as Draft button (optional for later implementation) */}
-        <Button
-          type="button"
-          variant="ghost"
-          disabled={loading}
-          className="hidden lg:flex items-center gap-2 text-gray-600 hover:text-gray-900 text-sm px-3"
-        >
-          <Save className="w-3 h-3" />
-          {text("save_draft")}
-        </Button>
-
         {/* Next/Submit button */}
         {isLastStep ? (
           <Button
             type="button"
             onClick={onSubmit}
             disabled={loading || !canProceed}
-            className="flex items-center gap-1 sm:gap-2 bg-green-600 hover:bg-green-700 text-white text-sm sm:text-base px-3 sm:px-4 flex-1 sm:flex-none justify-center"
+            className="flex items-center gap-1 sm:gap-2 bg-green hover:bg-green/90 text-white text-sm sm:text-base px-3 sm:px-4 flex-1 sm:flex-none justify-center"
           >
             {loading && (
               <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
             )}
-            <span className="hidden xs:inline">{text("create_course")}</span>
-            <span className="xs:hidden">{text("create")}</span>
+            <span className="hidden xs:inline">{text("save")}</span>
+            <span className="xs:hidden">{text("save")}</span>
           </Button>
         ) : (
           <Button
