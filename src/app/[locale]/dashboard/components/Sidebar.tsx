@@ -15,6 +15,7 @@ import { useAuth } from "@/components/auth-provider";
 import { reqAuthToReview } from "@/constants";
 import Logo from "@/components/logo";
 import { usePathname } from "@/i18n/routing";
+// import { useTranslations } from "next-intl";
 
 const Sidebar: React.FC<
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -31,112 +32,162 @@ const Sidebar: React.FC<
 }) => {
   const { user } = useAuth();
   const pathname = usePathname();
+  // const text = useTranslations("dashboard");
 
-  let links = [
+  let linkGroups = [
+    // First group - no title (main links)
     {
-      href: "/dashboard",
-      label: "home",
-      icon: <FaHome />,
-    },
-    {
-      href: "/dashboard/community?sharedTo=students",
-      label: "community",
-      icon: <FaUsers />,
-    },
-    {
-      href: "/dashboard/learn",
-      label: "learn",
-      icon: <IoBookOutline />,
-    },
-    {
-      href: "/dashboard/analytics",
-      label: "analytics",
-      icon: <IoAnalytics />,
-    },
-    {
-      href: "/dashboard/lives",
-      label: "lives",
-      icon: <MdLiveTv />,
-    },
-    {
-      href: "/dashboard/chat",
-      label: "chat",
-      icon: <IoMdChatboxes />,
-    },
-    {
-      href: "/dashboard/marketing",
-      label: "marketing",
-      icon: <GiCash />,
+      title: null,
       links: [
         {
-          href: "/dashboard/marketing/sales-analytics",
-          label: "salesAnalytics",
-          icon: <FaRegChartBar />,
+          href: "/dashboard",
+          label: "home",
+          icon: <FaHome />,
         },
         {
-          href: "/dashboard/marketing/my-team",
-          label: "myTeam",
-          icon: <RiTeamFill />,
-        },
-        {
-          href: "/dashboard/marketing/invoices",
-          label: "invoices",
-          icon: <CiMoneyBill />,
-        },
-
-        {
-          href: "/dashboard/marketing/coupons",
-          label: "coupons",
-          icon: <RiDiscountPercentLine />,
+          href: "/dashboard/blogs",
+          label: "blogs",
+          icon: <BsNewspaper />,
         },
       ],
     },
+    // Community group
     {
-      href: "/dashboard/practice",
-      label: "practice",
-      icon: <AiFillFolderOpen />,
+      title: "community",
+      links: [
+        {
+          href: "/dashboard/community?sharedTo=students",
+          label: "community",
+          icon: <FaUsers />,
+        },
+        {
+          href: "/dashboard/chat",
+          label: "chat",
+          icon: <IoMdChatboxes />,
+        },
+      ],
     },
+    // Learn group
     {
-      href: `/dashboard/community/profile/${user?._id}`,
-      label: "profile",
-      icon: <FaUser />,
+      title: "learn",
+      links: [
+        {
+          href: "/dashboard/lives",
+          label: "lives",
+          icon: <MdLiveTv />,
+        },
+        {
+          href: "/dashboard/analytics",
+          label: "analytics",
+          icon: <IoAnalytics />,
+        },
+        {
+          href: "/dashboard/learn",
+          label: "learn",
+          icon: <IoBookOutline />,
+        },
+        {
+          href: "/dashboard/practice",
+          label: "practice",
+          icon: <AiFillFolderOpen />,
+        },
+      ],
+    },
+    // Marketing group
+    {
+      title: "marketing",
+      links: [
+        {
+          href: "/dashboard/marketing",
+          label: "marketing",
+          icon: <GiCash />,
+          links: [
+            {
+              href: "/dashboard/marketing/sales-analytics",
+              label: "salesAnalytics",
+              icon: <FaRegChartBar />,
+            },
+            {
+              href: "/dashboard/marketing/my-team",
+              label: "myTeam",
+              icon: <RiTeamFill />,
+            },
+            {
+              href: "/dashboard/marketing/invoices",
+              label: "invoices",
+              icon: <CiMoneyBill />,
+            },
+            {
+              href: "/dashboard/marketing/coupons",
+              label: "coupons",
+              icon: <RiDiscountPercentLine />,
+            },
+          ],
+        },
+      ],
+    },
+    // Profile group
+    {
+      title: null,
+      links: [
+        {
+          href: `/dashboard/community/profile/${user?._id}`,
+          label: "profile",
+          icon: <FaUser />,
+        },
+      ],
     },
   ];
 
   if (pathname.includes("instructor-dashboard")) {
-    links = [
+    linkGroups = [
       {
-        href: "/instructor-dashboard/courses",
-        label: "myCourses",
-        icon: <IoBookOutline />,
-      },
-      {
-        href: "/instructor-dashboard/lives",
-        label: "lives",
-        icon: <MdLiveTv />,
-      },
-      {
-        href: "/instructor-dashboard/blogs",
-        label: "blogs",
-        icon: <BsNewspaper />,
-      },
-      {
-        href: "/instructor-dashboard/wallet",
-        label: "wallet",
-        icon: <CiMoneyBill />,
+        title: null,
+        links: [
+          {
+            href: "/instructor-dashboard/courses",
+            label: "myCourses",
+            icon: <IoBookOutline />,
+          },
+          {
+            href: "/instructor-dashboard/lives",
+            label: "lives",
+            icon: <MdLiveTv />,
+          },
+          {
+            href: "/instructor-dashboard/blogs",
+            label: "blogs",
+            icon: <BsNewspaper />,
+          },
+          {
+            href: "/instructor-dashboard/wallet",
+            label: "wallet",
+            icon: <CiMoneyBill />,
+          },
+        ],
       },
     ];
   }
 
   if (user && !user.authToReview) {
-    links = links.filter((link) => {
-      return !reqAuthToReview?.includes(link.label);
-    });
+    linkGroups = linkGroups
+      .map((group) => ({
+        ...group,
+        links: group.links.filter((link) => {
+          return !reqAuthToReview?.includes(link.label);
+        }),
+      }))
+      .filter((group) => group.links.length > 0);
   }
   if (user && !user.isMarketer) {
-    links = links.filter((link) => {
-      return link.label !== "marketing";
-    });
+    linkGroups = linkGroups
+      .map((group) => ({
+        ...group,
+        links: group.links.filter((link) => {
+          return link.label !== "marketing";
+        }),
+      }))
+      .filter((group) => group.links.length > 0);
   }
   return (
     <aside
@@ -185,10 +236,22 @@ const Sidebar: React.FC<
         </div>
 
         <nav className="mb-2 flex-1">
+          {/* <ul className="space-y-4"> */}
           <ul className="space-y-2">
-            {links.map((link) => (
-              <li key={link.href}>
-                <SidebarLink link={link} collapsed={collapsed} />
+            {linkGroups.map((group, groupIndex) => (
+              <li key={groupIndex}>
+                {/* {group.title && (
+                  <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    {text(group.title)}
+                  </div>
+                )} */}
+                <ul className="space-y-2">
+                  {group.links.map((link) => (
+                    <li key={link.href}>
+                      <SidebarLink link={link} collapsed={collapsed} />
+                    </li>
+                  ))}
+                </ul>
               </li>
             ))}
           </ul>

@@ -102,7 +102,9 @@ export const useServiceForm = () => {
   // Fetch courses for selection
   const fetchCourses = useCallback(async () => {
     try {
-      const coursesResponse = await axiosInstance.get("/courses?limit=1000");
+      const coursesResponse = await axiosInstance.get(
+        "/courses/getAll?limit=1000"
+      );
       setCourses(coursesResponse.data.data);
     } catch (error) {
       console.error("Error fetching courses:", error);

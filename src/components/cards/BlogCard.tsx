@@ -9,19 +9,23 @@ import { Link } from "@/i18n/routing";
 import UserAvatar from "../UserAvatar";
 import { cn } from "@/lib/utils";
 import { ShareButtons } from "./BlogsShareButtons";
-const BlogCard: React.FC<IBlog> = ({
+const BlogCard: React.FC<IBlog & { inDashboard?: boolean }> = ({
   _id,
   title,
   imageCover,
   createdAt,
   readTime,
   author,
+  inDashboard,
 }) => {
   const locale = useLocale();
   if (!author) return null;
   return (
     <article className="flex flex-col w-full h-full ">
-      <Link href={`/blogs/${_id}`} className="w-full">
+      <Link
+        href={`${inDashboard ? "/dashboard/blogs" : "/blogs"}/${_id}`}
+        className="w-full"
+      >
         <Image
           src={imageCover}
           alt={title}
@@ -66,6 +70,7 @@ const BlogCard: React.FC<IBlog> = ({
 interface BlogCardProps extends IBlog {
   isRow?: boolean;
   isMain?: boolean;
+  inDashboard?: boolean;
 }
 
 export const BlogCard2: React.FC<BlogCardProps> = ({
@@ -78,6 +83,7 @@ export const BlogCard2: React.FC<BlogCardProps> = ({
   author,
   readTime,
   isMain,
+  inDashboard,
 }) => {
   return (
     <article
@@ -86,7 +92,7 @@ export const BlogCard2: React.FC<BlogCardProps> = ({
       })}
     >
       <Link
-        href={`/blogs/${_id}`}
+        href={`${inDashboard ? "/dashboard/blogs" : "/blogs"}/${_id}`}
         className={cn("w-full", {
           "md:basis-1/2": isRow,
         })}

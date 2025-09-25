@@ -2,7 +2,13 @@ import { BlogCard2 } from "@/components/cards/BlogCard";
 import { IBlog } from "@/types";
 import { useTranslations } from "next-intl";
 
-const BlogsPageHeroSection = ({ blog }: { blog: IBlog }) => {
+const BlogsPageHeroSection = ({
+  blog,
+  inDashboard,
+}: {
+  blog: IBlog;
+  inDashboard?: boolean;
+}) => {
   const text = useTranslations("aboutOurValuesPage");
   return (
     <section className="container secPadding">
@@ -18,7 +24,7 @@ const BlogsPageHeroSection = ({ blog }: { blog: IBlog }) => {
           {text("description")}
         </p>
       </div>
-      {blog && <BlogCard2 {...blog} isRow />}
+      {blog && <BlogCard2 {...blog} isRow inDashboard={inDashboard} />}
     </section>
   );
 };
