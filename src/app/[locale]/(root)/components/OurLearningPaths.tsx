@@ -16,6 +16,7 @@ import { usePathname, useRouter } from "@/i18n/routing";
 
 interface OurLearningPathsProps {
   enableSearch?: boolean;
+  gridClassName?: string;
 }
 
 const fetchLearningPathsByCategory = async (
@@ -61,6 +62,7 @@ const fetchPopularLearningPaths = async (): Promise<ICoursePackage[]> => {
 
 const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
   enableSearch = false,
+  gridClassName = "",
 }) => {
   const text = useTranslations("learningPaths");
   const searchParams = useSearchParams();
@@ -159,6 +161,7 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
             loading={learningPathsLoading}
             theme={"grid"}
             title={selectedCategory ? getCategoryTitle() : undefined}
+            gridClassName={gridClassName}
           />
         </div>
       ) : (
@@ -168,6 +171,7 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
             loading={learningPathsLoading}
             theme={"carousel"}
             title={selectedCategory ? getCategoryTitle() : undefined}
+            gridClassName={gridClassName}
           />
         </OneSidedContainer>
       )}{" "}

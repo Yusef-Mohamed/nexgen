@@ -15,6 +15,7 @@ import { usePathname, useRouter } from "@/i18n/routing";
 
 interface OurServicesProps {
   enableSearch?: boolean;
+  gridClassName?: string;
 }
 
 // Function to fetch services by category
@@ -47,7 +48,10 @@ const fetchPopularServices = async (): Promise<IPackage[]> => {
   return response.data.data;
 };
 
-const OurServices: React.FC<OurServicesProps> = ({ enableSearch = false }) => {
+const OurServices: React.FC<OurServicesProps> = ({
+  enableSearch = false,
+  gridClassName = "",
+}) => {
   const text = useTranslations("services");
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -141,6 +145,7 @@ const OurServices: React.FC<OurServicesProps> = ({ enableSearch = false }) => {
             loading={servicesLoading}
             theme={"grid"}
             title={selectedCategory ? getCategoryTitle() : undefined}
+            gridClassName={gridClassName}
           />
         </div>
       ) : (
@@ -150,6 +155,7 @@ const OurServices: React.FC<OurServicesProps> = ({ enableSearch = false }) => {
             loading={servicesLoading}
             theme={"carousel"}
             title={selectedCategory ? getCategoryTitle() : undefined}
+            gridClassName={gridClassName}
           />
         </OneSidedContainer>
       )}{" "}
