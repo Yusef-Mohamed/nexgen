@@ -183,6 +183,7 @@ const MyCourses = () => {
 
         // Determine endpoint based on type filter
         if (typeFilter === "courses") {
+          // endpoint = `/courses/instructorCourses/${user?._id}${
           endpoint = `/courses/instructorCourses/${user?._id}${
             filters ? "?" + filters : ""
           }`;
