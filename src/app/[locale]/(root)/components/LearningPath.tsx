@@ -52,7 +52,7 @@ const LearningPath: React.FC<ICoursePackage & { className?: string }> = ({
   return (
     <div
       className={cn(
-        "flex flex-col w-full bg-white rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
+        "flex flex-col w-full bg-card rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
         className
       )}
     >
@@ -86,7 +86,8 @@ const LearningPath: React.FC<ICoursePackage & { className?: string }> = ({
           <p className="flex items-center gap-2 font-medium text-text-3">
             {courses.length}{" "}
             {text("coursesCount", { count: courses.length }).split(" ")[1]} •
-            <FaRegClock /> {totalDuration} {popularText("hours")}
+            <FaRegClock /> {(totalDuration / 60).toFixed(1)}{" "}
+            {popularText("hours")}
           </p>
         </div>
 

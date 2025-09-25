@@ -11,10 +11,12 @@ import CoursesSubsection from "./CoursesSubsection";
 import OneSidedContainer from "@/components/OneSidedContainer";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "@/i18n/routing";
 
 interface OurCoursesProps {
   enableSearch?: boolean;
+  gridClassName?: string;
 }
 
 const fetchCoursesByCategory = async (
@@ -52,7 +54,10 @@ const fetchPopularCourses = async (): Promise<ICourse[]> => {
   }
 };
 
-const OurCourses: React.FC<OurCoursesProps> = ({ enableSearch = false }) => {
+const OurCourses: React.FC<OurCoursesProps> = ({
+  enableSearch = false,
+  gridClassName,
+}) => {
   const text = useTranslations("popularCourses");
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -142,6 +147,7 @@ const OurCourses: React.FC<OurCoursesProps> = ({ enableSearch = false }) => {
             loading={coursesLoading}
             theme={"grid"}
             title={getCategoryTitle()}
+            gridClassName={gridClassName}
           />
         </div>
       ) : (
@@ -151,6 +157,7 @@ const OurCourses: React.FC<OurCoursesProps> = ({ enableSearch = false }) => {
             loading={coursesLoading}
             theme={"carousel"}
             title={getCategoryTitle()}
+            gridClassName={gridClassName}
           />
         </OneSidedContainer>
       )}{" "}

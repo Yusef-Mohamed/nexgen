@@ -24,13 +24,13 @@ const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
             maxHeight: "calc(100vh)",
             height: "calc(100vh)",
           }}
-          className="hidden lg:flex"
+          className="hidden lg:flex border-e"
           collapsed={sidebarCollapsed}
           onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
           isCollapsable={true}
         />
         <div className="relative flex-1 w-full dashboardMain">
-          <header className="sticky top-0 z-50 w-full px-3 sm:px-6 bg-clear-ground">
+          <header className="sticky border-b top-0 z-50 w-full px-3 sm:px-6 bg-clear-ground">
             <div className="flex items-center h-[76px] py-1 justify-end gap-10">
               <div className="flex items-center gap-4">
                 <Sheet>
@@ -47,7 +47,7 @@ const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
               </div>
             </div>
           </header>
-          {children}
+          <div className="bg-background">{children}</div>
           <Footer clear />
         </div>
       </div>

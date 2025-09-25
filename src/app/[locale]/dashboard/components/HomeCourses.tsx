@@ -9,7 +9,7 @@ import { useEffect } from "react";
 
 const CourseSkeleton = () => {
   return (
-    <div className="flex items-center w-full p-3 rounded-md cardShadow sm:p-6 bg-background">
+    <div className="flex items-center w-full p-3 rounded-md cardShadow sm:p-6 bg-card">
       <div className="basis-2/3">
         <Skeleton className="w-48 h-4 mb-8 max-sm:mb-4" />
         <div className="flex items-center w-full gap-2">
@@ -74,17 +74,27 @@ const HomeCourses = () => {
         <>
           <h2>{text("continueYourLearningJourney")}</h2>
           <div
-            className="flex items-center w-full p-3 rounded-md cardShadow sm:p-6 bg-background"
+            className="flex gap-4 items-center w-full p-3 rounded-md cardShadow sm:p-6 bg-card"
             key={newestIncompleteCourse._id}
           >
-            <div className="basis-2/3">
+            {" "}
+            <div>
+              <Image
+                src={newestIncompleteCourse.image}
+                alt={newestIncompleteCourse.title}
+                width={600}
+                height={400}
+                className="object-cover w-auto h-full max-h-40 rounded-md aspect-[1656/931]"
+              />
+            </div>
+            <div className="w-full flex-1">
               <h4 className="mb-8 max-sm:mb-4 h2s">
                 {newestIncompleteCourse.title}
               </h4>
               <div className="flex items-center w-full gap-2">
-                <div className="w-full h-1 overflow-hidden rounded-full md:max-w-xs bg-muted">
+                <div className="w-full h-1.5 overflow-hidden rounded-full bg-muted">
                   <div
-                    className="w-full h-1 rounded-full bg-primary"
+                    className="w-full h-1.5 rounded-full bg-primary"
                     style={{
                       transform: `translateX(${locale === "en" ? "-" : ""}${
                         100 -
@@ -112,15 +122,6 @@ const HomeCourses = () => {
                   {text("continueLearning")}
                 </Link>
               </Button>
-            </div>
-            <div className="basis-1/3">
-              <Image
-                src={newestIncompleteCourse.image}
-                alt={newestIncompleteCourse.title}
-                width={600}
-                height={400}
-                className="object-cover w-full rounded-md aspect-[1656/931] max-w-52"
-              />
             </div>
           </div>
         </>

@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState, useEffect } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { IExam } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import ExamsDisplay from "./ExamsDisplay";
 import { useAuth } from "@/components/auth-provider";
 import { axiosInstance } from "@/app/lib/utils";
 import { AxiosError } from "axios";
+import { usePathname, useRouter } from "@/i18n/routing";
 
 interface ExamsManagerProps {
   type: "course" | "lesson" | "placement";

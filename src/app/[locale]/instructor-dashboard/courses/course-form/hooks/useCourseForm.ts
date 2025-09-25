@@ -42,6 +42,7 @@ export interface CourseFormSchema {
   priceAfterDiscount?: string;
   courseDuration: string;
   needAccessibleCourse: boolean;
+  freePackageSubscriptionInDays?: number;
   bgColor: string;
   bgDarkMode: string;
   fontColor: string;
@@ -131,22 +132,28 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
       }),
       highlights: z.object({
         en: z
-          .array(
-            z
-              .string()
-              .min(1, text("validation.highlight_required"))
-              .max(100, text("validation.highlight_max_length"))
-          )
+          .array(z.string())
+          .min(1, text("validation.highlights_en_required"))
           .max(50, text("validation.highlights_array_max_length"))
+          .refine(
+            (highlights) =>
+              highlights.every((highlight) => highlight.trim().length > 0),
+            {
+              message: text("validation.highlight_cannot_be_empty"),
+            }
+          )
           .default([]),
         ar: z
-          .array(
-            z
-              .string()
-              .min(1, text("validation.highlight_required"))
-              .max(100, text("validation.highlight_max_length"))
-          )
+          .array(z.string())
+          .min(1, text("validation.highlights_ar_required"))
           .max(50, text("validation.highlights_array_max_length"))
+          .refine(
+            (highlights) =>
+              highlights.every((highlight) => highlight.trim().length > 0),
+            {
+              message: text("validation.highlight_cannot_be_empty"),
+            }
+          )
           .default([]),
       }),
       certificateDescription: z.object({
@@ -204,6 +211,11 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
         .refine((val) => Number(val) >= 1, text("validation.duration_min"))
         .refine((val) => Number(val) <= 1000, text("validation.duration_max")),
       needAccessibleCourse: z.boolean(),
+      freePackageSubscriptionInDays: z
+        .number()
+        .min(1, text("validation.free_package_days_min"))
+        .max(365, text("validation.free_package_days_max"))
+        .optional(),
       bgColor: z.string().default("#ffffff"),
       bgDarkMode: z.string().default("#000000"),
       fontColor: z.string().default("#000000"),
@@ -243,7 +255,7 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
   });
   const form = useForm<CourseFormSchema>({
     resolver: zodResolver(schema),
-    mode: "onChange",
+    mode: "onSubmit", // Only validate on submit
     reValidateMode: "onChange",
     defaultValues: {
       title: { ar: "", en: "" },
@@ -257,6 +269,7 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
       priceAfterDiscount: "",
       courseDuration: "",
       needAccessibleCourse: false,
+      freePackageSubscriptionInDays: undefined,
       bgColor: "#ffffff",
       bgDarkMode: "#000000",
       fontColor: "#000000",
@@ -304,6 +317,8 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
           priceAfterDiscount: course.priceAfterDiscount?.toString() || "",
           courseDuration: course.courseDuration?.toString() || "",
           needAccessibleCourse: course.needAccessibleCourse || false,
+          freePackageSubscriptionInDays:
+            course.freePackageSubscriptionInDays || undefined,
           bgColor: course.colors?.bgColor || "#ffffff",
           bgDarkMode: course.colors?.bgDarkMode || "#000000",
           fontColor: course.colors?.fontColor || "#000000",
@@ -505,7 +520,10 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
             stepData.priceAfterDiscount !==
               currentCourse.priceAfterDiscount?.toString() ||
             stepData.rating !== currentCourse.rating?.toString() ||
-            stepData.needAccessibleCourse !== currentCourse.needAccessibleCourse
+            stepData.needAccessibleCourse !==
+              currentCourse.needAccessibleCourse ||
+            stepData.freePackageSubscriptionInDays !==
+              currentCourse.freePackageSubscriptionInDays
           );
         case 3: // Appearance
           return (
@@ -570,12 +588,12 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
       } else if (stepNumber === 1) {
         // Step 2: Content Details
         if (stepData.highlights) {
-          const highlightsAr = (stepData.highlights.ar || [])
-            .map((h) => h.trim())
-            .filter(Boolean);
-          const highlightsEn = (stepData.highlights.en || [])
-            .map((h) => h.trim())
-            .filter(Boolean);
+          const highlightsAr = (stepData.highlights.ar || []).map((h) =>
+            h.trim()
+          );
+          const highlightsEn = (stepData.highlights.en || []).map((h) =>
+            h.trim()
+          );
 
           const maxLength = Math.max(highlightsAr.length, highlightsEn.length);
           const paddedHighlightsAr = [
@@ -642,6 +660,12 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
           formData.append(
             "needAccessibleCourse",
             stepData.needAccessibleCourse.toString()
+          );
+        }
+        if (stepData.freePackageSubscriptionInDays !== undefined) {
+          formData.append(
+            "freePackageSubscriptionInDays",
+            stepData.freePackageSubscriptionInDays.toString()
           );
         }
         if (stepData.needAccessibleCourse && accessibleCourses.length > 0) {
@@ -750,7 +774,7 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
 
     return { success: false };
   };
-
+  console.log(form.getValues());
   return {
     loading,
     categories,

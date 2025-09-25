@@ -7,10 +7,9 @@ import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Edit, Plus } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import Image from "next/image";
 import {
   Select,
   SelectContent,
@@ -18,69 +17,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
 import { Link } from "@/i18n/routing";
+import { FilterTabs, FilterOption } from "@/components/filters/FilterTabs";
+import { getDynamicContent, ContentType } from "@/lib/dynamicContent";
+import UnifiedCard from "@/components/cards/UnifiedCard";
+import { IPackage, ICoursePackage } from "@/types";
 
-// Course Card Component
-const CourseCard = ({ course }: { course: ICourse }) => {
-  const text = useTranslations("courses");
-
-  const getCourseStatus = (course: ICourse) => {
-    const isActive = course.status === "active";
-
-    return {
-      type: "status" as const,
-      isActive,
-      text: isActive ? text("active") : text("inactive"),
-      variant: (isActive ? "default" : "secondary") as "default" | "secondary",
-    };
-  };
-
-  const status = getCourseStatus(course);
-
-  return (
-    <Card
-      key={course._id}
-      className="flex md:flex-row flex-col sm:p-6 p-4 overflow-hidden"
-    >
-      <div className="flex-shrink-0 md:w-48 w-full aspect-[1656/931] relative">
-        <Image
-          src={course.image}
-          alt={course.title}
-          fill
-          className="object-cover aspect-[1656/931] rounded-md"
-        />
-      </div>
-
-      <CardContent className="flex-1 md:p-6 p-4 flex flex-col justify-between">
-        <div className="flex md:flex-row flex-col gap-4 justify-between items-start">
-          <div className="flex-1">
-            <h3 className="text-xl font-semibold mb-2">{course.title}</h3>
-
-            <p
-              className={cn(
-                "font-semibold text-muted-foreground",
-                course.status !== "active" ? "text-destructive" : "text-green"
-              )}
-            >
-              {status.text}
-            </p>
-          </div>
-
-          <Button
-            variant="outline"
-            className="flex !text-sm max-md:w-full items-center gap-2"
-            asChild
-          >
-            <Link href={`/instructor-dashboard/courses/${course._id}`}>
-              <Edit className="w-4 h-4" />
-              {text("course_details")}
-            </Link>
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
+// Dynamic Card Component
+const DynamicCard = ({
+  item,
+  contentType,
+}: {
+  item: ICourse | IPackage | ICoursePackage;
+  contentType: ContentType;
+}) => {
+  return <UnifiedCard item={item} contentType={contentType} />;
 };
 
 // Course Loader Component
@@ -118,19 +69,22 @@ const CourseLoader = ({ isLoading }: { isLoading: boolean }) => {
 
 // Empty State Component
 const EmptyState = ({
-  courses,
+  items,
   isLoading,
+  contentType,
 }: {
-  courses: ICourse[];
+  items: (ICourse | IPackage | ICoursePackage)[];
   isLoading: boolean;
+  contentType: ContentType;
 }) => {
   const text = useTranslations("courses");
+  const dynamicContent = getDynamicContent(contentType, text);
 
-  if (courses.length > 0 || isLoading) return null;
+  if (items.length > 0 || isLoading) return null;
 
   return (
     <div className="w-full p-6 text-center rounded-lg bg-muted">
-      <p className="text-lg font-medium">{text("no_courses_found")}</p>
+      <p className="text-lg font-medium">{dynamicContent.noContentFound}</p>
     </div>
   );
 };
@@ -139,13 +93,13 @@ const EmptyState = ({
 const SearchAndFilters = ({
   searchTerm,
   setSearchTerm,
-  filterType,
-  setFilterType,
+  statusFilter,
+  setStatusFilter,
 }: {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
-  filterType: string;
-  setFilterType: (value: string) => void;
+  statusFilter: string;
+  setStatusFilter: (value: string) => void;
 }) => {
   const text = useTranslations("courses");
 
@@ -161,7 +115,7 @@ const SearchAndFilters = ({
         />
       </div>
 
-      <Select value={filterType} onValueChange={setFilterType}>
+      <Select value={statusFilter} onValueChange={setStatusFilter}>
         <SelectTrigger className="w-32">
           <SelectValue />
         </SelectTrigger>
@@ -193,10 +147,14 @@ const MyCourses = () => {
   const { token, user } = useAuth();
   const [haveError, setHaveError] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("courses");
 
-  const fetchCourses = useCallback(
-    async (page: number, search?: string): Promise<ICourse[]> => {
+  const fetchData = useCallback(
+    async (
+      page: number,
+      search?: string
+    ): Promise<ICourse[] | IPackage[] | ICoursePackage[]> => {
       try {
         if (haveError || !user?._id) {
           return [];
@@ -207,26 +165,38 @@ const MyCourses = () => {
         filtersParams.append("page", `${page}`);
 
         if (search) filtersParams.append("search", search);
-        if (filterType !== "all") {
+        if (statusFilter !== "all") {
           // Map filter values to API status values
           const statusMap: Record<string, string> = {
             active: "published",
             inactive: "inActive",
           };
-          filtersParams.append("status", statusMap[filterType] || filterType);
+          filtersParams.append(
+            "status",
+            statusMap[statusFilter] || statusFilter
+          );
         }
 
         const filters = filtersParams.toString();
+        let endpoint = "";
+        let data: ICourse[] | IPackage[] | ICoursePackage[] = [];
 
-        const res = await axiosInstance(
-          // `/courses/instructorCourses/${user._id}${filters ? "?" + filters : ""}`,
-          `/courses${filters ? "?" + filters : ""}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        // Determine endpoint based on type filter
+        if (typeFilter === "courses") {
+          endpoint = `/courses/instructorCourses/${user?._id}${
+            filters ? "?" + filters : ""
+          }`;
+        } else if (typeFilter === "learning-paths") {
+          endpoint = `/coursePackages/getAll${filters ? "?" + filters : ""}`;
+        } else if (typeFilter === "services") {
+          endpoint = `/packages/getAll${filters ? "?" + filters : ""}`;
+        }
 
-        const data = res.data.data as ICourse[];
+        const res = await axiosInstance(endpoint, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        data = res.data.data;
 
         if (res.data.paginationResult) {
           setPaginationData(res.data.paginationResult);
@@ -234,37 +204,54 @@ const MyCourses = () => {
 
         return data;
       } catch (e) {
-        console.error("Error fetching courses:", e);
+        console.error("Error fetching data:", e);
         setHaveError(true);
         return [];
       }
     },
-    [token, user?._id, haveError, filterType]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [token, user?._id, haveError, statusFilter, typeFilter]
   );
 
   const {
-    data: courses,
+    data: items,
     isLoading,
     observerRef,
     setPaginationData,
     hasMore,
-  } = useInfiniteScroll<ICourse>({
-    fetchData: fetchCourses,
+  } = useInfiniteScroll<ICourse | IPackage | ICoursePackage>({
+    fetchData: fetchData,
     search: searchTerm,
-    dependencies: [user?._id, filterType],
+    dependencies: [user?._id, statusFilter, typeFilter],
   });
 
   const text = useTranslations("courses");
+  const contentType = typeFilter as ContentType;
+  const dynamicContent = getDynamicContent(contentType, text);
+
+  // Filter tabs configuration
+  const filterOptions: FilterOption[] = [
+    { value: "courses", label: text("courses") },
+    { value: "learning-paths", label: text("learning_paths") },
+    { value: "services", label: text("services") },
+  ];
 
   return (
     <div className="w-full container mx-auto sm:py-8 py-6 space-y-6">
-      {/* Header with Add Course Button */}
+      {/* Filter Tabs */}
+      <FilterTabs
+        options={filterOptions}
+        activeValue={typeFilter}
+        onChange={(value) => setTypeFilter(value)}
+      />
+
+      {/* Header with Add Button */}
       <div className="flex justify-between items-center gap-4">
-        <h1 className="text-2xl font-bold">{text("my_courses")}</h1>
+        <h1 className="text-2xl font-bold">{dynamicContent.header}</h1>
         <Button asChild className="flex items-center gap-2">
-          <Link href="/instructor-dashboard/courses/course-form">
+          <Link href={dynamicContent.addButtonLink}>
             <Plus className="w-4 h-4" />
-            {text("add_new_course")}
+            {dynamicContent.addButton}
           </Link>
         </Button>
       </div>
@@ -274,8 +261,8 @@ const MyCourses = () => {
         <SearchAndFilters
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
-          filterType={filterType}
-          setFilterType={setFilterType}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
         />
       </div>
 
@@ -283,12 +270,16 @@ const MyCourses = () => {
       <ErrorState haveError={haveError} />
 
       {/* Empty State */}
-      <EmptyState courses={courses} isLoading={isLoading} />
+      <EmptyState
+        items={items}
+        isLoading={isLoading}
+        contentType={contentType}
+      />
 
-      {/* Courses List */}
+      {/* Content List */}
       <div className="space-y-4">
-        {courses.map((course) => (
-          <CourseCard key={course._id} course={course} />
+        {items.map((item) => (
+          <DynamicCard key={item._id} item={item} contentType={contentType} />
         ))}
       </div>
 

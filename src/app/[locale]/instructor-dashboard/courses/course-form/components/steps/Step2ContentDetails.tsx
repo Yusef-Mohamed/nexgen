@@ -44,36 +44,68 @@ const Step2ContentDetails: React.FC<Step2ContentDetailsProps> = ({
         <FormField
           control={form.control}
           name="highlights.en"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <ReorderableHighlightsList
-                value={field.value}
-                onChange={field.onChange}
-                label={`${text("highlights")} (${text("english")})`}
-                placeholder={text("enter_highlights_english")}
-                error={fieldState.error?.message}
-                commonFormStyles={commonFormStyles}
-                disabled={loading}
-              />
-            </FormItem>
-          )}
+          render={({ field, fieldState }) => {
+            const fieldErrors: string[] = [];
+
+            // Create individual error messages for each highlight
+            if (fieldState.error?.message) {
+              field.value.forEach((highlight, index) => {
+                if (!highlight || highlight.trim().length === 0) {
+                  fieldErrors[index] = text(
+                    "validation.highlight_cannot_be_empty"
+                  );
+                }
+              });
+            }
+
+            return (
+              <FormItem>
+                <ReorderableHighlightsList
+                  value={field.value}
+                  onChange={field.onChange}
+                  label={`${text("highlights")} (${text("english")})`}
+                  placeholder={text("enter_highlights_english")}
+                  error={fieldState.error?.message}
+                  fieldErrors={fieldErrors}
+                  commonFormStyles={commonFormStyles}
+                  disabled={loading}
+                />
+              </FormItem>
+            );
+          }}
         />
         <FormField
           control={form.control}
           name="highlights.ar"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <ReorderableHighlightsList
-                value={field.value}
-                onChange={field.onChange}
-                label={`${text("highlights")} (${text("arabic")})`}
-                placeholder={text("enter_highlights_arabic")}
-                error={fieldState.error?.message}
-                commonFormStyles={commonFormStyles}
-                disabled={loading}
-              />
-            </FormItem>
-          )}
+          render={({ field, fieldState }) => {
+            const fieldErrors: string[] = [];
+
+            // Create individual error messages for each highlight
+            if (fieldState.error?.message) {
+              field.value.forEach((highlight, index) => {
+                if (!highlight || highlight.trim().length === 0) {
+                  fieldErrors[index] = text(
+                    "validation.highlight_cannot_be_empty"
+                  );
+                }
+              });
+            }
+
+            return (
+              <FormItem>
+                <ReorderableHighlightsList
+                  value={field.value}
+                  onChange={field.onChange}
+                  label={`${text("highlights")} (${text("arabic")})`}
+                  placeholder={text("enter_highlights_arabic")}
+                  error={fieldState.error?.message}
+                  fieldErrors={fieldErrors}
+                  commonFormStyles={commonFormStyles}
+                  disabled={loading}
+                />
+              </FormItem>
+            );
+          }}
         />
       </div>
 
@@ -216,29 +248,27 @@ const Step2ContentDetails: React.FC<Step2ContentDetailsProps> = ({
       </div>
 
       {/* Course Duration */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={form.control}
-          name="courseDuration"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                {text("course_duration")} ({text("minutes")})
-              </FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  {...field}
-                  placeholder={text("enter_duration")}
-                  className={commonFormStyles}
-                  disabled={loading}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
+      <FormField
+        control={form.control}
+        name="courseDuration"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>
+              {text("course_duration")} ({text("minutes")})
+            </FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                {...field}
+                placeholder={text("enter_duration")}
+                className={commonFormStyles}
+                disabled={loading}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </div>
   );
 };

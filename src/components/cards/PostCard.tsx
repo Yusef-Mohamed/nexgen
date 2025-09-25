@@ -45,7 +45,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
 
   return (
     <>
-      <div className="relative p-3 w-full rounded-md cardShadow sm:p-6 bg-background">
+      <div className="relative p-3 w-full rounded-md cardShadow sm:p-6 bg-card">
         <PostAction post={post} />
         {inCommunity ? (
           <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
@@ -171,7 +171,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
 export const SkeletonPostCard = () => {
   return (
     <>
-      <div className="w-full rounded-md animate-pulse bg-background">
+      <div className="w-full rounded-md animate-pulse bg-card">
         <div className="flex gap-2 items-center px-4 pt-4 my-2 sm:my-4">
           <div className="w-12 h-12 rounded-full animate-pulse bg-muted-foreground"></div>
           <div className="flex flex-col gap-2">

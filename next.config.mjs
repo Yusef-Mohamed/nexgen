@@ -10,6 +10,7 @@ const nextConfig = {
       "development.nexgen-academy.com",
       "flagcdn.com",
       "localhost",
+      "via.placeholder.com",
     ],
   },
 };

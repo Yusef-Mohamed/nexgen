@@ -65,7 +65,7 @@ const CommunityFilters = () => {
     }
   }, [token, user, getPackages, getCourses]);
   return (
-    <div className="flex items-center justify-between px-6 py-3 rounded-md bg-background">
+    <div className="flex items-center justify-between px-6 py-3 rounded-md cardShadow bg-card">
       <Button
         size={"icon"}
         variant={"ghost"}

@@ -10,7 +10,6 @@ import SectionEditDialog from "./SectionEditDialog";
 import LessonEditDialog from "./LessonEditDialog";
 import { useCourseDetail } from "../hooks/useCourseDetail";
 import { useReorder } from "../hooks/useReorder";
-import CourseEditDialog from "./CourseEditDialog/component";
 import { toast } from "react-toastify";
 
 // Import new components
@@ -41,7 +40,6 @@ const CourseDetailClient = () => {
     updateSections,
     updateSectionsOrder,
     toggleSection,
-    updateCourse,
     deleteSectionById,
     addLessonToSection,
     updateLessonInSections,
@@ -67,7 +65,6 @@ const CourseDetailClient = () => {
   });
 
   // Dialog states
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [sectionDialogOpen, setSectionDialogOpen] = useState(false);
   const [editingSection, setEditingSection] = useState<ISection | null>(null);
   const [isEditSection, setIsEditSection] = useState(false);
@@ -314,13 +311,6 @@ const CourseDetailClient = () => {
           {text("add_new_section")}
         </Button>
       </div>
-
-      <CourseEditDialog
-        open={editDialogOpen}
-        onOpenChange={setEditDialogOpen}
-        course={course}
-        onCourseUpdated={updateCourse}
-      />
 
       <SectionEditDialog
         open={sectionDialogOpen}

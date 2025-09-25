@@ -11,19 +11,24 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
 
 interface ServicesSubsectionProps {
+  gridClassName?: string;
   services: IPackage[];
   loading: boolean;
   theme?: "carousel" | "grid";
   title?: string;
+  cardClassName?: string;
 }
 
 const ServicesSubsection: React.FC<ServicesSubsectionProps> = ({
+  gridClassName,
   services,
   loading,
   theme = "carousel",
   title,
+  cardClassName,
 }) => {
   const text = useTranslations("services");
 
@@ -78,14 +83,23 @@ const ServicesSubsection: React.FC<ServicesSubsectionProps> = ({
         {title && (
           <h2 className="text-2xl font-bold mb-6 text-center">{title}</h2>
         )}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          className={cn(
+            "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",
+            gridClassName
+          )}
+        >
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (
-                <ServiceCardSkeleton key={index} />
+                <ServiceCardSkeleton key={index} className={cardClassName} />
               ))
             : services.length > 0
             ? services.map((service) => (
-                <ServiceCard key={service._id} {...service} />
+                <ServiceCard
+                  key={service._id}
+                  {...service}
+                  className={cardClassName}
+                />
               ))
             : null}
         </div>

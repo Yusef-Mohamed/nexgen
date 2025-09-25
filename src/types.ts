@@ -38,6 +38,7 @@ export interface ICourse {
   courseDuration: number;
   ratingsQuantity: number;
   needAccessibleCourse: boolean;
+  freePackageSubscriptionInDays?: number;
   accessibleCourses: ICourse[];
   status: "inActive" | "active";
   createdAt: string;
@@ -182,6 +183,7 @@ export interface IPackage {
   title: string;
   description: string;
   highlights: string[];
+  image: string;
   price: number;
   priceAfterDiscount?: number;
   subscriptionDurationDays: number;
@@ -232,6 +234,7 @@ export interface ILive {
   package: IPackage[];
   instructor: IUser;
   link: string;
+  status: "active" | "inActive";
   _id: string;
   createdAt: string;
   updatedAt: string;

@@ -19,10 +19,10 @@ const FilterTab: React.FC<FilterTabProps> = ({ label, isActive, onClick }) => (
   <button
     onClick={onClick}
     className={cn(
-      "px-6 py-3 rounded-full font-medium transition-all duration-300 border-2",
+      "px-6 py-3 rounded-full font-medium grow transition-all duration-300 border",
       isActive
         ? "bg-primary text-white border-primary shadow-lg"
-        : "bg-transparent text-foreground border-border hover:border-primary hover:text-primary"
+        : "bg-transparent text-foreground border-primary/30 hover:border-primary hover:text-primary"
     )}
   >
     {label}
@@ -36,13 +36,33 @@ const CoursesFilterContent: React.FC = () => {
   const renderContent = () => {
     switch (activeFilter) {
       case "courses":
-        return <OurCourses enableSearch={true} />;
+        return (
+          <OurCourses
+            enableSearch={true}
+            gridClassName="grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+          />
+        );
       case "learning-paths":
-        return <OurLearningPaths enableSearch={true} />;
+        return (
+          <OurLearningPaths
+            enableSearch={true}
+            gridClassName="grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+          />
+        );
       case "services":
-        return <OurServices enableSearch={true} />;
+        return (
+          <OurServices
+            enableSearch={true}
+            gridClassName="grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+          />
+        );
       default:
-        return <OurCourses enableSearch={true} />;
+        return (
+          <OurCourses
+            enableSearch={true}
+            gridClassName="grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6"
+          />
+        );
     }
   };
 
@@ -50,7 +70,7 @@ const CoursesFilterContent: React.FC = () => {
     <>
       {/* Filter Tabs Section */}
       <section className="container py-8">
-        <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
+        <div className="flex flex-wrap gap-2">
           <FilterTab
             label={text("courses") || "Courses"}
             isActive={activeFilter === "courses"}

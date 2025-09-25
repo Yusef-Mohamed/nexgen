@@ -28,7 +28,7 @@ const LiveFilters = () => {
       });
   }, []);
   return (
-    <div className="w-full px-6 py-4 mb-4 bg-clear-ground rounded-xl h-fit">
+    <div className="w-full px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
       <Label htmlFor={"course"} className="block mb-2">
         {inputs("course")} :
       </Label>

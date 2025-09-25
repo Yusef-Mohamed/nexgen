@@ -9,19 +9,24 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
 
 interface LearningPathsSubsectionProps {
+  gridClassName?: string;
   learningPaths: ICoursePackage[];
   loading: boolean;
   theme?: "carousel" | "grid";
   title?: string;
+  cardClassName?: string;
 }
 
 const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
+  gridClassName,
   learningPaths,
   loading,
   theme = "carousel",
   title,
+  cardClassName,
 }) => {
   const text = useTranslations("learningPaths");
 
@@ -51,7 +56,12 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (
                   <CarouselItem key={index} className="ps-4 basis-auto">
-                    <LearningPathSkeleton className="lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]" />
+                    <LearningPathSkeleton
+                      className={cn(
+                        "lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]",
+                        cardClassName
+                      )}
+                    />
                   </CarouselItem>
                 ))
               : learningPaths.length > 0
@@ -62,7 +72,10 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
                   >
                     <LearningPath
                       {...learningPath}
-                      className="lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]"
+                      className={cn(
+                        "lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]",
+                        cardClassName
+                      )}
                     />
                   </CarouselItem>
                 ))
@@ -77,14 +90,23 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
     return (
       <div>
         {title && <h2 className="mb-6 capitalize">{title}</h2>}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          className={cn(
+            "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",
+            gridClassName
+          )}
+        >
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (
-                <LearningPathSkeleton key={index} />
+                <LearningPathSkeleton key={index} className={cardClassName} />
               ))
             : learningPaths.length > 0
             ? learningPaths.map((learningPath) => (
-                <LearningPath key={learningPath._id} {...learningPath} />
+                <LearningPath
+                  key={learningPath._id}
+                  {...learningPath}
+                  className={cardClassName}
+                />
               ))
             : null}
         </div>

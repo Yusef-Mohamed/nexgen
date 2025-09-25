@@ -173,6 +173,7 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value}
+                value={field.value}
                 disabled={loading}
               >
                 <FormControl>

@@ -33,7 +33,13 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
         alt={user?.name}
         className={cn("object-cover", innerClassName)}
       />
-      <AvatarFallback className={cn(innerClassName)}>
+      <AvatarFallback
+        className={cn(innerClassName, {
+          "text-[10px]": size === "sm",
+          "text-[12px]": size === "md",
+          "text-[14px]": size === "lg",
+        })}
+      >
         {user?.name?.slice(0, 2).toUpperCase()}
       </AvatarFallback>
     </Avatar>

@@ -10,7 +10,8 @@ import { axiosInstance } from "@/app/lib/utils";
 import CategoryFilter from "./CategoryFilter";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "@/i18n/routing";
 
 interface OurServicesProps {
   enableSearch?: boolean;

@@ -10,8 +10,9 @@ import LearningPathsSubsection from "./LearningPathsSubsection";
 import OneSidedContainer from "@/components/OneSidedContainer";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/app/lib/utils";
+import { usePathname, useRouter } from "@/i18n/routing";
 
 interface OurLearningPathsProps {
   enableSearch?: boolean;

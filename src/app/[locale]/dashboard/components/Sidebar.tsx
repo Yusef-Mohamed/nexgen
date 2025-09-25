@@ -6,6 +6,7 @@ import { IoAnalytics, IoBookOutline } from "react-icons/io5";
 import { MdLiveTv } from "react-icons/md";
 import { GiCash } from "react-icons/gi";
 import { AiFillFolderOpen } from "react-icons/ai";
+import { BsNewspaper } from "react-icons/bs";
 import SidebarLink from "./SidebarLink";
 import SidebarFooter from "./SidebarFooter";
 import { CiMoneyBill } from "react-icons/ci";
@@ -110,6 +111,16 @@ const Sidebar: React.FC<
         icon: <IoBookOutline />,
       },
       {
+        href: "/instructor-dashboard/lives",
+        label: "lives",
+        icon: <MdLiveTv />,
+      },
+      {
+        href: "/instructor-dashboard/blogs",
+        label: "blogs",
+        icon: <BsNewspaper />,
+      },
+      {
         href: "/instructor-dashboard/wallet",
         label: "wallet",
         icon: <CiMoneyBill />,
@@ -158,11 +169,12 @@ const Sidebar: React.FC<
                   width="43"
                   height="43"
                   rx="21.5"
-                  stroke="#1B7DF5"
+                  stroke="currentColor"
+                  className="stroke-primary"
                 />
                 <path
                   d="M13 22H31M13 16H31M19 28H31"
-                  stroke="#14191F"
+                  stroke="currentColor"
                   stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"

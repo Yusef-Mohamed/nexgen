@@ -66,7 +66,7 @@ const CreatePost = ({
   };
 
   return (
-    <div className="px-3 py-3 space-x-3 rounded-md bg-background">
+    <div className="px-3 py-3 space-x-3 rounded-md bg-card cardShadow">
       <div className="flex items-start justify-between gap-2">
         <UserAvatar user={user || undefined} size="md" />
         <TextWithEmojiBox

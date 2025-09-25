@@ -44,7 +44,7 @@ const CourseCard: React.FC<ICourse & { className?: string }> = ({
   return (
     <div
       className={cn(
-        "flex flex-col w-full bg-white rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
+        "flex flex-col w-full bg-card rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
         className
       )}
     >
@@ -67,7 +67,7 @@ const CourseCard: React.FC<ICourse & { className?: string }> = ({
             {category?.title || type}
           </div>{" "}
           <p className="flex items-center gap-2 font-medium text-text-3">
-            <FaRegClock /> {courseDuration} {text("hours")}
+            <FaRegClock /> {(courseDuration / 60).toFixed(1)} {text("hours")}
           </p>
         </div>
 
@@ -123,7 +123,7 @@ export const CourseCardSkeleton: React.FC<{ className?: string }> = ({
   return (
     <div
       className={cn(
-        "flex flex-col w-full bg-white rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
+        "flex flex-col w-full bg-card rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
         className
       )}
     >

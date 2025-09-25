@@ -14,6 +14,7 @@ interface ReorderableHighlightsListProps {
   error?: string;
   commonFormStyles?: string;
   disabled?: boolean;
+  fieldErrors?: string[]; // Array of error messages for each highlight field
 }
 
 const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
@@ -24,6 +25,7 @@ const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
   error,
   commonFormStyles,
   disabled = false,
+  fieldErrors = [],
 }) => {
   const text = useTranslations("courses");
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -103,13 +105,24 @@ const ReorderableHighlightsList: React.FC<ReorderableHighlightsListProps> = ({
             </div>
 
             {/* Input Field */}
-            <Input
-              value={highlight}
-              onChange={(e) => updateHighlight(index, e.target.value)}
-              placeholder={placeholder || text("highlight_placeholder")}
-              className={cn(commonFormStyles, "flex-1")}
-              disabled={disabled}
-            />
+            <div className="flex-1">
+              <Input
+                value={highlight}
+                onChange={(e) => updateHighlight(index, e.target.value)}
+                placeholder={placeholder || text("highlight_placeholder")}
+                className={cn(
+                  commonFormStyles,
+                  "flex-1",
+                  fieldErrors[index] && "border-destructive"
+                )}
+                disabled={disabled}
+              />
+              {fieldErrors[index] && (
+                <p className="text-sm text-destructive mt-1">
+                  {fieldErrors[index]}
+                </p>
+              )}
+            </div>
 
             {/* Move Up/Down Buttons */}
             <div className="flex items-center gap-1">

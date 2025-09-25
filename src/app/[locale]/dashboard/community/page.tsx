@@ -1,5 +1,5 @@
 import { unstable_setRequestLocale } from "next-intl/server";
-import DisplayCommunityPosts from "./components/DisplayCommunityAnalytics";
+import CommunityClient from "./components/CommunityClient";
 import { Metadata } from "next";
 import { getMetadataCommunityPage } from "@/getMetaData";
 import CommunitySidebar from "../components/CommunitySidebar";
@@ -19,8 +19,8 @@ const CommunityPage = ({
 }) => {
   unstable_setRequestLocale(locale);
   return (
-    <main className="flex flex-col xl:flex-row">
-      <DisplayCommunityPosts />
+    <main className="flex flex-col bg-background xl:flex-row">
+      <CommunityClient />
       <CommunitySidebar />
     </main>
   );

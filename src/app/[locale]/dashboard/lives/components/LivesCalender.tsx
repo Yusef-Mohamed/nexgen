@@ -47,7 +47,7 @@ const LivesCalender = ({ lives }: LivesCalenderProps) => {
   };
 
   return (
-    <div dir="ltr" className="w-full bg-clear-ground rounded-xl h-fit">
+    <div dir="ltr" className="w-full cardShadow rounded-xl h-fit">
       <div className="p-4">
         <span className="block text-xs text-center">
           {format(selectedMonth, " yyyy", {

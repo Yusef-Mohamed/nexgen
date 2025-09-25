@@ -86,10 +86,10 @@ const Lives = async ({
   const text = await getTranslations("lives");
   const { thisWeek, upcoming } = groupLivesByTime(filteredLives);
   return (
-    <main className="flex flex-col-reverse w-full gap-8 p-8 lg:flex-row lg:gap-10 lg:p-10">
+    <main className="flex bg-background flex-col-reverse w-full gap-8 p-8 lg:flex-row lg:gap-10 lg:p-10">
       <div className="flex-1 w-full">
         {date ? (
-          <div className="px-6 py-4 mb-4 bg-clear-ground rounded-xl h-fit">
+          <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
             <h2 className="mb-4 font-medium md:mb-6">
               {format(new Date(date), "EEEE, MMMM d, yyyy", {
                 locale: isArabic ? arSA : enUS,
@@ -111,7 +111,7 @@ const Lives = async ({
           </div>
         ) : (
           <>
-            <div className="px-6 py-4 mb-4 bg-clear-ground rounded-xl h-fit">
+            <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
               <h2 className="mb-4 font-medium md:mb-6">{text("thisWeek")}</h2>
               {thisWeek.length !== 0 ? (
                 <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
@@ -127,7 +127,7 @@ const Lives = async ({
                 </div>
               )}
             </div>
-            <div className="px-6 py-4 mb-4 bg-clear-ground rounded-xl h-fit">
+            <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
               <h2 className="mb-4 font-medium md:mb-6">
                 {text("upcomingWeeks")}
               </h2>

@@ -93,6 +93,8 @@ const AddCourseClient = () => {
         ];
       case 1: // Content Details
         return [
+          "highlights.en",
+          "highlights.ar",
           "certificateDescription.en",
           "certificateDescription.ar",
           "courseDuration",
