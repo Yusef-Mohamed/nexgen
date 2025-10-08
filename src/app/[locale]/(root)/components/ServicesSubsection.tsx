@@ -4,7 +4,7 @@ import React from "react";
 import ServiceCard, {
   ServiceCardSkeleton,
 } from "../../../../components/cards/ServiceCard";
-import { IPackage } from "@/types";
+import { ICategory, IPackage } from "@/types";
 import {
   Carousel,
   CarouselContent,
@@ -20,6 +20,7 @@ interface ServicesSubsectionProps {
   theme?: "carousel" | "grid";
   title?: string;
   cardClassName?: string;
+  onCategoryClick?: (category: ICategory) => void;
 }
 
 const ServicesSubsection: React.FC<ServicesSubsectionProps> = ({
@@ -29,6 +30,7 @@ const ServicesSubsection: React.FC<ServicesSubsectionProps> = ({
   theme = "carousel",
   title,
   cardClassName,
+  onCategoryClick,
 }) => {
   const text = useTranslations("services");
 
@@ -67,6 +69,7 @@ const ServicesSubsection: React.FC<ServicesSubsectionProps> = ({
                     <ServiceCard
                       {...service}
                       className="lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]"
+                      onCategoryClick={onCategoryClick}
                     />
                   </CarouselItem>
                 ))
@@ -99,6 +102,7 @@ const ServicesSubsection: React.FC<ServicesSubsectionProps> = ({
                   key={service._id}
                   {...service}
                   className={cardClassName}
+                  onCategoryClick={onCategoryClick}
                 />
               ))
             : null}

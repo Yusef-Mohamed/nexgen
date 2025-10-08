@@ -2,7 +2,7 @@
 
 import React from "react";
 import LearningPath, { LearningPathSkeleton } from "./LearningPath";
-import { ICoursePackage } from "@/types";
+import { ICategory, ICoursePackage } from "@/types";
 import {
   Carousel,
   CarouselContent,
@@ -18,6 +18,7 @@ interface LearningPathsSubsectionProps {
   theme?: "carousel" | "grid";
   title?: string;
   cardClassName?: string;
+  onCategoryClick?: (category: ICategory) => void;
 }
 
 const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
@@ -27,6 +28,7 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
   theme = "carousel",
   title,
   cardClassName,
+  onCategoryClick,
 }) => {
   const text = useTranslations("learningPaths");
 
@@ -76,6 +78,7 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
                         "lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]",
                         cardClassName
                       )}
+                      onCategoryClick={onCategoryClick}
                     />
                   </CarouselItem>
                 ))
@@ -106,6 +109,7 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
                   key={learningPath._id}
                   {...learningPath}
                   className={cardClassName}
+                  onCategoryClick={onCategoryClick}
                 />
               ))
             : null}

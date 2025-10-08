@@ -295,7 +295,6 @@ const BlogFormClient = () => {
   if (fetchingData) {
     return <FormSkeleton />;
   }
-
   return (
     <div className="container max-w-7xl mx-auto py-4 px-4 sm:py-8 sm:px-6">
       {/* Header */}
@@ -304,7 +303,7 @@ const BlogFormClient = () => {
           href="/instructor-dashboard/blogs"
           className="flex items-center gap-1 sm:gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm sm:text-base"
         >
-          <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+          <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0 rotateInRTL" />
           <span className="xs:hidden">{instructorText("back")}</span>
         </Link>
       </div>

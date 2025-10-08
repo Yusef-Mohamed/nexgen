@@ -1,21 +1,21 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { IPackage } from "@/types";
+import { ICategory, IPackage } from "@/types";
 import { useCategoryFilter } from "@/hooks/useCategoryFilter";
 import ServicesSubsection from "./ServicesSubsection";
 import OneSidedContainer from "@/components/OneSidedContainer";
 import { axiosInstance } from "@/app/lib/utils";
 import CategoryFilter from "./CategoryFilter";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import SearchInput from "@/components/SearchInput";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/routing";
 
 interface OurServicesProps {
   enableSearch?: boolean;
   gridClassName?: string;
+  onCategoryClick?: (category: ICategory) => void;
 }
 
 // Function to fetch services by category
@@ -51,12 +51,13 @@ const fetchPopularServices = async (): Promise<IPackage[]> => {
 const OurServices: React.FC<OurServicesProps> = ({
   enableSearch = false,
   gridClassName = "",
+  onCategoryClick,
 }) => {
   const text = useTranslations("services");
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-
+  const containerRef = useRef<HTMLDivElement>(null);
   const [searchKeyword, setSearchKeyword] = useState(
     searchParams?.get("keyword") || ""
   );
@@ -113,26 +114,24 @@ const OurServices: React.FC<OurServicesProps> = ({
 
   return (
     <section className="py-12 space-y-8">
-      <div className="container">
+      <div className="container" ref={containerRef}>
         <h2 className="h2 !font-bold mb-6">{text("heading")}</h2>
 
         {/* Search Bar */}
         {enableSearch && (
-          <div className="relative mb-6 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              type="text"
-              placeholder={text("searchCourses") || "Search courses..."}
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+          <SearchInput
+            value={searchKeyword}
+            onChange={setSearchKeyword}
+            placeholder={text("searchCourses") || "Search courses..."}
+          />
         )}
         <CategoryFilter
           categories={categories}
           selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
+          onCategoryChange={(category) => {
+            setSelectedCategory(category);
+            containerRef.current?.scrollIntoView({ behavior: "smooth" });
+          }}
           showAllButton={true}
           loading={categoriesLoading}
           enableSearch={enableSearch}
@@ -146,6 +145,10 @@ const OurServices: React.FC<OurServicesProps> = ({
             theme={"grid"}
             title={selectedCategory ? getCategoryTitle() : undefined}
             gridClassName={gridClassName}
+            onCategoryClick={(category) => {
+              setSelectedCategory(category);
+              containerRef.current?.scrollIntoView({ behavior: "smooth" });
+            }}
           />
         </div>
       ) : (
@@ -156,6 +159,10 @@ const OurServices: React.FC<OurServicesProps> = ({
             theme={"carousel"}
             title={selectedCategory ? getCategoryTitle() : undefined}
             gridClassName={gridClassName}
+            onCategoryClick={(category) => {
+              setSelectedCategory(category);
+              containerRef.current?.scrollIntoView({ behavior: "smooth" });
+            }}
           />
         </OneSidedContainer>
       )}{" "}
@@ -165,6 +172,7 @@ const OurServices: React.FC<OurServicesProps> = ({
           loading={popularServicesLoading}
           theme={"carousel"}
           title={text("ourPopularServices")}
+          onCategoryClick={onCategoryClick}
         />
       </OneSidedContainer>
     </section>

@@ -47,7 +47,7 @@ const StepNavigationControls: React.FC<StepNavigationControlsProps> = ({
               variant="outline"
               className="flex items-center gap-1 sm:gap-2 text-sm sm:text-base px-3 sm:px-4"
             >
-              <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+              <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 rotateInRTL" />
               <span className="hidden xs:inline">{text("cancel")}</span>
               <span className="xs:hidden">{text("back")}</span>
             </Button>
@@ -60,7 +60,7 @@ const StepNavigationControls: React.FC<StepNavigationControlsProps> = ({
             disabled={loading}
             className="flex items-center gap-1 sm:gap-2 text-sm sm:text-base px-3 sm:px-4"
           >
-            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 rotateInRTL" />
             <span className="hidden xs:inline">{text("previous")}</span>
             <span className="xs:hidden">{text("back")}</span>
           </Button>
@@ -99,7 +99,7 @@ const StepNavigationControls: React.FC<StepNavigationControlsProps> = ({
           >
             <span className="hidden xs:inline">{text("next")}</span>
             <span className="xs:hidden">{text("next")}</span>
-            <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+            <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 rotateInRTL" />
           </Button>
         )}
       </div>

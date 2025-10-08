@@ -220,3 +220,6 @@ main {
     @apply bg-background text-foreground;
   }
 }
+html[lang="ar"] .rotateInRTL {
+  transform: rotate(180deg);
+}

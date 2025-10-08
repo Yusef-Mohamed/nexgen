@@ -3,7 +3,7 @@
 import CoursesSubsection from "@/app/[locale]/(root)/components/CoursesSubsection";
 import LearningPathsSubsection from "@/app/[locale]/(root)/components/LearningPathsSubsection";
 import ServicesSubsection from "@/app/[locale]/(root)/components/ServicesSubsection";
-import { ICourse, IPackage, ICoursePackage } from "@/types";
+import { ICourse, IPackage, ICoursePackage, ICategory } from "@/types";
 
 interface FilteredDataGridProps {
   courses: ICourse[];
@@ -13,6 +13,7 @@ interface FilteredDataGridProps {
   isLoadingPackages: boolean;
   isLoadingCoursePackages: boolean;
   activeFilter: "courses" | "learning-paths" | "services";
+  onCategoryClick?: (category: ICategory) => void;
 }
 
 export const FilteredDataGrid: React.FC<FilteredDataGridProps> = ({
@@ -23,6 +24,7 @@ export const FilteredDataGrid: React.FC<FilteredDataGridProps> = ({
   isLoadingPackages,
   isLoadingCoursePackages,
   activeFilter,
+  onCategoryClick,
 }) => {
   if (activeFilter === "courses")
     return (
@@ -32,6 +34,7 @@ export const FilteredDataGrid: React.FC<FilteredDataGridProps> = ({
         theme="grid"
         gridClassName="grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6"
         cardClassName="cardShadow border-none"
+        onCategoryClick={onCategoryClick}
       />
     );
   if (activeFilter === "learning-paths")
@@ -42,6 +45,7 @@ export const FilteredDataGrid: React.FC<FilteredDataGridProps> = ({
         theme="grid"
         gridClassName="grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6"
         cardClassName="cardShadow border-none"
+        onCategoryClick={onCategoryClick}
       />
     );
   if (activeFilter === "services")
@@ -52,6 +56,7 @@ export const FilteredDataGrid: React.FC<FilteredDataGridProps> = ({
         theme="grid"
         gridClassName="grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6"
         cardClassName="cardShadow border-none"
+        onCategoryClick={onCategoryClick}
       />
     );
   return null;

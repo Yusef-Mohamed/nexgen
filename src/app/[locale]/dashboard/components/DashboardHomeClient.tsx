@@ -10,6 +10,7 @@ import { InstructorFilter } from "@/components/filters/InstructorFilter";
 import { FilteredDataGrid } from "@/components/filters/FilteredDataGrid";
 import { AppliedFiltersDisplay } from "@/components/filters/AppliedFiltersDisplay";
 import HomeCourses from "./HomeCourses";
+import { useRef } from "react";
 
 const DashboardHomeClient: React.FC = () => {
   const text = useTranslations("dashboard");
@@ -52,9 +53,9 @@ const DashboardHomeClient: React.FC = () => {
     { value: "learning-paths", label: text("learningPaths") },
     { value: "services", label: text("services") },
   ];
-
+  const ref = useRef<HTMLDivElement>(null);
   return (
-    <div className="w-full space-y-6 container py-8">
+    <div className="w-full space-y-6 container py-8" ref={ref}>
       <HomeCourses />
 
       <FilterTabs
@@ -122,6 +123,10 @@ const DashboardHomeClient: React.FC = () => {
         isLoadingPackages={isLoadingPackages}
         isLoadingCoursePackages={isLoadingCoursePackages}
         activeFilter={activeFilter}
+        onCategoryClick={(category) => {
+          handleFilterChange("category", category._id);
+          ref.current?.scrollIntoView({ behavior: "smooth" });
+        }}
       />
     </div>
   );

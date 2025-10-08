@@ -69,7 +69,7 @@ const CoursesFilterContent: React.FC = () => {
   return (
     <>
       {/* Filter Tabs Section */}
-      <section className="container py-8">
+      <section className="container py-8 pb-0">
         <div className="flex flex-wrap gap-2">
           <FilterTab
             label={text("courses") || "Courses"}

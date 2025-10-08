@@ -6,7 +6,7 @@ export default function WalletPage() {
       style={{
         minHeight: "calc(100vh - 76px)",
       }}
-      className="w-full max-w-full  px-2 py-6 overflow-hidden lg:px-6 sm:px-4"
+      className="w-full max-w-full bg-background px-2 py-6 overflow-hidden lg:px-6 sm:px-4"
     >
       <WalletClient />
     </main>

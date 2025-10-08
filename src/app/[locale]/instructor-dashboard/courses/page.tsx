@@ -21,7 +21,7 @@ const Dashboard = async ({
   unstable_setRequestLocale(locale);
 
   return (
-    <main className="flex flex-col xl:flex-row">
+    <main className="flex flex-col bg-background xl:flex-row">
       <MyCourses />
     </main>
   );

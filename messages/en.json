@@ -255,26 +255,26 @@
     "description": "Licensed by the Palestinian Ministry of Economy under number 565002342 according to the provisions of Law Decision No. 42 of 2021"
   },
   "aboutHeroPage": {
-    "heading": "Master Forex through Practical and Applied Education",
-    "subHeading": "At NexGen Academy, we excel in providing practical and applied Forex education.",
-    "description": "Welcome to NexGen Academy, your trusted partner in mastering Forex trading. We offer comprehensive, practical, and accessible courses for traders of all levels.",
+    "heading": "Shaping the Next Generation of Learners, Innovators, and Leaders.",
+    "subHeading": "At NexGen Academy, we believe education should be more than information—it should be transformation. We are a forward-thinking e-learning platform designed to empower learners of all ages with the skills, knowledge, and confidence they need to thrive in a rapidly changing world.",
+    "description": "To make high-quality, accessible, and engaging education available to everyone, everywhere. We combine cutting-edge technology, expert instructors, and interactive design to create learning experiences that are practical, inspiring, and future-ready.",
     "yearsOfExperience": "Years of Experience",
     "ourInstructors": "Our Instructors",
     "ourLearners": "Our Students' Success"
   },
   "aboutPartnersPage": {
-    "heading": "Our University and Corporate Partners"
+    "heading": "Trusted by the world's best companies"
   },
   "aboutOurValuesPage": {
     "ourValues": "Our Values",
-    "heading": "Empowering Traders through High-Quality Education and Practical Experience",
-    "description": "Our mission is to empower individuals with the knowledge and tools necessary to navigate the Forex market confidently and successfully.",
-    "case_1_title": "Empowerment through Knowledge",
-    "case_2_title": "Practical and Applied Learning",
-    "case_3_title": "Practical and Applied Learning",
-    "case_1_description": "We give learners the skills and confidence to overcome Forex market complexities.",
-    "case_2_description": "Our focus on real trading simulation ensures students are prepared for actual market conditions.",
-    "case_3_description": "With a 95% completion rate, our platform is committed to helping traders achieve their financial goals."
+    "heading": "Empowering Traders Through Quality Education and Practical Experience.",
+    "description": "Our mission is to empower individuals with the knowledge and tools to navigate the forex market confidently and successfully.",
+    "case_1_title": "Diverse Learning Paths",
+    "case_2_title": "Future-Ready Skills",
+    "case_3_title": "Global Community",
+    "case_1_description": "From foundational courses to advanced skills, tailored for students, professionals, and lifelong learners.",
+    "case_2_description": "Courses designed around the demands of tomorrow's industries: tech, design, business, and beyond.",
+    "case_3_description": "A space where learners connect, collaborate, and grow together."
   },
   "SignUp": {
     "heading": "Create Account",
@@ -1643,5 +1643,65 @@
     "english": "English",
     "arabic": "Arabic",
     "back": "Back"
+  },
+  "instructorPage": {
+    "hero": {
+      "heading": "Teach on NexGen Academy and Inspire Learners Worldwide",
+      "description": "Join our community of expert instructors and share your knowledge with millions of eager learners.",
+      "getStarted": "Get Started"
+    },
+    "benefits": {
+      "impactLives": {
+        "title": "Impact Lives",
+        "description": "Make a difference by helping learners achieve their goals."
+      },
+      "supportiveCommunity": {
+        "title": "Supportive Community",
+        "description": "Join a network of passionate educators and receive guidance every step of the way."
+      },
+      "earnMoney": {
+        "title": "Earn Money",
+        "description": "Get paid for sharing your expertise and grow your income."
+      }
+    },
+    "gettingStarted": {
+      "subtitle": "How it works",
+      "heading": "Getting Started is Easy",
+      "ctaButton": "Get in Touch Now!",
+      "step1": {
+        "title": "Apply to NexGen",
+        "description": "Fill out a simple application to join our instructor community."
+      },
+      "step2": {
+        "title": "Create Your Course",
+        "description": "Use our tools to design engaging, high-quality courses."
+      },
+      "step3": {
+        "title": "Publish and Teach",
+        "description": "Launch your course and start teaching students worldwide."
+      },
+      "step4": {
+        "title": "Earn and Grow",
+        "description": "Get paid for your work and grow your audience with our marketing support."
+      }
+    },
+    "stories": {
+      "subtitle": "Instructor Stories",
+      "heading": "Don't just take our word for it",
+      "testimonial1": {
+        "quote": "Teaching on NexGen Academy has been an incredible experience. The platform is user-friendly, and the support team is always there to help. My students love the interactive features!"
+      },
+      "testimonial2": {
+        "quote": "The earning potential is amazing, and I love how I can reach students from all over the world. The course creation tools are intuitive and powerful."
+      },
+      "testimonial3": {
+        "quote": "Being part of this community has transformed my teaching career. The resources and support available are outstanding, and I've grown both professionally and financially."
+      }
+    },
+    "finalCTA": {
+      "heading": "Ready to Take the Next Step?",
+      "description": "Whether you're here to learn, teach, or collaborate, we're here to help you succeed.",
+      "ctaButton": "Contact Us Today!"
+    }
   }
 }

@@ -4,7 +4,7 @@ import React from "react";
 import CourseCard, {
   CourseCardSkeleton,
 } from "../../../../components/cards/CourseCard";
-import { ICourse } from "@/types";
+import { ICategory, ICourse } from "@/types";
 import {
   Carousel,
   CarouselContent,
@@ -21,6 +21,7 @@ interface CoursesSubsectionProps {
   theme?: "carousel" | "grid";
   title?: string;
   cardClassName?: string;
+  onCategoryClick?: (category: ICategory) => void;
 }
 
 const CoursesSubsection: React.FC<CoursesSubsectionProps> = ({
@@ -30,6 +31,7 @@ const CoursesSubsection: React.FC<CoursesSubsectionProps> = ({
   theme = "carousel",
   title,
   cardClassName,
+  onCategoryClick,
 }) => {
   const text = useTranslations("popularCourses");
 
@@ -77,6 +79,7 @@ const CoursesSubsection: React.FC<CoursesSubsectionProps> = ({
                         "lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]",
                         cardClassName
                       )}
+                      onCategoryClick={onCategoryClick}
                     />
                   </CarouselItem>
                 ))
@@ -114,6 +117,7 @@ const CoursesSubsection: React.FC<CoursesSubsectionProps> = ({
                   key={course._id}
                   {...course}
                   className={cardClassName}
+                  onCategoryClick={onCategoryClick}
                 />
               ))
             : null}

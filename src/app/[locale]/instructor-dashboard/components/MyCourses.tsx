@@ -184,9 +184,7 @@ const MyCourses = () => {
         // Determine endpoint based on type filter
         if (typeFilter === "courses") {
           // endpoint = `/courses/instructorCourses/${user?._id}${
-          endpoint = `/courses/instructorCourses/${user?._id}${
-            filters ? "?" + filters : ""
-          }`;
+          endpoint = `/courses/getAll${filters ? "?" + filters : ""}`;
         } else if (typeFilter === "learning-paths") {
           endpoint = `/coursePackages/getAll${filters ? "?" + filters : ""}`;
         } else if (typeFilter === "services") {

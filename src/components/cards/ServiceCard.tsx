@@ -2,14 +2,19 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@/i18n/routing";
-import { IPackage } from "@/types";
+import { ICategory, IPackage } from "@/types";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { FaRegClock } from "react-icons/fa6";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-const ServiceCard: React.FC<IPackage & { className?: string }> = ({
+const ServiceCard: React.FC<
+  IPackage & {
+    className?: string;
+    onCategoryClick?: (category: ICategory) => void;
+  }
+> = ({
   title,
   price,
   priceAfterDiscount,
@@ -17,6 +22,7 @@ const ServiceCard: React.FC<IPackage & { className?: string }> = ({
   subscriptionDurationDays,
   course,
   className,
+  onCategoryClick,
 }) => {
   const text = useTranslations("services");
 
@@ -44,7 +50,10 @@ const ServiceCard: React.FC<IPackage & { className?: string }> = ({
 
       <div className="flex-1 md:space-y-4 space-y-2.5 sm:space-y-3 my-5">
         <div className="flex flex-col space-y-1 sm:space-y-1.5">
-          <div className="text-primary h5 capitalize underline">
+          <div
+            className="text-primary h5 capitalize underline"
+            onClick={() => onCategoryClick?.(course?.category as ICategory)}
+          >
             {course?.category?.title || "Service"}
           </div>
 

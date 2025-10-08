@@ -5,10 +5,8 @@ const HeroSection = () => {
   const text = useTranslations("aboutHeroPage");
   return (
     <section className="container secPadding">
-      <div className="max-w-3xl">
-        <h2 className="h1-5">{text("heading")}</h2>
-        <h3 className="mt-4 sm:mt-6 h5">{text("subHeading")}</h3>
-      </div>
+      <h2 className="h1-5">{text("heading")}</h2>
+      <h3 className="mt-4 sm:mt-6 h5">{text("subHeading")}</h3>
       <Image
         width={1350}
         height={540}
@@ -26,42 +24,6 @@ const HeroSection = () => {
         >
           {text("description")}
         </h3>
-
-        <div className="flex flex-col gap-4 sm:items-center sm:flex-row sm:gap-0 whitespace-nowrap w-fit">
-          <div className="flex flex-col px-4 border-text-2 max-sm:border-s-2 ">
-            <h4 className="h2">6+</h4>
-            <h3
-              style={{
-                fontWeight: 400,
-              }}
-              className="text-text-2 h4"
-            >
-              {text("yearsOfExperience")}
-            </h3>
-          </div>
-          <div className="flex flex-col px-4 border-text-2 sm:border-x-2 max-sm:border-s-2 ">
-            <h4 className="h2">20+</h4>
-            <h3
-              style={{
-                fontWeight: 400,
-              }}
-              className="text-text-2 h4"
-            >
-              {text("ourInstructors")}
-            </h3>
-          </div>
-          <div className="flex flex-col px-4 border-text-2 max-sm:border-s-2 ">
-            <h4 className="h2">90%</h4>
-            <h3
-              style={{
-                fontWeight: 400,
-              }}
-              className="text-text-2 h4"
-            >
-              {text("ourLearners")}
-            </h3>
-          </div>
-        </div>
       </div>
     </section>
   );

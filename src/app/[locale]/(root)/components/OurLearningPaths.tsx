@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { ICoursePackage } from "@/types";
 import { useCategoryFilter } from "@/hooks/useCategoryFilter";
@@ -8,8 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import CategoryFilter from "./CategoryFilter";
 import LearningPathsSubsection from "./LearningPathsSubsection";
 import OneSidedContainer from "@/components/OneSidedContainer";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import SearchInput from "@/components/SearchInput";
 import { useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/app/lib/utils";
 import { usePathname, useRouter } from "@/i18n/routing";
@@ -68,7 +67,7 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-
+  const containerRef = useRef<HTMLDivElement>(null);
   const [searchKeyword, setSearchKeyword] = useState(
     searchParams?.get("keyword") || ""
   );
@@ -123,25 +122,18 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
 
   return (
     <section className="py-12 space-y-8">
-      <div className="container">
+      <div className="container" ref={containerRef}>
         <h2 className="h2 !font-bold mb-6">
           {text("ourPopularLearningPaths")}
         </h2>
 
         {/* Search Bar */}
         {enableSearch && (
-          <div className="relative mb-6 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              type="text"
-              placeholder={
-                text("searchLearningPaths") || "Search learning paths..."
-              }
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+          <SearchInput
+            value={searchKeyword}
+            onChange={setSearchKeyword}
+            placeholder={text("searchLearningPaths")}
+          />
         )}
 
         <CategoryFilter
@@ -162,6 +154,10 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
             theme={"grid"}
             title={selectedCategory ? getCategoryTitle() : undefined}
             gridClassName={gridClassName}
+            onCategoryClick={(category) => {
+              setSelectedCategory(category);
+              containerRef.current?.scrollIntoView({ behavior: "smooth" });
+            }}
           />
         </div>
       ) : (
@@ -172,6 +168,10 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
             theme={"carousel"}
             title={selectedCategory ? getCategoryTitle() : undefined}
             gridClassName={gridClassName}
+            onCategoryClick={(category) => {
+              setSelectedCategory(category);
+              containerRef.current?.scrollIntoView({ behavior: "smooth" });
+            }}
           />
         </OneSidedContainer>
       )}{" "}
@@ -181,6 +181,10 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
           loading={popularLearningPathsLoading}
           theme={"carousel"}
           title={text("ourPopularLearningPaths")}
+          onCategoryClick={(category) => {
+            setSelectedCategory(category);
+            containerRef.current?.scrollIntoView({ behavior: "smooth" });
+          }}
         />
       </OneSidedContainer>
     </section>

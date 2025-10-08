@@ -626,3 +626,24 @@ export function getMetadataInstructorEditCoursePage({
     };
   }
 }
+
+// Instructor Page Metadata
+export function getMetadataInstructorPage({
+  params,
+}: {
+  params: { locale: string };
+}): Metadata {
+  if (params.locale === "ar") {
+    return {
+      title: getTitle("كن مدرباً", "ar"),
+      description:
+        "انضم إلى مجتمعنا من المدربين الخبراء وشارك معرفتك مع ملايين المتعلمين المتحمسين في أكاديمية نكستجن.",
+    };
+  } else {
+    return {
+      title: getTitle("Become an Instructor", "en"),
+      description:
+        "Join our community of expert instructors and share your knowledge with millions of eager learners at Nexgen Academy.",
+    };
+  }
+}

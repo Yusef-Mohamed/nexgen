@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { ICourse } from "@/types";
 import { useCategoryFilter } from "@/hooks/useCategoryFilter";
@@ -9,8 +9,7 @@ import { axiosInstance } from "@/app/lib/utils";
 import CategoryFilter from "./CategoryFilter";
 import CoursesSubsection from "./CoursesSubsection";
 import OneSidedContainer from "@/components/OneSidedContainer";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import SearchInput from "@/components/SearchInput";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/routing";
 
@@ -62,7 +61,7 @@ const OurCourses: React.FC<OurCoursesProps> = ({
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-
+  const containerRef = useRef<HTMLDivElement>(null);
   const [searchKeyword, setSearchKeyword] = useState(
     searchParams?.get("keyword") || ""
   );
@@ -113,21 +112,16 @@ const OurCourses: React.FC<OurCoursesProps> = ({
 
   return (
     <section className="py-12 space-y-8">
-      <div className="container">
+      <div className="container" ref={containerRef}>
         <h2 className="h2 !font-bold mb-6">{text("ourPopularCourses")}</h2>
 
         {/* Search Bar */}
         {enableSearch && (
-          <div className="relative mb-6 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              type="text"
-              placeholder={text("searchCourses") || "Search courses..."}
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+          <SearchInput
+            value={searchKeyword}
+            onChange={setSearchKeyword}
+            placeholder={text("searchCourses") || "Search courses..."}
+          />
         )}
 
         <CategoryFilter
@@ -148,6 +142,10 @@ const OurCourses: React.FC<OurCoursesProps> = ({
             theme={"grid"}
             title={getCategoryTitle()}
             gridClassName={gridClassName}
+            onCategoryClick={(category) => {
+              setSelectedCategory(category);
+              containerRef.current?.scrollIntoView({ behavior: "smooth" });
+            }}
           />
         </div>
       ) : (
@@ -158,6 +156,10 @@ const OurCourses: React.FC<OurCoursesProps> = ({
             theme={"carousel"}
             title={getCategoryTitle()}
             gridClassName={gridClassName}
+            onCategoryClick={(category) => {
+              setSelectedCategory(category);
+              containerRef.current?.scrollIntoView({ behavior: "smooth" });
+            }}
           />
         </OneSidedContainer>
       )}{" "}
@@ -167,6 +169,10 @@ const OurCourses: React.FC<OurCoursesProps> = ({
           loading={popularCoursesLoading}
           theme={"carousel"}
           title={text("ourPopularCourses")}
+          onCategoryClick={(category) => {
+            setSelectedCategory(category);
+            containerRef.current?.scrollIntoView({ behavior: "smooth" });
+          }}
         />
       </OneSidedContainer>
     </section>

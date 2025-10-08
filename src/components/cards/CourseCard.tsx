@@ -1,5 +1,5 @@
 "use client";
-import { ICourse } from "@/types";
+import { ICategory, ICourse } from "@/types";
 import React from "react";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
@@ -11,7 +11,12 @@ import { LevelsIcons } from "../icons";
 import StarRating from "../StarRating";
 import { cn } from "@/lib/utils";
 
-const CourseCard: React.FC<ICourse & { className?: string }> = ({
+const CourseCard: React.FC<
+  ICourse & {
+    className?: string;
+    onCategoryClick?: (category: ICategory) => void;
+  }
+> = ({
   title,
   ratingsQuantity,
   price,
@@ -23,6 +28,7 @@ const CourseCard: React.FC<ICourse & { className?: string }> = ({
   image,
   ratingsAverage,
   className,
+  onCategoryClick,
 }) => {
   const text = useTranslations("popularCourses");
 
@@ -63,7 +69,10 @@ const CourseCard: React.FC<ICourse & { className?: string }> = ({
             <span className="h5 font-medium">{getDifficultyLevel(type)}</span>
           </div>
           <h3>{title}</h3>
-          <div className="text-primary h5 capitalize underline">
+          <div
+            className="text-primary h5 capitalize underline cursor-pointer"
+            onClick={() => onCategoryClick?.(category as ICategory)}
+          >
             {category?.title || type}
           </div>{" "}
           <p className="flex items-center gap-2 font-medium text-text-3">

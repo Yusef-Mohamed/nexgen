@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@/i18n/routing";
-import { ICoursePackage } from "@/types";
+import { ICategory, ICoursePackage } from "@/types";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { FaRegClock } from "react-icons/fa";
@@ -10,7 +10,12 @@ import Image from "next/image";
 import { LevelsIcons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
-const LearningPath: React.FC<ICoursePackage & { className?: string }> = ({
+const LearningPath: React.FC<
+  ICoursePackage & {
+    className?: string;
+    onCategoryClick?: (category: ICategory) => void;
+  }
+> = ({
   title,
   courses,
   price,
@@ -20,6 +25,7 @@ const LearningPath: React.FC<ICoursePackage & { className?: string }> = ({
   className,
   image,
   category,
+  onCategoryClick,
 }) => {
   const text = useTranslations("learningPaths");
   const popularText = useTranslations("popularCourses");
@@ -74,7 +80,10 @@ const LearningPath: React.FC<ICoursePackage & { className?: string }> = ({
 
           {/* Category */}
           {category?.title && (
-            <div className="text-primary h5 capitalize underline">
+            <div
+              className="text-primary h5 capitalize underline"
+              onClick={() => onCategoryClick?.(category as ICategory)}
+            >
               {category?.title}
             </div>
           )}

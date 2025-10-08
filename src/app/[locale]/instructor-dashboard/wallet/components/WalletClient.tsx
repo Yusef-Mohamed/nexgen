@@ -24,7 +24,7 @@ import { toast } from "react-toastify";
 const WalletClient = () => {
   const t = useTranslations("invoicesManagement");
   const locale = useLocale();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [marketLog, setMarketLog] = useState<IMarketLog | null>(null);
   useEffect(() => {
@@ -32,11 +32,14 @@ const WalletClient = () => {
       try {
         setIsLoading(true);
 
-        const res = await axiosInstance.get("/marketing/getMyMarketLog", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axiosInstance.get(
+          `/instructorProfits/getInstructorAnalytics/${user?._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setMarketLog(res.data.marketLog);
       } catch (err) {
         console.error(err);
@@ -44,8 +47,8 @@ const WalletClient = () => {
         setIsLoading(false);
       }
     };
-    if (token) fetchMarketLog();
-  }, [token]);
+    if (token && user) fetchMarketLog();
+  }, [token, user]);
 
   if (isLoading) {
     return <LoadingState />;
