@@ -11,6 +11,7 @@ import { FilteredDataGrid } from "@/components/filters/FilteredDataGrid";
 import { AppliedFiltersDisplay } from "@/components/filters/AppliedFiltersDisplay";
 import HomeCourses from "./HomeCourses";
 import { useRef } from "react";
+import { Input } from "@/components/ui/input";
 
 const DashboardHomeClient: React.FC = () => {
   const text = useTranslations("dashboard");
@@ -66,6 +67,14 @@ const DashboardHomeClient: React.FC = () => {
       {/* Advanced Filters */}
       <div className="bg-card cardShadow rounded-lg p-6 space-y-4">
         <div className="flex items-center gap-4 flex-wrap">
+          <Input
+            value={filterState.searchKeyword}
+            className="w-fit gap-4 bg-muted text-muted-foreground border-none !h-12"
+            onChange={(e) =>
+              handleFilterChange("searchKeyword", e.target.value)
+            }
+            placeholder={text("searchWithKeyword")}
+          />
           <CategoryFilter
             value={filterState.category}
             onChange={(value) => handleFilterChange("category", value)}

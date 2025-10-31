@@ -15,7 +15,7 @@ import { useAuth } from "@/components/auth-provider";
 import { reqAuthToReview } from "@/constants";
 import Logo from "@/components/logo";
 import { usePathname } from "@/i18n/routing";
-// import { useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 const Sidebar: React.FC<
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -32,7 +32,7 @@ const Sidebar: React.FC<
 }) => {
   const { user } = useAuth();
   const pathname = usePathname();
-  // const text = useTranslations("dashboard");
+  const text = useTranslations("dashboard");
 
   let linkGroups = [
     // First group - no title (main links)
@@ -193,13 +193,13 @@ const Sidebar: React.FC<
     <aside
       {...props}
       className={cn(
-        "py-4 flex flex-col justify-between bg-clear-ground h-screen max-h-screen overflow-auto top-0 sticky transition-all duration-300",
-        collapsed ? "w-16 px-2" : "w-80 px-3 sm:px-6 ",
+        "py-4 pt-0 flex flex-col justify-between bg-clear-ground h-screen max-h-screen overflow-auto top-0 sticky transition-all duration-300",
+        collapsed ? "w-16 px-2 pt-4" : "w-80 px-3 sm:px-6 ",
         className
       )}
     >
       <div className="flex flex-col h-full">
-        <div className="flex justify-between items-center flex-wrap mb-4 gap-4">
+        <div className="flex justify-between h-[76px] items-center flex-wrap mb-4 gap-4">
           <Logo size="sm" isIconic={collapsed} />
 
           {isCollapsable && (
@@ -226,9 +226,9 @@ const Sidebar: React.FC<
                 <path
                   d="M13 22H31M13 16H31M19 28H31"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
             </button>
@@ -240,11 +240,11 @@ const Sidebar: React.FC<
           <ul className="space-y-2">
             {linkGroups.map((group, groupIndex) => (
               <li key={groupIndex}>
-                {/* {group.title && (
+                {group.title && (
                   <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     {text(group.title)}
                   </div>
-                )} */}
+                )}
                 <ul className="space-y-2">
                   {group.links.map((link) => (
                     <li key={link.href}>

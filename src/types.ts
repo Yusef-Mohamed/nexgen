@@ -8,7 +8,8 @@ export interface ICategory {
 }
 export interface ICourse {
   ratingsAverage: number;
-  colors: {
+  finalExamQuestionsNumber?: number;
+  colors?: {
     bgColor: string;
     bgDarkMode: string;
     fontColor: string;
@@ -105,6 +106,11 @@ export interface ILesson {
     en?: string;
     ar?: string;
   };
+  //
+  assignmentDone?: boolean;
+  lessonWatched?: boolean;
+  quizTitle?: string;
+  quizQuestionsNumber?: number;
 }
 
 export interface IUser {
@@ -379,6 +385,7 @@ export interface IAnalytic {
   createdAt: string;
   imageCover: string;
   isPassed: boolean;
+  isSeen: boolean;
   marketer: string;
   updatedAt: string;
   marketerComment?: string;

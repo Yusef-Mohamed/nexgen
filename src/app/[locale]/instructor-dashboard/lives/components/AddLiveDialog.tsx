@@ -349,6 +349,31 @@ const AddLiveDialog = ({
               />
             </div>
 
+            {/* Package Selection */}
+            <div className="space-y-2">
+              <Label>{instructorText("associatedCourses")}</Label>
+              <Select value="" onValueChange={handlePackageSelect}>
+                <SelectTrigger>
+                  <SelectValue placeholder={instructorText("selectPackages")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {packages
+                    .filter(
+                      (pkg) =>
+                        !formData.packages.find(
+                          (selected) => selected._id === pkg._id
+                        )
+                    )
+                    .map((packageItem) => (
+                      <SelectItem key={packageItem._id} value={packageItem._id}>
+                        {packageItem.course?.title ||
+                          packageItem.title ||
+                          "Untitled Package"}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
             {/* Selected Packages Display */}
             {formData.packages.length > 0 && (
               <div className="space-y-2">
@@ -376,33 +401,6 @@ const AddLiveDialog = ({
                 </div>
               </div>
             )}
-
-            {/* Package Selection */}
-            <div className="space-y-2">
-              <Label>{instructorText("associatedCourses")}</Label>
-              <Select value="" onValueChange={handlePackageSelect}>
-                <SelectTrigger>
-                  <SelectValue placeholder={instructorText("selectPackages")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {packages
-                    .filter(
-                      (pkg) =>
-                        !formData.packages.find(
-                          (selected) => selected._id === pkg._id
-                        )
-                    )
-                    .map((packageItem) => (
-                      <SelectItem key={packageItem._id} value={packageItem._id}>
-                        {packageItem.course?.title ||
-                          packageItem.title ||
-                          "Untitled Package"}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            </div>
-
             <div className="flex justify-end space-x-2 pt-4">
               <Button
                 type="button"

@@ -31,16 +31,15 @@ const WalletClient = () => {
     const fetchMarketLog = async () => {
       try {
         setIsLoading(true);
-
         const res = await axiosInstance.get(
-          `/instructorProfits/getInstructorAnalytics/${user?._id}`,
+          `/instructorProfits/instructorAnalytics/${user?._id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        setMarketLog(res.data.marketLog);
+        setMarketLog(res.data.instructorProfits);
       } catch (err) {
         console.error(err);
       } finally {
@@ -53,6 +52,7 @@ const WalletClient = () => {
   if (isLoading) {
     return <LoadingState />;
   }
+  throw new Error("Testing the error boundary");
   return (
     <div className="space-y-8">
       <StatsCards marketLog={marketLog} locale={locale} t={t} />
@@ -175,6 +175,7 @@ const BalanceCard = ({
         `/marketing/withdrawMoney/${user?._id}`,
         {
           amount: Number(amount),
+          type: "instructor",
         },
         {
           headers: {

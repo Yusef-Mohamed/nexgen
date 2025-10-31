@@ -68,12 +68,11 @@ const CoursesPage = async ({
         modelExam: string;
       }[];
     };
-    console.log(data);
     const courseRes = await axiosInstance.get("/courses/" + params.courseId);
     const courseData = courseRes.data.data as ICourse;
     const text = await getTranslations("learn");
     return (
-      <main>
+      <main className="bg-dash-ground">
         <section className="py-8 container mx-auto">
           <h1>
             {text("courseExamsHistory")} | {courseData.title}
@@ -81,7 +80,7 @@ const CoursesPage = async ({
           <div className="grid grid-cols-1 gap-4 pb-6 mt-8 lg:grid-cols-2">
             {data.lessonsScores.map((progress) => {
               return (
-                <Card key={progress.lessonId} className="w-full">
+                <Card key={progress.lessonId} className="w-full flex flex-col">
                   <CardHeader>
                     <CardTitle className="mb-2 h2">
                       {text("lesson_type")} | {progress.lessonTitle}
@@ -95,7 +94,7 @@ const CoursesPage = async ({
                       </Badge>
                     </div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="grow">
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <Award className="w-4 h-4" />

@@ -24,7 +24,7 @@ const LeaderBoardCard = ({
           {title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-0">
+      <CardContent className="p-0 shadow-none border-none">
         {isLoading ? (
           <ul className="space-y-2">
             {Array.from({ length: 3 }).map((_, i) => {

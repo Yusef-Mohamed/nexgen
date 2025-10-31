@@ -133,9 +133,9 @@ const LivesCalender = ({ lives }: LivesCalenderProps) => {
                       {dayLives.map((live, liveIndex) =>
                         live.package.map((pkg, pkgIndex) => {
                           const courseColor =
-                            pkg.course.colors.bgColor || "#000000";
+                            pkg.course.colors?.bgColor || "#000000";
                           const courseDarkColor =
-                            pkg.course.colors.bgDarkMode || "#000000";
+                            pkg.course.colors?.bgDarkMode || "#000000";
                           return (
                             <div
                               key={`${liveIndex}-${pkgIndex}`}

@@ -10,70 +10,18 @@ import SidebarLink from "./SidebarLink";
 import { IoMdSettings } from "react-icons/io";
 import { RiLogoutBoxLine, RiLogoutBoxRLine } from "react-icons/ri";
 import { useAuth } from "@/components/auth-provider";
-import { useEffect, useMemo, useState } from "react";
-import { axiosInstance } from "@/app/lib/utils";
-import { IReview } from "@/types";
-import { BsChatLeftDots } from "react-icons/bs";
 
 const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
   collapsed = false,
 }) => {
   const { setTheme, theme } = useTheme();
-  const { logout, token, user } = useAuth();
+  const { logout } = useAuth();
   const text = useTranslations("dashboard");
   const pathname = usePathname();
   const locale = useLocale();
-  const [systemReviewCreatedAt, setSystemReviewCreatedAt] = useState("");
-  useEffect(() => {
-    const getCurrentReview = async () => {
-      axiosInstance
-        .get("/systemReviews/myReviews", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          const thisReview = res.data.data[
-            res.data.data?.length - 1
-          ] as IReview;
-          if (!thisReview) return;
-          setSystemReviewCreatedAt(thisReview?.createdAt);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
-    getCurrentReview();
-  }, [token]);
-  const showSystemReview = useMemo(() => {
-    if (!systemReviewCreatedAt) return true;
-    else {
-      // check if created at from day or more return true else return false
-      const createdAt = new Date(systemReviewCreatedAt);
-      const today = new Date();
-      const diffTime = Math.abs(today.getTime() - createdAt.getTime());
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      if (diffDays >= 1) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }, [systemReviewCreatedAt]);
+
   return (
     <div className="space-y-2 ">
-      {showSystemReview && user?.authToReview && (
-        <SidebarLink
-          link={{
-            href: "/dashboard/settings/system-review",
-            label: "systemReview",
-            icon: <BsChatLeftDots />,
-          }}
-          isPinging
-          collapsed={collapsed}
-        />
-      )}
-
       <SidebarLink
         link={{
           href: "/dashboard/settings",

@@ -9,6 +9,7 @@ import { FaRegClock } from "react-icons/fa";
 import Image from "next/image";
 import { LevelsIcons } from "@/components/icons";
 import { cn } from "@/lib/utils";
+import CardBadges from "@/components/cards/CardBadges";
 
 const LearningPath: React.FC<
   ICoursePackage & {
@@ -25,11 +26,12 @@ const LearningPath: React.FC<
   className,
   image,
   category,
+  createdAt,
   onCategoryClick,
 }) => {
   const text = useTranslations("learningPaths");
   const popularText = useTranslations("popularCourses");
-
+  const countText = useTranslations("learningPathPage");
   // Get difficulty level based on type
   const getDifficultyLevel = (type: string) => {
     switch (type?.toLowerCase()) {
@@ -58,10 +60,17 @@ const LearningPath: React.FC<
   return (
     <div
       className={cn(
-        "flex flex-col w-full bg-card rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
+        "flex flex-col w-full outline outline-1 outline-primary/20 bg-card rounded-xl border-[3px] hover:outline-primary/70 hover:border-primary/80 border-transparent overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 md:p-6 p-3 sm:p-4 h-full relative",
         className
       )}
     >
+      {/* Card Badges */}
+      <CardBadges
+        price={parseFloat(price)}
+        priceAfterDiscount={parseFloat(priceAfterDiscount || "0")}
+        createdAt={createdAt}
+      />
+
       <Image
         src={imageUrl}
         alt={title}
@@ -69,7 +78,6 @@ const LearningPath: React.FC<
         height={300}
         className="object-cover w-full rounded-2xl courseImage bg-muted"
       />
-
       <div className="flex-1 md:space-y-4 space-y-2.5 sm:space-y-3 my-5">
         <div className="flex flex-col space-y-1 sm:space-y-1.5">
           {/* Difficulty Level */}
@@ -93,8 +101,10 @@ const LearningPath: React.FC<
 
           {/* Course Count and Duration */}
           <p className="flex items-center gap-2 font-medium text-text-3">
-            {courses.length}{" "}
-            {text("coursesCount", { count: courses.length }).split(" ")[1]} •
+            <span className="text-text-2 font-semibold">
+              {countText("coursesCount", { count: courses.length })}
+            </span>{" "}
+            •
             <FaRegClock /> {(totalDuration / 60).toFixed(1)}{" "}
             {popularText("hours")}
           </p>
@@ -111,7 +121,6 @@ const LearningPath: React.FC<
           )}
         </div>
       </div>
-
       {/* Call to Action Button */}
       <Button size="lg" className="w-full" asChild>
         <Link href={`/learning-paths/${_id}`}>{text("showDetails")}</Link>

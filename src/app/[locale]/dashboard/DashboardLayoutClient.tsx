@@ -5,12 +5,18 @@ import { FaBars } from "react-icons/fa";
 import UserHeader from "@/components/layout/UserHeader";
 import Footer from "@/components/layout/Footer";
 import { useState } from "react";
+import Logo from "@/components/logo";
+import { useTranslations } from "next-intl";
+import SearchInput from "@/components/SearchInput";
+import { useRouter } from "@/i18n/routing";
 
 const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const text = useTranslations("dashboard");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-
+  const [search, setSearch] = useState("");
+  const nav = useRouter();
   return (
     <div className="dashboard">
       <div
@@ -24,14 +30,31 @@ const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
             maxHeight: "calc(100vh)",
             height: "calc(100vh)",
           }}
-          className="hidden lg:flex border-e"
+          className="hidden lg:flex "
           collapsed={sidebarCollapsed}
           onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
           isCollapsable={true}
         />
         <div className="relative flex-1 w-full dashboardMain">
-          <header className="sticky border-b top-0 z-50 w-full px-3 sm:px-6 bg-clear-ground">
-            <div className="flex items-center h-[76px] py-1 justify-end gap-10">
+          <header className="sticky top-0 z-50 w-full px-3 sm:px-6 bg-clear-ground">
+            <div className="flex items-center h-[76px] py-1 justify-between gap-10">
+              <div>
+                <Logo className="lg:hidden" size="sm" />
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    nav.push(`/dashboard?search=${search}`);
+                  }}
+                  className="max-lg:hidden"
+                >
+                  <SearchInput
+                    value={search}
+                    onChange={setSearch}
+                    containerClassName="mb-0"
+                    placeholder={text("searchAboutCourses")}
+                  />
+                </form>
+              </div>
               <div className="flex items-center gap-4">
                 <Sheet>
                   <SheetTrigger asChild>

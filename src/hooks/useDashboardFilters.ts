@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "@/app/lib/utils";
 import { ICategory, ICourse, IPackage, ICoursePackage } from "@/types";
 import { useDebounce } from "./useDebounce";
+import { useSearchParams } from "next/navigation";
 
 export type FilterType = "courses" | "learning-paths" | "services";
 export type CourseLevel = "beginner" | "intermediate" | "advanced" | "all";
@@ -174,13 +175,15 @@ const fetchCoursePackages = async (filters: {
 export const useDashboardFilters = (
   token: string | null
 ): UseDashboardFiltersReturn => {
+  const searchParams = useSearchParams();
+
   // State
   const [activeFilter, setActiveFilter] = useState<FilterType>("courses");
   const [filterState, setFilterState] = useState<FilterState>({
     category: "all",
     level: "all",
     instructor: "all",
-    searchKeyword: "",
+    searchKeyword: searchParams.get("search") || "",
   });
 
   const [isInstructorDropdownOpen, setIsInstructorDropdownOpen] =

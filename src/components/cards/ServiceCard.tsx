@@ -8,6 +8,7 @@ import React from "react";
 import { FaRegClock } from "react-icons/fa6";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import CardBadges from "./CardBadges";
 
 const ServiceCard: React.FC<
   IPackage & {
@@ -21,6 +22,7 @@ const ServiceCard: React.FC<
   _id,
   subscriptionDurationDays,
   course,
+  createdAt,
   className,
   onCategoryClick,
 }) => {
@@ -35,10 +37,17 @@ const ServiceCard: React.FC<
   return (
     <div
       className={cn(
-        "flex flex-col w-full bg-white rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
+        "flex flex-col w-full outline outline-1 outline-primary/20 bg-card rounded-xl border-[3px] hover:outline-primary/70 hover:border-primary/80 border-transparent overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 md:p-6 p-3 sm:p-4 h-full relative",
         className
       )}
     >
+      {/* Card Badges */}
+      <CardBadges
+        price={price}
+        priceAfterDiscount={priceAfterDiscount || 0}
+        createdAt={createdAt}
+      />
+
       {/* Image */}
       <Image
         src={imageUrl}

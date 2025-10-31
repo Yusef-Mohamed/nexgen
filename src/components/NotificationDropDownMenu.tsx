@@ -1,5 +1,4 @@
 "use client";
-import { IoIosNotifications } from "react-icons/io";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +12,8 @@ import { useEffect, useRef, useState } from "react";
 import { useNotificationStore } from "@/stores/NotificationStore";
 import { useAuth } from "./auth-provider";
 import { useRouter } from "@/i18n/routing";
+import { Button } from "./ui/button";
+import { NotificationIcon } from "./icons";
 const NotificationDropDownMenu = () => {
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [isOpened, setIsOpened] = useState(false);
@@ -61,16 +62,17 @@ const NotificationDropDownMenu = () => {
   }, [fetchNotifications, isOpened, unReadCount, clearAllUnread]);
   return (
     <DropdownMenu onOpenChange={setIsOpened}>
-      <DropdownMenuTrigger className="relative flex items-center justify-center h-[2.5rem] w-[2.5rem] bg-primary-faded border-none text-xl border rounded-full">
-        <IoIosNotifications /> {/* {unReadCount > 0 && ( */}
-        {unReadCount ? (
-          <>
-            <div className="absolute z-10 flex items-center justify-center w-5 h-5 text-xs rounded-full -top-2 -right-2 bg-primary text-clear-ground">
-              {unReadCount}
-            </div>
-            <div className="absolute flex items-center justify-center w-5 h-5 text-xs rounded-full animate-ping -top-2 -right-2 bg-primary "></div>
-          </>
-        ) : null}
+      <DropdownMenuTrigger asChild>
+        <Button className="relative rounded-full" size="icon" variant="outline">
+          <NotificationIcon className="size-4 text-muted-foreground" />{" "}
+          {/* {unReadCount > 0 && ( */}
+          {unReadCount ? (
+            <>
+              <div className="absolute z-10 flex items-center justify-center size-3 text-xs rounded-full -top-1 -end-1 bg-primary border"></div>
+              <div className="absolute flex items-center justify-center size-3 text-xs rounded-full animate-ping -top-1 -end-1 bg-primary "></div>
+            </>
+          ) : null}
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="max-w-[90vw] sm:w-[450px] w-full max-h-[60vh] overflow-auto">
         {notifications.map((n) => (

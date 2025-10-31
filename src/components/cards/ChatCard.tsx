@@ -16,8 +16,8 @@ const ChatCard: React.FC<ChatCardProps> = ({ chat, selectedChat }) => {
     <Link
       href={`/dashboard/chat?selectedChat=${chat._id}`}
       className={cn(
-        "hover:bg-muted flex items-center px-2 py-2 rounded-md gap-2 my-0.5",
-        { "bg-muted": selectedChat === chat._id }
+        "hover:bg-primary-faded flex items-center p-3 rounded-md gap-2 my-0.5",
+        { "bg-primary-faded": selectedChat === chat._id }
       )}
     >
       {chat?.isGroupChat ? (
@@ -27,12 +27,17 @@ const ChatCard: React.FC<ChatCardProps> = ({ chat, selectedChat }) => {
               name: chat.groupName,
               profileImg: chat.image,
             }}
-            className="w-12 h-12"
+            className="w-12 h-12 rounded-md"
+            innerClassName="!rounded-md"
           />
         </>
       ) : (
         <>
-          <UserAvatar user={anotherUser?.userDetails} className="w-12 h-12" />
+          <UserAvatar
+            user={anotherUser?.userDetails}
+            className="w-12 h-12 rounded-md"
+            innerClassName="!rounded-md"
+          />
         </>
       )}{" "}
       <div className="flex flex-col">

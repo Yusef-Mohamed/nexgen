@@ -232,13 +232,15 @@ export default function ChatTopbar() {
                       name: thisChat.groupName,
                       profileImg: thisChat.image,
                     }}
-                    className="w-12 h-12"
+                    className="w-12 h-12 rounded-md"
+                    innerClassName="!rounded-md"
                   />
                 </>
               ) : (
                 <>
                   <UserAvatar
-                    className="w-12 h-12"
+                    className="w-12 h-12 rounded-md"
+                    innerClassName="!rounded-md"
                     user={anotherUser?.userDetails}
                   />
                 </>
@@ -258,7 +260,7 @@ export default function ChatTopbar() {
                   <span className="font-medium line-clamp-1">
                     {thisChat?.groupName}
                   </span>
-                  <span className="text-xs line-clamp-2">
+                  <span className="text-xs line-clamp-1">
                     {thisChat?.description}
                   </span>
                 </>
@@ -275,29 +277,34 @@ export default function ChatTopbar() {
             <button
               onClick={() => setIsInfoOpen(true)}
               className={cn(
-                "h-9 w-9",
-                "dark:bg-muted flex items-center ms-4 justify-center rounded-md dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
+                "h-11 w-11",
+                "flex items-center ms-4 justify-center rounded-full text-primary bg-primary-faded"
               )}
             >
-              <Info size={20} className="text-muted-foreground" />
+              <Info size={20} className="text-primary" />
             </button>
           </div>
         )}
         {thisChat && (
-          <button
-            onClick={() => {
-              setSelectedChatId("");
-              setSearchParams({ selectedChat: "" });
-            }}
-            className="ms-4"
-          >
-            <LogOut
-              size={20}
-              className={cn("text-muted-foreground", {
-                "-scale-x-100": locale === "ar",
-              })}
-            />
-          </button>
+          <div>
+            <button
+              onClick={() => {
+                setSelectedChatId("");
+                setSearchParams({ selectedChat: "" });
+              }}
+              className={cn(
+                "h-11 w-11",
+                "flex items-center ms-4 justify-center rounded-full text-primary bg-primary-faded"
+              )}
+            >
+              <LogOut
+                size={20}
+                className={cn("text-primary", {
+                  "-scale-x-100": locale === "ar",
+                })}
+              />
+            </button>
+          </div>
         )}
       </div>{" "}
       <Sheet open={isInfoOpen} onOpenChange={setIsInfoOpen}>

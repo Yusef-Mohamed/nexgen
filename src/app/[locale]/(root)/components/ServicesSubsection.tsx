@@ -34,7 +34,8 @@ const ServicesSubsection: React.FC<ServicesSubsectionProps> = ({
 }) => {
   const text = useTranslations("services");
 
-  if (services.length === 0) {
+  // Show "No services found" only when not loading and no services exist
+  if (!loading && services.length === 0) {
     return (
       <div className="relative">
         {title && <h2 className="mb-6 capitalize">{title}</h2>}
@@ -56,16 +57,19 @@ const ServicesSubsection: React.FC<ServicesSubsectionProps> = ({
           }}
           className="w-full"
         >
-          <CarouselContent className="-ms-2 md:-ms-4">
+          <CarouselContent className="-ms-2 ps-2 md:-ms-4">
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (
-                  <CarouselItem key={index} className="ps-4 basis-auto">
+                  <CarouselItem key={index} className="ps-4 py-1 basis-auto">
                     <ServiceCardSkeleton className="lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]" />
                   </CarouselItem>
                 ))
               : services.length > 0
               ? services.map((service) => (
-                  <CarouselItem key={service._id} className="ps-4 basis-auto">
+                  <CarouselItem
+                    key={service._id}
+                    className="ps-4 py-1 basis-auto"
+                  >
                     <ServiceCard
                       {...service}
                       className="lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]"

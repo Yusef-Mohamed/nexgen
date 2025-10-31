@@ -16,6 +16,7 @@ import ProgressBarProvider from "@/components/progress-bar";
 const SocketWrapper = dynamic(() => import("@/components/SocketWrapper"), {
   ssr: false,
 });
+import * as Sentry from "@sentry/nextjs";
 
 const alexandria = Alexandria({
   subsets: ["latin"],
@@ -43,6 +44,9 @@ export async function generateMetadata({
         "Market Analysis",
         "Trading Skills Development",
       ],
+      other: {
+        ...Sentry.getTraceData(),
+      },
     };
   } else {
     return {
@@ -61,6 +65,9 @@ export async function generateMetadata({
         "تحليل السوق",
         "تطوير مهارات التداول",
       ],
+      other: {
+        ...Sentry.getTraceData(),
+      },
     };
   }
 }

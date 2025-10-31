@@ -245,7 +245,6 @@ const Practice: React.FC = () => {
 
     if (selectedUser && selectedMonth) getData();
   }, [selectedUser, token, selectedMonth]);
-
   return (
     <Card>
       <CardHeader>
@@ -406,18 +405,18 @@ const Practice: React.FC = () => {
                           className={cn(
                             `px-2 py-1 rounded-full text-xs font-semibold`,
                             {
+                              "bg-destructive text-destructive-foreground":
+                                analytic.isSeen,
+                              "bg-yellow-400 text-clear-ground dark:bg-yellow-600":
+                                !analytic.isPassed && !analytic.isSeen,
                               "bg-primary text-primary-foreground":
                                 analytic.isPassed,
-                              "bg-destructive text-destructive-foreground":
-                                analytic.marketerComment,
-                              "bg-yellow-400 text-clear-ground dark:bg-yellow-600":
-                                !analytic.isPassed && !analytic.marketerComment,
                             }
                           )}
                         >
                           {analytic.isPassed
                             ? text("correct")
-                            : analytic.marketerComment
+                            : analytic.isSeen
                             ? text("wrong")
                             : text("pending")}
                         </span>

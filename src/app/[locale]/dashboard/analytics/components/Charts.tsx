@@ -38,7 +38,6 @@ import { ICourse, IUser } from "@/types";
 import { useAnalyticsStore } from "@/stores/AnalyticsStore";
 import PracticeChart from "./PracticeChart";
 import { useAuth } from "@/components/auth-provider";
-import UserAvatar from "@/components/UserAvatar";
 import ProgressCircle from "@/components/ProgressCircle";
 import LeaderBoardCard from "@/components/LeaderBoardCard";
 import CourseProgress from "./CourseProgress";
@@ -46,12 +45,15 @@ import ExamsChart from "./ExamsChart";
 import VideoChart from "./VideoChart";
 import { useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/app/lib/utils";
+import { UserFilter } from "@/components/filters/UserFilter";
 const Charts = () => {
   const inputs = useTranslations("Forms");
   const text = useTranslations("analytics");
   const { user: myAccount, token } = useAuth();
   const [myChildren, setMyChildren] = useState<IUser[]>([]);
   const [courses, setCourses] = useState<ICourse[]>([]);
+  const [userSearchTerm, setUserSearchTerm] = useState("");
+  const [isUserFilterOpen, setIsUserFilterOpen] = useState(false);
   const {
     selectedUser,
     setSelectedUser,
@@ -139,9 +141,17 @@ const Charts = () => {
   const children = useMemo(() => {
     return myChildren.filter((child) => child._id !== myAccount?._id);
   }, [myChildren, myAccount]);
+
+  // Filter users based on search term
+  const filteredUsers = useMemo(() => {
+    if (!userSearchTerm) return children;
+    return children.filter((user) =>
+      user.name.toLowerCase().includes(userSearchTerm.toLowerCase())
+    );
+  }, [children, userSearchTerm]);
   return (
     <>
-      <main className="flex w-full min-h-screen px-2 py-6 lg:px-6 sm:px-4">
+      <main className="flex w-full bg-dash-ground px-2 py-6 lg:px-6 sm:px-4">
         <div className="grid w-full gap-8 xl:grid-cols-3">
           <div className="w-full space-y-8 max-lg:order-2 xl:col-span-2 ">
             <CourseProgress />
@@ -175,48 +185,28 @@ const Charts = () => {
                   })}
                 </SelectContent>
               </Select>
-              <Select
+              <UserFilter
                 value={selectedUser}
-                name="user"
-                onValueChange={(value) => {
+                onChange={(value) => {
                   const user = myChildren.find((user) => user._id === value);
                   if (user) {
                     setSelectedUserObject(user);
                   }
                   setSelectedUser(value);
                 }}
-              >
-                <SelectTrigger className="w-full border-2 border-transparent border-s-primary">
-                  <SelectValue className="" placeholder={inputs("user")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem
-                    className="flex items-center gap-4 text-sm"
-                    value={myAccount?._id || "me"}
-                  >
-                    <UserAvatar
-                      className="max-sm:w-8 max-sm:h-8"
-                      user={myAccount || undefined}
-                    />
-                    {inputs("me")}
-                  </SelectItem>
-                  {children?.map((user) => {
-                    return (
-                      <SelectItem
-                        className="flex items-center gap-4 text-sm"
-                        value={user._id}
-                        key={user._id}
-                      >
-                        <UserAvatar
-                          className="max-sm:w-8 max-sm:h-8"
-                          user={user}
-                        />
-                        {user.name}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
+                users={children}
+                filteredUsers={filteredUsers}
+                userSearchTerm={userSearchTerm}
+                onSearchTermChange={setUserSearchTerm}
+                isOpen={isUserFilterOpen}
+                onOpenChange={setIsUserFilterOpen}
+                label={inputs("user")}
+                searchForUserLabel={
+                  inputs("searchForUser") || "Search for user..."
+                }
+                myAccount={myAccount || undefined}
+                meLabel={inputs("me")}
+              />
             </div>
             <LeaderBoardCard
               users={topUsers}

@@ -10,6 +10,7 @@ import Image from "next/image";
 import { LevelsIcons } from "../icons";
 import StarRating from "../StarRating";
 import { cn } from "@/lib/utils";
+import CardBadges from "./CardBadges";
 
 const CourseCard: React.FC<
   ICourse & {
@@ -27,6 +28,7 @@ const CourseCard: React.FC<
   category,
   image,
   ratingsAverage,
+  createdAt,
   className,
   onCategoryClick,
 }) => {
@@ -50,10 +52,17 @@ const CourseCard: React.FC<
   return (
     <div
       className={cn(
-        "flex flex-col w-full bg-card rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
+        "flex flex-col w-full outline outline-1 outline-primary/20 bg-card rounded-xl border-[3px] hover:outline-primary/70 hover:border-primary/80 border-transparent overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 md:p-6 p-3 sm:p-4 h-full relative",
         className
       )}
     >
+      {/* Card Badges */}
+      <CardBadges
+        price={price}
+        priceAfterDiscount={priceAfterDiscount}
+        createdAt={createdAt}
+      />
+
       <Image
         src={image}
         alt={title}
@@ -132,10 +141,16 @@ export const CourseCardSkeleton: React.FC<{ className?: string }> = ({
   return (
     <div
       className={cn(
-        "flex flex-col w-full bg-card rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
+        "flex flex-col w-full outline outline-1 outline-primary/20 bg-card rounded-xl border-[3px] hover:outline-primary/70 hover:border-primary/80 border-transparent overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 md:p-6 p-3 sm:p-4 h-full relative",
         className
       )}
     >
+      {/* Card Badges skeleton */}
+      <div className="absolute top-4 start-4 z-10 flex gap-2">
+        <Skeleton className="w-12 h-6 rounded-sm" />
+        <Skeleton className="w-10 h-6 rounded-sm" />
+      </div>
+
       {/* Image skeleton */}
       <Skeleton className="w-full courseImage rounded-2xl bg-muted" />
 

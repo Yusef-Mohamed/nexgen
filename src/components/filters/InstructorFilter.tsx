@@ -73,42 +73,44 @@ export const InstructorFilter: React.FC<InstructorFilterProps> = ({
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-64 space-y-1 h-64 overflow-auto">
-        <div className="p-2">
-          <div className="relative">
-            <Search className="absolute start-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder={searchForInstructorLabel}
-              value={instructorSearchTerm}
-              onChange={(e) => onSearchTermChange(e.target.value)}
-              className="!ps-8 !text-sm !h-10"
-            />
+      <DropdownMenuContent className="w-auto overflow-hidden p-0">
+        <div className="space-y-1 h-64 overflow-y-auto overflow-x-hidden">
+          <div className="p-2">
+            <div className="relative">
+              <Search className="absolute start-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder={searchForInstructorLabel}
+                value={instructorSearchTerm}
+                onChange={(e) => onSearchTermChange(e.target.value)}
+                className="!ps-8 !text-sm !h-10"
+              />
+            </div>
           </div>
-        </div>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => onChange("all")}
-          className={`flex items-center cursor-pointer gap-2 ${
-            value === "all" ? "bg-primary/10" : ""
-          }`}
-        >
-          <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center dark:bg-background">
-            <User className="w-3 h-3" />
-          </div>
-          {allInstructorsLabel}
-        </DropdownMenuItem>
-        {filteredInstructors.map((instructor) => (
+          <DropdownMenuSeparator />
           <DropdownMenuItem
-            key={instructor._id}
-            onClick={() => onChange(instructor._id)}
+            onClick={() => onChange("all")}
             className={`flex items-center cursor-pointer gap-2 ${
-              value === instructor._id ? "bg-primary/10" : ""
+              value === "all" ? "bg-primary/10" : ""
             }`}
           >
-            <UserAvatar user={instructor} size="sm" />
-            {instructor.name}
+            <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center dark:bg-background">
+              <User className="w-3 h-3" />
+            </div>
+            {allInstructorsLabel}
           </DropdownMenuItem>
-        ))}
+          {filteredInstructors.map((instructor) => (
+            <DropdownMenuItem
+              key={instructor._id}
+              onClick={() => onChange(instructor._id)}
+              className={`flex items-center cursor-pointer gap-2 ${
+                value === instructor._id ? "bg-primary/10" : ""
+              }`}
+            >
+              <UserAvatar user={instructor} size="sm" />
+              {instructor.name}
+            </DropdownMenuItem>
+          ))}
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

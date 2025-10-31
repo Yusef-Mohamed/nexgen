@@ -55,22 +55,14 @@ export const useMyCoursesStore = create<MyCoursesStore>((set, get) => ({
                 },
               }
             );
-            const courseDetails = await axiosInstance.get(
-              `/courses/courseDetails/${course._id}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
+
             const userScore = userScoreRes.data.data as IUserScore;
             const courseProgress = courseProgressRes.data.data as IProgress;
-            const users = courseDetails.data.data.users.slice(0, 3);
             return {
               ...course,
               userScore,
               courseProgress,
-              users,
+              users: [],
             };
           } catch (err) {
             console.log(err);

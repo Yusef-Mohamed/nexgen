@@ -5,7 +5,6 @@ import { ILesson, ISection } from "@/types";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/auth-provider";
-import { notFound } from "next/navigation";
 import SectionEditDialog from "./SectionEditDialog";
 import LessonEditDialog from "./LessonEditDialog";
 import { useCourseDetail } from "../hooks/useCourseDetail";
@@ -20,6 +19,7 @@ import SectionItem from "./SectionItem";
 import DeleteConfirmationDialogs from "./DeleteConfirmationDialogs";
 import { axiosInstance } from "@/app/lib/utils";
 import { useRouter } from "@/i18n/routing";
+import { Link } from "@/i18n/routing";
 
 const CourseDetailClient = () => {
   const text = useTranslations("courses");
@@ -87,7 +87,104 @@ const CourseDetailClient = () => {
 
   // Show error state
   if (error || !course) {
-    notFound();
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="container mx-auto p-6">
+          <div className="max-w-md mx-auto text-center">
+            {/* Error Icon */}
+            <div className="mb-6">
+              <div className="mx-auto w-20 h-20 bg-destructive/10 rounded-full flex items-center justify-center">
+                <svg
+                  className="w-10 h-10 text-destructive"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            {/* Error Title */}
+            <h1 className="text-2xl font-bold text-foreground mb-4">
+              {text("course_load_error_title")}
+            </h1>
+
+            {/* Error Description */}
+            <p className="text-muted-foreground mb-8 leading-relaxed">
+              {text("course_load_error_description")}
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button
+                onClick={() => window.location.reload()}
+                className="px-6 py-2"
+              >
+                <svg
+                  className="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+                {text("try_again")}
+              </Button>
+
+              <Button
+                variant="outline"
+                onClick={() => router.push("/instructor-dashboard/courses")}
+                className="px-6 py-2"
+              >
+                <svg
+                  className="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
+                </svg>
+                {text("go_back")}
+              </Button>
+            </div>
+
+            {/* Additional Help */}
+            <div className="mt-8 p-4 bg-muted/50 rounded-lg">
+              <p className="text-sm text-muted-foreground mb-3">
+                {text("still_having_trouble")}
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="text-primary hover:text-primary/80"
+              >
+                <Link href="/contact">{text("contact_support")}</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const handleEditSection = (sectionId: string) => {

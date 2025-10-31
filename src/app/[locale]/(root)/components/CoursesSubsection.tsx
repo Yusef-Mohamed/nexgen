@@ -58,10 +58,10 @@ const CoursesSubsection: React.FC<CoursesSubsectionProps> = ({
           }}
           className="w-full"
         >
-          <CarouselContent className="-ms-2 md:-ms-4">
+          <CarouselContent className="-ms-2 ps-2 md:-ms-4">
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (
-                  <CarouselItem key={index} className="ps-4 basis-auto">
+                  <CarouselItem key={index} className="ps-4 py-1 basis-auto">
                     <CourseCardSkeleton
                       className={cn(
                         "lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]",
@@ -72,7 +72,10 @@ const CoursesSubsection: React.FC<CoursesSubsectionProps> = ({
                 ))
               : courses.length > 0
               ? courses.map((course) => (
-                  <CarouselItem key={course._id} className="ps-4 basis-auto">
+                  <CarouselItem
+                    key={course._id}
+                    className="ps-4 py-1 basis-auto"
+                  >
                     <CourseCard
                       {...course}
                       className={cn(

@@ -21,6 +21,7 @@ const config: Config = {
         "text-2": "hsl(var(--text-2))",
         "text-3": "hsl(var(--text-3))",
         "text-5": "hsl(var(--text-5))",
+        success: "hsl(var(--success))",
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",

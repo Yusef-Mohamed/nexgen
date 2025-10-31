@@ -32,7 +32,8 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
 }) => {
   const text = useTranslations("learningPaths");
 
-  if (learningPaths.length === 0) {
+  // Show "No learning paths found" only when not loading and no learning paths exist
+  if (!loading && learningPaths.length === 0) {
     return (
       <div className="relative">
         {title && <h2 className="mb-6 capitalize">{title}</h2>}
@@ -54,10 +55,10 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
           }}
           className="w-full"
         >
-          <CarouselContent className="-ms-2 md:-ms-4">
+          <CarouselContent className="-ms-2 ps-2 md:-ms-4">
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (
-                  <CarouselItem key={index} className="ps-4 basis-auto">
+                  <CarouselItem key={index} className="ps-4 py-1 basis-auto">
                     <LearningPathSkeleton
                       className={cn(
                         "lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]",
@@ -70,7 +71,7 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
               ? learningPaths.map((learningPath) => (
                   <CarouselItem
                     key={learningPath._id}
-                    className="ps-4 basis-auto "
+                    className="ps-4 py-1 basis-auto "
                   >
                     <LearningPath
                       {...learningPath}

@@ -5,7 +5,7 @@ import { unstable_setRequestLocale } from "next-intl/server";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { ICourse } from "@/types";
 import { notFound } from "next/navigation";
-import QuizBody from "@/app/[locale]/dashboard/learn/[courseId]/compoents/QuizBody";
+import QuizBody from "@/app/[locale]/(learn)/dashboard/learn/[courseId]/components/QuizBody";
 export async function generateMetadata({
   params,
 }: {
@@ -27,17 +27,12 @@ const CoursesPage = async ({
 }) => {
   unstable_setRequestLocale(params.locale);
   try {
-    const axiosInstance = createServerAxiosInstance();
-    const courseRes = await axiosInstance.get("/courses/" + params.courseId);
-    const courseData = courseRes.data.data as ICourse;
     return (
       <main className="dashboard">
         <section className="container secPadding">
-          <QuizBody
-            id={params.courseId}
-            quizType="placement"
-            title={courseData.title}
-          />
+          <div className="cardShadow bg-clear-ground rounded-xl lg:p-12 md:p-8 p-6">
+            <QuizBody id={params.courseId} quizType="placement" />
+          </div>
         </section>
       </main>
     );

@@ -101,6 +101,14 @@ export const AppliedFiltersDisplay: React.FC<AppliedFiltersDisplayProps> = ({
       }
     }
 
+    if (filterState.searchKeyword && filterState.searchKeyword.trim() !== "") {
+      appliedFilters.push({
+        type: "searchKeyword",
+        label: `"${filterState.searchKeyword}"`,
+        value: filterState.searchKeyword,
+      });
+    }
+
     return appliedFilters;
   };
 

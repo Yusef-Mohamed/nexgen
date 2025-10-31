@@ -108,7 +108,8 @@ const MessageCard: React.FC<MessageCardProps> = ({
         >
           <UserAvatar
             user={message.sender}
-            className={cn({
+            innerClassName="!rounded-md"
+            className={cn("w-10 h-10 rounded-md", {
               "opacity-0": !isFirst,
             })}
           />
@@ -130,19 +131,12 @@ const MessageCard: React.FC<MessageCardProps> = ({
                     "bg-primary text-white": !isMine,
                   })}
                 >
-                  <h4 className="text-sm font-semibold">
-                    {message.repliedTo.sender.name}
-                  </h4>
                   <p className="text-xs">
                     {renderMessageText(message.repliedTo.text)}
                   </p>
                 </div>
               )}
-              {!isMine && isFirst && (
-                <span className="block text-sm font-semibold border-b">
-                  {message.sender.name}
-                </span>
-              )}
+
               <p>{renderMessageText(message.text)}</p>
               {message.media[0] &&
                 (message.media[0].endsWith("pdf") ? (
@@ -165,7 +159,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
 
               <span
                 className={cn(
-                  "absolute text-xs top-0 translate-x-1/2 right-1/2 scale-0 group-hover:scale-100 transition-all -translate-y-[110%] rounded p-1 whitespace-nowrap",
+                  "absolute text-sm top-0 translate-x-1/2 right-1/2 scale-0 group-hover:scale-100 transition-all -translate-y-[110%] rounded px-3 py-2 whitespace-nowrap",
                   {
                     "bg-primary": isMine,
                     "bg-muted": !isMine,

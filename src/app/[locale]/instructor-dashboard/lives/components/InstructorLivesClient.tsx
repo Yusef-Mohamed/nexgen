@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Plus } from "lucide-react";
@@ -48,46 +48,29 @@ const LiveCardSkeleton = () => (
 
 // Loading Skeleton Component
 const LoadingSkeleton = () => (
-  <main className="flex bg-background flex-col-reverse w-full gap-8 p-8 lg:flex-row lg:gap-10 lg:p-10">
-    <div className="flex-1 w-full">
-      <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
-        <div className="flex items-center justify-between mb-4">
-          <Skeleton className="h-6 w-24" />
-          <Skeleton className="h-9 w-24" />
-        </div>
-        <div
-          className="grid gap-4"
-          style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-          }}
-        >
-          {Array.from({ length: 4 }).map((_, index) => (
-            <LiveCardSkeleton key={index} />
-          ))}
-        </div>
+  <div className="flex-1 w-full">
+    <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
+      <div className="flex items-center justify-between mb-4">
+        <Skeleton className="h-6 w-24" />
+      </div>
+      <div
+        className="grid gap-4"
+        style={{
+          gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+        }}
+      >
+        {Array.from({ length: 4 }).map((_, index) => (
+          <LiveCardSkeleton key={index} />
+        ))}
       </div>
     </div>
-    <div className="xl:w-[25rem] lg:w-[20rem] space-y-6">
-      {/* Filters skeleton */}
-      <div className="bg-card cardShadow rounded-xl p-4 space-y-4">
-        <Skeleton className="h-5 w-20" />
-        <Skeleton className="h-10 w-full" />
-      </div>
-      {/* Calendar skeleton */}
-      <div className="bg-card cardShadow rounded-xl p-4">
-        <Skeleton className="h-5 w-24 mb-4" />
-        <div className="grid grid-cols-7 gap-2">
-          {Array.from({ length: 35 }).map((_, index) => (
-            <Skeleton key={index} className="h-8 w-8 rounded" />
-          ))}
-        </div>
-      </div>
-    </div>
-  </main>
+  </div>
 );
 
 const InstructorLivesClient = () => {
   const instructorText = useTranslations("instructorLives");
+  const locale = useLocale();
+  const isArabic = locale === "ar";
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedCourse, setSelectedCourse] = useState<string>("all");
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -146,10 +129,7 @@ const InstructorLivesClient = () => {
 
       // Show success message
       const toast = await import("react-toastify");
-      toast.toast.success(
-        instructorText("liveSessionDeletedSuccessfully") ||
-          "Live session deleted successfully"
-      );
+      toast.toast.success(instructorText("liveSessionDeletedSuccessfully"));
 
       // Close dialog
       setShowDeleteDialog(false);
@@ -157,10 +137,7 @@ const InstructorLivesClient = () => {
     } catch (error) {
       console.error("Error deleting live:", error);
       const toast = await import("react-toastify");
-      toast.toast.error(
-        instructorText("failedToDeleteLiveSession") ||
-          "Failed to delete live session"
-      );
+      toast.toast.error(instructorText("failedToDeleteLiveSession"));
     } finally {
       setIsDeleting(false);
     }
@@ -171,98 +148,107 @@ const InstructorLivesClient = () => {
     setDeleteLive(null);
   };
 
-  if (loading) {
-    return <LoadingSkeleton />;
-  }
-
   return (
     <>
-      <main className="flex bg-background flex-col-reverse w-full gap-8 p-8 xl:flex-row lg:gap-10 lg:p-10">
-        <div className="flex-1 w-full">
-          {selectedDate ? (
-            <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
-              <h2 className="mb-4 font-medium md:mb-6">
-                {new Date(selectedDate).toLocaleDateString("en-US", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </h2>
-              {filteredLives.length !== 0 ? (
-                <div
-                  className="grid gap-4"
-                  style={{
-                    gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-                  }}
-                >
-                  {filteredLives.map((live) => (
-                    <LiveCard
-                      key={live._id}
-                      live={live}
-                      onDelete={handleDeleteLive}
-                      onEdit={handleEditLive}
-                    />
-                  ))}
+      <main className="bg-background  w-full lg:p-10 p-8">
+        <div className="mb-8 flex items-center justify-between">
+          <h1>{instructorText("myLives")}</h1>
+          <Button
+            onClick={() => setShowAddDialog(true)}
+            className="flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            {instructorText("addLive")}
+          </Button>
+        </div>
+        <div className="flex-col-reverse flex gap-8  xl:flex-row lg:gap-10 ">
+          {loading && <LoadingSkeleton />}
+          {!loading && (
+            <div className="flex-1 w-full">
+              {selectedDate ? (
+                <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
+                  <h2 className="mb-4 font-medium md:mb-6">
+                    {new Date(selectedDate).toLocaleDateString(
+                      isArabic ? "ar-SA" : "en-US",
+                      {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )}
+                  </h2>
+                  {filteredLives.length !== 0 ? (
+                    <div
+                      className="grid gap-4"
+                      style={{
+                        gridTemplateColumns:
+                          "repeat(auto-fit, minmax(400px, 1fr))",
+                      }}
+                    >
+                      {filteredLives.map((live) => (
+                        <LiveCard
+                          key={live._id}
+                          live={live}
+                          onDelete={handleDeleteLive}
+                          onEdit={handleEditLive}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-lg font-medium text-center text-text-3">
+                        {instructorText("noLivesThisDay")}
+                      </p>
+                    </div>
+                  )}
                 </div>
               ) : (
-                <div>
-                  <p className="text-lg font-medium text-center text-text-3">
-                    {instructorText("noLivesThisDay")}
-                  </p>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-medium md:mb-6">
-                  {instructorText("allLives")}
-                </h2>
-                <Button
-                  onClick={() => setShowAddDialog(true)}
-                  className="flex items-center gap-2"
-                >
-                  <Plus className="w-4 h-4" />
-                  {instructorText("addLive")}
-                </Button>
-              </div>
-              {filteredLives.length !== 0 ? (
-                <div
-                  className="grid gap-4"
-                  style={{
-                    gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-                  }}
-                >
-                  {filteredLives.map((live) => (
-                    <LiveCard
-                      key={live._id}
-                      live={live}
-                      onDelete={handleDeleteLive}
-                      onEdit={handleEditLive}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div>
-                  <p className="text-lg font-medium text-center text-text-3">
-                    {instructorText("noLivesFound")}
-                  </p>
+                <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="font-medium md:mb-6">
+                      {instructorText("allLives")}
+                    </h2>
+                  </div>
+                  {filteredLives.length !== 0 ? (
+                    <div
+                      className="grid gap-4"
+                      style={{
+                        gridTemplateColumns:
+                          "repeat(auto-fit, minmax(400px, 1fr))",
+                      }}
+                    >
+                      {filteredLives.map((live) => (
+                        <LiveCard
+                          key={live._id}
+                          live={live}
+                          onDelete={handleDeleteLive}
+                          onEdit={handleEditLive}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-lg font-medium text-center text-text-3">
+                        {instructorText("noLivesFound")}
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
           )}
-        </div>
-        <div className="xl:w-[25rem] ">
-          <InstructorLiveFilters
-            selectedCourse={selectedCourse}
-            onCourseChange={setSelectedCourse}
-          />
-          <InstructorLivesCalendar
-            lives={lives}
-            selectedDate={selectedDate}
-            onDateSelect={setSelectedDate}
-          />
+          <div className="xl:w-[25rem] ">
+            <InstructorLiveFilters
+              selectedCourse={selectedCourse}
+              onCourseChange={setSelectedCourse}
+            />
+            <InstructorLivesCalendar
+              lives={lives}
+              selectedDate={selectedDate}
+              onDateSelect={setSelectedDate}
+            />
+          </div>
         </div>
       </main>
 

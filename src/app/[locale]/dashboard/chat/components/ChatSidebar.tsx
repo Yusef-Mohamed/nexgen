@@ -20,10 +20,12 @@ export function Sidebar({ selectedChat }: SidebarProps) {
         "max-xl:hidden": selectedChat,
       })}
     >
-      <div className="flex items-center justify-between h-20 px-4 border-b">
+      <div className="flex items-center justify-between h-20 px-6 border-b">
         <h1 className="flex items-center gap-2 h2">
           <p className="font-medium">{text("chats")}</p>
-          <span className="text-text-2">({chats.length})</span>
+          <span className="bg-primary-faded text-xs h-6 min-w-6 rounded-full flex items-center justify-center">
+            {chats.length}
+          </span>
         </h1>
       </div>
       <nav className="flex-1 flex-grow gap-1 px-4 py-6 overflow-auto">

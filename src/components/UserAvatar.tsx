@@ -31,7 +31,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
       <AvatarImage
         src={user?.profileImg ?? "/images/user-placeholder.jpeg"}
         alt={user?.name}
-        className={cn("object-cover", innerClassName)}
+        className={cn("object-cover ", innerClassName)}
       />
       <AvatarFallback
         className={cn(innerClassName, {

@@ -10,6 +10,7 @@ interface SearchInputProps {
   onChange: (value: string) => void;
   placeholder: string;
   className?: string;
+  containerClassName?: string;
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({
@@ -17,9 +18,10 @@ const SearchInput: React.FC<SearchInputProps> = ({
   onChange,
   placeholder,
   className = "pl-10",
+  containerClassName,
 }) => {
   return (
-    <div className="relative mb-6">
+    <div className={cn("relative mb-6", containerClassName)}>
       <SearchIcon className="absolute start-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
       <Input
         type="text"
