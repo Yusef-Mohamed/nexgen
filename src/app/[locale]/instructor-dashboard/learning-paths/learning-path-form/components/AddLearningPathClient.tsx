@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import ReorderableHighlightsList from "../../../courses/course-form/components/ReorderableHighlightsList";
+import ReorderableHighlightsList from "@/app/[locale]/(course-form)/instructor-dashboard/courses/course-form/components/ReorderableHighlightsList";
 
 const commonFormStyles =
   "!px-4 !py-3 !h-auto !rounded-md min-h-12 items-center";
