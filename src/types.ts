@@ -66,7 +66,7 @@ export interface ICourse {
     ar: string;
     en: string;
   };
-  translationCourseGoodByeMessage: {
+  translationgoodByeMessage: {
     ar: string;
     en: string;
   };

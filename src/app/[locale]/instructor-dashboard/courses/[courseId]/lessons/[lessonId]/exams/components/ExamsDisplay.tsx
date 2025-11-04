@@ -98,7 +98,13 @@ export const ExamsDisplay = ({
   useEffect(() => {
     if (!loading && !error && initialExamId && exams.length > 0) {
       const match = exams.find((e) => e._id === initialExamId);
-      if (match) onViewQuestions(match);
+      if (match) {
+        // Use a small delay to ensure dropdown is closed if it was open
+        const timer = setTimeout(() => {
+          onViewQuestions(match);
+        }, 50);
+        return () => clearTimeout(timer);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, error, initialExamId, exams]);
@@ -297,10 +303,10 @@ const ExamCard = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent withPortal={false} align="end">
               <DropdownMenuItem
-                onClick={() => {
-                  setTimeout(() => {
-                    onViewQuestions();
-                  }, 100);
+                onClick={(e) => {
+                  e.preventDefault();
+                  // Close the dropdown first, then navigate
+                  onViewQuestions();
                 }}
               >
                 <Eye className="w-4 h-4 mr-2" />
@@ -317,10 +323,9 @@ const ExamCard = ({
                 {text("edit_exam")}
               </DropdownMenuItem> */}
               <DropdownMenuItem
-                onClick={() => {
-                  setTimeout(() => {
-                    onDelete();
-                  }, 100);
+                onClick={(e) => {
+                  e.preventDefault();
+                  onDelete();
                 }}
                 className="text-red-600"
               >

@@ -98,7 +98,7 @@ const Step6Messages: React.FC<Step6MessagesProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="courseGoodByeMessage.en"
+            name="goodByeMessage.en"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
@@ -120,7 +120,7 @@ const Step6Messages: React.FC<Step6MessagesProps> = ({
           />
           <FormField
             control={form.control}
-            name="courseGoodByeMessage.ar"
+            name="goodByeMessage.ar"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>

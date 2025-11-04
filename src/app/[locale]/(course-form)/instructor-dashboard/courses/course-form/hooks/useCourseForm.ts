@@ -38,7 +38,7 @@ export interface CourseFormSchema {
   whoThisCourseFor: Array<{ en: string; ar: string }>;
   certificateDescription: { en: string; ar: string };
   courseWelcomeMessage?: { en?: string; ar?: string };
-  courseGoodByeMessage?: { en?: string; ar?: string };
+  goodByeMessage?: { en?: string; ar?: string };
   category: string;
   price: string;
   priceAfterDiscount?: string;
@@ -76,7 +76,7 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
   // Get courseId and currentStep from search params
   const courseId = searchParams?.get("courseId");
   const isEditMode = !!courseId && searchParams?.get("mode") !== "create";
-  const stepParam = searchParams?.get("step");
+  const stepParam = searchParams?.get("step") || "0";
   const initialStep = stepParam ? parseInt(stepParam) : 0;
 
   // Helper function to safely get certificate description
@@ -198,7 +198,7 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
             .optional(),
         })
         .optional(),
-      courseGoodByeMessage: z
+      goodByeMessage: z
         .object({
           en: z
             .string()
@@ -278,7 +278,7 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
       whoThisCourseFor: [],
       certificateDescription: { ar: "", en: "" },
       courseWelcomeMessage: { ar: "", en: "" },
-      courseGoodByeMessage: { ar: "", en: "" },
+      goodByeMessage: { ar: "", en: "" },
       category: "",
       price: "",
       priceAfterDiscount: "",
@@ -423,32 +423,32 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
               ).courseWelcomeMessage?.ar ||
               "",
           },
-          courseGoodByeMessage: {
+          goodByeMessage: {
             en:
               (
                 course as ICourse & {
-                  translationCourseGoodByeMessage?: { en: string; ar: string };
-                  courseGoodByeMessage?: { en: string; ar: string };
+                  translationgoodByeMessage?: { en: string; ar: string };
+                  goodByeMessage?: { en: string; ar: string };
                 }
-              ).translationCourseGoodByeMessage?.en ||
+              ).translationgoodByeMessage?.en ||
               (
                 course as ICourse & {
-                  courseGoodByeMessage?: { en: string; ar: string };
+                  goodByeMessage?: { en: string; ar: string };
                 }
-              ).courseGoodByeMessage?.en ||
+              ).goodByeMessage?.en ||
               "",
             ar:
               (
                 course as ICourse & {
-                  translationCourseGoodByeMessage?: { en: string; ar: string };
-                  courseGoodByeMessage?: { en: string; ar: string };
+                  translationgoodByeMessage?: { en: string; ar: string };
+                  goodByeMessage?: { en: string; ar: string };
                 }
-              ).translationCourseGoodByeMessage?.ar ||
+              ).translationgoodByeMessage?.ar ||
               (
                 course as ICourse & {
-                  courseGoodByeMessage?: { en: string; ar: string };
+                  goodByeMessage?: { en: string; ar: string };
                 }
-              ).courseGoodByeMessage?.ar ||
+              ).goodByeMessage?.ar ||
               "",
           },
         });
@@ -471,17 +471,6 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
     },
     [token, form, text, getCertificateDescription]
   );
-
-  // Initialize step in URL if not present
-  useEffect(() => {
-    if (!stepParam) {
-      const params = new URLSearchParams(
-        typeof window !== "undefined" ? window.location.search : ""
-      );
-      params.set("step", "0");
-      router.push(`${pathname}?${params.toString()}`);
-    }
-  }, [stepParam, router, pathname]);
 
   // Initialize component based on courseId in search params
   // Only fetch once when courseId is available and component hasn't been initialized
@@ -730,23 +719,23 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
             ).courseWelcomeMessage || { en: "", ar: "" };
           const currentGoodbyeMessage = (
             currentCourse as ICourse & {
-              translationCourseGoodByeMessage?: { en: string; ar: string };
-              courseGoodByeMessage?: { en: string; ar: string };
+              translationgoodByeMessage?: { en: string; ar: string };
+              goodByeMessage?: { en: string; ar: string };
             }
-          ).translationCourseGoodByeMessage ||
+          ).translationgoodByeMessage ||
             (
               currentCourse as ICourse & {
-                courseGoodByeMessage?: { en: string; ar: string };
+                goodByeMessage?: { en: string; ar: string };
               }
-            ).courseGoodByeMessage || { en: "", ar: "" };
+            ).goodByeMessage || { en: "", ar: "" };
           return (
             (stepData.courseWelcomeMessage?.en || "") !==
               (currentWelcomeMessage.en || "") ||
             (stepData.courseWelcomeMessage?.ar || "") !==
               (currentWelcomeMessage.ar || "") ||
-            (stepData.courseGoodByeMessage?.en || "") !==
+            (stepData.goodByeMessage?.en || "") !==
               (currentGoodbyeMessage.en || "") ||
-            (stepData.courseGoodByeMessage?.ar || "") !==
+            (stepData.goodByeMessage?.ar || "") !==
               (currentGoodbyeMessage.ar || "")
           );
         default:
@@ -913,14 +902,14 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
             stepData.courseWelcomeMessage.ar || ""
           );
         }
-        if (stepData.courseGoodByeMessage) {
+        if (stepData.goodByeMessage) {
           formData.append(
-            "courseGoodByeMessage.en",
-            stepData.courseGoodByeMessage.en || ""
+            "goodByeMessage.en",
+            stepData.goodByeMessage.en || ""
           );
           formData.append(
-            "courseGoodByeMessage.ar",
-            stepData.courseGoodByeMessage.ar || ""
+            "goodByeMessage.ar",
+            stepData.goodByeMessage.ar || ""
           );
         }
       }
@@ -953,8 +942,8 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
           const createdCourse = response.data.data as ICourse;
           setCurrentCourse(createdCourse);
           addCourseIdToParams(createdCourse._id);
-
           toast.success(text("course_created_successfully"));
+          return { success: false };
         } else {
           throw new Error("Cannot update course that doesn't exist");
         }

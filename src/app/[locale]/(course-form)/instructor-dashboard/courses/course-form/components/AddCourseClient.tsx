@@ -96,8 +96,8 @@ const AddCourseClient = () => {
         return [
           "courseWelcomeMessage.en",
           "courseWelcomeMessage.ar",
-          "courseGoodByeMessage.en",
-          "courseGoodByeMessage.ar",
+          "goodByeMessage.en",
+          "goodByeMessage.ar",
         ];
       default:
         return [];
@@ -150,7 +150,7 @@ const AddCourseClient = () => {
       case 5: // Messages
         return {
           courseWelcomeMessage: formData.courseWelcomeMessage,
-          courseGoodByeMessage: formData.courseGoodByeMessage,
+          goodByeMessage: formData.goodByeMessage,
         };
       default:
         return {};

@@ -83,17 +83,36 @@ export const ExamsManager = ({
     // When param exists and data is ready, select matching exam
     if (!loading && exams.length > 0) {
       const match = exams.find((e) => e._id === initialExamId);
-      setSelectedExam(match || null);
+      if (match) {
+        // Only update if it's a different exam
+        if (match._id !== selectedExam?._id) {
+          setSelectedExam(match);
+        }
+      } else if (!match && selectedExam && selectedExam._id !== initialExamId) {
+        // Exam param exists but no match found - only clear if the selected exam doesn't match the param
+        // This prevents clearing an exam that was set optimistically before exams loaded
+        setSelectedExam(null);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasExamParam, loading, initialExamId, exams]);
 
-  const handleViewQuestions = (exam: IExam) => {
+  const handleViewQuestions = async (exam: IExam) => {
     try {
+      // Set the exam immediately in state to avoid race conditions
+      setSelectedExam(exam);
+
       const params = new URLSearchParams(searchParams?.toString());
       params.set("exam", exam._id);
-      router.replace(`${pathname}?${params.toString()}`);
-    } catch {}
+      const newUrl = `${pathname}?${params.toString()}`;
+
+      // Use router.replace and ensure it completes
+      await router.replace(newUrl);
+    } catch (error) {
+      console.error("Error navigating to exam questions:", error);
+      // If navigation fails, still try to set the exam
+      setSelectedExam(exam);
+    }
   };
 
   const handleBackToExams = () => {
@@ -110,8 +129,21 @@ export const ExamsManager = ({
   };
 
   // Show the questions UI when selection is materialized
-  if (hasExamParam) {
-    if (loading && !selectedExam) {
+  // Check if we have a selected exam OR if we have an exam param (even if not matched yet)
+  if (selectedExam || (hasExamParam && initialExamId)) {
+    // If we have a selected exam, show it immediately
+    if (selectedExam) {
+      return (
+        <ExamQuestionDisplay
+          exam={selectedExam}
+          onBack={handleBackToExams}
+          onExamUpdate={handleExamUpdate}
+        />
+      );
+    }
+
+    // If we have an exam param but no selected exam yet, show loading only if still loading
+    if (loading) {
       // Questions-style skeleton while loading a deep-linked exam
       return (
         <div className="min-h-screen">
@@ -156,16 +188,9 @@ export const ExamsManager = ({
         </div>
       );
     }
-    if (selectedExam) {
-      return (
-        <ExamQuestionDisplay
-          exam={selectedExam}
-          onBack={handleBackToExams}
-          onExamUpdate={handleExamUpdate}
-        />
-      );
-    }
+
     // If param exists but no match after load, fall back to list view
+    // This handles the case where exam ID in URL doesn't match any exam
   }
 
   return (
