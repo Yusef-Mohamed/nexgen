@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { AxiosError } from "axios";
-import { useRouter } from "@/i18n/routing";
+import { useRouter, usePathname } from "@/i18n/routing";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 
@@ -58,6 +58,7 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
   const text = useTranslations("courses");
   const { token } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const [loading, setLoading] = useState(false);
@@ -75,7 +76,8 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
   // Get courseId and currentStep from search params
   const courseId = searchParams?.get("courseId");
   const isEditMode = !!courseId && searchParams?.get("mode") !== "create";
-  const initialStep = 0;
+  const stepParam = searchParams?.get("step");
+  const initialStep = stepParam ? parseInt(stepParam) : 0;
 
   // Helper function to safely get certificate description
   const getCertificateDescription = useCallback((course: ICourse) => {
@@ -98,32 +100,31 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
   // Create validation schema with localized error messages
   const createValidationSchema = () => {
     // Base schema for highlight item validation
+    // Each item must have at least 3 characters in both languages
     const highlightItemSchema = z.object({
       en: z
         .string()
-        .min(1, text("validation.highlight_cannot_be_empty"))
-        .refine((val) => val.trim().length > 0, {
-          message: text("validation.highlight_cannot_be_empty"),
+        .min(3, text("validation.highlight_min_length"))
+        .refine((val) => val.trim().length >= 3, {
+          message: text("validation.highlight_min_length"),
         }),
       ar: z
         .string()
-        .min(1, text("validation.highlight_cannot_be_empty"))
-        .refine((val) => val.trim().length > 0, {
-          message: text("validation.highlight_cannot_be_empty"),
+        .min(3, text("validation.highlight_min_length"))
+        .refine((val) => val.trim().length >= 3, {
+          message: text("validation.highlight_min_length"),
         }),
     });
 
-    // Schema for whatWillLearn (requires at least 4)
+    // Schema for whatWillLearn - no minimum required, can be empty or any number up to 50
     const whatWillLearnSchema = z
       .array(highlightItemSchema)
-      .min(4, text("validation.what_will_learn_min_required"))
       .max(50, text("validation.highlights_array_max_length"))
       .default([]);
 
-    // Schema for prerequisites and whoThisCourseFor (requires at least 1)
+    // Schema for prerequisites and whoThisCourseFor - no minimum required, can be empty or any number up to 50
     const otherHighlightsSchema = z
       .array(highlightItemSchema)
-      .min(1, text("validation.highlights_en_required"))
       .max(50, text("validation.highlights_array_max_length"))
       .default([]);
 
@@ -394,6 +395,62 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
           promotionVideo:
             (course as ICourse & { promotionVideo?: string }).promotionVideo ||
             undefined,
+          courseWelcomeMessage: {
+            en:
+              (
+                course as ICourse & {
+                  translationCourseWelcomeMessage?: { en: string; ar: string };
+                  courseWelcomeMessage?: { en: string; ar: string };
+                }
+              ).translationCourseWelcomeMessage?.en ||
+              (
+                course as ICourse & {
+                  courseWelcomeMessage?: { en: string; ar: string };
+                }
+              ).courseWelcomeMessage?.en ||
+              "",
+            ar:
+              (
+                course as ICourse & {
+                  translationCourseWelcomeMessage?: { en: string; ar: string };
+                  courseWelcomeMessage?: { en: string; ar: string };
+                }
+              ).translationCourseWelcomeMessage?.ar ||
+              (
+                course as ICourse & {
+                  courseWelcomeMessage?: { en: string; ar: string };
+                }
+              ).courseWelcomeMessage?.ar ||
+              "",
+          },
+          courseGoodByeMessage: {
+            en:
+              (
+                course as ICourse & {
+                  translationCourseGoodByeMessage?: { en: string; ar: string };
+                  courseGoodByeMessage?: { en: string; ar: string };
+                }
+              ).translationCourseGoodByeMessage?.en ||
+              (
+                course as ICourse & {
+                  courseGoodByeMessage?: { en: string; ar: string };
+                }
+              ).courseGoodByeMessage?.en ||
+              "",
+            ar:
+              (
+                course as ICourse & {
+                  translationCourseGoodByeMessage?: { en: string; ar: string };
+                  courseGoodByeMessage?: { en: string; ar: string };
+                }
+              ).translationCourseGoodByeMessage?.ar ||
+              (
+                course as ICourse & {
+                  courseGoodByeMessage?: { en: string; ar: string };
+                }
+              ).courseGoodByeMessage?.ar ||
+              "",
+          },
         });
 
         // Set accessible courses if they exist
@@ -414,6 +471,17 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
     },
     [token, form, text, getCertificateDescription]
   );
+
+  // Initialize step in URL if not present
+  useEffect(() => {
+    if (!stepParam) {
+      const params = new URLSearchParams(
+        typeof window !== "undefined" ? window.location.search : ""
+      );
+      params.set("step", "0");
+      router.push(`${pathname}?${params.toString()}`);
+    }
+  }, [stepParam, router, pathname]);
 
   // Initialize component based on courseId in search params
   // Only fetch once when courseId is available and component hasn't been initialized
@@ -483,15 +551,16 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
   // Add courseId to search params
   const addCourseIdToParams = useCallback(
     (courseId: string) => {
-      const currentParams = new URLSearchParams(searchParams?.toString());
+      const currentParams = new URLSearchParams(
+        typeof window !== "undefined" ? window.location.search : ""
+      );
       currentParams.set("courseId", courseId);
       currentParams.set("mode", "create");
-      router.replace(`?${currentParams.toString()}`);
+      currentParams.set("step", "3");
+      router.push(`${pathname}?${currentParams.toString()}`);
     },
-    [router, searchParams]
+    [router, pathname]
   );
-
-  // Update step in search params
 
   // Handle backend validation errors
   const handleBackendErrors = useCallback(
@@ -647,6 +716,39 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
             (stepData.fontDarkMode || "#ffffff") !==
               (currentCourse.colors?.fontDarkMode || "#ffffff")
           );
+        case 5: // Messages
+          const currentWelcomeMessage = (
+            currentCourse as ICourse & {
+              translationCourseWelcomeMessage?: { en: string; ar: string };
+              courseWelcomeMessage?: { en: string; ar: string };
+            }
+          ).translationCourseWelcomeMessage ||
+            (
+              currentCourse as ICourse & {
+                courseWelcomeMessage?: { en: string; ar: string };
+              }
+            ).courseWelcomeMessage || { en: "", ar: "" };
+          const currentGoodbyeMessage = (
+            currentCourse as ICourse & {
+              translationCourseGoodByeMessage?: { en: string; ar: string };
+              courseGoodByeMessage?: { en: string; ar: string };
+            }
+          ).translationCourseGoodByeMessage ||
+            (
+              currentCourse as ICourse & {
+                courseGoodByeMessage?: { en: string; ar: string };
+              }
+            ).courseGoodByeMessage || { en: "", ar: "" };
+          return (
+            (stepData.courseWelcomeMessage?.en || "") !==
+              (currentWelcomeMessage.en || "") ||
+            (stepData.courseWelcomeMessage?.ar || "") !==
+              (currentWelcomeMessage.ar || "") ||
+            (stepData.courseGoodByeMessage?.en || "") !==
+              (currentGoodbyeMessage.en || "") ||
+            (stepData.courseGoodByeMessage?.ar || "") !==
+              (currentGoodbyeMessage.ar || "")
+          );
         default:
           return true;
       }
@@ -799,9 +901,32 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
           formData.append("colors.fontColor", stepData.fontColor);
         if (stepData.fontDarkMode)
           formData.append("colors.fontDarkMode", stepData.fontDarkMode);
+      } else if (stepNumber === 5) {
+        // Step 6: Messages
+        if (stepData.courseWelcomeMessage) {
+          formData.append(
+            "courseWelcomeMessage.en",
+            stepData.courseWelcomeMessage.en || ""
+          );
+          formData.append(
+            "courseWelcomeMessage.ar",
+            stepData.courseWelcomeMessage.ar || ""
+          );
+        }
+        if (stepData.courseGoodByeMessage) {
+          formData.append(
+            "courseGoodByeMessage.en",
+            stepData.courseGoodByeMessage.en || ""
+          );
+          formData.append(
+            "courseGoodByeMessage.ar",
+            stepData.courseGoodByeMessage.ar || ""
+          );
+        }
       }
 
       let response;
+      let isNewCourse = false;
       if (currentCourse) {
         // Update existing course
         response = await axiosInstance.put(
@@ -817,6 +942,7 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
       } else {
         // Create new course (only on first step)
         if (stepNumber === 0) {
+          isNewCourse = true;
           response = await axiosInstance.post("/courses", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -839,7 +965,13 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
         onCourseUpdated(updatedCourse);
       }
 
-      toast.success(text("step_saved_successfully"));
+      // Only show "step saved" toast for updates, not for course creation
+      if (!isNewCourse) {
+        toast.success(text("step_saved_successfully"));
+      }
+
+      // Auto-advance to next step after successful save
+
       return { success: true, course: response?.data?.data };
     } catch (error) {
       console.error("Error submitting step data:", error);
@@ -890,7 +1022,7 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
 
     return { success: false };
   };
-  console.log(form.getValues());
+
   return {
     loading,
     isFetchingCourse,

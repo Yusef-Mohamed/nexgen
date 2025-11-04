@@ -17,45 +17,134 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { axiosInstance } from "@/app/lib/utils";
-import { IMarketLog } from "@/types";
+import { IMarketLog, ICourse } from "@/types";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const WalletClient = () => {
   const t = useTranslations("invoicesManagement");
   const locale = useLocale();
   const { token, user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingCourses, setIsLoadingCourses] = useState(true);
   const [marketLog, setMarketLog] = useState<IMarketLog | null>(null);
+  const [selectedCourseId, setSelectedCourseId] = useState<string>("all");
+  const [courses, setCourses] = useState<ICourse[]>([]);
+
+  // Format date to DD/MM/YYYY
+  const formatDate = (date: Date): string => {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  // Fetch active courses
   useEffect(() => {
-    const fetchMarketLog = async () => {
+    const fetchActiveCourses = async () => {
+      if (!token || !user?._id) return;
       try {
-        setIsLoading(true);
+        setIsLoadingCourses(true);
         const res = await axiosInstance.get(
-          `/instructorProfits/instructorAnalytics/${user?._id}`,
+          `/courses/getAll?instructor=${user._id}&status=active`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        setMarketLog(res.data.instructorProfits);
+        setCourses(res.data.data || []);
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching courses:", err);
+      } finally {
+        setIsLoadingCourses(false);
+      }
+    };
+    if (token && user) fetchActiveCourses();
+  }, [token, user]);
+
+  // Fetch analytics data
+  useEffect(() => {
+    const fetchMarketLog = async () => {
+      if (!token || !user?._id) return;
+      try {
+        setIsLoading(true);
+        let res;
+
+        if (selectedCourseId === "all") {
+          // Fetch instructor analytics (all courses)
+          res = await axiosInstance.get(
+            `/instructorProfits/instructorAnalytics/${user._id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setMarketLog(res.data.instructorProfits);
+        } else {
+          // Fetch course-specific analytics
+          const startDate = user.createdAt
+            ? formatDate(new Date(user.createdAt))
+            : formatDate(new Date());
+          const endDate = formatDate(new Date());
+          const url = `/instructorProfits/courseAnalytics/${selectedCourseId}?startDate=${startDate}&endDate=${endDate}&type=course`;
+
+          res = await axiosInstance.get(url, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setMarketLog(res.data.data || res.data);
+        }
+      } catch (err) {
+        console.error("Error fetching analytics:", err);
+        toast.error("Failed to load analytics data");
       } finally {
         setIsLoading(false);
       }
     };
     if (token && user) fetchMarketLog();
-  }, [token, user]);
+  }, [token, user, selectedCourseId]);
 
-  if (isLoading) {
+  if (isLoading && !marketLog) {
     return <LoadingState />;
   }
-  throw new Error("Testing the error boundary");
   return (
     <div className="space-y-8">
-      <StatsCards marketLog={marketLog} locale={locale} t={t} />
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Overview</h2>
+        <Select
+          value={selectedCourseId}
+          onValueChange={setSelectedCourseId}
+          disabled={isLoadingCourses}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select course" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All courses</SelectItem>
+            {courses.map((course) => (
+              <SelectItem key={course._id} value={course._id}>
+                {course.translationTitle?.[locale as "en" | "ar"] ||
+                  course.title}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      {isLoading ? (
+        <LoadingState />
+      ) : (
+        <StatsCards marketLog={marketLog} locale={locale} t={t} />
+      )}
     </div>
   );
 };
@@ -95,24 +184,26 @@ const StatsCards = ({
   locale: string;
 }) => (
   <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-    <StatCard
-      title={t("stats.totalSales")}
-      value={marketLog?.totalSalesMoney || 0}
-      difference={marketLog?.salesMoneyDifference || 0}
-      total={marketLog?.totalSalesMoney || 0}
-    />
-    <StatCard
-      title={t("stats.profit")}
-      value={marketLog?.profits || 0}
-      difference={marketLog?.profitsDifference || 0}
-      total={marketLog?.profits || 0}
-    />
-    <StatCard
-      title={t("stats.withdrawals")}
-      value={marketLog?.withdrawals || 0}
-      difference={0}
-      total={marketLog?.withdrawals || 0}
-    />
+    <div className="grid gap-4 grid-cols-3 col-span-3">
+      <StatCard
+        title={t("stats.totalSales")}
+        value={marketLog?.totalSalesMoney || 0}
+        difference={marketLog?.salesMoneyDifference || 0}
+        total={marketLog?.totalSalesMoney || 0}
+      />
+      <StatCard
+        title={t("stats.profit")}
+        value={marketLog?.profits || 0}
+        difference={marketLog?.profitsDifference || 0}
+        total={marketLog?.profits || 0}
+      />
+      <StatCard
+        title={t("stats.withdrawals")}
+        value={marketLog?.withdrawals || 0}
+        difference={0}
+        total={marketLog?.withdrawals || 0}
+      />
+    </div>
     <BalanceCard
       balance={marketLog?.availableToWithdraw || 0}
       t={t}

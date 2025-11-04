@@ -1,9 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { Form } from "@/components/ui/form";
-import { useSearchParams } from "next/navigation";
 import { useCourseForm } from "../hooks/useCourseForm";
-import { useMultiStepForm } from "../hooks/useMultiStepForm";
 import CourseFormLayoutClient from "./CourseFormLayoutClient";
 import { CourseFormProvider } from "./context/CourseFormContext";
 import Step1BasicInfoAccessible from "./steps/Step1BasicInfoAccessible";
@@ -11,17 +9,20 @@ import Step2Pricing from "./steps/Step2Pricing";
 import Step3Certificate from "./steps/Step3Certificate";
 import Step4Highlights from "./steps/Step4Highlights";
 import Step5Appearance from "./steps/Step5Appearance";
+import Step6Messages from "./steps/Step6Messages";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter, usePathname } from "@/i18n/routing";
+import { useSearchParams } from "next/navigation";
 
 const commonFormStyles =
   "!px-4 !py-3 !h-auto !rounded-md min-h-12 items-center";
 
 const AddCourseClient = () => {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
-  const stepParam = searchParams?.get("step");
-  const initialStep = stepParam ? parseInt(stepParam) : 0;
 
   const {
     loading,
@@ -41,48 +42,21 @@ const AddCourseClient = () => {
     isInitialized,
     courseId,
     currentCourse,
+    initialStep,
   } = useCourseForm();
 
-  // Define new steps configuration
-  const steps = [
-    {
-      id: "basic-info",
-      title: text("basic_info") || "Basic Info",
-    },
-    {
-      id: "pricing",
-      title: text("pricing") || "Pricing",
-    },
-    {
-      id: "certificate",
-      title: text("certificate") || "Certificate",
-    },
-    {
-      id: "target-student",
-      title: text("target_your_student") || "Target Your Student",
-    },
-    {
-      id: "appearance",
-      title: text("appearance") || "Appearance",
-    },
-  ];
+  // Use URL-based current step from hook to persist state across refreshes
+  const currentStep = initialStep;
 
-  // Initialize multi-step form with edit mode support
-  const { currentStep, goToStep, canGoToStep, markStepAsCompleted } =
-    useMultiStepForm(steps, initialStep, isEditMode);
-
-  // Sync step with URL
-  useEffect(() => {
-    const stepFromUrl = searchParams?.get("step");
-    if (stepFromUrl) {
-      const stepNumber = parseInt(stepFromUrl);
-      if (!isNaN(stepNumber) && stepNumber >= 0 && stepNumber < steps.length) {
-        if (canGoToStep(stepNumber)) {
-          goToStep(stepNumber);
-        }
-      }
+  // Get the next step based on sidebar order: 0 -> 3 -> 5 -> 1 -> 2 -> 4
+  const getNextStepInSidebarOrder = (currentStep: number): number | null => {
+    const sidebarStepOrder = [0, 3, 5, 1, 2, 4];
+    const currentIndex = sidebarStepOrder.indexOf(currentStep);
+    if (currentIndex === -1 || currentIndex === sidebarStepOrder.length - 1) {
+      return null; // Last step or invalid step
     }
-  }, [searchParams, steps.length, canGoToStep, goToStep]);
+    return sidebarStepOrder[currentIndex + 1];
+  };
 
   // Fetch categories and courses once when component is initialized
   useEffect(() => {
@@ -118,6 +92,13 @@ const AddCourseClient = () => {
         return ["whatWillLearn", "coursePrerequisites", "whoThisCourseFor"];
       case 4: // Appearance
         return ["bgColor", "bgDarkMode", "fontColor", "fontDarkMode"];
+      case 5: // Messages
+        return [
+          "courseWelcomeMessage.en",
+          "courseWelcomeMessage.ar",
+          "courseGoodByeMessage.en",
+          "courseGoodByeMessage.ar",
+        ];
       default:
         return [];
     }
@@ -166,6 +147,11 @@ const AddCourseClient = () => {
           fontColor: formData.fontColor,
           fontDarkMode: formData.fontDarkMode,
         };
+      case 5: // Messages
+        return {
+          courseWelcomeMessage: formData.courseWelcomeMessage,
+          courseGoodByeMessage: formData.courseGoodByeMessage,
+        };
       default:
         return {};
     }
@@ -184,7 +170,14 @@ const AddCourseClient = () => {
       if (result.success) {
         // Clear any existing errors for the current step
         form.clearErrors();
-        markStepAsCompleted(currentStep);
+
+        // Auto-advance to next step after successful save
+        const nextStepNumber = getNextStepInSidebarOrder(currentStep);
+        if (nextStepNumber !== null) {
+          const params = new URLSearchParams(searchParams?.toString() || "");
+          params.set("step", nextStepNumber.toString());
+          router.push(`${pathname}?${params.toString()}`);
+        }
       }
     } else {
       // Ensure errors are displayed for invalid fields
@@ -238,6 +231,14 @@ const AddCourseClient = () => {
       case 4:
         return (
           <Step5Appearance
+            form={form}
+            commonFormStyles={commonFormStyles}
+            loading={loading}
+          />
+        );
+      case 5:
+        return (
+          <Step6Messages
             form={form}
             commonFormStyles={commonFormStyles}
             loading={loading}

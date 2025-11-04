@@ -8,6 +8,7 @@ import Logo from "@/components/logo";
 import { Link } from "@/i18n/routing";
 import { useCourseFormContext } from "./context/CourseFormContext";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSearchParams } from "next/navigation";
 
 interface CourseFormSidebarProps {
   className?: string;
@@ -35,14 +36,12 @@ const CourseFormSidebar: React.FC<CourseFormSidebarProps> = ({
 }) => {
   const text = useTranslations("courses");
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { isEditMode, courseId, stepCompletion, isFetchingCourse } =
     useCourseFormContext();
 
-  // Get current step from URL or form state
-  const searchParams = new URLSearchParams(
-    typeof window !== "undefined" ? window.location.search : ""
-  );
-  const currentStepParam = searchParams.get("step");
+  // Get current step from URL
+  const currentStepParam = searchParams?.get("step");
   const currentStep = currentStepParam ? parseInt(currentStepParam) : 0;
 
   // Define step categories
@@ -59,6 +58,11 @@ const CourseFormSidebar: React.FC<CourseFormSidebarProps> = ({
           id: "target-student",
           title: text("target_your_student"),
           index: 3,
+        },
+        {
+          id: "messages",
+          title: text("course_messages"),
+          index: 5,
         },
       ],
     },
@@ -88,6 +92,7 @@ const CourseFormSidebar: React.FC<CourseFormSidebarProps> = ({
   const handleStepClick = (stepIndex: number, canNavigate: boolean) => {
     if (!canNavigate) return;
 
+    // Always read from current search params
     const params = new URLSearchParams(searchParams?.toString() || "");
     params.set("step", stepIndex.toString());
     const query = params.toString();
@@ -106,6 +111,8 @@ const CourseFormSidebar: React.FC<CourseFormSidebarProps> = ({
         return stepCompletion.step4;
       case 4:
         return stepCompletion.step5;
+      case 5:
+        return stepCompletion.step6 || false;
       default:
         return false;
     }
@@ -306,19 +313,19 @@ const CourseFormSidebar: React.FC<CourseFormSidebarProps> = ({
                 </div>
               ))}
 
-              {/* Course Details Button (Step 6) - Only in edit mode */}
-              {isEditMode && courseId && (
+              {/* Course Content - Only in edit mode */}
+              {courseId && (
                 <div className="space-y-3 mt-6">
                   <h3 className="text-lg font-medium tracking-wide px-2">
-                    {text("course_management")}
+                    {text("course_content")}
                   </h3>
                   <Link
-                    href={`/instructor-dashboard/courses/${courseId}`}
-                    className="w-full text-left px-4 py-3 rounded-lg transition-all flex items-center gap-3"
+                    href={`/instructor-dashboard/courses/${courseId}/lessons`}
+                    className="w-full text-left px-4 py-3 rounded-lg transition-all flex items-center gap-3 hover:bg-muted"
                   >
-                    <div className="flex items-center justify-center w-5 h-5 border rounded-full flex-shrink-0"></div>
+                    <div className="flex items-center justify-center w-5 h-5 border rounded-full flex-shrink-0 border-primary"></div>
                     <span className="font-medium text-foreground">
-                      {text("course_details") || "Course Details"}
+                      {text("lesson_list")}
                     </span>
                   </Link>
                 </div>

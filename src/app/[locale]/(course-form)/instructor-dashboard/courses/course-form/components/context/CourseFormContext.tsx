@@ -17,6 +17,7 @@ interface CourseFormContextType {
     step3: boolean;
     step4: boolean;
     step5: boolean;
+    step6: boolean;
   };
 }
 
@@ -97,12 +98,16 @@ export const CourseFormProvider: React.FC<CourseFormProviderProps> = ({
       !!formValues.fontColor &&
       !!formValues.fontDarkMode;
 
+    // Step 6: Messages (optional - step is always considered complete since messages are optional)
+    const step6 = true;
+
     return {
       step1,
       step2,
       step3,
       step4,
       step5,
+      step6,
     };
   }, [
     watchedValues.title,
