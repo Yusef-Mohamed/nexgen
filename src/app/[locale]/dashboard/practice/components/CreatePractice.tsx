@@ -126,7 +126,7 @@ const CreatePractice = ({
     setMedia((prev) => [...prev, ...files]);
   };
   return (
-    <div className="px-3 py-3 rounded-md bg-background">
+    <div className={cn(!lessonId && "px-3 py-3 rounded-md bg-background")}>
       <div className="flex gap-2 justify-between items-start">
         <UserAvatar user={user || undefined} size="md" />
         <TextWithEmojiBox

@@ -37,7 +37,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
   const selectedLesson = searchParams.get("lesson");
   const selectedDisplay = searchParams.get("display");
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
-
+  console.log(sections, course);
   const toggleSection = (sectionName: string) => {
     setExpandedSections((prev) =>
       prev.includes(sectionName)
@@ -245,7 +245,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                   <SidebarItemButton
                                     title={lesson.quizTitle || "FIXED"}
                                     subtitle={`${text("quiz")} | ${
-                                      lesson.quizQuestionsNumber
+                                      lesson.examQuestionsNumber
                                     } ${text("questions")}`}
                                     Icon={PiExam}
                                     isFocused={isLessonActive(
@@ -293,7 +293,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                   <SidebarItemButton
                                     title={text("final_exam")}
                                     subtitle={`${text("final_exam")} | ${
-                                      course?.finalExamQuestionsNumber
+                                      course?.examQuestionsNumber
                                     } ${text("questions")}`}
                                     Icon={GiGraduateCap}
                                     isFocused={selectedDisplay === "final_exam"}
