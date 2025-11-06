@@ -10,6 +10,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useCourseContext } from "../context/CourseContext";
 import useCustomSearchParams from "@/hooks/useSearchParams";
+import { unlockLessonsSequentially } from "./unlockLessons";
 
 export type QuizType = "lesson" | "course" | "placement";
 
@@ -24,6 +25,9 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
   const [isLoading, setIsLoading] = useState(false);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [error, setError] = useState<string>("");
+  const [fetchError, setFetchError] = useState<AxiosError<{
+    message?: string;
+  }> | null>(null);
   const [submitData, setSubmitData] = useState<{
     passed: boolean;
     totalScore: number;
@@ -43,7 +47,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
   const router = useRouter();
   const text = useTranslations("learn");
   const { token } = useAuth();
-  const { sections } = useCourseContext();
+  const { sections, updateSections } = useCourseContext();
   const { setSearchParams } = useCustomSearchParams();
 
   const endpoint: "lesson" | "course" | "placement" = useMemo(() => {
@@ -61,16 +65,20 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
     try {
       if (!token) return;
       setIsLoading(true);
+      setFetchError(null);
 
       const response = await axiosInstance.get(`/exams/${endpoint}/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setQuiz(response.data.exam);
+      setFetchError(null);
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err);
+      const typedError = err as AxiosError<{ message?: string }>;
+      setFetchError(typedError);
+      setQuiz(null);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, [endpoint, id, token]);
 
   useEffect(() => {
@@ -99,7 +107,29 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
         { answers: formattedAnswers },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setSubmitData(response.data.data);
+      const result = response.data.data;
+      setSubmitData(result);
+
+      // Unlock lessons if quiz was passed successfully and it's a lesson quiz
+      if (result.passed && quizType === "lesson" && sections && id) {
+        const updatedSections = unlockLessonsSequentially(
+          sections,
+          id,
+          false // checkForNoQuiz = false for quiz
+        );
+
+        // Mark passedExam as true for the current lesson
+        for (const section of updatedSections) {
+          const lesson = section.lessons.find((lesson) => lesson._id === id);
+          if (lesson) {
+            lesson.passedExam = true;
+            break;
+          }
+        }
+
+        updateSections(updatedSections);
+      }
+
       router.refresh();
     } catch (err) {
       const typedError = err as AxiosError;
@@ -108,7 +138,17 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
     }
     setIsSubmitting(false);
     setIsLoading(false);
-  }, [answers, quiz, quizType, router, text, token]);
+  }, [
+    answers,
+    quiz,
+    quizType,
+    router,
+    text,
+    token,
+    id,
+    sections,
+    updateSections,
+  ]);
 
   useEffect(() => {
     if (!id) return;
@@ -116,6 +156,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
     setAnswers({});
     setError("");
     setSubmitError("");
+    setFetchError(null);
     setShowFeedback(false);
     setFeedbackQuestions(null);
     setSubmitData({ passed: false, totalScore: 0, score: 0 });
@@ -209,6 +250,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
     isLoading,
     answers,
     error,
+    fetchError,
     submitData,
     isSubmitting,
     submitError,
@@ -223,6 +265,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
     handleGoNext,
     showStaticFeedback,
     retakeQuiz,
+    getQuiz,
   };
 };
 

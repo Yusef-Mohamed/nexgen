@@ -14,6 +14,9 @@ interface CourseContextType {
   isLoading: boolean;
   error: string | null;
   refetch: () => void;
+  updateSections: (
+    newSections: { section: string; lessons: ILesson[] }[]
+  ) => void;
 }
 
 const CourseContext = createContext<CourseContextType | undefined>(undefined);
@@ -73,12 +76,19 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({
     fetchCourseData();
   };
 
+  const updateSections = (
+    newSections: { section: string; lessons: ILesson[] }[]
+  ) => {
+    setSections(newSections);
+  };
+
   const value: CourseContextType = {
     sections,
     course,
     isLoading,
     error,
     refetch,
+    updateSections,
   };
 
   return (

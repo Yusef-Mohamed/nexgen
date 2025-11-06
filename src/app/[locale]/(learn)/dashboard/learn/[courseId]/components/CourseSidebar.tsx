@@ -116,7 +116,6 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
   if (!course || !sections) {
     return null;
   }
-  console.log(sections);
 
   return (
     <aside
@@ -242,23 +241,28 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                 />
 
                                 {/* Quiz */}
-                                <SidebarItemButton
-                                  title={lesson.quizTitle || "FIXED"}
-                                  subtitle={`${text("quiz")} | ${
-                                    lesson.quizQuestionsNumber
-                                  } ${text("questions")}`}
-                                  Icon={PiExam}
-                                  isFocused={isLessonActive(lesson._id, "quiz")}
-                                  isDone={lesson.passedExam}
-                                  disabled={!lesson.videoUrl}
-                                  onClick={() =>
-                                    handleLessonChange(
+                                {lesson.hasQuiz && (
+                                  <SidebarItemButton
+                                    title={lesson.quizTitle || "FIXED"}
+                                    subtitle={`${text("quiz")} | ${
+                                      lesson.quizQuestionsNumber
+                                    } ${text("questions")}`}
+                                    Icon={PiExam}
+                                    isFocused={isLessonActive(
                                       lesson._id,
-                                      "quiz",
-                                      lesson.title
-                                    )
-                                  }
-                                />
+                                      "quiz"
+                                    )}
+                                    isDone={lesson.passedExam}
+                                    disabled={!lesson.videoUrl}
+                                    onClick={() =>
+                                      handleLessonChange(
+                                        lesson._id,
+                                        "quiz",
+                                        lesson.title
+                                      )
+                                    }
+                                  />
+                                )}
 
                                 {/* Practice (if required) */}
                                 {lesson.isRequireAnalytic && (
@@ -293,7 +297,10 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                     } ${text("questions")}`}
                                     Icon={GiGraduateCap}
                                     isFocused={selectedDisplay === "final_exam"}
-                                    disabled={!lesson.videoUrl}
+                                    disabled={
+                                      // !lesson.videoUrl || !lesson.passedExam
+                                      !lesson.videoUrl
+                                    }
                                     onClick={() =>
                                       handleLessonChange("", "final_exam")
                                     }

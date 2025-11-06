@@ -14,6 +14,8 @@ import { IoClose } from "react-icons/io5";
 import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "@/i18n/routing";
+import { useCourseContext } from "@/app/[locale]/(learn)/dashboard/learn/[courseId]/context/CourseContext";
+import { unlockLessonsSequentially } from "@/app/[locale]/(learn)/dashboard/learn/[courseId]/components/unlockLessons";
 
 const CreatePractice = ({
   lessonId,
@@ -29,6 +31,8 @@ const CreatePractice = ({
   const text = useTranslations("practice");
   const router = useRouter();
   const inputRef = useRef(null);
+  // Get CourseContext - will throw if not within CourseProvider, which is fine since this component is only used within it
+  const courseContext = useCourseContext();
   const handelCreatePractice = async () => {
     setIsLoading(true);
     try {
@@ -61,6 +65,24 @@ const CreatePractice = ({
             }
           : undefined,
       });
+
+      // Unlock lessons if CourseContext is available and lesson has no quiz
+      if (courseContext && lessonId) {
+        const currentLesson = courseContext.sections
+          .flatMap((section) => section.lessons || [])
+          .find((lesson) => lesson._id === lessonId);
+
+        // Only unlock if lesson has no quiz
+        if (currentLesson && !currentLesson.hasQuiz) {
+          const updatedSections = unlockLessonsSequentially(
+            courseContext.sections,
+            lessonId,
+            true // checkForNoQuiz = true for practice
+          );
+          courseContext.updateSections(updatedSections);
+        }
+      }
+
       router.refresh();
       setContent("");
       setMedia([]);

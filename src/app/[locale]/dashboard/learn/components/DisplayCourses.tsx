@@ -181,7 +181,7 @@ const DisplayCourses = () => {
                 </div>
               </div>
               <div className="md:border-s border-primary/20 md:px-10 flex">
-                {course.courseProgress?.certificate.file ? (
+                {course.courseProgress?.certificate?.file ? (
                   <a
                     className="max-md:hidden w-auto aspect-[28/19] max-md:w-full md:h-36 rounded-xl"
                     href={course.courseProgress.certificate.file}

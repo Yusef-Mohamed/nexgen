@@ -806,6 +806,7 @@
     "yourScoreIs": "درجتك هي",
     "retake": "إعادة",
     "quiz_not_found": "لا يوجد اختبار",
+    "error_loading_quiz": "خطأ في تحميل الاختبار",
     "loading": "جاري التحميل...",
     "correctAnswer": "صحيح",
     "incorrectAnswer": "غير صحيح",

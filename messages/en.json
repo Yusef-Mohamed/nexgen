@@ -810,6 +810,7 @@
     "retake": "Retake",
     "loading": "Loading...",
     "quiz_not_found": "Quiz not found",
+    "error_loading_quiz": "Error loading quiz",
     "correctAnswer": "correct",
     "incorrectAnswer": "incorrect",
     "next": "Next",

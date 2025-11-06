@@ -38,7 +38,7 @@ const CourseProgress = () => {
   }, [selectedCourse, selectedUser]);
   return (
     <div>
-      {courseProgress.certificate.isTake && (
+      {courseProgress?.certificate && (
         <div className="p-2 mb-2 text-center rounded-md ">
           <p>
             {locale === "ar"

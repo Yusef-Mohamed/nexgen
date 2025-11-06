@@ -23,6 +23,7 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
     isLoading,
     answers,
     error,
+    fetchError,
     submitData,
     isSubmitting,
     submitError,
@@ -35,6 +36,7 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
     handleGoNext,
     showStaticFeedback,
     retakeQuiz,
+    getQuiz,
   } = useQuiz({ id, quizType: quizType as QuizType });
 
   // Add early return if quiz data is not ready
@@ -56,6 +58,29 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
             <Skeleton className="h-5 w-56" />
             <Skeleton className="h-11 w-32" />
           </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <section className="py-16">
+        <div className="flex flex-col gap-4 justify-center items-center">
+          <p className="font-semibold text-destructive text-lg">
+            {fetchError.response?.data?.message ||
+              fetchError.message ||
+              text("error_loading_quiz")}
+          </p>
+          <Button
+            onClick={() => {
+              getQuiz();
+            }}
+            disabled={isLoading}
+            isLoading={isLoading}
+          >
+            {text("retry")}
+          </Button>
         </div>
       </section>
     );
