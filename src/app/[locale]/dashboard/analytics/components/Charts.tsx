@@ -46,6 +46,7 @@ import VideoChart from "./VideoChart";
 import { useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/app/lib/utils";
 import { UserFilter } from "@/components/filters/UserFilter";
+import { getDynamicString } from "@/lib/utils";
 const Charts = () => {
   const inputs = useTranslations("Forms");
   const text = useTranslations("analytics");
@@ -179,7 +180,7 @@ const Charts = () => {
                   {courses.map((course) => {
                     return (
                       <SelectItem value={course._id} key={course._id}>
-                        {course.title}
+                        {getDynamicString(course.title)}
                       </SelectItem>
                     );
                   })}

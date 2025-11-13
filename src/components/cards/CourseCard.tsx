@@ -9,7 +9,7 @@ import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { LevelsIcons } from "../icons";
 import StarRating from "../StarRating";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import CardBadges from "./CardBadges";
 
 const CourseCard: React.FC<
@@ -65,7 +65,8 @@ const CourseCard: React.FC<
 
       <Image
         src={image}
-        alt={title}
+        alt={getDynamicString(title)}
+        title={getDynamicString(title)}
         width={430}
         height={300}
         className="object-cover w-full rounded-2xl courseImage bg-muted"
@@ -77,12 +78,12 @@ const CourseCard: React.FC<
             <LevelsIcons />
             <span className="h5 font-medium">{getDifficultyLevel(type)}</span>
           </div>
-          <h3>{title}</h3>
+          <h3>{getDynamicString(title)}</h3>
           <div
             className="text-primary h5 capitalize underline cursor-pointer"
             onClick={() => onCategoryClick?.(category as ICategory)}
           >
-            {category?.title || type}
+            {getDynamicString(category?.title) || type}
           </div>{" "}
           <p className="flex items-center gap-2 font-medium text-text-3">
             <FaRegClock /> {(courseDuration / 60).toFixed(1)} {text("hours")}

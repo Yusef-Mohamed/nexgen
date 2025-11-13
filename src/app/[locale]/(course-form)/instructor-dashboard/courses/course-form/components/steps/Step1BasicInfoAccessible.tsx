@@ -21,12 +21,12 @@ import { Switch } from "@/components/ui/switch";
 import FileInput from "@/components/ui/file-input";
 import { cn, getDynamicString } from "@/lib/utils";
 import { X, Play } from "lucide-react";
-import { ICourse } from "@/types";
+import { ICategory, ICourse } from "@/types";
 import { CourseFormSchema } from "../../hooks/useCourseForm";
 
 interface Step1BasicInfoAccessibleProps {
   form: UseFormReturn<CourseFormSchema>;
-  categories: Array<{ _id: string; title: string }>;
+  categories: Array<ICategory>;
   courses: ICourse[];
   accessibleCourses: ICourse[];
   setAccessibleCourses: React.Dispatch<React.SetStateAction<ICourse[]>>;
@@ -296,7 +296,7 @@ const Step1BasicInfoAccessible: React.FC<Step1BasicInfoAccessibleProps> = ({
                 <SelectContent>
                   {categories.map((category) => (
                     <SelectItem key={category._id} value={category._id}>
-                      {category.title}
+                      {getDynamicString(category.title)}
                     </SelectItem>
                   ))}
                 </SelectContent>

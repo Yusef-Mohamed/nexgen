@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
+import { getDynamicString } from "@/lib/utils";
 
 interface LiveCardProps {
   live: ILive;
@@ -40,7 +41,7 @@ const LiveCard: React.FC<LiveCardProps> = ({ live }) => {
                 }}
                 className="px-1.5 py-1  rounded font-semibold "
               >
-                {packageItem.course.title}
+                {getDynamicString(packageItem.course.title)}
               </div>
             );
           })}

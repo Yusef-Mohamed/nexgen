@@ -11,6 +11,7 @@ import { IPackage } from "@/types";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "@/app/lib/utils";
+import { getDynamicString } from "@/lib/utils";
 
 interface InstructorLiveFiltersProps {
   selectedCourse: string;
@@ -63,7 +64,7 @@ const InstructorLiveFilters = ({
             if (!packageItem.course) return null;
             return (
               <SelectItem value={packageItem._id} key={packageItem._id}>
-                {packageItem.course?.title}
+                {getDynamicString(packageItem.course?.title)}
               </SelectItem>
             );
           })}

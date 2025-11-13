@@ -22,6 +22,7 @@ import { Loader2, X } from "lucide-react";
 import { ILesson } from "@/types";
 import { useAssessmentDialog } from "./useAssessmentDialog";
 import AssessmentFormSkeleton from "./AssessmentFormSkeleton";
+import { getDynamicString } from "@/lib/utils";
 
 interface AssessmentDialogProps {
   open: boolean;
@@ -71,7 +72,8 @@ const AssessmentDialog = ({
       >
         <DialogHeader>
           <DialogTitle>
-            {text("lesson_assessment")} - {lesson?.title}
+            {text("lesson_assessment")} -{" "}
+            {getDynamicString(lesson?.title || "")}
           </DialogTitle>
         </DialogHeader>
 

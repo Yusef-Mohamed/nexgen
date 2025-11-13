@@ -23,6 +23,7 @@ import { usePackagesStore } from "@/stores/MyPackages";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { FaFilter } from "react-icons/fa";
+import { getDynamicString } from "@/lib/utils";
 
 const sharedToValues = [
   {
@@ -129,7 +130,7 @@ const CommunityFilters = () => {
                   <SelectContent>
                     {courses.map((course) => (
                       <SelectItem value={course._id} key={course._id}>
-                        {course.title}
+                        {getDynamicString(course.title)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -155,7 +156,7 @@ const CommunityFilters = () => {
                         value={pack.package._id}
                         key={pack.package._id}
                       >
-                        {pack.package.title}
+                        {getDynamicString(pack.package.title)}
                       </SelectItem>
                     ))}
                   </SelectContent>

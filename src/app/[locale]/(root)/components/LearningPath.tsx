@@ -8,7 +8,7 @@ import React from "react";
 import { FaRegClock } from "react-icons/fa";
 import Image from "next/image";
 import { LevelsIcons } from "@/components/icons";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import CardBadges from "@/components/cards/CardBadges";
 
 const LearningPath: React.FC<
@@ -55,8 +55,7 @@ const LearningPath: React.FC<
   // Use first course image or default image
   const imageUrl = image || "/images/hero.png";
 
-  const isFree =
-    (priceAfterDiscount && priceAfterDiscount === "0") || price === "0";
+  const isFree = priceAfterDiscount === 0 || price === 0;
   return (
     <div
       className={cn(
@@ -66,14 +65,14 @@ const LearningPath: React.FC<
     >
       {/* Card Badges */}
       <CardBadges
-        price={parseFloat(price)}
-        priceAfterDiscount={parseFloat(priceAfterDiscount || "0")}
+        price={price}
+        priceAfterDiscount={priceAfterDiscount || 0}
         createdAt={createdAt}
       />
 
       <Image
         src={imageUrl}
-        alt={title}
+        alt={getDynamicString(title)}
         width={430}
         height={300}
         className="object-cover w-full rounded-2xl courseImage bg-muted"
@@ -92,12 +91,12 @@ const LearningPath: React.FC<
               className="text-primary h5 capitalize underline"
               onClick={() => onCategoryClick?.(category as ICategory)}
             >
-              {category?.title}
+              {getDynamicString(category?.title)}
             </div>
           )}
 
           {/* Title */}
-          <h3 className="h3 font-bold">{title}</h3>
+          <h3 className="h3 font-bold">{getDynamicString(title)}</h3>
 
           {/* Course Count and Duration */}
           <p className="flex items-center gap-2 font-medium text-text-3">
@@ -114,10 +113,10 @@ const LearningPath: React.FC<
         <div className="flex items-center gap-2">
           <span className="h3 font-bold">
             {!isFree && "$"}
-            {isFree ? popularText("free") : priceAfterDiscount || price}
+            {isFree ? popularText("free") : priceAfterDiscount || price || 0}
           </span>
           {priceAfterDiscount && priceAfterDiscount !== price && !isFree && (
-            <span className="text-text-3 line-through">${price}</span>
+            <span className="text-text-3 line-through">${price || 0}</span>
           )}
         </div>
       </div>

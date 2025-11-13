@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getDynamicString } from "@/lib/utils";
 const ProgressCircle: FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [coursesWithProgress, setCoursesWithProgress] = useState<
@@ -211,7 +212,8 @@ const ProgressCircle: FC = () => {
                   ></div>
 
                   <span className="text-xs">
-                    {course.course.title} ({course.progress.toFixed(0)}%)
+                    {getDynamicString(course.course.title)} (
+                    {course.progress.toFixed(0)}%)
                   </span>
                 </div>
               );

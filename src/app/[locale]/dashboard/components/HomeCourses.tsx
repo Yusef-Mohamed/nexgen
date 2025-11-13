@@ -6,6 +6,7 @@ import { useMyCoursesStore } from "@/stores/MyCoursesStore";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect } from "react";
+import { getDynamicString } from "@/lib/utils";
 
 const CourseSkeleton = () => {
   return (
@@ -81,7 +82,7 @@ const HomeCourses = () => {
             <div>
               <Image
                 src={newestIncompleteCourse.image}
-                alt={newestIncompleteCourse.title}
+                alt={getDynamicString(newestIncompleteCourse.title)}
                 width={600}
                 height={400}
                 className="object-cover w-auto h-full max-h-40 rounded-md aspect-[1656/931]"
@@ -89,7 +90,7 @@ const HomeCourses = () => {
             </div>
             <div className="w-full flex-1">
               <h4 className="mb-8 max-sm:mb-4 h2s">
-                {newestIncompleteCourse.title}
+                {getDynamicString(newestIncompleteCourse.title)}
               </h4>
               <div className="flex items-center w-full gap-2">
                 <div className="w-full h-1.5 overflow-hidden rounded-full bg-muted">

@@ -15,7 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import { axiosInstance } from "@/app/lib/utils";
 import { IMarketLog, ICourse } from "@/types";
 import { Input } from "@/components/ui/input";
@@ -133,8 +133,7 @@ const WalletClient = () => {
             <SelectItem value="all">All courses</SelectItem>
             {courses.map((course) => (
               <SelectItem key={course._id} value={course._id}>
-                {course.translationTitle?.[locale as "en" | "ar"] ||
-                  course.title}
+                {getDynamicString(course.title)}
               </SelectItem>
             ))}
           </SelectContent>

@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { useState } from "react";
@@ -224,7 +224,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                               <li key={lesson._id} className="space-y-4">
                                 {/* Video Lesson */}
                                 <SidebarItemButton
-                                  title={lesson.title}
+                                  title={getDynamicString(lesson.title)}
                                   Icon={PlayCircle}
                                   subtitle={`${text("video")} | ${
                                     lesson.lessonDuration
@@ -258,7 +258,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                       handleLessonChange(
                                         lesson._id,
                                         "quiz",
-                                        lesson.title
+                                        getDynamicString(lesson.title)
                                       )
                                     }
                                   />
@@ -267,7 +267,11 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                 {/* Practice (if required) */}
                                 {lesson.isRequireAnalytic && (
                                   <SidebarItemButton
-                                    title={lesson.assignmentTitle || "FIXED"}
+                                    title={
+                                      getDynamicString(
+                                        lesson.assignmentTitle
+                                      ) || "FIXED"
+                                    }
                                     subtitle={`${text("assignment")}`}
                                     Icon={MdOutlineAssignment}
                                     isFocused={isLessonActive(
@@ -282,7 +286,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                       handleLessonChange(
                                         lesson._id,
                                         "practice",
-                                        lesson.title
+                                        getDynamicString(lesson.title)
                                       )
                                     }
                                   />

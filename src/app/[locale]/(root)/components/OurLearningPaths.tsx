@@ -12,6 +12,7 @@ import SearchInput from "@/components/SearchInput";
 import { useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/app/lib/utils";
 import { usePathname, useRouter } from "@/i18n/routing";
+import { getDynamicString } from "@/lib/utils";
 
 interface OurLearningPathsProps {
   enableSearch?: boolean;
@@ -117,7 +118,9 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
   // Generate localized title for the selected category
   const getCategoryTitle = () => {
     if (!selectedCategory) return undefined;
-    return text("categoryTitle", { categoryName: selectedCategory.title });
+    return text("categoryTitle", {
+      categoryName: getDynamicString(selectedCategory.title),
+    });
   };
 
   return (

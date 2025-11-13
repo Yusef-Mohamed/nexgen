@@ -22,10 +22,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "react-toastify";
-import { IExam } from "@/types";
+import { IExam, IQuestion } from "@/types";
 import { axiosInstance } from "@/app/lib/utils";
 import { Plus, FileText, Loader2, ArrowLeft, Trash2, Edit } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import { AxiosError } from "axios";
 import FileInput from "@/components/ui/file-input";
 
@@ -207,18 +207,12 @@ export const ExamQuestionDisplay = ({
     }
   };
 
-  const handleEditQuestion = (q: {
-    _id?: string;
-    question?: string;
-    grade?: number;
-    options?: string[];
-    correctOption?: number;
-  }) => {
+  const handleEditQuestion = (q: IQuestion) => {
     // Prefill from existing question
     setIsEditingQuestion(true);
     setEditingQuestionId(q._id || null);
     setFormData({
-      question: q.question || "",
+      question: getDynamicString(q.question) || "",
       questionImage: null,
       grade: q.grade || 1,
       optionsType: q.options?.some((o: string) => o?.startsWith("http"))
@@ -411,10 +405,11 @@ export const ExamQuestionDisplay = ({
             <h1 className="text-2xl font-bold">
               {text("questions_for_exam", {
                 title:
-                  exam.title ||
+                  getDynamicString(exam.title) ||
                   text("exam_title", {
                     model: text(`form.model_${exam.model.toLowerCase()}`),
-                  }),
+                  }) ||
+                  "",
               })}
             </h1>
             <p className="text-muted-foreground mt-1">
@@ -455,7 +450,9 @@ export const ExamQuestionDisplay = ({
                       </Badge>
                     </div>
 
-                    <p className="text-sm">{question.question}</p>
+                    <p className="text-sm">
+                      {getDynamicString(question.question)}
+                    </p>
 
                     {question.questionImage && (
                       <img

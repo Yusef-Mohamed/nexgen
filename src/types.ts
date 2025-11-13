@@ -144,7 +144,7 @@ export interface ApiError {
 export interface IExam {
   _id: string;
   model: string;
-  title: string;
+  title: DynamicString;
   passingScore: number;
   type: string;
   questions: IQuestion[];
@@ -153,7 +153,7 @@ export interface IExam {
 }
 export interface IQuestion {
   _id: string;
-  question: string;
+  question: DynamicString;
   options: string[];
   correctOption: number;
   questionImage?: string;

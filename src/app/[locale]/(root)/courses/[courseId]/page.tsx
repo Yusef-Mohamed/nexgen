@@ -20,6 +20,7 @@ import PopularCourses from "../../components/PopularCourses";
 import ReviewsGrid from "@/components/ReviewsGrid";
 import CourseContent from "./components/CourseContent";
 import BuyCourse from "./components/BuyCourse";
+import { getDynamicString } from "@/lib/utils";
 export async function generateMetadata({
   params,
 }: {
@@ -31,7 +32,10 @@ export async function generateMetadata({
 
   return getMetadataCoursePage({
     params,
-    course: courseData,
+    course: {
+      title: getDynamicString(courseData.title),
+      description: getDynamicString(courseData.description),
+    },
   });
 }
 
@@ -84,7 +88,7 @@ const CoursesPage = async ({
                         target="_blank"
                         className="flex-1 font-semibold underline md:text-lg"
                       >
-                        {typeof course.title === "string" ? course.title : null}
+                        {getDynamicString(course.title)}
                       </Link>
                     </li>
                   ))
@@ -127,7 +131,7 @@ const CourseHeading: React.FC<{
 }> = ({ courseData, className }) => {
   return (
     <div className={className}>
-      <h1>{courseData.title}</h1>
+      <h1>{getDynamicString(courseData.title)}</h1>
       <CourseReviewOverView
         ratingsAverage={courseData.ratingsAverage}
         ratingsQuantity={courseData.ratingsQuantity}
@@ -138,7 +142,7 @@ const CourseHeading: React.FC<{
         }}
         className="my-4 text-text-2 h3 md:my-8"
       >
-        {courseData.description}
+        {getDynamicString(courseData.description)}
       </p>
     </div>
   );
@@ -175,7 +179,7 @@ const CourseCard: React.FC<{
         width={1000}
         height={1000}
         className="aspect-[41/31] object-cover w-full rounded-2xl"
-        alt={courseData.title}
+        alt={getDynamicString(courseData.title)}
       />{" "}
       <div className="flex items-center justify-between my-4 md:my-8">
         <div className="flex items-end gap-1 font-medium whitespace-nowrap">

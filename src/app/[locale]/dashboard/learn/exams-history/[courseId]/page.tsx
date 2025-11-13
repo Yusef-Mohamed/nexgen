@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Award, CalendarIcon, ClipboardList } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
+import { getDynamicString } from "@/lib/utils";
 export async function generateMetadata({
   params,
 }: {
@@ -29,7 +30,10 @@ export async function generateMetadata({
   const courseData = courseRes.data.data as ICourse;
   return getMetadataCoursePage({
     params,
-    course: courseData,
+    course: {
+      title: getDynamicString(courseData.title),
+      description: getDynamicString(courseData.description),
+    },
   });
 }
 const getData = async (courseId: string, token: string, userId: string) => {
@@ -75,7 +79,7 @@ const CoursesPage = async ({
       <main className="bg-dash-ground">
         <section className="py-8 container mx-auto">
           <h1>
-            {text("courseExamsHistory")} | {courseData.title}
+            {text("courseExamsHistory")} | {getDynamicString(courseData.title)}
           </h1>{" "}
           <div className="grid grid-cols-1 gap-4 pb-6 mt-8 lg:grid-cols-2">
             {data.lessonsScores.map((progress) => {
@@ -83,7 +87,8 @@ const CoursesPage = async ({
                 <Card key={progress.lessonId} className="w-full flex flex-col">
                   <CardHeader>
                     <CardTitle className="mb-2 h2">
-                      {text("lesson_type")} | {progress.lessonTitle}
+                      {text("lesson_type")} |{" "}
+                      {getDynamicString(progress.lessonTitle)}
                     </CardTitle>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Badge variant={"default"}>{text("completed")}</Badge>

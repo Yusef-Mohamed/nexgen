@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ICategory } from "@/types";
+import { getDynamicString } from "@/lib/utils";
 
 interface CategoryFilterProps {
   value: string;
@@ -35,7 +36,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
         <SelectItem value="all">{allCategoriesLabel}</SelectItem>
         {categories.map((category) => (
           <SelectItem key={category._id} value={category._id}>
-            {category.title}
+            {getDynamicString(category.title)}
           </SelectItem>
         ))}
       </SelectContent>

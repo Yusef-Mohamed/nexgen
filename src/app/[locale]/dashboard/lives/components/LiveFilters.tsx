@@ -12,6 +12,7 @@ import useCustomSearchParams from "@/hooks/useSearchParams";
 import { IPackage } from "@/types";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { getDynamicString } from "@/lib/utils";
 
 const LiveFilters = () => {
   const inputs = useTranslations("Forms");
@@ -47,7 +48,7 @@ const LiveFilters = () => {
             if (!packageItem.course) return null;
             return (
               <SelectItem value={packageItem._id} key={packageItem._id}>
-                {packageItem.course?.title}
+                {getDynamicString(packageItem.course?.title || "")}
               </SelectItem>
             );
           })}

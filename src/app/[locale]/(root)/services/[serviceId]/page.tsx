@@ -10,6 +10,7 @@ import PromoBanner from "../../components/PromoBanner";
 import PopularCourses from "../../components/PopularCourses";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
+import { getDynamicString } from "@/lib/utils";
 
 export async function generateMetadata({
   params,
@@ -22,7 +23,10 @@ export async function generateMetadata({
 
   return getMetadataServicePage({
     params,
-    service: serviceData,
+    service: {
+      title: getDynamicString(serviceData.title),
+      description: getDynamicString(serviceData.description),
+    },
   });
 }
 
@@ -51,14 +55,14 @@ const ServicePage = async ({
       <main>
         <section className="container flex gap-20 secPadding">
           <div className="flex-1 w-full">
-            <h1>{serviceData.title}</h1>
+            <h1>{getDynamicString(serviceData.title)}</h1>
             <p
               style={{
                 fontWeight: 400,
               }}
               className="my-4 text-text-2 h3 md:my-8"
             >
-              {serviceData.description}
+              {getDynamicString(serviceData.description)}
             </p>
 
             <div className="my-4 md:my-8">
@@ -70,7 +74,7 @@ const ServicePage = async ({
                     className="flex items-start gap-2 text-sm text-text-2 md:text-base"
                   >
                     <div className="w-1 h-1 mt-2 rounded-full bg-text-2"></div>
-                    <p className="flex-1 ">{highlight}</p>
+                    <p className="flex-1 ">{getDynamicString(highlight)}</p>
                   </li>
                 ))}
               </ul>
@@ -83,7 +87,7 @@ const ServicePage = async ({
                 width={1000}
                 height={1000}
                 className="aspect-[41/31] object-cover w-full rounded-2xl"
-                alt={serviceData.title}
+                alt={getDynamicString(serviceData.title)}
               />
               <div className="flex items-center justify-between my-4 md:my-8">
                 <div className="flex items-end gap-1 font-medium whitespace-nowrap">

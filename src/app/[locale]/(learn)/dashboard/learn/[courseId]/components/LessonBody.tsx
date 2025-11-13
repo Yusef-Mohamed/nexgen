@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import VideoPlayer from "./VideoPlayer";
 import CreateCourseReview from "./CourseReview";
+import { getDynamicString } from "@/lib/utils";
 
 const LessonBody = ({
   lessonId,
@@ -78,9 +79,9 @@ const LessonBody = ({
         />
         {activeTab === "about" && (
           <div className="my-6">
-            <h2 className="font-semibold">{lesson?.title}</h2>
+            <h2 className="font-semibold">{getDynamicString(lesson?.title)}</h2>
             <p className="mt-4 mb-4 text-lg text-text-3">
-              {lesson?.description}
+              {getDynamicString(lesson?.description)}
             </p>
             {Array.isArray(lesson?.attachments) &&
               lesson?.attachments?.map((attachment, ind) => (

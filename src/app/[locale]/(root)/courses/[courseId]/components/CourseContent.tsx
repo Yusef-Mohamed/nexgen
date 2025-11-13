@@ -12,6 +12,7 @@ import { ILesson } from "@/types";
 import { useParams } from "next/navigation";
 import { FiPlayCircle } from "react-icons/fi";
 import { axiosInstance } from "@/app/lib/utils";
+import { getDynamicString } from "@/lib/utils";
 async function getSections(courseId: string): Promise<
   {
     section: string;
@@ -63,7 +64,7 @@ const FAQ: React.FC = () => {
                 >
                   <div className="flex items-center gap-1 ">
                     <FiPlayCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <p className="flex-1">{lesson.title}</p>
+                    <p className="flex-1">{getDynamicString(lesson.title)}</p>
                   </div>
                   <span>
                     {lesson.lessonDuration} {locale === "ar" ? " د" : " min"}

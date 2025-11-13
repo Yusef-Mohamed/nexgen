@@ -6,6 +6,7 @@ import * as z from "zod";
 import { ILesson } from "@/types";
 import { axiosInstance } from "@/app/lib/utils";
 import { AxiosError } from "axios";
+import { getStringObject } from "@/lib/utils";
 
 interface UseAssessmentDialogProps {
   lesson?: ILesson | null;
@@ -61,40 +62,18 @@ export const useAssessmentDialog = ({
   useEffect(() => {
     if (fetchedLesson) {
       // Use localized assignment data if available, fallback to regular fields
-      const titleEn =
-        fetchedLesson.translationAssignmentTitle?.en ||
-        fetchedLesson.assignmentTitle ||
-        "";
-      const titleAr =
-        fetchedLesson.translationAssignmentTitle?.ar ||
-        fetchedLesson.assignmentTitle ||
-        "";
-      const descriptionEn =
-        fetchedLesson.translationAssignmentDescription?.en ||
-        fetchedLesson.assignmentDescription ||
-        "";
-      const descriptionAr =
-        fetchedLesson.translationAssignmentDescription?.ar ||
-        fetchedLesson.assignmentDescription ||
-        "";
+      const title = getStringObject(fetchedLesson.assignmentTitle);
+      const description = getStringObject(fetchedLesson.assignmentDescription);
 
       form.reset({
         assignmentTitle: {
-          en: titleEn,
-          ar: titleAr,
+          en: title.en,
+          ar: title.ar,
         },
         assignmentDescription: {
-          en: descriptionEn,
-          ar: descriptionAr,
+          en: description.en,
+          ar: description.ar,
         },
-      });
-
-      console.log("Assessment form updated with localized data:", {
-        titleEn,
-        titleAr,
-        descriptionEn,
-        descriptionAr,
-        assignmentFile: fetchedLesson.assignmentFile,
       });
     } else {
       form.reset({

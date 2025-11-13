@@ -2,7 +2,7 @@
 
 import ImageWithZoom from "@/components/ImageWithZoom";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import QuestionsList from "@/app/[locale]/dashboard/learn/exams-history/[courseId]/[lessonId]/components/QuestionsList";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -100,7 +100,7 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
     <section>
       <div>
         <h1 className="mb-2 text-4xl font-semibold">
-          {quiz?.title || "QUIZ STATIC TITLE"}
+          {getDynamicString(quiz?.title) || "QUIZ STATIC TITLE"}
         </h1>
         <h3 className="my-2 sm:my-4 text-text-3">
           {text(quizType + "_type")} | {quiz ? quiz.questions?.length : 0}{" "}
@@ -234,7 +234,8 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
                         key={question._id}
                       >
                         <h2 className="flex gap-2 items-start text-2xl font-semibold text-text-2">
-                          <span>{index + 1}. </span> <p>{question?.question}</p>
+                          <span>{index + 1}. </span>{" "}
+                          <p>{getDynamicString(question?.question)}</p>
                         </h2>
                         {question?.questionImage && (
                           <ImageWithZoom
@@ -297,7 +298,7 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
                                       </div>
                                     ) : (
                                       <span className="text-text-2">
-                                        {option}
+                                        {getDynamicString(option)}
                                       </span>
                                     )}
                                   </button>

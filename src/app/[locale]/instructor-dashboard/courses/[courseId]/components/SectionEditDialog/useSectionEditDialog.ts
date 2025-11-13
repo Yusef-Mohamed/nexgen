@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { AxiosError } from "axios";
+import { getStringObject } from "@/lib/utils";
 
 interface UseSectionEditDialogProps {
   section?: ISection | null;
@@ -63,10 +64,11 @@ export const useSectionEditDialog = ({
   // Initialize form data when section changes
   useEffect(() => {
     if (section && isEdit) {
+      const title = getStringObject(section.title);
       form.reset({
         title: {
-          ar: section.translationTitle?.ar || section.title,
-          en: section.translationTitle?.en || section.title,
+          ar: title.ar,
+          en: title.en,
         },
       });
     } else {

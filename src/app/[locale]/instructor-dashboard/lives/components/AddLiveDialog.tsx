@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 import { AiFillDelete } from "react-icons/ai";
 import { AxiosError } from "axios";
 import { useAuth } from "@/components/auth-provider";
+import { getDynamicString } from "@/lib/utils";
 
 interface AddLiveDialogProps {
   open: boolean;
@@ -366,9 +367,9 @@ const AddLiveDialog = ({
                     )
                     .map((packageItem) => (
                       <SelectItem key={packageItem._id} value={packageItem._id}>
-                        {packageItem.course?.title ||
-                          packageItem.title ||
-                          "Untitled Package"}
+                        {getDynamicString(packageItem.course?.title) ||
+                          getDynamicString(packageItem.title) ||
+                          ""}
                       </SelectItem>
                     ))}
                 </SelectContent>
@@ -385,9 +386,9 @@ const AddLiveDialog = ({
                       className="flex items-center gap-2 p-2 border rounded-md bg-gray-50"
                     >
                       <span className="text-sm">
-                        {packageItem.course?.title ||
-                          packageItem.title ||
-                          "Untitled Package"}
+                        {getDynamicString(packageItem.course?.title) ||
+                          getDynamicString(packageItem.title) ||
+                          ""}
                       </span>
                       <button
                         onClick={() => handlePackageRemove(packageItem._id)}

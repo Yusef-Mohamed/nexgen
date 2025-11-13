@@ -13,6 +13,7 @@ import { FiPlayCircle } from "react-icons/fi";
 import { ChevronRight } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { axiosInstance } from "@/app/lib/utils";
+import { getDynamicString } from "@/lib/utils";
 
 interface PathContentProps {
   courses: ICourse[];
@@ -101,7 +102,7 @@ const PathContent: React.FC<PathContentProps> = ({ courses }) => {
               >
                 {" "}
                 <h4 className="font-semibold h5 text-base">
-                  {index + 1} - {course.title}
+                  {index + 1} - {getDynamicString(course.title)}
                 </h4>
               </Link>
             </AccordionTrigger>
@@ -146,7 +147,7 @@ const PathContent: React.FC<PathContentProps> = ({ courses }) => {
                                     <div className="flex items-center gap-1 ">
                                       <FiPlayCircle className="w-4 h-4" />
                                       <p className="flex-1 !text-sm">
-                                        {lesson.title}
+                                        {getDynamicString(lesson.title)}
                                       </p>
                                     </div>
                                     <span>

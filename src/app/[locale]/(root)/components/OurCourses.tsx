@@ -12,6 +12,7 @@ import OneSidedContainer from "@/components/OneSidedContainer";
 import SearchInput from "@/components/SearchInput";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/routing";
+import { getDynamicString } from "@/lib/utils";
 
 interface OurCoursesProps {
   enableSearch?: boolean;
@@ -107,7 +108,9 @@ const OurCourses: React.FC<OurCoursesProps> = ({
   // Generate localized title for the selected category
   const getCategoryTitle = () => {
     if (!selectedCategory) return undefined;
-    return text("categoryTitle", { categoryName: selectedCategory.title });
+    return text("categoryTitle", {
+      categoryName: getDynamicString(selectedCategory.title),
+    });
   };
 
   return (

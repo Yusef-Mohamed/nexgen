@@ -18,6 +18,7 @@ import { LevelsIcons } from "@/components/icons";
 import BuyLearningPath from "./components/BuyLearningPath";
 import PopularLearningPaths from "../../components/PopularLearningPaths";
 import PathContent from "./components/PathContent";
+import { getDynamicString } from "@/lib/utils";
 
 export async function generateMetadata({
   params,
@@ -32,7 +33,10 @@ export async function generateMetadata({
 
   return getMetadataLearningPathPage({
     params,
-    learningPath: learningPathData,
+    learningPath: {
+      title: getDynamicString(learningPathData.title),
+      description: getDynamicString(learningPathData.description),
+    },
   });
 }
 
@@ -122,14 +126,14 @@ const LearningPathHeading: React.FC<{
           {getDifficultyLevel(learningPathData.type)}
         </span>
       </div>
-      <h1>{learningPathData.title}</h1>
+      <h1>{getDynamicString(learningPathData.title)}</h1>
       <p
         style={{
           fontWeight: 400,
         }}
         className="my-4 text-text-2 h3 md:my-8"
       >
-        {learningPathData.description}
+        {getDynamicString(learningPathData.description)}
       </p>
     </div>
   );
@@ -179,7 +183,7 @@ const LearningPathCard: React.FC<{
         width={1000}
         height={1000}
         className="aspect-[41/31] object-cover w-full rounded-2xl"
-        alt={learningPathData.title}
+        alt={getDynamicString(learningPathData.title)}
       />{" "}
       <div className="flex items-center justify-between my-4 md:my-8">
         <div className="flex items-end gap-1 font-medium whitespace-nowrap">
@@ -190,7 +194,7 @@ const LearningPathCard: React.FC<{
             </>
           ) : (
             <div className="h2">
-              {learningPathData.price && learningPathData.price !== "0" ? (
+              {learningPathData.price && learningPathData.price !== 0 ? (
                 <>${learningPathData.price}</>
               ) : (
                 text("free")
@@ -210,9 +214,9 @@ const LearningPathCard: React.FC<{
             <span>
               {text("discounted")}{" "}
               {(
-                ((parseFloat(learningPathData.price) -
-                  parseFloat(learningPathData.priceAfterDiscount)) /
-                  parseFloat(learningPathData.price)) *
+                ((learningPathData.price -
+                  learningPathData.priceAfterDiscount) /
+                  learningPathData.price) *
                 100
               ).toFixed(0)}
               %
@@ -226,7 +230,7 @@ const LearningPathCard: React.FC<{
       />
       <BuyLearningPath
         id={learningPathData._id}
-        price={learningPathData.price}
+        price={learningPathData.price.toString()}
       />
       <div className="mt-6">
         <h4 className="mb-4 md:mb-6">{text("thisLearningPathIncludes")}</h4>

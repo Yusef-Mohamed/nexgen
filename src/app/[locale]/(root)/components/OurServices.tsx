@@ -11,6 +11,7 @@ import CategoryFilter from "./CategoryFilter";
 import SearchInput from "@/components/SearchInput";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/routing";
+import { getDynamicString } from "@/lib/utils";
 
 interface OurServicesProps {
   enableSearch?: boolean;
@@ -108,7 +109,9 @@ const OurServices: React.FC<OurServicesProps> = ({
       (cat) => cat._id === selectedCategory?._id
     );
     return category
-      ? text("categoryTitle", { categoryName: category.title })
+      ? text("categoryTitle", {
+          categoryName: getDynamicString(category.title),
+        })
       : "";
   };
 

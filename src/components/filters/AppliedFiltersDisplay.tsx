@@ -9,6 +9,7 @@ import {
   CourseLevel,
   PathLevels,
 } from "@/hooks/useDashboardFilters";
+import { getDynamicString } from "@/lib/utils";
 
 interface AppliedFilter {
   type: string;
@@ -52,7 +53,7 @@ export const AppliedFiltersDisplay: React.FC<AppliedFiltersDisplayProps> = ({
       if (category) {
         appliedFilters.push({
           type: "category",
-          label: category.title,
+          label: getDynamicString(category.title),
           value: filterState.category,
         });
       }

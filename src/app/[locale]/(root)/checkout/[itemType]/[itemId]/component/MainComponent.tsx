@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import { ICourse, ICoursePackage, IPackage } from "@/types";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -261,7 +261,7 @@ const MainComponent = ({
         <div className="py-6 max-lg:order-2 lg:px-6">
           <div className="flex justify-between ">
             <div>
-              <h5>{thisItem?.title}</h5>
+              <h5>{getDynamicString(thisItem?.title)}</h5>
               <span className="text-sm text-text-3">{text(itemType)}</span>
             </div>
             <div className="flex items-start gap-1 font-medium whitespace-nowrap">
@@ -376,7 +376,7 @@ const MainComponent = ({
                   href={`/courses/${course._id}/placement-exam`}
                   target="_blank"
                 >
-                  {index + 1} - {course.title}
+                  {index + 1} - {getDynamicString(course.title)}
                 </Link>
               </li>
             ))}

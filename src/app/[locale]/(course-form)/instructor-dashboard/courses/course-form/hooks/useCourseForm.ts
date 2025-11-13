@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { ICourse } from "@/types";
+import { ICategory, ICourse } from "@/types";
 import { useTranslations } from "next-intl";
 import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
@@ -64,9 +64,7 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
 
   const [loading, setLoading] = useState(false);
   const [isFetchingCourse, setIsFetchingCourse] = useState(false);
-  const [categories, setCategories] = useState<
-    Array<{ _id: string; title: string }>
-  >([]);
+  const [categories, setCategories] = useState<Array<ICategory>>([]);
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [accessibleCourses, setAccessibleCourses] = useState<ICourse[]>([]);
   const [image, setImage] = useState<File | null>(null);

@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import React from "react";
 import { FaRegClock } from "react-icons/fa6";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import CardBadges from "./CardBadges";
 
 const ServiceCard: React.FC<
@@ -51,7 +51,7 @@ const ServiceCard: React.FC<
       {/* Image */}
       <Image
         src={imageUrl}
-        alt={title}
+        alt={getDynamicString(title)}
         width={430}
         height={300}
         className="object-cover w-full rounded-2xl courseImage bg-muted"
@@ -63,11 +63,11 @@ const ServiceCard: React.FC<
             className="text-primary h5 capitalize underline"
             onClick={() => onCategoryClick?.(course?.category as ICategory)}
           >
-            {course?.category?.title || "Service"}
+            {getDynamicString(course?.category?.title) || "Service"}
           </div>
 
           {/* Title */}
-          <h3 className="h3 font-bold">{title}</h3>
+          <h3 className="h3 font-bold">{getDynamicString(title)}</h3>
 
           <p className="flex items-center gap-2 font-medium text-text-3">
             <FaRegClock /> {subscriptionDurationDays} {text("day")}

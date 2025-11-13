@@ -41,7 +41,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link } from "@/i18n/routing";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import { AxiosError } from "axios";
 
 interface ExamsDisplayProps {
@@ -290,10 +290,11 @@ const ExamCard = ({
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">
-            {exam.title ||
+            {getDynamicString(exam.title) ||
               text("exam_title", {
                 model: text(`form.model_${exam.model.toLowerCase()}`),
-              })}
+              }) ||
+              ""}
           </CardTitle>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -437,7 +438,7 @@ const ExamDialog = ({
             </label>
             <Input
               placeholder={text("form.title_placeholder")}
-              value={formData.title}
+              value={getDynamicString(formData.title)}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, title: e.target.value }))
               }

@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Edit } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import { ContentType, getDynamicContent } from "@/lib/dynamicContent";
 
 interface UnifiedCardProps {
@@ -78,7 +78,7 @@ const UnifiedCard = ({ item, contentType }: UnifiedCardProps) => {
       <div className="flex-shrink-0 md:w-48 w-full aspect-[1656/931] relative">
         <Image
           src={itemData.image}
-          alt={itemData.title}
+          alt={getDynamicString(itemData.title)}
           fill
           className="object-cover aspect-[1656/931] rounded-md"
         />
@@ -87,7 +87,9 @@ const UnifiedCard = ({ item, contentType }: UnifiedCardProps) => {
       <CardContent className="flex-1 md:p-6 p-4 flex flex-col justify-between">
         <div className="flex md:flex-row flex-col gap-4 justify-between items-start">
           <div className="flex-1">
-            <h3 className="text-xl font-semibold mb-2">{itemData.title}</h3>
+            <h3 className="text-xl font-semibold mb-2">
+              {getDynamicString(itemData.title)}
+            </h3>
 
             <p
               className={cn(

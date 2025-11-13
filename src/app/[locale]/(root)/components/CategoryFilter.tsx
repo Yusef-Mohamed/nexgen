@@ -7,7 +7,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { ICategory } from "@/types";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface CategoryFilterProps {
@@ -66,7 +66,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
                     : "bg-transparent border border-text-3 text-text-1 hover:bg-primary hover:border-primary hover:text-primary-foreground"
                 )}
               >
-                {category.title}
+                {getDynamicString(category.title)}
               </button>
             </CarouselItem>
           ))}

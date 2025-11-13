@@ -6,6 +6,7 @@ import * as z from "zod";
 import { ILesson } from "@/types";
 import { axiosInstance } from "@/app/lib/utils";
 import { AxiosError } from "axios";
+import { getStringObject } from "@/lib/utils";
 
 interface UseLessonEditDialogProps {
   lesson?: ILesson | null;
@@ -78,40 +79,21 @@ export const useLessonEditDialog = ({
   // Update form with fetched lesson data when it's available
   useEffect(() => {
     if (isEdit && fetchedLesson) {
+      const title = getStringObject(fetchedLesson.title);
+      const description = getStringObject(fetchedLesson.description);
       // Use localized data if available, fallback to regular fields
-      const titleEn =
-        fetchedLesson.translationTitle?.en || fetchedLesson.title || "";
-      const titleAr =
-        fetchedLesson.translationTitle?.ar || fetchedLesson.title || "";
-      const descriptionEn =
-        fetchedLesson.translationDescription?.en ||
-        fetchedLesson.description ||
-        "";
-      const descriptionAr =
-        fetchedLesson.translationDescription?.ar ||
-        fetchedLesson.description ||
-        "";
 
       form.reset({
         title: {
-          en: titleEn,
-          ar: titleAr,
+          en: title.en,
+          ar: title.ar,
         },
         description: {
-          en: descriptionEn,
-          ar: descriptionAr,
+          en: description.en,
+          ar: description.ar,
         },
         lessonDuration: fetchedLesson.lessonDuration?.toString() || "",
         videoUrl: fetchedLesson.videoUrl || "",
-      });
-
-      console.log("Form updated with localized data:", {
-        titleEn,
-        titleAr,
-        descriptionEn,
-        descriptionAr,
-        lessonDuration: fetchedLesson.lessonDuration,
-        videoUrl: fetchedLesson.videoUrl,
       });
     } else {
       form.reset({
