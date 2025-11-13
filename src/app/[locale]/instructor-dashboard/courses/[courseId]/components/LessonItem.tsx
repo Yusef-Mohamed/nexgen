@@ -26,6 +26,7 @@ import { Link } from "@/i18n/routing";
 import { ILesson } from "@/types";
 import { DropTargetIndicator } from "./DropTargetIndicator";
 import AssessmentDialog from "./AssessmentDialog/component";
+import { getDynamicString } from "@/lib/utils";
 
 interface LessonItemProps {
   lesson: ILesson;
@@ -175,7 +176,7 @@ const LessonItem = ({
               className="flex items-center justify-between w-full gap-2 p-0 h-auto hover:bg-transparent"
             >
               <h3 className="text-xl font-semibold">
-                {text("lesson")} {index + 1}: {lesson.title}
+                {text("lesson")} {index + 1}: {getDynamicString(lesson.title)}
               </h3>
             </Button>
           </div>{" "}

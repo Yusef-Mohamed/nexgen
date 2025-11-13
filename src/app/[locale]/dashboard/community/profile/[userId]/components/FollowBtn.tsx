@@ -6,8 +6,17 @@ import { useFollowingStore } from "@/stores/FollowingStore";
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useMemo } from "react";
 
-const FollowBtn = ({ userId, sm }: { userId: string; sm?: boolean }) => {
+const FollowBtn = ({
+  userId,
+  sm,
+  onlyText,
+}: {
+  userId: string;
+  sm?: boolean;
+  onlyText?: boolean;
+}) => {
   const text = useTranslations("dashboard");
+  const common = useTranslations("common");
   const [isLoading, setIsLoading] = useState(false);
   const { token, user } = useAuth();
 
@@ -56,6 +65,21 @@ const FollowBtn = ({ userId, sm }: { userId: string; sm?: boolean }) => {
     setIsLoading(false);
   };
   if (user?._id === userId) return null;
+  if (onlyText) {
+    return (
+      <button
+        onClick={handleFollow}
+        className="text-primary text-xs font-semibold"
+        disabled={isLoading}
+      >
+        {isLoading
+          ? common("loading")
+          : isFollowed
+          ? text("unfollow")
+          : text("follow")}
+      </button>
+    );
+  }
   if (sm)
     return (
       <Button

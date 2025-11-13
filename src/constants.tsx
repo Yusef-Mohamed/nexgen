@@ -30,11 +30,11 @@ export const contactInfo = [
   },
 ];
 export const emojis = {
-  like: "👍",
-  love: "❤️",
-  haha: "😂",
-  sad: "😢",
-  angry: "😡",
+  like: "like",
+  love: "love",
+  haha: "haha",
+  sad: "sad",
+  angry: "angry",
 };
 export const countries = [
   "Afghanistan",

@@ -16,6 +16,7 @@ import { Button } from "../ui/button";
 import ReactionComponent from "../ReactionComponent";
 import { getCommentText } from "@/lib/utils";
 import { emojis } from "@/constants";
+import { Skeleton } from "../ui/skeleton";
 
 interface FocusedPostCardProps {
   post: IPost;
@@ -34,10 +35,12 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
   const [selectedImage, setSelectedImage] = useState(0);
   const allImages = [post.imageCover, ...post.images];
   const [comments, setComments] = useState<IComment[]>([]);
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
   const { token, user } = useAuth();
 
   useEffect(() => {
     if (isOpen && post) {
+      setIsLoadingComments(true);
       axiosInstance
         .get(`comments/post/${post?._id}`, {
           headers: {
@@ -46,9 +49,12 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
         })
         .then((res) => {
           setComments(res.data.data);
+        })
+        .finally(() => {
+          setIsLoadingComments(false);
         });
     }
-  }, [isOpen, post]);
+  }, [isOpen, post, token]);
 
   // create & update comment
   const [isLoading, setIsLoading] = useState(false);
@@ -115,7 +121,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
         }}
       >
         <DialogContent className="sm:max-w-2xl flex flex-col max-h-[95%] overflow-hidden bg-clear-ground p-0 gap-0">
-          <DialogHeader className="flex sticky top-0 z-10 flex-row justify-between items-center p-4 space-y-0 text-center border-b bg-clear-ground">
+          <DialogHeader className="flex sticky top-0 z-10 px-4 flex-row justify-between items-center p-2 space-y-0 text-center border-b bg-clear-ground">
             <DialogTitle>
               {text("userPost", {
                 name: post.user?.name,
@@ -131,42 +137,43 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
             </Button>
           </DialogHeader>
           <div className="overflow-auto flex-grow w-full rounded-md">
-            <div className="p-3 sm:p-6">
+            <div className="p-3">
               {inCommunity ? (
-                <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
-                  <Link href={`/dashboard/community/profile/${post.user?._id}`}>
+                <div className="flex items-center gap-2">
+                  <Link href={`/dashboard/community/profile/${post.user._id}`}>
                     <UserAvatar user={post.user} />
                   </Link>
                   <div className="flex flex-col">
                     <Link
-                      href={`/dashboard/community/profile/${post.user?._id}`}
+                      href={`/dashboard/community/profile/${post.user._id}`}
                     >
-                      <h4>{post.user?.name}</h4>
+                      <h4 className="text-sm">{post.user.name}</h4>
                     </Link>
-                    <span className="text-sm max-sm:text-sm text-muted-foreground">
+                    <span className="text-xs text-muted-foreground">
                       {new Date(post.createdAt).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
+                <div className="flex items-center gap-2">
                   <UserAvatar user={post.user} />
                   <div className="flex flex-col">
-                    <h4>{post.user?.name}</h4>
-                    <span className="text-sm max-sm:text-sm text-muted-foreground">
+                    <h4 className="text-sm">{post.user.name}</h4>
+                    <span className="text-xs text-muted-foreground">
                       {new Date(post.createdAt).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
               )}
-              <p className="my-2 sm:my-4 max-sm:text-sm">
+
+              <p className="mt-1 px-2 text-sm">
                 {post.content.split("\n").map((line, index) => (
                   <span key={index}>
                     {line}
                     {index !== post.content.split("\n").length - 1 && <br />}
                   </span>
                 ))}
-              </p>{" "}
+              </p>
             </div>
             <div className={"relative"}>
               {allImages.length > 1 && (
@@ -209,50 +216,62 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
                 />
               </div>
             </div>
-            <div className="flex justify-between items-center pt-3">
-              <div className="flex items-center px-4">
-                {post.reactionTypes && post.reactionTypes.length > 0 && (
+            <div className="p-3">
+              <div className="flex justify-between items-center ">
+                <div className="flex items-center">
+                  {post.reactionTypes && post.reactionTypes.length > 0 && (
+                    <>
+                      {post.reactionTypes.map((reaction) => (
+                        <span key={reaction}>{emojis[reaction]}</span>
+                      ))}
+                      <span className="px-2">{post.reactionsCount}</span>
+                    </>
+                  )}
+                </div>
+                <div className="flex gap-1 items-center text-muted-foreground text-sm">
+                  {getCommentText(post.commentsCount ?? 0, locale)}
+                </div>
+              </div>
+              <div className="flex justify-evenly items-center my-1">
+                <ReactionComponent post={post} />
+                <button
+                  onClick={() => {
+                    setIsOpen(true);
+                  }}
+                  className="flex gap-2 h-7 justify-center items-center py-1 w-full text-sm rounded transition-all hover:bg-muted"
+                >
+                  <FaRegComment /> {text("comment")}
+                </button>
+              </div>
+              <ul className="px-2 pt-1">
+                {isLoadingComments ? (
                   <>
-                    {post.reactionTypes.map((reaction) => (
-                      <span key={reaction}>{emojis[reaction]}</span>
+                    {[1, 2, 3].map((index) => (
+                      <CommentSkeleton key={index} />
                     ))}
-                    <span className="px-2">{post.reactionsCount}</span>
+                  </>
+                ) : (
+                  <>
+                    {comments.map((comment, index) => (
+                      <CommentCard
+                        key={index}
+                        comment={comment}
+                        isLast={index === comments.length - 1}
+                        isChild={false}
+                        setComments={setComments}
+                      />
+                    ))}
+                    {comments?.length === 0 && (
+                      <li>
+                        <p className="text-center text-muted-foreground">
+                          {text("noComments")}
+                        </p>
+                      </li>
+                    )}
                   </>
                 )}
-              </div>
-              <div className="flex gap-1 items-center text-sm">
-                {getCommentText(post.commentsCount ?? 0, locale)}
-              </div>
+              </ul>
             </div>
-            <div className="flex justify-evenly items-center px-4 py-2 mt-2 border-y sm:mt-4">
-              <ReactionComponent post={post} />
-              <button
-                onClick={() => {
-                  setIsOpen(true);
-                }}
-                className="flex gap-2 justify-center items-center py-1 w-full text-lg rounded-md transition-all hover:bg-muted"
-              >
-                <FaRegComment /> {text("comment")}
-              </button>
-            </div>
-            <ul className="px-6 pt-4 mb-8">
-              {comments.map((comment, index) => (
-                <CommentCard
-                  key={index}
-                  comment={comment}
-                  isLast={index === comments.length - 1}
-                  isChild={false}
-                  setComments={setComments}
-                />
-              ))}
-              {comments?.length === 0 && (
-                <li>
-                  <p className="text-center text-muted-foreground">
-                    {text("noComments")}
-                  </p>
-                </li>
-              )}
-            </ul>
           </div>
 
           <TextWithEmojiBox
@@ -269,6 +288,27 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
         </DialogContent>
       </Dialog>
     </>
+  );
+};
+
+const CommentSkeleton = () => {
+  return (
+    <li className="relative mt-2">
+      <div className="flex items-start gap-2 z-[2] relative">
+        <div className="relative">
+          <Skeleton className="w-10 h-10 rounded-full" />
+        </div>
+        <div className="p-2 w-full rounded-md bg-muted">
+          <Skeleton className="h-4 w-24 mb-2" />
+          <Skeleton className="h-4 w-full mb-1" />
+          <Skeleton className="h-4 w-3/4" />
+        </div>
+      </div>
+      <div className="flex gap-4 items-center mt-1 text-xs ms-14">
+        <Skeleton className="h-3 w-12" />
+        <Skeleton className="h-3 w-16" />
+      </div>
+    </li>
   );
 };
 

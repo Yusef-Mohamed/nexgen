@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import FileInput from "@/components/ui/file-input";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import { X, Play } from "lucide-react";
 import { ICourse } from "@/types";
 import { CourseFormSchema } from "../../hooks/useCourseForm";
@@ -385,7 +385,7 @@ const Step1BasicInfoAccessible: React.FC<Step1BasicInfoAccessibleProps> = ({
               <SelectContent>
                 {courses?.map((course) => (
                   <SelectItem key={course._id} value={course._id}>
-                    {course.title}
+                    {getDynamicString(course.title)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -400,7 +400,9 @@ const Step1BasicInfoAccessible: React.FC<Step1BasicInfoAccessibleProps> = ({
                   key={course._id}
                   className="flex items-center gap-2 p-2 border rounded-md bg-muted/50"
                 >
-                  <span className="text-sm">{course.title}</span>
+                  <span className="text-sm">
+                    {getDynamicString(course.title)}
+                  </span>
                   <button
                     onClick={() =>
                       setAccessibleCourses((prev) =>

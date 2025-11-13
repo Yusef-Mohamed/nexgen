@@ -10,6 +10,7 @@ import { AxiosError } from "axios";
 import { useRouter, usePathname } from "@/i18n/routing";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
+import { getStringObject } from "@/lib/utils";
 
 // Backend error response type
 interface BackendError {
@@ -78,24 +79,6 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
   const isEditMode = !!courseId && searchParams?.get("mode") !== "create";
   const stepParam = searchParams?.get("step") || "0";
   const initialStep = stepParam ? parseInt(stepParam) : 0;
-
-  // Helper function to safely get certificate description
-  const getCertificateDescription = useCallback((course: ICourse) => {
-    const courseAny = course as ICourse & {
-      certificateDescription?: { ar: string; en: string };
-      translationCertificateDescription?: { ar: string; en: string };
-    };
-    return {
-      ar:
-        courseAny.translationCertificateDescription?.ar ||
-        courseAny.certificateDescription?.ar ||
-        "",
-      en:
-        courseAny.translationCertificateDescription?.en ||
-        courseAny.certificateDescription?.en ||
-        "",
-    };
-  }, []);
 
   // Create validation schema with localized error messages
   const createValidationSchema = () => {
@@ -310,73 +293,46 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
         setCurrentCourse(course);
 
         // Initialize form with course data
+        const formattedTitle = getStringObject(course.title);
+        const formattedDescription = getStringObject(course.description);
+        const formattedCertificateDescription = getStringObject(
+          course.certificateDescription
+        );
+        const formattedCourseWelcomeMessage = getStringObject(
+          course.courseWelcomeMessage
+        );
+        const formattedGoodByeMessage = getStringObject(course.goodByeMessage);
         form.reset({
-          title: {
-            ar: course.translationTitle?.ar || course.title,
-            en: course.translationTitle?.en || course.title,
-          },
-          description: {
-            ar: course.translationDescription?.ar || course.description,
-            en: course.translationDescription?.en || course.description,
-          },
+          title: formattedTitle,
+          description: formattedDescription,
           whatWillLearn:
-            (
-              course as ICourse & {
-                whatWillLearn?: Array<{ en: string; ar: string }>;
-                translationWhatWillLearn?: Array<{ en: string; ar: string }>;
-              }
-            ).translationWhatWillLearn
-              ?.map((h) => ({
-                en: h.en || "",
-                ar: h.ar || "",
-              }))
-              .filter((h) => h.en || h.ar) ||
-            (
-              course as ICourse & {
-                whatWillLearn?: Array<{ en: string; ar: string }>;
-              }
-            ).whatWillLearn ||
-            [],
+            course.whatWillLearn?.map((h) => {
+              if (!h) return { en: "", ar: "" };
+              const formatted = getStringObject(h);
+              return {
+                en: formatted.en || "",
+                ar: formatted.ar || "",
+              };
+            }) || [],
           coursePrerequisites:
-            (
-              course as ICourse & {
-                coursePrerequisites?: Array<{ en: string; ar: string }>;
-                translationCoursePrerequisites?: Array<{
-                  en: string;
-                  ar: string;
-                }>;
-              }
-            ).translationCoursePrerequisites
-              ?.map((h) => ({
-                en: h.en || "",
-                ar: h.ar || "",
-              }))
-              .filter((h) => h.en || h.ar) ||
-            (
-              course as ICourse & {
-                coursePrerequisites?: Array<{ en: string; ar: string }>;
-              }
-            ).coursePrerequisites ||
-            [],
+            course.coursePrerequisites?.map((h) => {
+              if (!h) return { en: "", ar: "" };
+              const formatted = getStringObject(h);
+              return {
+                en: formatted.en || "",
+                ar: formatted.ar || "",
+              };
+            }) || [],
           whoThisCourseFor:
-            (
-              course as ICourse & {
-                whoThisCourseFor?: Array<{ en: string; ar: string }>;
-                translationWhoThisCourseFor?: Array<{ en: string; ar: string }>;
-              }
-            ).translationWhoThisCourseFor
-              ?.map((h) => ({
-                en: h.en || "",
-                ar: h.ar || "",
-              }))
-              .filter((h) => h.en || h.ar) ||
-            (
-              course as ICourse & {
-                whoThisCourseFor?: Array<{ en: string; ar: string }>;
-              }
-            ).whoThisCourseFor ||
-            [],
-          certificateDescription: getCertificateDescription(course),
+            course.whoThisCourseFor?.map((h) => {
+              if (!h) return { en: "", ar: "" };
+              const formatted = getStringObject(h);
+              return {
+                en: formatted.en || "",
+                ar: formatted.ar || "",
+              };
+            }) || [],
+          certificateDescription: formattedCertificateDescription,
           category: course.category?._id || "",
           price: course.price?.toString() || "",
           priceAfterDiscount: course.priceAfterDiscount?.toString() || "",
@@ -396,60 +352,12 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
             (course as ICourse & { promotionVideo?: string }).promotionVideo ||
             undefined,
           courseWelcomeMessage: {
-            en:
-              (
-                course as ICourse & {
-                  translationCourseWelcomeMessage?: { en: string; ar: string };
-                  courseWelcomeMessage?: { en: string; ar: string };
-                }
-              ).translationCourseWelcomeMessage?.en ||
-              (
-                course as ICourse & {
-                  courseWelcomeMessage?: { en: string; ar: string };
-                }
-              ).courseWelcomeMessage?.en ||
-              "",
-            ar:
-              (
-                course as ICourse & {
-                  translationCourseWelcomeMessage?: { en: string; ar: string };
-                  courseWelcomeMessage?: { en: string; ar: string };
-                }
-              ).translationCourseWelcomeMessage?.ar ||
-              (
-                course as ICourse & {
-                  courseWelcomeMessage?: { en: string; ar: string };
-                }
-              ).courseWelcomeMessage?.ar ||
-              "",
+            en: formattedCourseWelcomeMessage.en || "",
+            ar: formattedCourseWelcomeMessage.ar || "",
           },
           goodByeMessage: {
-            en:
-              (
-                course as ICourse & {
-                  translationgoodByeMessage?: { en: string; ar: string };
-                  goodByeMessage?: { en: string; ar: string };
-                }
-              ).translationgoodByeMessage?.en ||
-              (
-                course as ICourse & {
-                  goodByeMessage?: { en: string; ar: string };
-                }
-              ).goodByeMessage?.en ||
-              "",
-            ar:
-              (
-                course as ICourse & {
-                  translationgoodByeMessage?: { en: string; ar: string };
-                  goodByeMessage?: { en: string; ar: string };
-                }
-              ).translationgoodByeMessage?.ar ||
-              (
-                course as ICourse & {
-                  goodByeMessage?: { en: string; ar: string };
-                }
-              ).goodByeMessage?.ar ||
-              "",
+            en: formattedGoodByeMessage.en || "",
+            ar: formattedGoodByeMessage.ar || "",
           },
         });
 
@@ -469,7 +377,7 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
         setIsFetchingCourse(false);
       }
     },
-    [token, form, text, getCertificateDescription]
+    [token, form, text]
   );
 
   // Initialize component based on courseId in search params
@@ -604,18 +512,20 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
   const hasStepChanges = useCallback(
     (stepData: Partial<CourseFormSchema>, stepNumber: number) => {
       if (!currentCourse) return true; // Always submit for new courses
+      const currentTitle = getStringObject(currentCourse.title || "");
+      const currentDescription = getStringObject(
+        currentCourse.description || ""
+      );
       switch (stepNumber) {
         case 0: // Basic Info + Accessible Courses
           const currentPromotionVideo =
             (currentCourse as ICourse & { promotionVideo?: string })
               .promotionVideo || "";
           return (
-            stepData.title?.en !== currentCourse.translationTitle?.en ||
-            stepData.title?.ar !== currentCourse.translationTitle?.ar ||
-            stepData.description?.en !==
-              currentCourse.translationDescription?.en ||
-            stepData.description?.ar !==
-              currentCourse.translationDescription?.ar ||
+            stepData.title?.en !== currentTitle.en ||
+            stepData.title?.ar !== currentTitle.ar ||
+            stepData.description?.en !== currentDescription.en ||
+            stepData.description?.ar !== currentDescription.ar ||
             stepData.category !== currentCourse.category?._id ||
             stepData.type !== currentCourse.type ||
             stepData.needAccessibleCourse !==
@@ -631,7 +541,9 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
               currentCourse.freePackageSubscriptionInDays
           );
         case 2: // Certificate
-          const currentCertDesc = getCertificateDescription(currentCourse);
+          const currentCertDesc = getStringObject(
+            currentCourse.certificateDescription || ""
+          );
           return (
             stepData.certificateDescription?.ar !== currentCertDesc.ar ||
             stepData.certificateDescription?.en !== currentCertDesc.en ||
@@ -639,53 +551,32 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
           );
         case 3: // Highlights (whatWillLearn, coursePrerequisites, whoThisCourseFor)
           const currentWhatWillLearn =
-            (
-              currentCourse as ICourse & {
-                translationWhatWillLearn?: Array<{ en: string; ar: string }>;
-              }
-            ).translationWhatWillLearn?.map((h) => ({
-              en: h.en || "",
-              ar: h.ar || "",
-            })) ||
-            (
-              currentCourse as ICourse & {
-                whatWillLearn?: Array<{ en: string; ar: string }>;
-              }
-            ).whatWillLearn ||
-            [];
+            currentCourse.whatWillLearn?.map((h) => {
+              if (!h) return { en: "", ar: "" };
+              const formatted = getStringObject(h);
+              return {
+                en: formatted.en || "",
+                ar: formatted.ar || "",
+              };
+            }) || [];
           const currentCoursePrerequisites =
-            (
-              currentCourse as ICourse & {
-                translationCoursePrerequisites?: Array<{
-                  en: string;
-                  ar: string;
-                }>;
-              }
-            ).translationCoursePrerequisites?.map((h) => ({
-              en: h.en || "",
-              ar: h.ar || "",
-            })) ||
-            (
-              currentCourse as ICourse & {
-                coursePrerequisites?: Array<{ en: string; ar: string }>;
-              }
-            ).coursePrerequisites ||
-            [];
+            currentCourse.coursePrerequisites?.map((h) => {
+              if (!h) return { en: "", ar: "" };
+              const formatted = getStringObject(h);
+              return {
+                en: formatted.en || "",
+                ar: formatted.ar || "",
+              };
+            }) || [];
           const currentWhoThisCourseFor =
-            (
-              currentCourse as ICourse & {
-                translationWhoThisCourseFor?: Array<{ en: string; ar: string }>;
-              }
-            ).translationWhoThisCourseFor?.map((h) => ({
-              en: h.en || "",
-              ar: h.ar || "",
-            })) ||
-            (
-              currentCourse as ICourse & {
-                whoThisCourseFor?: Array<{ en: string; ar: string }>;
-              }
-            ).whoThisCourseFor ||
-            [];
+            currentCourse.whoThisCourseFor?.map((h) => {
+              if (!h) return { en: "", ar: "" };
+              const formatted = getStringObject(h);
+              return {
+                en: formatted.en || "",
+                ar: formatted.ar || "",
+              };
+            }) || [];
           return (
             JSON.stringify(stepData.whatWillLearn || []) !==
               JSON.stringify(currentWhatWillLearn) ||
@@ -706,28 +597,12 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
               (currentCourse.colors?.fontDarkMode || "#ffffff")
           );
         case 5: // Messages
-          const currentWelcomeMessage = (
-            currentCourse as ICourse & {
-              translationCourseWelcomeMessage?: { en: string; ar: string };
-              courseWelcomeMessage?: { en: string; ar: string };
-            }
-          ).translationCourseWelcomeMessage ||
-            (
-              currentCourse as ICourse & {
-                courseWelcomeMessage?: { en: string; ar: string };
-              }
-            ).courseWelcomeMessage || { en: "", ar: "" };
-          const currentGoodbyeMessage = (
-            currentCourse as ICourse & {
-              translationgoodByeMessage?: { en: string; ar: string };
-              goodByeMessage?: { en: string; ar: string };
-            }
-          ).translationgoodByeMessage ||
-            (
-              currentCourse as ICourse & {
-                goodByeMessage?: { en: string; ar: string };
-              }
-            ).goodByeMessage || { en: "", ar: "" };
+          const currentWelcomeMessage = getStringObject(
+            currentCourse.courseWelcomeMessage || ""
+          );
+          const currentGoodbyeMessage = getStringObject(
+            currentCourse.goodByeMessage || ""
+          );
           return (
             (stepData.courseWelcomeMessage?.en || "") !==
               (currentWelcomeMessage.en || "") ||
@@ -742,7 +617,7 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
           return true;
       }
     },
-    [currentCourse, getCertificateDescription]
+    [currentCourse]
   );
 
   // Submit step data to server
@@ -892,6 +767,7 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
           formData.append("colors.fontDarkMode", stepData.fontDarkMode);
       } else if (stepNumber === 5) {
         // Step 6: Messages
+
         if (stepData.courseWelcomeMessage) {
           formData.append(
             "courseWelcomeMessage.en",

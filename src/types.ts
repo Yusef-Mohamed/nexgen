@@ -1,12 +1,24 @@
 import { emojis } from "./constants";
-
+export type DynamicString =
+  | string
+  | { ar: string; en: string; localized: string };
 export interface ICategory {
-  title: string;
+  title: DynamicString;
   _id: string;
   createdAt: string;
   updatedAt: string;
 }
 export interface ICourse {
+  title: DynamicString;
+  description: DynamicString;
+  certificateDescription: DynamicString;
+  courseWelcomeMessage: DynamicString;
+  goodByeMessage: DynamicString;
+
+  whoThisCourseFor: DynamicString[];
+  coursePrerequisites: DynamicString[];
+  whatWillLearn: DynamicString[];
+
   ratingsAverage: number;
   examQuestionsNumber?: number;
   colors?: {
@@ -15,11 +27,9 @@ export interface ICourse {
     fontColor: string;
     fontDarkMode: string;
   };
-  title: string;
-  description: string;
   _id: string;
   category: {
-    title: string;
+    title: DynamicString;
     _id: string;
   };
   instructor: {
@@ -31,7 +41,7 @@ export interface ICourse {
   slug: string;
   rating: number;
   type: string;
-  highlights: string[];
+  highlights: DynamicString[];
   image: string;
   price: number;
   priceAfterDiscount: number;
@@ -42,52 +52,25 @@ export interface ICourse {
   freePackageSubscriptionInDays?: number;
   accessibleCourses: ICourse[];
   status: "inActive" | "active";
+  promotionVideo?: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
   reviews: [];
   id: string;
-  translationTitle: {
-    en: string;
-    ar: string;
-  };
-  translationDescription: {
-    ar: string;
-    en: string;
-  };
-  translationHighlights: {
-    ar: string;
-    en: string;
-  }[];
-  totalProgress: number;
-  userScore: IUserScore;
-  courseProgress: ICourseProgress;
-  translationCourseWelcomeMessage: {
-    ar: string;
-    en: string;
-  };
-  translationgoodByeMessage: {
-    ar: string;
-    en: string;
-  };
+  totalProgress?: number;
+  userScore?: IUserScore;
+  courseProgress?: ICourseProgress;
 }
 export interface ILesson {
   course: ICourse;
-  title: string;
-  description: string;
+  title: DynamicString;
+  description: DynamicString;
   attachments: string[];
   image: string;
   videoUrl?: string;
   _id: string;
   type: string;
-  translationTitle: {
-    ar: string;
-    en: string;
-  };
-  translationDescription: {
-    ar: string;
-    en: string;
-  };
   isRequireAnalytic: boolean;
   hasQuiz: boolean;
   lessonDuration?: number;
@@ -95,17 +78,9 @@ export interface ILesson {
   passedExam?: boolean;
   passedAnalyticsTask?: boolean;
   // Assignment fields
-  assignmentTitle?: string;
-  assignmentDescription?: string;
+  assignmentTitle?: DynamicString;
+  assignmentDescription?: DynamicString;
   assignmentFile?: string;
-  translationAssignmentTitle?: {
-    en?: string;
-    ar?: string;
-  };
-  translationAssignmentDescription?: {
-    en?: string;
-    ar?: string;
-  };
   //
   assignmentDone?: boolean;
   lessonWatched?: boolean;
@@ -186,9 +161,9 @@ export interface IQuestion {
   grade?: number;
 }
 export interface IPackage {
-  title: string;
-  description: string;
-  highlights: string[];
+  title: DynamicString;
+  description: DynamicString;
+  highlights: DynamicString[];
   image: string;
   price: number;
   priceAfterDiscount?: number;
@@ -199,11 +174,11 @@ export interface IPackage {
   updatedAt: string;
 }
 export interface ICoursePackage {
-  title: string;
-  description: string;
-  highlights: string[];
-  price: string;
-  priceAfterDiscount?: string;
+  title: DynamicString;
+  description: DynamicString;
+  highlights: DynamicString[];
+  price: number;
+  priceAfterDiscount?: number;
   courses: ICourse[];
   type:
     | "beginnerToIntermediate"
@@ -231,6 +206,7 @@ export interface IPost {
   };
   _id: string;
   reactionTypes: (keyof typeof emojis)[];
+  lastComment: IComment;
   createdAt: string;
   updatedAt: string;
 }
@@ -461,7 +437,7 @@ export interface IProgress {
   _id: string;
 }
 export interface ISection {
-  title: string;
+  title: DynamicString;
   section: string;
   _id: string;
   sectionId: string;
@@ -470,10 +446,6 @@ export interface ISection {
   updatedAt: string;
   order: number;
   status: "active" | "inActive";
-  translationTitle?: {
-    ar: string;
-    en: string;
-  };
   lessons?: ILesson[];
 }
 export interface ICourseProgress {

@@ -1,12 +1,11 @@
 "use client";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import UserAvatar from "../UserAvatar";
 import { IComment } from "@/types";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import TextWithEmojiBox from "../TextWithEmojiBox";
-import { FaSpinner } from "react-icons/fa";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -19,6 +18,7 @@ import { Button } from "../ui/button";
 import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import { useAuth } from "../auth-provider";
+import { Skeleton } from "../ui/skeleton";
 
 interface CommentCardProps {
   comment: IComment;
@@ -32,8 +32,8 @@ const CommentCard: React.FC<CommentCardProps> = ({
   isLast,
   setComments,
 }) => {
-  const common = useTranslations("common");
-  const isEn = common("locale") === "en";
+  const locale = useLocale();
+  const isEn = locale === "en";
   const text = useTranslations("post");
   const [replies, setReplies] = useState<IComment[]>([]);
   const [isReplying, setIsReplying] = useState(false);
@@ -89,24 +89,27 @@ const CommentCard: React.FC<CommentCardProps> = ({
           )}
         </div>
         <div className="p-2 w-full rounded-md bg-muted">
-          <h3 className="font-semibold">{comment.user?.name}</h3>
-          <p>{formatContentWithLinks(comment.content)}</p>
+          <h3 className="font-semibold !text-xs">{comment.user?.name}</h3>
+          <p className="text-sm my-0.5">
+            {formatContentWithLinks(comment.content)}
+          </p>
           {comment.image && (
             <Image
               src={comment.image}
               alt="comment"
               width={400}
               height={400}
-              className="mt-2 max-h-64 rounded-md"
+              className="mt-2 mb-0.5 max-h-64 rounded-md"
             />
           )}
         </div>
       </div>
-      <div className="flex gap-4 items-center mt-1 text-xs ms-14">
+      <div className="flex gap-4 items-center mt-1 text-xs text-muted-foreground ms-14">
         <button
           onClick={() => {
             setIsReplying((prev) => !prev);
           }}
+          className=""
         >
           {text("reply")}
         </button>
@@ -114,6 +117,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
           onClick={() => {
             getReplies();
           }}
+          className=""
         >
           {text("showReplies")}
         </button>
@@ -122,6 +126,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
             onClick={() => {
               setIsEditing((prev) => !prev);
             }}
+            className=""
           >
             {text("edit")}
           </button>
@@ -132,6 +137,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
             onClick={() => {
               setIsDeleting(true);
             }}
+            className=""
           >
             {text("delete")}
           </button>
@@ -158,9 +164,11 @@ const CommentCard: React.FC<CommentCardProps> = ({
         </div>
       )}
       {isFetchingReplies && (
-        <div className="flex justify-center items-center mt-2 mb-3">
-          <FaSpinner className="animate-spin" />
-        </div>
+        <ul className="ps-10 mt-2 mb-3">
+          {[1, 2].map((index) => (
+            <CommentSkeleton key={index} isChild={true} />
+          ))}
+        </ul>
       )}
       {isRepliesFetched && replies.length === 0 && !isFetchingReplies && (
         <p
@@ -430,6 +438,27 @@ const formatContentWithLinks = (content: string) => {
       </span>
     );
   });
+};
+
+const CommentSkeleton: React.FC<{ isChild?: boolean }> = () => {
+  return (
+    <li className="relative mt-2">
+      <div className="flex items-start gap-2 z-[2] relative">
+        <div className="relative">
+          <Skeleton className="w-10 h-10 rounded-full" />
+        </div>
+        <div className="p-2 w-full rounded-md bg-muted">
+          <Skeleton className="h-4 w-24 mb-2" />
+          <Skeleton className="h-4 w-full mb-1" />
+          <Skeleton className="h-4 w-3/4" />
+        </div>
+      </div>
+      <div className="flex gap-4 items-center mt-1 text-xs ms-14">
+        <Skeleton className="h-3 w-12" />
+        <Skeleton className="h-3 w-16" />
+      </div>
+    </li>
+  );
 };
 
 export default CommentCard;

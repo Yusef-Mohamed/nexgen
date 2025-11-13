@@ -17,6 +17,7 @@ import {
 import { format } from "date-fns";
 import { IOrder } from "@/types";
 import { useTranslations } from "next-intl";
+import { getDynamicString } from "@/lib/utils";
 const formatDate = (date: Date) => {
   return format(date, "yyyy MM dd").split(" ").join("-");
 };
@@ -56,9 +57,9 @@ const OrdersDialog = ({ orders }: { orders: IOrder[] }) => {
               <TableRow key={order._id}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>
-                  {order.course?.title ||
-                    order.package?.title ||
-                    order.coursePackage?.title}
+                  {getDynamicString(order.course?.title) ||
+                    getDynamicString(order.package?.title) ||
+                    getDynamicString(order.coursePackage?.title)}
                 </TableCell>
                 <TableCell>${order.totalOrderPrice.toLocaleString()}</TableCell>
                 <TableCell>{order.paymentMethodType}</TableCell>

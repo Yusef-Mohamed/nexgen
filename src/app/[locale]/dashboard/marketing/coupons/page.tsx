@@ -22,7 +22,7 @@ const SalesAnalyticsPage = async ({
       style={{
         minHeight: "calc(100vh - 76px)",
       }}
-      className="px-2 py-6 lg:px-6 sm:px-4 "
+      className="w-full max-w-full px-2 py-6 overflow-hidden lg:px-6 sm:px-4 bg-dash-ground"
     >
       <CouponManagement />
     </main>

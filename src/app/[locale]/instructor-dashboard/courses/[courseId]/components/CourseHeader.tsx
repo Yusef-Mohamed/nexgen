@@ -9,6 +9,7 @@ import {
 import { Edit, FileText, GraduationCap, MoreVertical } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { ICourse } from "@/types";
+import { getDynamicString } from "@/lib/utils";
 
 interface CourseHeaderProps {
   course: ICourse;
@@ -21,7 +22,9 @@ const CourseHeader = ({ course, onEdit }: CourseHeaderProps) => {
   return (
     <div className="flex items-center gap-4 mb-8">
       <div className="flex items-center gap-3 justify-between w-full flex-1">
-        <h1 className="text-3xl font-semibold">{course.title}</h1>
+        <h1 className="text-3xl font-semibold">
+          {getDynamicString(course.title)}
+        </h1>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="h-8 w-8 flex items-center justify-center">

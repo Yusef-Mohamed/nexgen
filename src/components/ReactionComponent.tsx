@@ -7,6 +7,7 @@ import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "../components/auth-provider";
 import { toast } from "react-toastify";
 import { AiOutlineLike } from "react-icons/ai";
+import Image from "next/image";
 
 interface ReactionComponentProps {
   post: IPost;
@@ -75,10 +76,10 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
 
   return (
     <div className="relative w-full group/unit">
-      <div className="absolute items-center justify-center hidden gap-4 px-4 py-1 translate-x-1/2 border rounded-md bg-muted bottom-full right-1/2 group-hover/unit:flex">
+      <div className="absolute items-center justify-center gap-2 py-1 px-2 translate-x-1/2 border rounded-full bg-background bottom-full right-1/2 flex opacity-0 scale-90 group-hover/unit:opacity-100 group-hover/unit:scale-100 transition-all w-fit">
         {Object.entries(emojis).map(([key, value]) => (
           <button
-            className="relative text-lg hover:scale-125 group"
+            className="relative size-8 hover:scale-[1.4] group transition-transform"
             key={key}
             disabled={isReacting}
             onClick={
@@ -89,23 +90,33 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
                   }
             }
           >
-            <span className="absolute hidden p-2 text-xs font-semibold scale-90 translate-x-1/2 rounded-md bg-muted -top-12 right-1/2 group-hover:block">
+            <span className="absolute hidden py-0.5 px-1.5 text-2xs font-semibold scale-90 translate-x-1/2 rounded bg-background -top-1 -translate-y-full right-1/2 group-hover:block">
               {text(key)}
             </span>
-            {value}
+            <Image
+              width={64}
+              height={64}
+              src={`/reactions/${value}.png`}
+              className="size-8"
+              alt={value}
+            />
           </button>
         ))}
       </div>
       <button
         className={cn(
-          "flex hover:bg-muted transition-all w-full items-center justify-center gap-2 text-lg py-1 rounded-md",
-          {
-            "bg-muted": reaction,
-          }
+          "flex hover:bg-muted transition-all h-7 w-full items-center justify-center gap-2 text-sm py-1 rounded"
         )}
       >
         {reaction ? (
-          emojis[reaction ? (reaction as keyof typeof emojis) : "like"]
+          <Image
+            width={20}
+            height={20}
+            src={`/reactions/${
+              emojis[reaction ? (reaction as keyof typeof emojis) : "like"]
+            }.png`}
+            alt={reaction ? reaction : "like"}
+          />
         ) : (
           <AiOutlineLike />
         )}

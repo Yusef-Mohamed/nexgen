@@ -324,8 +324,8 @@ const MarketingTabs = ({
       <TableWithModal
         header={
           <TabsList>
-            <TabsTrigger value="sales">{t("tabs.sales")}</TabsTrigger>
-            <TabsTrigger value="commission">{t("tabs.commission")}</TabsTrigger>
+            <TabsTrigger value="sales">{t("tabs.commission")}</TabsTrigger>
+            <TabsTrigger value="commission">{t("tabs.sales")}</TabsTrigger>
           </TabsList>
         }
         modalContent={

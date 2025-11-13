@@ -1,21 +1,15 @@
 "use client";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Link } from "@/i18n/routing";
 import { useMyCoursesStore } from "@/stores/MyCoursesStore";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import { PiExam } from "react-icons/pi";
 import { FilterTabs } from "@/components/filters/FilterTabs";
 import { PlayIcon } from "@/components/icons";
+import { getDynamicString } from "@/lib/utils";
 
 const DisplayCourses = () => {
   const text = useTranslations("learn");
@@ -110,7 +104,7 @@ const DisplayCourses = () => {
               <Image
                 loading="lazy"
                 src={course.image}
-                alt={course.title}
+                alt={getDynamicString(course.title)}
                 width={600}
                 height={600}
                 className="object-cover aspect-[1656/931] md:h-36 md:w-auto max-md:w-full rounded-xl"
@@ -123,11 +117,11 @@ const DisplayCourses = () => {
               <div className="flex w-full flex-1">
                 <div className="self-center w-full xl:pe-10 md:pe-6">
                   <p className="text-text-2 max-md:text-xs">
-                    {text("course")} | {course.title}
+                    {text("course")} | {getDynamicString(course.title)}
                   </p>
                   <Link href={`/dashboard/learn/${course._id}`}>
                     <h2 className="my-1 font-semibold md:my-4 h1-5">
-                      {course.title}
+                      {getDynamicString(course.title)}
                     </h2>
                   </Link>
                   {course.courseProgress?.status === "Completed" ? (
@@ -194,7 +188,7 @@ const DisplayCourses = () => {
                       <Image
                         loading="lazy"
                         src={course.courseProgress.certificate.file}
-                        alt={course.title}
+                        alt={getDynamicString(course.title)}
                         width={600}
                         height={600}
                         className="object-cover w-full h-full"
@@ -215,23 +209,13 @@ const DisplayCourses = () => {
                   </div>
                 )}
               </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex absolute items-center justify-center border-none p-0 rounded max-md:absolute top-4 end-4 bg-clear-ground aspect-square">
-                    <BsThreeDotsVertical className="w-4 h-4" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel asChild>
-                    <Link
-                      href={`/dashboard/learn/exams-history/${course._id}`}
-                      className="flex items-center gap-2 text-xs"
-                    >
-                      <PiExam size={18} /> {text("examsHistory")}
-                    </Link>
-                  </DropdownMenuLabel>
-                </DropdownMenuContent>
-              </DropdownMenu>
+
+              <Link
+                href={`/dashboard/learn/exams-history/${course._id}`}
+                className="flex items-center gap-2 text-xs  absolute top-4 end-4 border bg-primary-faded text-primary border-primary/20 px-1 py-0.5 rounded"
+              >
+                <PiExam size={18} /> {text("examsHistory")}
+              </Link>
             </div>
           </div>
         ))

@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { ICourse, ICoursePackage, IPackage } from "@/types";
 import { axiosInstance } from "@/app/lib/utils";
 import * as XLSX from "xlsx";
+import { getDynamicString } from "@/lib/utils";
 const formatDate = (date: Date) => {
   return format(date, "yyyy MM dd").split(" ").join("-");
 };
@@ -167,7 +168,7 @@ const TeamTable = ({ data }: { data: TeamData }) => {
             <SelectContent>
               {courses.map((course) => (
                 <SelectItem key={course._id} value={`course-${course._id}`}>
-                  {t("course")} - {course.title}
+                  {t("course")} - {getDynamicString(course.title)}
                 </SelectItem>
               ))}
               {coursePackages.map((coursePackage) => (
@@ -175,12 +176,12 @@ const TeamTable = ({ data }: { data: TeamData }) => {
                   key={coursePackage._id}
                   value={`coursePackage-${coursePackage._id}`}
                 >
-                  {t("path")} - {coursePackage.title}
+                  {t("path")} - {getDynamicString(coursePackage.title)}
                 </SelectItem>
               ))}
               {packages.map((pack) => (
                 <SelectItem key={pack._id} value={`package-${pack._id}`}>
-                  {t("service")} - {pack.title}
+                  {t("service")} - {getDynamicString(pack.title)}
                 </SelectItem>
               ))}
             </SelectContent>

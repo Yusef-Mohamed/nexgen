@@ -2,32 +2,57 @@
 import { useAuth } from "@/components/auth-provider";
 import UserAvatar from "@/components/UserAvatar";
 import { Link } from "@/i18n/routing";
-import { useMyCoursesStore } from "@/stores/MyCoursesStore";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 import FollowBtn from "../community/profile/[userId]/components/FollowBtn";
 import { IUser } from "@/types";
+import { axiosInstance } from "@/app/lib/utils";
+import { AxiosError } from "axios";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const CommunitySidebar = () => {
   const text = useTranslations("dashboard");
-  const { getCourses, courses } = useMyCoursesStore();
   const { token, user } = useAuth();
+  const [users, setUsers] = useState<
+    {
+      postCount: number;
+      user: IUser;
+    }[]
+  >([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
-    if (token && user) getCourses(token, user._id);
-  }, [token, user, getCourses]);
-  const users = useMemo(() => {
-    const arrayOfArrayOfUsers = courses.map(
-      (course) => (course as unknown as { users: IUser[] })?.users
-    );
-    const allUsers = arrayOfArrayOfUsers.flat();
+    const fetchTopPosters = async () => {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
 
-    // Use a Set to filter out duplicate users based on _id
-    const uniqueUsers = Array.from(
-      new Set(allUsers.map((user) => user._id))
-    ).map((id) => allUsers.find((user) => user._id === id));
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await axiosInstance.get("/posts/topPosters");
 
-    return uniqueUsers;
-  }, [courses]);
+        // Handle different response structures
+        const usersData = response.data?.data || response.data || [];
+        setUsers(Array.isArray(usersData) ? usersData : []);
+      } catch (err) {
+        const typedError = err as AxiosError<{ message: string }>;
+        const errorMessage =
+          typedError?.response?.data?.message ||
+          typedError?.message ||
+          "Failed to fetch top posters";
+        setError(errorMessage);
+        console.error("Error fetching top posters:", errorMessage);
+        setUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTopPosters();
+  }, [token]);
   return (
     <div
       style={{
@@ -38,33 +63,57 @@ const CommunitySidebar = () => {
       className="w-full max-w-2xl p-4 py-4 overflow-auto bg-clear-ground lg:border-s lg:sticky max-xl:mx-auto xl:w-80 sm:py-8"
     >
       <h2 className="mb-3 sm:mb-6">{text("followingRecommendation")}</h2>
-      <ul className="space-y-2 sm:space-y-4">
-        {users.map((thisUser) =>
-          thisUser && thisUser._id !== user?._id ? (
-            <li key={thisUser._id}>
+      {loading ? (
+        <ul className="space-y-2 sm:space-y-4">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <li key={i}>
               <div className="flex items-center justify-between px-2 py-1 border rounded">
                 <div className="flex items-center gap-2">
-                  <Link href={`/dashboard/community/profile/${thisUser._id}`}>
-                    <UserAvatar
-                      user={{
-                        name: thisUser.name,
-                        profileImg: thisUser.profileImg,
-                      }}
-                    />
-                  </Link>{" "}
-                  <Link
-                    className="text-sm"
-                    href={`/dashboard/community/profile/${thisUser._id}`}
-                  >
-                    {thisUser.name.slice(0, 15)}
-                  </Link>
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <Skeleton className="h-4 w-24" />
                 </div>
-                <FollowBtn sm userId={thisUser._id} />
+                <Skeleton className="h-8 w-20" />
               </div>
             </li>
-          ) : null
-        )}
-      </ul>
+          ))}
+        </ul>
+      ) : error ? (
+        <div className="text-sm text-muted-foreground p-2">{error}</div>
+      ) : users.length === 0 ? (
+        <div className="text-sm text-muted-foreground p-2">
+          {text("noUsersFound") || "No users found"}
+        </div>
+      ) : (
+        <ul className="space-y-2 sm:space-y-4">
+          {users
+            .filter((thisUser) => thisUser && thisUser.user._id !== user?._id)
+            .map((thisUser) => (
+              <li key={thisUser.user._id}>
+                <div className="flex items-center justify-between px-2 py-1 hover:bg-muted/50 transition-all duration-300 rounded">
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/dashboard/community/profile/${thisUser.user._id}`}
+                    >
+                      <UserAvatar
+                        user={{
+                          name: thisUser.user.name,
+                          profileImg: thisUser.user.profileImg,
+                        }}
+                      />
+                    </Link>{" "}
+                    <Link
+                      className="text-sm"
+                      href={`/dashboard/community/profile/${thisUser.user._id}`}
+                    >
+                      {thisUser.user.name.slice(0, 15)}
+                    </Link>
+                  </div>
+                  <FollowBtn onlyText userId={thisUser.user._id} />
+                </div>
+              </li>
+            ))}
+        </ul>
+      )}
     </div>
   );
 };

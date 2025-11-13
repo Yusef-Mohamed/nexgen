@@ -32,6 +32,7 @@ import {
 } from "../ui/alert-dialog";
 import ReactionComponent from "../ReactionComponent";
 import { emojis } from "@/constants";
+import CommentCard from "./CommentCard";
 
 interface PostCardProps {
   post: IPost;
@@ -45,42 +46,44 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
 
   return (
     <>
-      <div className="relative p-3 w-full rounded-md cardShadow sm:p-6 bg-card">
+      <div className="relative w-full rounded-md cardShadow bg-card">
         <PostAction post={post} />
-        {inCommunity ? (
-          <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
-            <Link href={`/dashboard/community/profile/${post.user._id}`}>
-              <UserAvatar user={post.user} />
-            </Link>
-            <div className="flex flex-col">
+        <div className="p-3">
+          {inCommunity ? (
+            <div className="flex items-center gap-2">
               <Link href={`/dashboard/community/profile/${post.user._id}`}>
-                <h4>{post.user.name}</h4>
+                <UserAvatar user={post.user} />
               </Link>
-              <span className="text-sm max-sm:text-sm text-muted-foreground">
-                {new Date(post.createdAt).toLocaleDateString()}
-              </span>
+              <div className="flex flex-col">
+                <Link href={`/dashboard/community/profile/${post.user._id}`}>
+                  <h4 className="text-sm">{post.user.name}</h4>
+                </Link>
+                <span className="text-xs text-muted-foreground">
+                  {new Date(post.createdAt).toLocaleDateString()}
+                </span>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="flex items-center gap-1.5 sm:gap-3 mb-2 sm:mb-4">
-            <UserAvatar user={post.user} />
-            <div className="flex flex-col">
-              <h4>{post.user.name}</h4>
-              <span className="text-sm max-sm:text-sm text-muted-foreground">
-                {new Date(post.createdAt).toLocaleDateString()}
-              </span>
+          ) : (
+            <div className="flex items-center gap-2">
+              <UserAvatar user={post.user} />
+              <div className="flex flex-col">
+                <h4 className="text-sm">{post.user.name}</h4>
+                <span className="text-xs text-muted-foreground">
+                  {new Date(post.createdAt).toLocaleDateString()}
+                </span>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <p className="my-2 sm:my-4 max-sm:text-sm">
-          {post.content.split("\n").map((line, index) => (
-            <span key={index}>
-              {line}
-              {index !== post.content.split("\n").length - 1 && <br />}
-            </span>
-          ))}
-        </p>
+          <p className="mt-1 px-2 text-sm">
+            {post.content.split("\n").map((line, index) => (
+              <span key={index}>
+                {line}
+                {index !== post.content.split("\n").length - 1 && <br />}
+              </span>
+            ))}
+          </p>
+        </div>
         <div
           onClick={() => {
             setIsOpen(true);
@@ -132,31 +135,43 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
             </div>
           )}
         </div>
-        <div className="flex justify-between items-center pt-2">
-          <div className="flex items-center">
-            {post.reactionTypes && post.reactionTypes.length > 0 && (
-              <>
-                {post.reactionTypes.map((reaction) => (
-                  <span key={reaction}>{emojis[reaction]}</span>
-                ))}
-                <span className="px-2">{post.reactionsCount}</span>
-              </>
-            )}
+        <div className="p-3">
+          <div className="flex justify-between items-center ">
+            <div className="flex items-center">
+              {post.reactionTypes && post.reactionTypes.length > 0 && (
+                <>
+                  {post.reactionTypes.map((reaction) => (
+                    <span key={reaction}>{emojis[reaction]}</span>
+                  ))}
+                  <span className="px-2">{post.reactionsCount}</span>
+                </>
+              )}
+            </div>
+            <div className="flex gap-1 items-center text-muted-foreground text-sm">
+              {getCommentText(post.commentsCount ?? 0, locale)}
+            </div>
           </div>
-          <div className="flex gap-1 items-center text-sm">
-            {getCommentText(post.commentsCount ?? 0, locale)}
+          <div className="flex justify-evenly items-center my-1">
+            <ReactionComponent post={post} />
+            <button
+              onClick={() => {
+                setIsOpen(true);
+              }}
+              className="flex gap-2 h-7 justify-center items-center py-1 w-full text-sm rounded transition-all hover:bg-muted"
+            >
+              <FaRegComment /> {text("comment")}
+            </button>
           </div>
-        </div>
-        <div className="flex justify-evenly items-center mt-2 border-t sm:mt-4">
-          <ReactionComponent post={post} />
-          <button
-            onClick={() => {
-              setIsOpen(true);
-            }}
-            className="flex gap-2 justify-center items-center py-1 w-full text-lg rounded-md transition-all hover:bg-muted"
-          >
-            <FaRegComment /> {text("comment")}
-          </button>
+          {post.lastComment && (
+            <ul>
+              <CommentCard
+                comment={post.lastComment}
+                setComments={() => {}}
+                isLast={true}
+                isChild={false}
+              />
+            </ul>
+          )}
         </div>
       </div>
       <FocusedPostCard

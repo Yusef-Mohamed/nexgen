@@ -9,6 +9,7 @@ import MainSkeleton from "./MainSkeleton";
 import { useLocale, useTranslations } from "next-intl";
 import { FaFileDownload } from "react-icons/fa";
 import ImageWithZoom from "@/components/ImageWithZoom";
+import { getDynamicString } from "@/lib/utils";
 // import CreateCourseReview from "./CourseReview";
 
 const Main = () => {
@@ -67,14 +68,14 @@ const Main = () => {
                   {currentLesson.assignmentTitle && (
                     <div>
                       <h2 className="text-2xl font-bold text-foreground mb-2">
-                        {currentLesson.assignmentTitle}
+                        {getDynamicString(currentLesson.assignmentTitle)}
                       </h2>
                     </div>
                   )}
                   {currentLesson.assignmentDescription && (
                     <div>
                       <p className="text-muted-foreground whitespace-pre-wrap">
-                        {currentLesson.assignmentDescription}
+                        {getDynamicString(currentLesson.assignmentDescription)}
                       </p>
                     </div>
                   )}
@@ -86,8 +87,9 @@ const Main = () => {
                             <ImageWithZoom
                               src={currentLesson.assignmentFile}
                               alt={
-                                currentLesson.assignmentTitle ||
-                                "Assignment image"
+                                getDynamicString(
+                                  currentLesson.assignmentTitle
+                                ) || "Assignment image"
                               }
                               width={800}
                               height={600}
@@ -127,7 +129,7 @@ const Main = () => {
         {!selectedDisplay && !selectedLesson && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <h1 className="text-foreground">
-              {text("welcomeTo")} &quot;{course.title}&quot;
+              {text("welcomeTo")} &quot;{getDynamicString(course.title)}&quot;
             </h1>
             <p className="mt-2 text-muted-foreground">
               {text("pleaseSelectLessonToKeepLearning")}

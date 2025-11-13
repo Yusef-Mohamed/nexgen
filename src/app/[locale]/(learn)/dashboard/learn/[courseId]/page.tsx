@@ -6,6 +6,7 @@ import { ICourse } from "@/types";
 import { notFound } from "next/navigation";
 import LearnLayoutClient from "./LearnLayoutClient";
 import { CourseProvider } from "./context/CourseContext";
+import { getDynamicString } from "@/lib/utils";
 
 export async function generateMetadata({
   params,
@@ -17,7 +18,10 @@ export async function generateMetadata({
   const courseData = courseRes.data.data as ICourse;
   return getMetadataCoursePage({
     params,
-    course: courseData,
+    course: {
+      title: getDynamicString(courseData.title),
+      description: getDynamicString(courseData.description),
+    },
   });
 }
 const CoursesPage = async ({

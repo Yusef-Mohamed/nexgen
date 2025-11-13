@@ -38,7 +38,7 @@ import {
 } from "recharts";
 import { DateRange } from "react-day-picker";
 import { DatePickerWithRange } from "@/components/DatePickerWithRange";
-
+import { getDynamicString } from "@/lib/utils";
 const SalesManagement = () => {
   const t = useTranslations("salesManagement");
   const { token } = useAuth();
@@ -247,7 +247,7 @@ const MainComponent = ({
             <SelectContent>
               {courses.map((course) => (
                 <SelectItem key={course._id} value={`${course._id}`}>
-                  {t("nCourse")} - {course.title}
+                  {t("nCourse")} - {getDynamicString(course.title)}
                 </SelectItem>
               ))}
               {coursePackages.map((coursePackage) => (
@@ -255,12 +255,12 @@ const MainComponent = ({
                   key={coursePackage._id}
                   value={`${coursePackage._id}`}
                 >
-                  {t("path")} - {coursePackage.title}
+                  {t("path")} - {getDynamicString(coursePackage.title)}
                 </SelectItem>
               ))}
               {packages.map((pack) => (
                 <SelectItem key={pack._id} value={`${pack._id}`}>
-                  {t("service")} - {pack.title}
+                  {t("service")} - {getDynamicString(pack.title)}
                 </SelectItem>
               ))}
             </SelectContent>
