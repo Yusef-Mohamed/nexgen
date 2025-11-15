@@ -211,7 +211,7 @@ export interface IPost {
   updatedAt: string;
 }
 export interface ILive {
-  title: string;
+  title: DynamicString;
   date: string;
   package: IPackage[];
   instructor: IUser;

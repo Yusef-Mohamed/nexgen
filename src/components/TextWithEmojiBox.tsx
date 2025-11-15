@@ -4,7 +4,6 @@ import { Textarea } from "./ui/textarea";
 import { SendHorizontal } from "lucide-react";
 import { EmojiPicker } from "./EmojiPicker";
 import React, { useRef, useCallback } from "react";
-import { useLocale } from "next-intl";
 
 interface TextWithEmojiBoxProps {
   text: string;
@@ -36,7 +35,6 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
   textClassName,
 }) => {
   const mediaRef = useRef<HTMLInputElement>(null);
-  const locale = useLocale();
 
   const handleInputChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -123,52 +121,46 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
           name="text"
           placeholder={placeholder || "Aa"}
           className={cn(
-            "flex items-center w-full py-2 pb-8 overflow-hidden border resize-none rounded-LG ps-8 bg-background",
+            "flex items-center w-full py-2 pb-8 overflow-hidden border resize-none rounded-lg bg-background",
             textClassName
           )}
           style={{ height: "auto" }} // Set initial height to auto for dynamic resizing
         />
+
         <div
-          key="input"
-          className={cn("absolute top-2", {
-            "right-2": locale === "ar",
-            "left-2": locale === "en",
-          })}
+          className={cn(
+            "absolute bottom-2 flex items-center justify-between gap-2 w-full px-2",
+            {}
+          )}
         >
-          <EmojiPicker onChange={handleEmojiSelect} />
-        </div>
-        <div
-          className={cn("absolute bottom-2 flex items-center gap-2", {
-            "right-2": locale === "ar",
-            "left-2": locale === "en",
-          })}
-        >
-          {" "}
+          <div className="flex items-center gap-2">
+            <EmojiPicker onChange={handleEmojiSelect} />
+            {setMedia && (
+              <div className="flex">
+                <button
+                  onClick={handleMediaClick}
+                  className={cn({
+                    "text-primary": media !== null,
+                  })}
+                >
+                  <MdOutlineAttachment className="text-xl text-text-3" />
+                </button>
+                <input
+                  disabled={isLoading}
+                  type="file"
+                  id="mediaFile"
+                  className="hidden"
+                  ref={mediaRef}
+                  onChange={handleMediaChange}
+                  multiple={multiMedia}
+                />
+              </div>
+            )}
+          </div>
           {handleSend && (
             <button disabled={isLoading} onClick={handleSend}>
               <SendHorizontal className="text-text-3" size={18} />
             </button>
-          )}
-          {setMedia && (
-            <div className="flex">
-              <button
-                onClick={handleMediaClick}
-                className={cn({
-                  "text-primary": media !== null,
-                })}
-              >
-                <MdOutlineAttachment className="text-xl text-text-3" />
-              </button>
-              <input
-                disabled={isLoading}
-                type="file"
-                id="mediaFile"
-                className="hidden"
-                ref={mediaRef}
-                onChange={handleMediaChange}
-                multiple={multiMedia}
-              />
-            </div>
           )}
         </div>
       </div>

@@ -49,7 +49,7 @@ const Hero: React.FC = () => {
           <p className="my-6 sm:my-10 !text-base md:!text-xl  text-text-1 max-w-xl">
             {text("newDescription")}
           </p>
-          <Button className="sm:min-w-52">
+          <Button asChild className="sm:min-w-52 w-fit">
             <Link href="/sign-up">{text("getStarted")}</Link>
           </Button>
         </TransitionBox>

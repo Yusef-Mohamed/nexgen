@@ -9,9 +9,11 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useTranslations } from "next-intl";
 import CreatePost from "./CreatePost";
 import { useAuth } from "@/components/auth-provider";
+import { Link } from "@/i18n/routing";
 const DisplayCommunityAnalytics = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const text = useTranslations("dashboard");
+  const communityText = useTranslations("community");
   const [haveError, setHaveError] = useState(false);
   const { searchParams } = useCustomSearchParams();
   const fetchPosts = useCallback(
@@ -73,6 +75,30 @@ const DisplayCommunityAnalytics = () => {
   useEffect(() => {
     setData([]); // Reset data when filters change
   }, [searchParams.toString(), setData]);
+
+  // Show welcome message for users without review access
+  if (user && !user.authToReview) {
+    return (
+      <section className="flex-1 w-full max-w-2xl px-4 mx-auto space-y-3 sm:space-y-6">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 p-8 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg border border-primary/20">
+          <div className="space-y-4">
+            <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
+              {communityText("welcomeToNexgenAcademy")}
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-md mx-auto">
+              {communityText("welcomeMessage")}
+            </p>
+          </div>
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200 shadow-lg hover:shadow-xl"
+          >
+            {communityText("goToCourseList")}
+          </Link>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="flex-1 w-full max-w-2xl px-4 mx-auto space-y-3 sm:space-y-6">

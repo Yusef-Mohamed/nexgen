@@ -215,7 +215,13 @@ export default function ChatBottombar() {
               onChange={handleMediaChange}
             />
           </div>
-          <div className="relative w-full">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSend();
+            }}
+            className="relative w-full"
+          >
             <Input
               disabled={isLoading}
               autoComplete="off"
@@ -236,7 +242,7 @@ export default function ChatBottombar() {
             >
               <SendHorizontal className="text-primary size-6" size={18} />
             </button>
-          </div>
+          </form>
         </div>
       </div>
     </>

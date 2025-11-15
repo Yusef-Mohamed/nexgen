@@ -14,7 +14,7 @@ import { IoClose } from "react-icons/io5";
 import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "@/i18n/routing";
-import { useCourseContext } from "@/app/[locale]/(learn)/dashboard/learn/[courseId]/context/CourseContext";
+import { useCourseContextSafe } from "@/app/[locale]/(learn)/dashboard/learn/[courseId]/context/CourseContext";
 import { unlockLessonsSequentially } from "@/app/[locale]/(learn)/dashboard/learn/[courseId]/components/unlockLessons";
 
 const CreatePractice = ({
@@ -31,8 +31,8 @@ const CreatePractice = ({
   const text = useTranslations("practice");
   const router = useRouter();
   const inputRef = useRef(null);
-  // Get CourseContext - will throw if not within CourseProvider, which is fine since this component is only used within it
-  const courseContext = useCourseContext();
+  // Get CourseContext - returns null if not within CourseProvider (e.g., when used in practice page)
+  const courseContext = useCourseContextSafe();
   const handelCreatePractice = async () => {
     setIsLoading(true);
     try {
@@ -126,7 +126,7 @@ const CreatePractice = ({
     setMedia((prev) => [...prev, ...files]);
   };
   return (
-    <div className={cn(!lessonId && "px-3 py-3 rounded-md bg-background")}>
+    <div className={""}>
       <div className="flex gap-2 justify-between items-start">
         <UserAvatar user={user || undefined} size="md" />
         <TextWithEmojiBox

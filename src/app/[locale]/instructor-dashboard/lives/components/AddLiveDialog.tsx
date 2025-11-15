@@ -25,7 +25,7 @@ import { toast } from "react-toastify";
 import { AiFillDelete } from "react-icons/ai";
 import { AxiosError } from "axios";
 import { useAuth } from "@/components/auth-provider";
-import { getDynamicString } from "@/lib/utils";
+import { getDynamicString, getStringObject } from "@/lib/utils";
 
 interface AddLiveDialogProps {
   open: boolean;
@@ -112,7 +112,6 @@ const AddLiveDialog = ({
   // Fetch live data when dialog opens in edit mode
   useEffect(() => {
     if (editLive?._id && open) {
-      console.log("Dialog opened in edit mode, fetching live:", editLive._id);
       fetchLive(editLive._id);
     } else {
       // Reset fetched live when not in edit mode
@@ -125,10 +124,11 @@ const AddLiveDialog = ({
     if (editLive && fetchedLive && open) {
       // For now, use the title field directly since ILive doesn't have translationTitle
       // In the future, if the API returns localized data, this can be updated
+      const title = getStringObject(fetchedLive.title);
       setFormData({
         title: {
-          en: fetchedLive.title || "",
-          ar: fetchedLive.title || "",
+          en: title.en || "",
+          ar: title.ar || "",
         },
         link: fetchedLive.link || "",
         date: new Date(fetchedLive.date).toISOString().slice(0, 16),

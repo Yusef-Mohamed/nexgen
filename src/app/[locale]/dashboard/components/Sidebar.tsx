@@ -166,6 +166,21 @@ const Sidebar: React.FC<
           },
         ],
       },
+      {
+        title: "community",
+        links: [
+          {
+            href: "/instructor-dashboard/community?sharedTo=students",
+            label: "community",
+            icon: <FaUsers />,
+          },
+          {
+            href: "/instructor-dashboard/chat",
+            label: "chat",
+            icon: <IoMdChatboxes />,
+          },
+        ],
+      },
     ];
   }
 

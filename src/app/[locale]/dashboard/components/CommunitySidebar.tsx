@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/components/auth-provider";
 import UserAvatar from "@/components/UserAvatar";
-import { Link } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import FollowBtn from "../community/profile/[userId]/components/FollowBtn";
@@ -53,6 +53,11 @@ const CommunitySidebar = () => {
 
     fetchTopPosters();
   }, [token]);
+  const pathname = usePathname();
+  const isInstructorDashboard = pathname.includes("instructor-dashboard");
+  if (isInstructorDashboard) {
+    return null;
+  }
   return (
     <div
       style={{
@@ -92,7 +97,11 @@ const CommunitySidebar = () => {
                 <div className="flex items-center justify-between px-2 py-1 hover:bg-muted/50 transition-all duration-300 rounded">
                   <div className="flex items-center gap-2">
                     <Link
-                      href={`/dashboard/community/profile/${thisUser.user._id}`}
+                      href={`${
+                        isInstructorDashboard
+                          ? "/instructor-dashboard"
+                          : "/dashboard"
+                      }/community/profile/${thisUser.user._id}`}
                     >
                       <UserAvatar
                         user={{
@@ -103,7 +112,11 @@ const CommunitySidebar = () => {
                     </Link>{" "}
                     <Link
                       className="text-sm"
-                      href={`/dashboard/community/profile/${thisUser.user._id}`}
+                      href={`${
+                        isInstructorDashboard
+                          ? "/instructor-dashboard"
+                          : "/dashboard"
+                      }/community/profile/${thisUser.user._id}`}
                     >
                       {thisUser.user.name.slice(0, 15)}
                     </Link>

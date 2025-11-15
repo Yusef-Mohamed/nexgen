@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { ILive } from "@/types";
 import { axiosInstance } from "@/app/lib/utils";
 import { AxiosError } from "axios";
+import { format } from "date-fns";
 
 interface LiveFormData {
   title: {
@@ -24,39 +25,46 @@ export const useLivesManagement = ({
   selectedCourse,
 }: UseLivesManagementProps) => {
   const [lives, setLives] = useState<ILive[]>([]);
-  const [filteredLives, setFilteredLives] = useState<ILive[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch lives
+  // Fetch all lives once with limit=1000
   const fetchLives = useCallback(async () => {
     try {
       setLoading(true);
-      const searchParams = new URLSearchParams();
-      if (selectedDate) searchParams.append("day", selectedDate);
-      if (selectedCourse !== "all" && selectedCourse) {
-        searchParams.append("package", selectedCourse);
-      }
-
-      const search = searchParams.toString();
-      const response = await axiosInstance.get(
-        `/lives/getAll${search ? "?" + search : ""}`
-      );
-
+      const response = await axiosInstance.get(`/lives/getAll?limit=1000`);
       setLives(response.data.data || []);
-      setFilteredLives(response.data.data || []);
     } catch (error) {
       console.error("Error fetching lives:", error);
       setLives([]);
-      setFilteredLives([]);
     } finally {
       setLoading(false);
     }
-  }, [selectedDate, selectedCourse]);
+  }, []);
+
+  // Client-side filtering based on selectedDate and selectedCourse
+  const filteredLives = useMemo(() => {
+    let filtered = [...lives];
+
+    // Filter by date
+    if (selectedDate) {
+      filtered = filtered.filter(
+        (live) => format(new Date(live.date), "yyyy-MM-dd") === selectedDate
+      );
+    }
+
+    // Filter by course
+    if (selectedCourse && selectedCourse !== "all") {
+      filtered = filtered.filter((live) =>
+        live.package.some((pkg) => pkg._id === selectedCourse)
+      );
+    }
+
+    return filtered;
+  }, [lives, selectedDate, selectedCourse]);
 
   // Delete live from state (for immediate UI update)
   const deleteLiveFromState = (liveId: string) => {
     setLives((prev) => prev.filter((live) => live._id !== liveId));
-    setFilteredLives((prev) => prev.filter((live) => live._id !== liveId));
   };
 
   // Fetch single live for editing
@@ -110,10 +118,11 @@ export const useLivesManagement = ({
     }
   };
 
-  // Initial fetch
+  // Initial fetch on mount only
   useEffect(() => {
     fetchLives();
-  }, [fetchLives]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     lives,

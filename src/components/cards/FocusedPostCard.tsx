@@ -9,7 +9,7 @@ import TextWithEmojiBox from "../TextWithEmojiBox";
 import { toast } from "react-toastify";
 import ImageWithZoom from "../ImageWithZoom";
 import { axiosInstance } from "@/app/lib/utils";
-import { Link } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/routing";
 import { useAuth } from "../auth-provider";
 import { MdClose } from "react-icons/md";
 import { Button } from "../ui/button";
@@ -112,6 +112,8 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
     }
   };
   const locale = useLocale();
+  const pathname = usePathname();
+  const isInstructorDashboard = pathname.includes("instructor-dashboard");
   return (
     <>
       <Dialog
@@ -140,12 +142,22 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
             <div className="p-3">
               {inCommunity ? (
                 <div className="flex items-center gap-2">
-                  <Link href={`/dashboard/community/profile/${post.user._id}`}>
+                  <Link
+                    href={`${
+                      isInstructorDashboard
+                        ? "/instructor-dashboard"
+                        : "/dashboard"
+                    }/community/profile/${post.user._id}`}
+                  >
                     <UserAvatar user={post.user} />
                   </Link>
                   <div className="flex flex-col">
                     <Link
-                      href={`/dashboard/community/profile/${post.user._id}`}
+                      href={`${
+                        isInstructorDashboard
+                          ? "/instructor-dashboard"
+                          : "/dashboard"
+                      }/community/profile/${post.user._id}`}
                     >
                       <h4 className="text-sm">{post.user.name}</h4>
                     </Link>

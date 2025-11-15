@@ -240,6 +240,6 @@ export const countries = [
   "Zambia",
   "Zimbabwe",
 ];
-export const reqAuthToReview = ["community", "practice", "chat", "live"];
+export const reqAuthToReview = ["practice", "chat", "live"];
 export const adToken =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE5MWNiZWIyYTU0NDg2ZGJjYzQzOWUiLCJpYXQiOjE3NTU3OTE3MTgsImV4cCI6MTc2MzU2NzcxOH0.z_ZYcE5e2_gxsaZnuyIGaKovUM6sLPtG557q_xcdJsU";

@@ -103,3 +103,9 @@ export const useCourseContext = (): CourseContextType => {
   }
   return context;
 };
+
+// Safe version that returns null when not in provider
+export const useCourseContextSafe = (): CourseContextType | null => {
+  const context = useContext(CourseContext);
+  return context ?? null;
+};

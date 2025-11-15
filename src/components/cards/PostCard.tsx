@@ -8,7 +8,7 @@ import { FaRegComment } from "react-icons/fa6";
 import { AiFillDelete } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import FocusedPostCard from "./FocusedPostCard";
-import { Link, useRouter } from "@/i18n/routing";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { useAuth } from "../auth-provider";
 import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
@@ -43,7 +43,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
   const text = useTranslations("post");
   const [isOpen, setIsOpen] = useState(false);
   const locale = useLocale();
-
+  const pathname = usePathname();
+  const isInstructorDashboard = pathname.includes("instructor-dashboard");
   return (
     <>
       <div className="relative w-full rounded-md cardShadow bg-card">
@@ -51,11 +52,21 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
         <div className="p-3">
           {inCommunity ? (
             <div className="flex items-center gap-2">
-              <Link href={`/dashboard/community/profile/${post.user._id}`}>
+              <Link
+                href={`${
+                  isInstructorDashboard ? "/instructor-dashboard" : "/dashboard"
+                }/community/profile/${post.user._id}`}
+              >
                 <UserAvatar user={post.user} />
               </Link>
               <div className="flex flex-col">
-                <Link href={`/dashboard/community/profile/${post.user._id}`}>
+                <Link
+                  href={`${
+                    isInstructorDashboard
+                      ? "/instructor-dashboard"
+                      : "/dashboard"
+                  }/community/profile/${post.user._id}`}
+                >
                   <h4 className="text-sm">{post.user.name}</h4>
                 </Link>
                 <span className="text-xs text-muted-foreground">

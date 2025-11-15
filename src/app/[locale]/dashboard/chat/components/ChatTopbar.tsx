@@ -272,40 +272,42 @@ export default function ChatTopbar() {
             </div>
           )}
         </div>
-        {thisChat?.isGroupChat && (
-          <div>
-            <button
-              onClick={() => setIsInfoOpen(true)}
-              className={cn(
-                "h-11 w-11",
-                "flex items-center ms-4 justify-center rounded-full text-primary bg-primary-faded"
-              )}
-            >
-              <Info size={20} className="text-primary" />
-            </button>
-          </div>
-        )}
-        {thisChat && (
-          <div>
-            <button
-              onClick={() => {
-                setSelectedChatId("");
-                setSearchParams({ selectedChat: "" });
-              }}
-              className={cn(
-                "h-11 w-11",
-                "flex items-center ms-4 justify-center rounded-full text-primary bg-primary-faded"
-              )}
-            >
-              <LogOut
-                size={20}
-                className={cn("text-primary", {
-                  "-scale-x-100": locale === "ar",
-                })}
-              />
-            </button>
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          {thisChat?.isGroupChat && (
+            <div>
+              <button
+                onClick={() => setIsInfoOpen(true)}
+                className={cn(
+                  "h-11 w-11",
+                  "flex items-center ms-4 justify-center rounded-full text-primary bg-primary-faded"
+                )}
+              >
+                <Info size={20} className="text-primary" />
+              </button>
+            </div>
+          )}
+          {thisChat && (
+            <div>
+              <button
+                onClick={() => {
+                  setSelectedChatId("");
+                  setSearchParams({ selectedChat: "" });
+                }}
+                className={cn(
+                  "h-11 w-11",
+                  "flex items-center ms-4 justify-center rounded-full text-primary bg-primary-faded"
+                )}
+              >
+                <LogOut
+                  size={20}
+                  className={cn("text-primary", {
+                    "-scale-x-100": locale === "ar",
+                  })}
+                />
+              </button>
+            </div>
+          )}
+        </div>
       </div>{" "}
       <Sheet open={isInfoOpen} onOpenChange={setIsInfoOpen}>
         <SheetContent

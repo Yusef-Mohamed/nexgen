@@ -2,11 +2,13 @@
 import { ILive } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
 import { Trash2, Edit } from "lucide-react";
 import { getDynamicString } from "@/lib/utils";
+import { format } from "date-fns";
+import { arSA, enUS } from "date-fns/locale";
 
 interface LiveCardProps {
   live: ILive;
@@ -15,6 +17,8 @@ interface LiveCardProps {
 }
 const LiveCard: React.FC<LiveCardProps> = ({ live, onDelete, onEdit }) => {
   const text = useTranslations("instructorLives");
+  const locale = useLocale();
+  const isArabic = locale === "ar";
   const [theme, setTheme] = useState("dark");
 
   useEffect(() => {
@@ -64,12 +68,14 @@ const LiveCard: React.FC<LiveCardProps> = ({ live, onDelete, onEdit }) => {
         <div className="space-y-2">
           <div className="flex items-center gap-2 font-semibold text-text-3">
             <FaRegCalendarAlt />
-            {new Date(live.date).toLocaleDateString()}{" "}
+            {format(new Date(live.date), "dd/MM/yyyy")}{" "}
           </div>
 
           <div className="flex items-center gap-2 font-semibold text-text-3">
             <FaRegClock />
-            {new Date(live.date).toLocaleTimeString()}
+            {format(new Date(live.date), "hh:mm a", {
+              locale: isArabic ? arSA : enUS,
+            })}
           </div>
         </div>
       </div>

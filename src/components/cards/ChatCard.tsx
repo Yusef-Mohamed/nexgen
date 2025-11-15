@@ -6,20 +6,16 @@ import { useAuth } from "../auth-provider";
 interface ChatCardProps {
   chat: IChat;
   selectedChat?: string;
+  onClick?: () => void;
 }
-const ChatCard: React.FC<ChatCardProps> = ({ chat, selectedChat }) => {
+const ChatCard: React.FC<ChatCardProps> = ({ chat, selectedChat, onClick }) => {
   const { user: myAccount } = useAuth();
   const anotherUser = chat?.participants.find(
     (user) => user.user !== myAccount?._id
   );
-  return (
-    <Link
-      href={`/dashboard/chat?selectedChat=${chat._id}`}
-      className={cn(
-        "hover:bg-primary-faded flex items-center p-3 rounded-md gap-2 my-0.5",
-        { "bg-primary-faded": selectedChat === chat._id }
-      )}
-    >
+
+  const content = (
+    <>
       {chat?.isGroupChat ? (
         <>
           <UserAvatar
@@ -48,6 +44,28 @@ const ChatCard: React.FC<ChatCardProps> = ({ chat, selectedChat }) => {
           {chat.lastMessage ? chat.lastMessage[0]?.text : "---"}
         </span>
       </div>
+    </>
+  );
+
+  const className = cn(
+    "hover:bg-primary-faded flex items-center p-3 rounded-md gap-2 my-0.5",
+    { "bg-primary-faded": selectedChat === chat._id }
+  );
+
+  if (onClick) {
+    return (
+      <div onClick={onClick} className={cn(className, "cursor-pointer")}>
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      href={`/dashboard/chat?selectedChat=${chat._id}`}
+      className={className}
+    >
+      {content}
     </Link>
   );
 };
