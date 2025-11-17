@@ -57,8 +57,8 @@ export const CourseFormProvider: React.FC<CourseFormProviderProps> = ({
 
   // Check step completion based on form data
   const stepCompletion = useMemo(() => {
-    const formValues = form.getValues();
-
+    // Use watchedValues directly to avoid unnecessary dependencies
+    const formValues = watchedValues;
     // Step 1: Basic Info + Accessible Courses
     const step1 =
       !!formValues.title?.en &&
@@ -92,14 +92,48 @@ export const CourseFormProvider: React.FC<CourseFormProviderProps> = ({
       formValues.whoThisCourseFor.every((h) => h.en?.trim() && h.ar?.trim());
 
     // Step 5: Appearance
-    const step5 =
-      !!formValues.bgColor &&
-      !!formValues.bgDarkMode &&
-      !!formValues.fontColor &&
-      !!formValues.fontDarkMode;
+    // Default values: bgColor="#ffffff", bgDarkMode="#000000", fontColor="#000000", fontDarkMode="#ffffff"
+    // Only mark as complete if values differ from defaults OR if in edit mode with saved course
+    const defaultBgColor = "#ffffff";
+    const defaultBgDarkMode = "#000000";
+    const defaultFontColor = "#000000";
+    const defaultFontDarkMode = "#ffffff";
 
-    // Step 6: Messages (optional - step is always considered complete since messages are optional)
-    const step6 = true;
+    const hasAppearanceChanged =
+      formValues.bgColor !== defaultBgColor ||
+      formValues.bgDarkMode !== defaultBgDarkMode ||
+      formValues.fontColor !== defaultFontColor ||
+      formValues.fontDarkMode !== defaultFontDarkMode;
+
+    const step5 = Boolean(
+      (hasAppearanceChanged ||
+        (isEditMode &&
+          course &&
+          course.colors &&
+          (course.colors.bgColor !== defaultBgColor ||
+            course.colors.bgDarkMode !== defaultBgDarkMode ||
+            course.colors.fontColor !== defaultFontColor ||
+            course.colors.fontDarkMode !== defaultFontDarkMode))) &&
+        !!formValues.bgColor &&
+        !!formValues.bgDarkMode &&
+        !!formValues.fontColor &&
+        !!formValues.fontDarkMode
+    );
+
+    // Step 6: Messages (optional - mark as complete if messages exist OR if in edit mode with saved course)
+    const hasMessages = Boolean(
+      formValues.courseWelcomeMessage?.en?.trim() ||
+        formValues.courseWelcomeMessage?.ar?.trim() ||
+        formValues.goodByeMessage?.en?.trim() ||
+        formValues.goodByeMessage?.ar?.trim()
+    );
+
+    const step6 = Boolean(
+      hasMessages ||
+        (isEditMode &&
+          course &&
+          (!!course.courseWelcomeMessage || !!course.goodByeMessage))
+    );
 
     return {
       step1,
@@ -109,23 +143,7 @@ export const CourseFormProvider: React.FC<CourseFormProviderProps> = ({
       step5,
       step6,
     };
-  }, [
-    watchedValues.title,
-    watchedValues.description,
-    watchedValues.category,
-    watchedValues.type,
-    watchedValues.price,
-    watchedValues.certificateDescription,
-    watchedValues.rating,
-    watchedValues.whatWillLearn,
-    watchedValues.coursePrerequisites,
-    watchedValues.whoThisCourseFor,
-    watchedValues.bgColor,
-    watchedValues.bgDarkMode,
-    watchedValues.fontColor,
-    watchedValues.fontDarkMode,
-    form,
-  ]);
+  }, [watchedValues, isEditMode, course]);
 
   const value: CourseFormContextType = {
     form,

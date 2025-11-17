@@ -15,8 +15,8 @@ import { MdClose } from "react-icons/md";
 import { Button } from "../ui/button";
 import ReactionComponent from "../ReactionComponent";
 import { getCommentText } from "@/lib/utils";
-import { emojis } from "@/constants";
 import { Skeleton } from "../ui/skeleton";
+import PostReactions from "./PostReactions";
 
 interface FocusedPostCardProps {
   post: IPost;
@@ -230,21 +230,12 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
             </div>
             <div className="p-3">
               <div className="flex justify-between items-center ">
-                <div className="flex items-center">
-                  {post.reactionTypes && post.reactionTypes.length > 0 && (
-                    <>
-                      {post.reactionTypes.map((reaction) => (
-                        <span key={reaction}>{emojis[reaction]}</span>
-                      ))}
-                      <span className="px-2">{post.reactionsCount}</span>
-                    </>
-                  )}
-                </div>
+                <PostReactions post={post} />
                 <div className="flex gap-1 items-center text-muted-foreground text-sm">
                   {getCommentText(post.commentsCount ?? 0, locale)}
                 </div>
               </div>
-              <div className="flex justify-evenly items-center my-1">
+              <div className="flex justify-evenly items-center my-2">
                 <ReactionComponent post={post} />
                 <button
                   onClick={() => {

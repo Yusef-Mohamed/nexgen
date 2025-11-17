@@ -1793,5 +1793,8 @@
       "description": "Whether you're here to learn, teach, or collaborate, we're here to help you succeed.",
       "ctaButton": "Contact Us Today!"
     }
+  },
+  "course": {
+    "quiz_updated_successfully": "Quiz settings updated successfully"
   }
 }

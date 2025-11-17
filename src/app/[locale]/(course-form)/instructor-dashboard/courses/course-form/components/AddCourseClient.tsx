@@ -79,6 +79,7 @@ const AddCourseClient = () => {
           "description.ar",
           "category",
           "type",
+          "courseDuration",
         ];
       case 1: // Pricing
         return ["price"];
@@ -120,6 +121,7 @@ const AddCourseClient = () => {
           description: formData.description,
           category: formData.category,
           type: formData.type,
+          courseDuration: formData.courseDuration,
           needAccessibleCourse: formData.needAccessibleCourse,
           promotionVideo: formData.promotionVideo,
         };
@@ -171,9 +173,13 @@ const AddCourseClient = () => {
         // Clear any existing errors for the current step
         form.clearErrors();
 
-        // Auto-advance to next step after successful save
+        // Check if this is the last step (step 4 - Appearance)
         const nextStepNumber = getNextStepInSidebarOrder(currentStep);
-        if (nextStepNumber !== null) {
+        if (nextStepNumber === null && currentCourse) {
+          // Last step saved successfully, navigate to course page
+          router.push(`/instructor-dashboard/courses/${currentCourse._id}`);
+        } else if (nextStepNumber !== null) {
+          // Auto-advance to next step after successful save
           const params = new URLSearchParams(searchParams?.toString() || "");
           params.set("step", nextStepNumber.toString());
           router.push(`${pathname}?${params.toString()}`);

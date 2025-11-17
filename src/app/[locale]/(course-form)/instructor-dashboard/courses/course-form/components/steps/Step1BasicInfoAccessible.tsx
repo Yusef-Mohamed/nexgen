@@ -335,6 +335,31 @@ const Step1BasicInfoAccessible: React.FC<Step1BasicInfoAccessibleProps> = ({
         />
       </div>
 
+      {/* Course Duration */}
+      <div className="w-full">
+        <FormField
+          control={form.control}
+          name="courseDuration"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{text("course_duration")}</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="number"
+                  placeholder={text("enter_duration")}
+                  className={commonFormStyles}
+                  disabled={loading}
+                  min="1"
+                  max="1000"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+
       {/* Need Accessible Course Toggle */}
       <div className="space-y-2">
         <FormField

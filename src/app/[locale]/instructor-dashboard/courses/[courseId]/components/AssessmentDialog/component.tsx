@@ -53,6 +53,7 @@ const AssessmentDialog = ({
     lesson,
     courseId,
     onAssessmentUpdated,
+    open,
   });
 
   const handleSubmit = async (data: Parameters<typeof onSubmit>[0]) => {

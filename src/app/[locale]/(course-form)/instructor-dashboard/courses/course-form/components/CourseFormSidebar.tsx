@@ -320,10 +320,10 @@ const CourseFormSidebar: React.FC<CourseFormSidebarProps> = ({
                     {text("course_content")}
                   </h3>
                   <Link
-                    href={`/instructor-dashboard/courses/${courseId}/lessons`}
+                    href={`/instructor-dashboard/courses/${courseId}`}
                     className="w-full text-left px-4 py-3 rounded-lg transition-all flex items-center gap-3 hover:bg-muted"
                   >
-                    <div className="flex items-center justify-center w-5 h-5 border rounded-full flex-shrink-0 border-primary"></div>
+                    <div className="flex items-center justify-center w-5 h-5 border rounded-full flex-shrink-0"></div>
                     <span className="font-medium text-foreground">
                       {text("lesson_list")}
                     </span>

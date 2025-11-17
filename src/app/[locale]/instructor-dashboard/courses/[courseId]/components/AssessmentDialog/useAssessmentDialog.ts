@@ -12,11 +12,13 @@ interface UseAssessmentDialogProps {
   lesson?: ILesson | null;
   courseId: string;
   onAssessmentUpdated: (lessonData?: unknown) => void;
+  open?: boolean;
 }
 
 export const useAssessmentDialog = ({
   lesson,
   onAssessmentUpdated,
+  open,
 }: UseAssessmentDialogProps) => {
   const text = useTranslations("courses");
   const [loading, setLoading] = useState(false);
@@ -50,13 +52,19 @@ export const useAssessmentDialog = ({
 
   // Fetch lesson data when dialog opens
   useEffect(() => {
-    if (lesson?._id) {
+    if (open && lesson?._id) {
       console.log("Assessment dialog opened, fetching lesson:", lesson._id);
       fetchLesson(lesson._id);
-    } else {
+    } else if (!open) {
+      // Clear form and state when dialog closes
       setFetchedLesson(null);
+      form.reset({
+        assignmentTitle: { en: "", ar: "" },
+        assignmentDescription: { en: "", ar: "" },
+      });
+      setAssignmentFile(null);
     }
-  }, [lesson?._id]);
+  }, [open, lesson?._id, form]);
 
   // Update form with fetched lesson data when it's available
   useEffect(() => {
@@ -148,6 +156,12 @@ export const useAssessmentDialog = ({
       );
 
       onAssessmentUpdated(response?.data?.data);
+      // Clear form after successful submission
+      form.reset({
+        assignmentTitle: { en: "", ar: "" },
+        assignmentDescription: { en: "", ar: "" },
+      });
+      setAssignmentFile(null);
       return true; // Success
     } catch (error) {
       console.error("Error saving assessment:", error);

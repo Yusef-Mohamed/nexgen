@@ -31,8 +31,8 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 import ReactionComponent from "../ReactionComponent";
-import { emojis } from "@/constants";
 import CommentCard from "./CommentCard";
+import PostReactions from "./PostReactions";
 
 interface PostCardProps {
   post: IPost;
@@ -47,7 +47,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
   const isInstructorDashboard = pathname.includes("instructor-dashboard");
   return (
     <>
-      <div className="relative w-full rounded-md cardShadow bg-card">
+      <div
+        onClick={() => {
+          console.log(post);
+        }}
+        className="relative w-full rounded-md cardShadow bg-card"
+      >
         <PostAction post={post} />
         <div className="p-3">
           {inCommunity ? (
@@ -148,21 +153,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
         </div>
         <div className="p-3">
           <div className="flex justify-between items-center ">
-            <div className="flex items-center">
-              {post.reactionTypes && post.reactionTypes.length > 0 && (
-                <>
-                  {post.reactionTypes.map((reaction) => (
-                    <span key={reaction}>{emojis[reaction]}</span>
-                  ))}
-                  <span className="px-2">{post.reactionsCount}</span>
-                </>
-              )}
-            </div>
+            <PostReactions post={post} />
             <div className="flex gap-1 items-center text-muted-foreground text-sm">
               {getCommentText(post.commentsCount ?? 0, locale)}
             </div>
           </div>
-          <div className="flex justify-evenly items-center my-1">
+          <div className="flex justify-evenly items-center my-2">
             <ReactionComponent post={post} />
             <button
               onClick={() => {

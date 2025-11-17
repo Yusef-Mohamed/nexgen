@@ -16,6 +16,7 @@ interface UseLessonEditDialogProps {
   isEdit: boolean;
   lessonIndex?: number;
   lessonsLength: number;
+  open?: boolean;
 }
 
 export const useLessonEditDialog = ({
@@ -26,6 +27,7 @@ export const useLessonEditDialog = ({
   isEdit,
   lessonIndex,
   lessonsLength,
+  open,
 }: UseLessonEditDialogProps) => {
   const text = useTranslations("courses");
   const [loading, setLoading] = useState(false);
@@ -67,14 +69,24 @@ export const useLessonEditDialog = ({
 
   // Fetch lesson data when dialog opens in edit mode
   useEffect(() => {
-    if (isEdit && lesson?._id) {
+    if (open && isEdit && lesson?._id) {
       console.log("Dialog opened in edit mode, fetching lesson:", lesson._id);
       fetchLesson(lesson._id);
-    } else {
+    } else if (!open) {
+      // Clear form and state when dialog closes
+      setFetchedLesson(null);
+      form.reset({
+        title: { en: "", ar: "" },
+        description: { en: "", ar: "" },
+        lessonDuration: "",
+        videoUrl: "",
+      });
+      setAttachments([]);
+    } else if (!isEdit) {
       // Reset fetched lesson when not in edit mode
       setFetchedLesson(null);
     }
-  }, [isEdit, lesson?._id]);
+  }, [open, isEdit, lesson?._id, form]);
 
   // Update form with fetched lesson data when it's available
   useEffect(() => {
@@ -210,6 +222,14 @@ export const useLessonEditDialog = ({
       }
 
       onLessonUpdated(response?.data?.data, isEdit);
+      // Clear form after successful submission
+      form.reset({
+        title: { en: "", ar: "" },
+        description: { en: "", ar: "" },
+        lessonDuration: "",
+        videoUrl: "",
+      });
+      setAttachments([]);
       return true; // Success
     } catch (error) {
       console.error("Error saving lesson:", error);

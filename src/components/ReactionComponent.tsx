@@ -23,6 +23,7 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
   const [reaction, setReaction] = useState<string | null>(
     post.loggedUserReaction?.type || null
   );
+  const [isFocused, setIsFocused] = useState(false);
   const { user, token } = useAuth();
 
   const addReactToPost = async (type: keyof typeof emojis) => {
@@ -75,8 +76,15 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
   };
 
   return (
-    <div className="relative w-full group/unit">
-      <div className="absolute items-center justify-center gap-2 py-1 px-2 translate-x-1/2 border rounded-full bg-background bottom-full right-1/2 flex opacity-0 scale-90 group-hover/unit:opacity-100 group-hover/unit:scale-100 transition-all w-fit">
+    <div className="relative w-full " onMouseLeave={() => setIsFocused(false)}>
+      <div
+        className={cn(
+          "absolute items-center justify-center gap-2 py-1 px-2 translate-x-1/2 border rounded-full bg-background bottom-full right-1/2 flex opacity-0 scale-90 transition-all w-fit",
+          {
+            "opacity-100 scale-100": isFocused,
+          }
+        )}
+      >
         {Object.entries(emojis).map(([key, value]) => (
           <button
             className="relative size-8 hover:scale-[1.4] group transition-transform"
@@ -104,6 +112,7 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
         ))}
       </div>
       <button
+        onMouseEnter={() => setIsFocused(true)}
         className={cn(
           "flex hover:bg-muted transition-all h-7 w-full items-center justify-center gap-2 text-sm py-1 rounded"
         )}

@@ -63,6 +63,7 @@ const LessonEditDialog = ({
     isEdit,
     lessonIndex,
     lessonsLength,
+    open,
   });
 
   // Section is supplied by parent via sectionId; no fetching needed
