@@ -17,9 +17,10 @@ import {
 } from "@/components/ui/dialog";
 import { cn, getDynamicString } from "@/lib/utils";
 import { axiosInstance } from "@/app/lib/utils";
-import { IMarketLog, ICourse } from "@/types";
+import { IMarketLog, ICourse, ICoursePackage, IPackage } from "@/types";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
+import UsersList from "./UsersList";
 import {
   Select,
   SelectContent,
@@ -37,6 +38,8 @@ const WalletClient = () => {
   const [marketLog, setMarketLog] = useState<IMarketLog | null>(null);
   const [selectedCourseId, setSelectedCourseId] = useState<string>("all");
   const [courses, setCourses] = useState<ICourse[]>([]);
+  const [coursePackages, setCoursePackages] = useState<ICoursePackage[]>([]);
+  const [packages, setPackages] = useState<IPackage[]>([]);
 
   // Format date to DD/MM/YYYY
   const formatDate = (date: Date): string => {
@@ -46,13 +49,15 @@ const WalletClient = () => {
     return `${day}/${month}/${year}`;
   };
 
-  // Fetch active courses
+  // Fetch active courses, course packages, and packages
   useEffect(() => {
-    const fetchActiveCourses = async () => {
+    const fetchAllItems = async () => {
       if (!token || !user?._id) return;
       try {
         setIsLoadingCourses(true);
-        const res = await axiosInstance.get(
+
+        // Fetch courses
+        const coursesRes = await axiosInstance.get(
           `/courses/getAll?instructor=${user._id}&status=active`,
           {
             headers: {
@@ -60,14 +65,36 @@ const WalletClient = () => {
             },
           }
         );
-        setCourses(res.data.data || []);
+        setCourses(coursesRes.data.data || []);
+
+        // Fetch course packages
+        const coursePackagesRes = await axiosInstance.get(
+          `/coursePackages/getAll?limit=1000`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setCoursePackages(coursePackagesRes.data.data || []);
+
+        // Fetch packages (services)
+        const packagesRes = await axiosInstance.get(
+          `/packages/getAll?limit=1000`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setPackages(packagesRes.data.data || []);
       } catch (err) {
-        console.error("Error fetching courses:", err);
+        console.error("Error fetching items:", err);
       } finally {
         setIsLoadingCourses(false);
       }
     };
-    if (token && user) fetchActiveCourses();
+    if (token && user) fetchAllItems();
   }, [token, user]);
 
   // Fetch analytics data
@@ -90,12 +117,23 @@ const WalletClient = () => {
           );
           setMarketLog(res.data.instructorProfits);
         } else {
-          // Fetch course-specific analytics
-          const startDate = user.createdAt
-            ? formatDate(new Date(user.createdAt))
-            : formatDate(new Date());
-          const endDate = formatDate(new Date());
-          const url = `/instructorProfits/courseAnalytics/${selectedCourseId}?startDate=${startDate}&endDate=${endDate}&type=course`;
+          // Parse type and id from selectedCourseId (format: "type:id")
+          const [type, id] = selectedCourseId.split(":");
+          const now = new Date();
+          const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+          const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+          const startDate = formatDate(startOfMonth);
+          const endDate = formatDate(endOfMonth);
+
+          // Map types for API
+          const typeMap: Record<string, string> = {
+            course: "course",
+            coursePackage: "coursePackage",
+            package: "package",
+          };
+
+          const apiType = typeMap[type] || "course";
+          const url = `/instructorProfits/courseAnalytics/${id}?startDate=${startDate}&endDate=${endDate}&type=${apiType}`;
 
           res = await axiosInstance.get(url, {
             headers: {
@@ -132,8 +170,27 @@ const WalletClient = () => {
           <SelectContent>
             <SelectItem value="all">All courses</SelectItem>
             {courses.map((course) => (
-              <SelectItem key={course._id} value={course._id}>
-                {getDynamicString(course.title)}
+              <SelectItem
+                key={`course:${course._id}`}
+                value={`course:${course._id}`}
+              >
+                {getDynamicString(course.title)} - course
+              </SelectItem>
+            ))}
+            {coursePackages.map((coursePackage) => (
+              <SelectItem
+                key={`coursePackage:${coursePackage._id}`}
+                value={`coursePackage:${coursePackage._id}`}
+              >
+                {getDynamicString(coursePackage.title)} - coursePackage
+              </SelectItem>
+            ))}
+            {packages.map((pkg) => (
+              <SelectItem
+                key={`package:${pkg._id}`}
+                value={`package:${pkg._id}`}
+              >
+                {getDynamicString(pkg.title)} - package
               </SelectItem>
             ))}
           </SelectContent>
@@ -144,6 +201,14 @@ const WalletClient = () => {
       ) : (
         <StatsCards marketLog={marketLog} locale={locale} t={t} />
       )}
+      <UsersList
+        token={token}
+        user={user}
+        courses={courses}
+        coursePackages={coursePackages}
+        packages={packages}
+        isLoadingCourses={isLoadingCourses}
+      />
     </div>
   );
 };
