@@ -528,7 +528,8 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
             stepData.type !== currentCourse.type ||
             stepData.needAccessibleCourse !==
               currentCourse.needAccessibleCourse ||
-            (stepData.promotionVideo || "") !== currentPromotionVideo
+            (stepData.promotionVideo || "") !== currentPromotionVideo ||
+            Number(stepData.courseDuration) !== currentCourse.courseDuration
           );
         case 1: // Pricing
           return (
@@ -659,6 +660,9 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
         }
         if (stepData.type) {
           formData.append("type", stepData.type);
+        }
+        if (stepData.courseDuration) {
+          formData.append("courseDuration", stepData.courseDuration);
         }
         if (stepData.needAccessibleCourse !== undefined) {
           formData.append(
