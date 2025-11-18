@@ -15,19 +15,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { cn, getDynamicString } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { axiosInstance } from "@/app/lib/utils";
-import { IMarketLog, ICourse, ICoursePackage, IPackage } from "@/types";
+import { ICourse, ICoursePackage, IPackage } from "@/types";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
 import UsersList from "./UsersList";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 const WalletClient = () => {
   const t = useTranslations("invoicesManagement");
@@ -35,20 +28,18 @@ const WalletClient = () => {
   const { token, user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingCourses, setIsLoadingCourses] = useState(true);
-  const [marketLog, setMarketLog] = useState<IMarketLog | null>(null);
-  const [selectedCourseId, setSelectedCourseId] = useState<string>("all");
+  const [marketLog, setMarketLog] = useState<{
+    totalEnrollments: number;
+    totalEnrollmentsDiff: number;
+    avgRate: number;
+    avgRateDiff: number;
+    instructorProfits: number;
+    instructorProfitsDiff: number;
+    withdrawals: number;
+  } | null>(null);
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [coursePackages, setCoursePackages] = useState<ICoursePackage[]>([]);
   const [packages, setPackages] = useState<IPackage[]>([]);
-
-  // Format date to DD/MM/YYYY
-  const formatDate = (date: Date): string => {
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   // Fetch active courses, course packages, and packages
   useEffect(() => {
     const fetchAllItems = async () => {
@@ -103,45 +94,16 @@ const WalletClient = () => {
       if (!token || !user?._id) return;
       try {
         setIsLoading(true);
-        let res;
 
-        if (selectedCourseId === "all") {
-          // Fetch instructor analytics (all courses)
-          res = await axiosInstance.get(
-            `/instructorProfits/instructorAnalytics/${user._id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          setMarketLog(res.data.instructorProfits);
-        } else {
-          // Parse type and id from selectedCourseId (format: "type:id")
-          const [type, id] = selectedCourseId.split(":");
-          const now = new Date();
-          const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-          const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-          const startDate = formatDate(startOfMonth);
-          const endDate = formatDate(endOfMonth);
-
-          // Map types for API
-          const typeMap: Record<string, string> = {
-            course: "course",
-            coursePackage: "coursePackage",
-            package: "package",
-          };
-
-          const apiType = typeMap[type] || "course";
-          const url = `/instructorProfits/courseAnalytics/${id}?startDate=${startDate}&endDate=${endDate}&type=${apiType}`;
-
-          res = await axiosInstance.get(url, {
+        const res = await axiosInstance.get(
+          `/instructorProfits/instructorAnalytics/${user._id}`,
+          {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          });
-          setMarketLog(res.data.data || res.data);
-        }
+          }
+        );
+        setMarketLog(res.data);
       } catch (err) {
         console.error("Error fetching analytics:", err);
         toast.error("Failed to load analytics data");
@@ -150,7 +112,7 @@ const WalletClient = () => {
       }
     };
     if (token && user) fetchMarketLog();
-  }, [token, user, selectedCourseId]);
+  }, [token, user]);
 
   if (isLoading && !marketLog) {
     return <LoadingState />;
@@ -159,42 +121,6 @@ const WalletClient = () => {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Overview</h2>
-        <Select
-          value={selectedCourseId}
-          onValueChange={setSelectedCourseId}
-          disabled={isLoadingCourses}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select course" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All courses</SelectItem>
-            {courses.map((course) => (
-              <SelectItem
-                key={`course:${course._id}`}
-                value={`course:${course._id}`}
-              >
-                {getDynamicString(course.title)} - course
-              </SelectItem>
-            ))}
-            {coursePackages.map((coursePackage) => (
-              <SelectItem
-                key={`coursePackage:${coursePackage._id}`}
-                value={`coursePackage:${coursePackage._id}`}
-              >
-                {getDynamicString(coursePackage.title)} - coursePackage
-              </SelectItem>
-            ))}
-            {packages.map((pkg) => (
-              <SelectItem
-                key={`package:${pkg._id}`}
-                value={`package:${pkg._id}`}
-              >
-                {getDynamicString(pkg.title)} - package
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
       {isLoading ? (
         <LoadingState />
@@ -243,49 +169,53 @@ const StatsCards = ({
   t,
   locale,
 }: {
-  marketLog: IMarketLog | null;
+  marketLog: {
+    totalEnrollments: number;
+    totalEnrollmentsDiff: number;
+    avgRate: number;
+    avgRateDiff: number;
+    instructorProfits: number;
+    instructorProfitsDiff: number;
+    withdrawals: number;
+  } | null;
   t: (key: string) => string;
   locale: string;
 }) => (
   <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
     <div className="grid gap-4 grid-cols-3 col-span-3">
       <StatCard
-        title={t("stats.totalSales")}
-        value={marketLog?.totalSalesMoney || 0}
-        difference={marketLog?.salesMoneyDifference || 0}
-        total={marketLog?.totalSalesMoney || 0}
+        title={t("stats.totalEnrollments")}
+        value={marketLog?.totalEnrollments || 0}
+        percentage={marketLog?.totalEnrollmentsDiff || 0}
+        total={marketLog?.totalEnrollments || 0}
       />
       <StatCard
-        title={t("stats.profit")}
-        value={marketLog?.profits || 0}
-        difference={marketLog?.profitsDifference || 0}
-        total={marketLog?.profits || 0}
+        title={t("stats.averageRate")}
+        value={marketLog?.avgRate || 0}
+        percentage={marketLog?.avgRateDiff || 0}
+        total={marketLog?.avgRate || 0}
       />
       <StatCard
-        title={t("stats.withdrawals")}
-        value={marketLog?.withdrawals || 0}
-        difference={0}
-        total={marketLog?.withdrawals || 0}
+        title={t("stats.instructorProfits")}
+        value={marketLog?.instructorProfits || 0}
+        percentage={marketLog?.instructorProfitsDiff || 0}
+        total={marketLog?.instructorProfits || 0}
       />
     </div>
-    <BalanceCard
-      balance={marketLog?.availableToWithdraw || 0}
-      t={t}
-      locale={locale}
-    />
+    <BalanceCard balance={marketLog?.withdrawals || 0} t={t} locale={locale} />
   </div>
 );
 
 const StatCard = ({
   title,
   value,
-  difference,
+  percentage,
   total,
 }: {
   title: string;
   value: number;
-  difference: number;
   total: number;
+  percentage: number;
 }) => (
   <Card>
     <CardContent className="p-4">
@@ -295,13 +225,13 @@ const StatCard = ({
           ${value?.toLocaleString()}
         </h3>
       </div>
-      {difference && total ? (
+      {percentage && total ? (
         <>
           <TrendBadge
-            percentage={Math.abs((difference / total) * 100).toFixed(1)}
-            positive={difference > 0}
+            percentage={percentage.toString()}
+            positive={percentage > 0}
           />
-          <RenderFakeChart positive={difference > 0} />
+          <RenderFakeChart positive={percentage > 0} />
         </>
       ) : null}
     </CardContent>

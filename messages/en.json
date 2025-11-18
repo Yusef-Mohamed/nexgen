@@ -942,7 +942,10 @@
       "withdrawInvoiceHasSent": "Withdrawal invoice has been created",
       "withdrawTitle": "Withdrawal Request",
       "enterAmount": "Enter Amount",
-      "confirmWithdraw": "Confirm Withdrawal"
+      "confirmWithdraw": "Confirm Withdrawal",
+      "totalEnrollments": "Total Enrollments",
+      "averageRate": "Average Rate",
+      "instructorProfits": "Instructor Profits"
     },
     "tabs": {
       "commission": "Commissions",

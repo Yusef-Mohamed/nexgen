@@ -939,7 +939,10 @@
       "withdrawInvoiceHasSent": "تم إنشاء فاتورة السحب",
       "withdrawTitle": "طلب سحب",
       "enterAmount": "أدخل المبلغ",
-      "confirmWithdraw": "تأكيد السحب"
+      "confirmWithdraw": "تأكيد السحب",
+      "totalEnrollments": "إجمالي التسجيلات",
+      "averageRate": "متوسط السعر",
+      "instructorProfits": "أرباح المدرب"
     },
     "tabs": {
       "commission": "العمولات",

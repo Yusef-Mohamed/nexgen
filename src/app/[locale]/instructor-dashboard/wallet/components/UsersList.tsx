@@ -23,6 +23,7 @@ import { ICourse, ICoursePackage, IPackage, IUser } from "@/types";
 import { DateRange } from "react-day-picker";
 import { DatePickerWithRange } from "@/components/DatePickerWithRange";
 import { useTranslations } from "next-intl";
+import { axiosInstance } from "@/app/lib/utils";
 
 interface IPurchasedUser {
   id: string;
@@ -60,83 +61,51 @@ const parseDateString = (dateString: string): Date | null => {
   return new Date(year, month, day);
 };
 
-// Mock API response function
-/* eslint-disable @typescript-eslint/no-unused-vars */
-const fetchMockUsers = async (
+// Fetch users from API
+const fetchUsersFromAPI = async (
   id: string,
   type: string,
   startDate: string,
-  endDate: string
+  endDate: string,
+  token: string
 ): Promise<IPurchasedUser[]> => {
-  // Simulate network delay
-  // Parameters will be used when real API is implemented
-  void id;
-  void type;
-  void startDate;
-  void endDate;
-  await new Promise((resolve) => setTimeout(resolve, 800));
+  try {
+    const response = await axiosInstance.get(
+      `/instructorProfits/courseAnalytics/${id}?startDate=${startDate}&endDate=${endDate}&type=${type}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // Map API response to IPurchasedUser format
+    const responseData = response.data;
+    console.log(responseData);
+    const users = responseData.registeredUsers || [];
 
-  // Generate mock data
-  const mockUsers: IPurchasedUser[] = [
-    {
-      id: "1",
-      name: "John Doe",
-      email: "john.doe@example.com",
-      purchasedate: formatDate(new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)),
-      isresale: false,
-      profileimage: "/images/default-avatar.png",
-    },
-    {
-      id: "2",
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      purchasedate: formatDate(new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)),
-      isresale: true,
-      profileimage: "/images/default-avatar.png",
-    },
-    {
-      id: "3",
-      name: "Bob Johnson",
-      email: "bob.johnson@example.com",
-      purchasedate: formatDate(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)),
-      isresale: false,
-      profileimage: "/images/default-avatar.png",
-    },
-    {
-      id: "4",
-      name: "Alice Williams",
-      email: "alice.williams@example.com",
-      purchasedate: formatDate(new Date(Date.now() - 15 * 24 * 60 * 60 * 1000)),
-      isresale: true,
-      profileimage: "/images/default-avatar.png",
-    },
-    {
-      id: "5",
-      name: "Charlie Brown",
-      email: "charlie.brown@example.com",
-      purchasedate: formatDate(new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)),
-      isresale: false,
-      profileimage: "/images/default-avatar.png",
-    },
-    {
-      id: "6",
-      name: "Diana Prince",
-      email: "diana.prince@example.com",
-      purchasedate: formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
-      isresale: true,
-      profileimage: "/images/default-avatar.png",
-    },
-    {
-      id: "7",
-      name: "Ethan Hunt",
-      email: "ethan.hunt@example.com",
-      purchasedate: formatDate(new Date(Date.now() - 20 * 24 * 60 * 60 * 1000)),
-      isresale: false,
-      profileimage: "/images/default-avatar.png",
-    },
-  ];
+    // Get the purchase date from filters (or use current date as fallback)
+    const purchaseDate =
+      responseData.filters?.startDate || formatDate(new Date());
 
-  return mockUsers;
+    return users.map(
+      (user: {
+        _id?: string;
+        name?: string;
+        email?: string;
+        isResale?: boolean;
+      }) => ({
+        id: user._id || "",
+        name: user.name || "",
+        email: user.email || "",
+        purchasedate: purchaseDate,
+        isresale: user.isResale || false,
+        profileimage: "/images/default-avatar.png",
+      })
+    );
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return [];
+  }
 };
 
 const UsersList: React.FC<UsersListProps> = ({
@@ -199,13 +168,13 @@ const UsersList: React.FC<UsersListProps> = ({
 
         const apiType = typeMap[type] || "course";
 
-        // Simulate API call with mock data
-        // In real implementation: `/instructorProfits/users/${id}?startDate=${startDate}&endDate=${endDate}&type=${apiType}`
-        const fetchedUsers = await fetchMockUsers(
+        // Fetch users from API
+        const fetchedUsers = await fetchUsersFromAPI(
           id,
           apiType,
           startDate,
-          endDate
+          endDate,
+          token
         );
         setUsers(fetchedUsers);
       } catch (err) {
