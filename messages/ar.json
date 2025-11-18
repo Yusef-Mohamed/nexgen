@@ -124,7 +124,8 @@
     "empty_highlight_error": "هذه النقطة البارزة فارغة",
     "validation": {
       "price_required": "السعر مطلوب",
-      "price_after_discount_invalid": "يجب أن يكون السعر بعد الخصم أقل من السعر الأصلي"
+      "price_after_discount_invalid": "يجب أن يكون السعر بعد الخصم أقل من السعر الأصلي",
+      "highlight_cannot_be_empty": "لا يمكن أن تكون النقطة البارزة فارغة"
     },
     "price": "السعر",
     "price_after_discount": "السعر بعد الخصم",
@@ -149,7 +150,28 @@
     "highlights_ar_min_length": "النقاط المميزة بالعربية يجب أن تكون على الأقل 10 أحرف",
     "price_positive_required": "السعر يجب أن يكون رقم موجب",
     "type_required": "النوع مطلوب",
-    "price_discount_validation": "السعر بعد الخصم يجب أن يكون أقل من السعر الأصلي"
+    "price_discount_validation": "السعر بعد الخصم يجب أن يكون أقل من السعر الأصلي",
+    "learning_path_information": "معلومات مسار التعلم",
+    "basic_info": "المعلومات الأساسية",
+    "learning_path_content": "محتوى مسار التعلم",
+    "select_courses_description": "اختر الدورات المراد تضمينها في هذا المسار التعليمي",
+    "target_your_student": "استهدف طلابك",
+    "target_student_description": "حدد ما يجعل مسار التعلم الخاص بك فريداً وجذاباً",
+    "what_will_students_learn": "ماذا سيتعلم الطلاب في مسار التعلم الخاص بك؟",
+    "what_will_students_learn_description": "يجب عليك إدخال 4 أهداف تعليمية على الأقل أو نتائج يمكن للمتعلمين توقع تحقيقها بعد إكمال مسار التعلم الخاص بك.",
+    "course_prerequisites": "ما هي المتطلبات أو المتطلبات الأساسية لحضور مسار التعلم الخاص بك؟",
+    "course_prerequisites_description": "اذكر المهارات والخبرات والأدوات أو المعدات المطلوبة التي يجب أن يمتلكها المتعلمون قبل أخذ مسار التعلم الخاص بك. إذا لم تكن هناك متطلبات، استخدم هذه المساحة كفرصة لتقليل الحاجز للمبتدئين.",
+    "who_is_this_learning_path_for": "لمن مسار التعلم هذا؟",
+    "who_is_this_learning_path_for_description": "اكتب وصفاً واضحاً للمتعلمين المستهدفين لمسار التعلم الخاص بك الذين سيجدون محتوى مسار التعلم الخاص بك قيماً. سيساعدك هذا على جذب المتعلمين المناسبين لمسار التعلم الخاص بك.",
+    "pricing_access": "التسعير والوصول",
+    "pricing_description": "حدد تسعير مسار التعلم ونوعه",
+    "pricing": "التسعير",
+    "save": "حفظ",
+    "authentication_required": "المصادقة مطلوبة",
+    "no_changes_to_save": "لا توجد تغييرات للحفظ",
+    "highlight_min_length": "يجب أن تكون النقطة البارزة على الأقل 3 أحرف",
+    "what_will_learn_min_required": "مطلوب على الأقل 4 عناصر",
+    "highlights_array_max_length": "الحد الأقصى 50 عنصر مسموح"
   },
   "whyChooseUs": {
     "heading": "لماذا تختار أكاديمية NexGen",
@@ -1623,7 +1645,28 @@
     "subscription_duration_positive_required": "مدة الاشتراك يجب أن تكون رقم موجب",
     "course": "الدورة",
     "select_course": "اختر الدورة",
-    "selected_course": "الدورة المختارة"
+    "selected_course": "الدورة المختارة",
+    "service_information": "معلومات الخدمة",
+    "basic_info": "المعلومات الأساسية",
+    "target_your_student": "استهدف طلابك",
+    "target_student_description": "حدد ما يجعل خدمتك فريدة وجذابة",
+    "what_will_students_learn": "ماذا سيتعلم الطلاب من خدمتك؟",
+    "what_will_students_learn_description": "يجب عليك إدخال 4 أهداف تعليمية على الأقل أو نتائج يمكن للمتعلمين توقع تحقيقها من خدمتك.",
+    "course_prerequisites": "ما هي المتطلبات أو المتطلبات الأساسية لاستخدام خدمتك؟",
+    "course_prerequisites_description": "اذكر المهارات والخبرات والأدوات أو المعدات المطلوبة التي يجب أن يمتلكها المتعلمون قبل استخدام خدمتك. إذا لم تكن هناك متطلبات، استخدم هذه المساحة كفرصة لتقليل الحاجز للمبتدئين.",
+    "who_is_this_service_for": "لمن هذه الخدمة؟",
+    "who_is_this_service_for_description": "اكتب وصفاً واضحاً للمستخدمين المستهدفين لخدمتك الذين سيجدون محتوى خدمتك قيماً. سيساعدك هذا على جذب المستخدمين المناسبين لخدمتك.",
+    "pricing_access": "التسعير والوصول",
+    "pricing_description": "حدد تسعير خدمتك ومدة الاشتراك",
+    "save": "حفظ",
+    "authentication_required": "المصادقة مطلوبة",
+    "no_changes_to_save": "لا توجد تغييرات للحفظ",
+    "highlight_min_length": "يجب أن تكون النقطة البارزة على الأقل 3 أحرف",
+    "what_will_learn_min_required": "مطلوب على الأقل 4 عناصر",
+    "highlights_array_max_length": "الحد الأقصى 50 عنصر مسموح",
+    "validation": {
+      "highlight_cannot_be_empty": "لا يمكن أن تكون النقطة البارزة فارغة"
+    }
   },
   "instructorLives": {
     "myLives": "بثوثي",

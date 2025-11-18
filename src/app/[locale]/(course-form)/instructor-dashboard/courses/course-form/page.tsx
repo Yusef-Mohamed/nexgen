@@ -25,7 +25,6 @@ export async function generateMetadata({
 
 const AddCoursePage = async ({ params }: { params: { locale: string } }) => {
   unstable_setRequestLocale(params.locale);
-
   return <AddCourseClient />;
 };
 

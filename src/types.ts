@@ -163,7 +163,9 @@ export interface IQuestion {
 export interface IPackage {
   title: DynamicString;
   description: DynamicString;
-  highlights: DynamicString[];
+  whoThisCourseFor: DynamicString[];
+  coursePrerequisites: DynamicString[];
+  whatWillLearn: DynamicString[];
   image: string;
   price: number;
   priceAfterDiscount?: number;

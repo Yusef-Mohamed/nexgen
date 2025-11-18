@@ -1,23 +1,23 @@
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
-import { CourseFormSchema } from "../../hooks/useCourseForm";
+import { LearningPathFormData } from "../../hooks/useLearningPathForm";
 import HighlightsStep, {
   HighlightsStepConfig,
 } from "../../../../components/shared/HighlightsStep";
 
-interface Step4HighlightsProps {
-  form: UseFormReturn<CourseFormSchema>;
+interface Step3HighlightsProps {
+  form: UseFormReturn<LearningPathFormData>;
   commonFormStyles: string;
   loading?: boolean;
 }
 
-const Step4Highlights: React.FC<Step4HighlightsProps> = ({
+const Step3Highlights: React.FC<Step3HighlightsProps> = ({
   form,
   commonFormStyles,
   loading = false,
 }) => {
-  const text = useTranslations("courses");
+  const text = useTranslations("learningPathForm");
 
   const config: HighlightsStepConfig = {
     stepTitle: text("target_your_student"),
@@ -31,8 +31,8 @@ const Step4Highlights: React.FC<Step4HighlightsProps> = ({
       description: text("course_prerequisites_description"),
     },
     whoThisCourseFor: {
-      title: text("who_is_this_course_for"),
-      description: text("who_is_this_course_for_description"),
+      title: text("who_is_this_learning_path_for"),
+      description: text("who_is_this_learning_path_for_description"),
     },
     placeholder: {
       en: text("enter_highlights_english"),
@@ -51,4 +51,4 @@ const Step4Highlights: React.FC<Step4HighlightsProps> = ({
   );
 };
 
-export default Step4Highlights;
+export default Step3Highlights;
