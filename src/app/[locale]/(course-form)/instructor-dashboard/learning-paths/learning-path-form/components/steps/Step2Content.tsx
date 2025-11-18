@@ -86,11 +86,9 @@ const Step2Content: React.FC<Step2ContentProps> = ({
               {selectedCourses.map((course) => (
                 <div
                   key={course._id}
-                  className="flex items-center gap-2 p-2 border rounded-md bg-muted/50"
+                  className="flex w-full items-center gap-2 p-4 justify-between border rounded-md bg-muted/50"
                 >
-                  <span className="text-sm">
-                    {getDynamicString(course.title)}
-                  </span>
+                  <span>{getDynamicString(course.title)}</span>
                   <button
                     onClick={() =>
                       setSelectedCourses((prev) =>

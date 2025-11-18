@@ -4,6 +4,13 @@ import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   FormControl,
   FormField,
   FormItem,
@@ -120,6 +127,40 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
           )}
         />
       </div>
+
+      {/* Type Field */}
+      <FormField
+        control={form.control}
+        name="type"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{text("type")}</FormLabel>
+            <Select
+              value={field.value}
+              onValueChange={field.onChange}
+              disabled={loading}
+            >
+              <FormControl>
+                <SelectTrigger className={commonFormStyles}>
+                  <SelectValue placeholder={text("select_type")} />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="beginnerToIntermediate">
+                  {text("beginner_to_intermediate")}
+                </SelectItem>
+                <SelectItem value="intermediateToAdvanced">
+                  {text("intermediate_to_advanced")}
+                </SelectItem>
+                <SelectItem value="beginnerToAdvanced">
+                  {text("beginner_to_advanced")}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </div>
   );
 };

@@ -52,7 +52,9 @@ const CourseFormLayoutClient: React.FC<CourseFormLayoutClientProps> = ({
               </div>
             </div>
           </header>
-          <div className="bg-dash-ground py-6">{children}</div>
+          <div className="bg-dash-ground py-6 min-h-[calc(100vh-24rem)]">
+            {children}
+          </div>
           <Footer clear />
         </div>
       </div>

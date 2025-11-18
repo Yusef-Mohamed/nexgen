@@ -62,13 +62,13 @@ const AddLearningPathClient = () => {
   const getCurrentStepFields = () => {
     switch (currentStep) {
       case 0: // Basic Info
-        return ["title.en", "title.ar", "description.en", "description.ar"];
+        return ["title.en", "title.ar", "description.en", "description.ar", "type"];
       case 1: // Content (Courses)
         return []; // No form fields to validate, just selectedCourses state
       case 2: // Highlights
         return ["whatWillLearn", "coursePrerequisites", "whoThisCourseFor"];
       case 3: // Pricing
-        return ["price", "type"];
+        return ["price"];
       default:
         return [];
     }
@@ -94,6 +94,7 @@ const AddLearningPathClient = () => {
         return {
           title: formData.title,
           description: formData.description,
+          type: formData.type,
         };
       case 1: // Content (Courses)
         return {}; // Courses are handled via selectedCourses state
@@ -107,7 +108,6 @@ const AddLearningPathClient = () => {
         return {
           price: formData.price,
           priceAfterDiscount: formData.priceAfterDiscount,
-          type: formData.type,
         };
       default:
         return {};

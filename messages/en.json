@@ -161,7 +161,7 @@
     "target_your_student": "Target Your Student",
     "target_student_description": "Define what makes your learning path unique and appealing",
     "what_will_students_learn": "What will students learn in your learning path?",
-    "what_will_students_learn_description": "You must enter at least 4 learning objectives or outcomes that learners can expect to achieve after completing your learning path.",
+    "what_will_students_learn_description": "You must enter at least 1 learning objective or outcome that learners can expect to achieve after completing your learning path.",
     "course_prerequisites": "What are the requirements or prerequisites for taking your learning path?",
     "course_prerequisites_description": "List the required skills, experience, tools or equipment learners should have prior to taking your learning path. If there are no requirements, use this space as an opportunity to lower the barrier for beginners.",
     "who_is_this_learning_path_for": "Who is this learning path for?",
@@ -173,7 +173,7 @@
     "authentication_required": "Authentication required",
     "no_changes_to_save": "No changes to save",
     "highlight_min_length": "Highlight must be at least 3 characters",
-    "what_will_learn_min_required": "At least 4 items are required",
+    "what_will_learn_min_required": "At least 1 item is required",
     "highlights_array_max_length": "Maximum 50 items allowed",
     "validation": {
       "highlight_cannot_be_empty": "Highlight cannot be empty"
@@ -1594,6 +1594,8 @@
     "quiz_updated_successfully": "Quiz settings updated successfully"
   },
   "serviceForm": {
+    "selected_courses": "Selected Courses",
+    "pricing": "Pricing",
     "back": "Back",
     "add_new_service": "Add New Service",
     "edit_service": "Edit Service",
@@ -1662,7 +1664,7 @@
     "target_your_student": "Target Your Student",
     "target_student_description": "Define what makes your service unique and appealing",
     "what_will_students_learn": "What will students learn from your service?",
-    "what_will_students_learn_description": "You must enter at least 4 learning objectives or outcomes that learners can expect to achieve from your service.",
+    "what_will_students_learn_description": "You must enter at least 1 learning objective or outcome that learners can expect to achieve from your service.",
     "course_prerequisites": "What are the requirements or prerequisites for using your service?",
     "course_prerequisites_description": "List the required skills, experience, tools or equipment learners should have prior to using your service. If there are no requirements, use this space as an opportunity to lower the barrier for beginners.",
     "who_is_this_service_for": "Who is this service for?",
@@ -1673,7 +1675,7 @@
     "authentication_required": "Authentication required",
     "no_changes_to_save": "No changes to save",
     "highlight_min_length": "Highlight must be at least 3 characters",
-    "what_will_learn_min_required": "At least 4 items are required",
+    "what_will_learn_min_required": "At least 1 item is required",
     "highlights_array_max_length": "Maximum 50 items allowed",
     "validation": {
       "highlight_cannot_be_empty": "Highlight cannot be empty"

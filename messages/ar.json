@@ -158,7 +158,7 @@
     "target_your_student": "استهدف طلابك",
     "target_student_description": "حدد ما يجعل مسار التعلم الخاص بك فريداً وجذاباً",
     "what_will_students_learn": "ماذا سيتعلم الطلاب في مسار التعلم الخاص بك؟",
-    "what_will_students_learn_description": "يجب عليك إدخال 4 أهداف تعليمية على الأقل أو نتائج يمكن للمتعلمين توقع تحقيقها بعد إكمال مسار التعلم الخاص بك.",
+    "what_will_students_learn_description": "يجب عليك إدخال هدف تعليمي واحد على الأقل أو نتيجة يمكن للمتعلمين توقع تحقيقها بعد إكمال مسار التعلم الخاص بك.",
     "course_prerequisites": "ما هي المتطلبات أو المتطلبات الأساسية لحضور مسار التعلم الخاص بك؟",
     "course_prerequisites_description": "اذكر المهارات والخبرات والأدوات أو المعدات المطلوبة التي يجب أن يمتلكها المتعلمون قبل أخذ مسار التعلم الخاص بك. إذا لم تكن هناك متطلبات، استخدم هذه المساحة كفرصة لتقليل الحاجز للمبتدئين.",
     "who_is_this_learning_path_for": "لمن مسار التعلم هذا؟",
@@ -170,7 +170,7 @@
     "authentication_required": "المصادقة مطلوبة",
     "no_changes_to_save": "لا توجد تغييرات للحفظ",
     "highlight_min_length": "يجب أن تكون النقطة البارزة على الأقل 3 أحرف",
-    "what_will_learn_min_required": "مطلوب على الأقل 4 عناصر",
+    "what_will_learn_min_required": "مطلوب على الأقل عنصر واحد",
     "highlights_array_max_length": "الحد الأقصى 50 عنصر مسموح"
   },
   "whyChooseUs": {
@@ -1651,7 +1651,7 @@
     "target_your_student": "استهدف طلابك",
     "target_student_description": "حدد ما يجعل خدمتك فريدة وجذابة",
     "what_will_students_learn": "ماذا سيتعلم الطلاب من خدمتك؟",
-    "what_will_students_learn_description": "يجب عليك إدخال 4 أهداف تعليمية على الأقل أو نتائج يمكن للمتعلمين توقع تحقيقها من خدمتك.",
+    "what_will_students_learn_description": "يجب عليك إدخال هدف تعليمي واحد على الأقل أو نتيجة يمكن للمتعلمين توقع تحقيقها من خدمتك.",
     "course_prerequisites": "ما هي المتطلبات أو المتطلبات الأساسية لاستخدام خدمتك؟",
     "course_prerequisites_description": "اذكر المهارات والخبرات والأدوات أو المعدات المطلوبة التي يجب أن يمتلكها المتعلمون قبل استخدام خدمتك. إذا لم تكن هناك متطلبات، استخدم هذه المساحة كفرصة لتقليل الحاجز للمبتدئين.",
     "who_is_this_service_for": "لمن هذه الخدمة؟",
@@ -1662,7 +1662,7 @@
     "authentication_required": "المصادقة مطلوبة",
     "no_changes_to_save": "لا توجد تغييرات للحفظ",
     "highlight_min_length": "يجب أن تكون النقطة البارزة على الأقل 3 أحرف",
-    "what_will_learn_min_required": "مطلوب على الأقل 4 عناصر",
+    "what_will_learn_min_required": "مطلوب على الأقل عنصر واحد",
     "highlights_array_max_length": "الحد الأقصى 50 عنصر مسموح",
     "validation": {
       "highlight_cannot_be_empty": "لا يمكن أن تكون النقطة البارزة فارغة"

@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import { useRouter, usePathname } from "@/i18n/routing";
 import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { AxiosError } from "axios";
@@ -41,13 +42,15 @@ export const useServiceForm = () => {
   const [selectedCourse, setSelectedCourse] = useState<ICourse | null>(null);
   const [currentService, setCurrentService] = useState<IPackage | null>(null);
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const text = useTranslations("serviceForm");
   const { token } = useAuth();
 
   // Get service ID and mode from URL params
   const serviceId = searchParams.get("serviceId");
   const mode = searchParams.get("mode");
-  const isEditMode = mode === "edit" && !!serviceId;
+  const isEditMode = mode === "edit" || !!serviceId;
   const stepParam = searchParams?.get("step") || "0";
   const initialStep = stepParam ? parseInt(stepParam) : 0;
 
@@ -93,12 +96,12 @@ export const useServiceForm = () => {
         }),
     });
 
-    // Schema for highlights - require at least 4 items
+    // Schema for highlights - require at least 1 item
     const highlightsSchema = z
       .array(highlightItemSchema)
       .min(
-        4,
-        text("what_will_learn_min_required") || "At least 4 items are required"
+        1,
+        text("what_will_learn_min_required") || "At least 1 item is required"
       )
       .max(
         50,
@@ -271,6 +274,20 @@ export const useServiceForm = () => {
     fetchCourses();
   }, [fetchCourses]);
 
+  // Add serviceId to search params
+  const addServiceIdToParams = useCallback(
+    (serviceId: string) => {
+      const currentParams = new URLSearchParams(
+        typeof window !== "undefined" ? window.location.search : ""
+      );
+      currentParams.set("serviceId", serviceId);
+      currentParams.set("mode", "create");
+      currentParams.set("step", "1");
+      router.push(`${pathname}?${currentParams.toString()}`);
+    },
+    [router, pathname]
+  );
+
   // Check if step data has changes compared to current service
   const hasStepChanges = useCallback(
     (stepData: Partial<ServiceFormData>, stepNumber: number) => {
@@ -395,7 +412,6 @@ export const useServiceForm = () => {
       }
 
       let response;
-      let isNewService = false;
       if (currentService) {
         // Update existing service
         response = await axiosInstance.put(
@@ -410,12 +426,17 @@ export const useServiceForm = () => {
       } else {
         // Create new service (only on first step)
         if (stepNumber === 0) {
-          isNewService = true;
           response = await axiosInstance.post("/packages", serviceData, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           });
+
+          const createdService = response.data.data as IPackage;
+          setCurrentService(createdService);
+          addServiceIdToParams(createdService._id);
+          toast.success(text("service_created_successfully"));
+          return { success: false };
         } else {
           toast.error(
             text("error_creating_service") ||
@@ -428,11 +449,7 @@ export const useServiceForm = () => {
       if (response?.data?.data) {
         const service = response.data.data as IPackage;
         setCurrentService(service);
-        toast.success(
-          isNewService
-            ? text("service_created_successfully")
-            : text("service_updated_successfully")
-        );
+        toast.success(text("service_updated_successfully"));
         return { success: true, service };
       }
 

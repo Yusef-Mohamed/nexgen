@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import { useRouter, usePathname } from "@/i18n/routing";
 import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { AxiosError } from "axios";
@@ -42,12 +43,12 @@ const createLearningPathFormSchema = (text: (key: string) => string) => {
       }),
   });
 
-  // Schema for highlights - require at least 4 items
+  // Schema for highlights - require at least 1 item
   const highlightsSchema = z
     .array(highlightItemSchema)
     .min(
-      4,
-      text("what_will_learn_min_required") || "At least 4 items are required"
+      1,
+      text("what_will_learn_min_required") || "At least 1 item is required"
     )
     .max(50, text("highlights_array_max_length") || "Maximum 50 items allowed")
     .default([]);
@@ -141,12 +142,14 @@ export const useLearningPathForm = () => {
   const [currentLearningPath, setCurrentLearningPath] =
     useState<ILearningPath | null>(null);
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const text = useTranslations("learningPathForm");
   const { token } = useAuth();
 
   const learningPathId = searchParams.get("learningPathId");
   const mode = searchParams.get("mode");
-  const isEditMode = !!(learningPathId && mode !== "create");
+  const isEditMode = mode === "edit" || !!learningPathId;
   const stepParam = searchParams?.get("step") || "0";
   const initialStep = stepParam ? parseInt(stepParam) : 0;
 
@@ -327,6 +330,20 @@ export const useLearningPathForm = () => {
     fetchCourses();
   }, [fetchCourses]);
 
+  // Add learningPathId to search params
+  const addLearningPathIdToParams = useCallback(
+    (learningPathId: string) => {
+      const currentParams = new URLSearchParams(
+        typeof window !== "undefined" ? window.location.search : ""
+      );
+      currentParams.set("learningPathId", learningPathId);
+      currentParams.set("mode", "create");
+      currentParams.set("step", "1");
+      router.push(`${pathname}?${currentParams.toString()}`);
+    },
+    [router, pathname]
+  );
+
   // Check if step data has changes compared to current learning path
   const hasStepChanges = useCallback(
     (stepData: Partial<LearningPathFormData>, stepNumber: number) => {
@@ -344,7 +361,8 @@ export const useLearningPathForm = () => {
             stepData.title?.en !== currentTitle.en ||
             stepData.title?.ar !== currentTitle.ar ||
             stepData.description?.en !== currentDescription.en ||
-            stepData.description?.ar !== currentDescription.ar
+            stepData.description?.ar !== currentDescription.ar ||
+            stepData.type !== currentLearningPath.type
           );
         case 1: // Content (Courses)
           const currentCourseIds = (currentLearningPath.courses || [])
@@ -405,8 +423,7 @@ export const useLearningPathForm = () => {
           return (
             stepData.price !== currentLearningPath.price?.toString() ||
             stepData.priceAfterDiscount !==
-              currentLearningPath.priceAfterDiscount?.toString() ||
-            stepData.type !== currentLearningPath.type
+              currentLearningPath.priceAfterDiscount?.toString()
           );
         default:
           return true;
@@ -444,6 +461,9 @@ export const useLearningPathForm = () => {
         if (stepData.description) {
           learningPathData.description = stepData.description;
         }
+        if (stepData.type) {
+          learningPathData.type = stepData.type;
+        }
       } else if (stepNumber === 1) {
         // Step 2: Content (Courses)
         learningPathData.courses = selectedCourses.map(
@@ -470,13 +490,9 @@ export const useLearningPathForm = () => {
             stepData.priceAfterDiscount
           );
         }
-        if (stepData.type) {
-          learningPathData.type = stepData.type;
-        }
       }
 
       let response;
-      let isNewLearningPath = false;
       if (currentLearningPath) {
         // Update existing learning path
         response = await axiosInstance.put(
@@ -492,7 +508,6 @@ export const useLearningPathForm = () => {
       } else {
         // Create new learning path (only on first step)
         if (stepNumber === 0) {
-          isNewLearningPath = true;
           response = await axiosInstance.post(
             "/coursePackages",
             learningPathData,
@@ -503,6 +518,12 @@ export const useLearningPathForm = () => {
               },
             }
           );
+
+          const createdLearningPath = response.data.data as ILearningPath;
+          setCurrentLearningPath(createdLearningPath);
+          addLearningPathIdToParams(createdLearningPath._id);
+          toast.success(text("learning_path_created_successfully"));
+          return { success: false };
         } else {
           toast.error(
             text("error_creating_learning_path") ||
@@ -515,11 +536,7 @@ export const useLearningPathForm = () => {
       if (response?.data?.data) {
         const learningPath = response.data.data as ILearningPath;
         setCurrentLearningPath(learningPath);
-        toast.success(
-          isNewLearningPath
-            ? text("learning_path_created_successfully")
-            : text("learning_path_updated_successfully")
-        );
+        toast.success(text("learning_path_updated_successfully"));
         return { success: true, learningPath };
       }
 
