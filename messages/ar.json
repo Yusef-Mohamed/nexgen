@@ -171,7 +171,20 @@
     "no_changes_to_save": "لا توجد تغييرات للحفظ",
     "highlight_min_length": "يجب أن تكون النقطة البارزة على الأقل 3 أحرف",
     "what_will_learn_min_required": "مطلوب على الأقل عنصر واحد",
-    "highlights_array_max_length": "الحد الأقصى 50 عنصر مسموح"
+    "highlights_array_max_length": "الحد الأقصى 50 عنصر مسموح",
+    "learning_path_image": "صورة مسار التعلم",
+    "learning_path_image_preview": "معاينة صورة مسار التعلم",
+    "learning_path_image_upload_instruction": "قم بتحميل صورة لمسار التعلم الخاص بك. انقر على منطقة الصورة أو استخدم الزر أدناه.",
+    "guidelines": "المبادئ التوجيهية",
+    "learning_path_image_guideline_size": "الحد الأقصى لحجم الملف: 5 ميجابايت",
+    "learning_path_image_guideline_format": "الصيغ المقبولة: JPG, PNG, GIF",
+    "upload_file": "تحميل الملف",
+    "no_file_selected": "لم يتم اختيار ملف",
+    "validation": {
+      "highlight_cannot_be_empty": "لا يمكن أن تكون النقطة البارزة فارغة",
+      "image_invalid": "يرجى اختيار ملف صورة صحيح (JPG, PNG, GIF)",
+      "image_size": "يجب أن يكون حجم الصورة أقل من 5 ميجابايت"
+    }
   },
   "whyChooseUs": {
     "heading": "لماذا تختار أكاديمية NexGen",
@@ -1205,6 +1218,7 @@
     "draft": "مسودة",
     "active": "نشط",
     "inactive": "غير نشط",
+    "pending": "قيد الانتظار",
     "add_new_course": "إضافة دورة جديدة",
     "course_details": "تفاصيل الدورة",
     "finish_course": "إنهاء دورتك",
@@ -1664,8 +1678,18 @@
     "highlight_min_length": "يجب أن تكون النقطة البارزة على الأقل 3 أحرف",
     "what_will_learn_min_required": "مطلوب على الأقل عنصر واحد",
     "highlights_array_max_length": "الحد الأقصى 50 عنصر مسموح",
+    "service_image": "صورة الخدمة",
+    "service_image_preview": "معاينة صورة الخدمة",
+    "service_image_upload_instruction": "قم بتحميل صورة لخدمتك. انقر على منطقة الصورة أو استخدم الزر أدناه.",
+    "guidelines": "المبادئ التوجيهية",
+    "service_image_guideline_size": "الحد الأقصى لحجم الملف: 5 ميجابايت",
+    "service_image_guideline_format": "الصيغ المقبولة: JPG, PNG, GIF",
+    "upload_file": "تحميل الملف",
+    "no_file_selected": "لم يتم اختيار ملف",
     "validation": {
-      "highlight_cannot_be_empty": "لا يمكن أن تكون النقطة البارزة فارغة"
+      "highlight_cannot_be_empty": "لا يمكن أن تكون النقطة البارزة فارغة",
+      "image_invalid": "يرجى اختيار ملف صورة صحيح (JPG, PNG, GIF)",
+      "image_size": "يجب أن يكون حجم الصورة أقل من 5 ميجابايت"
     }
   },
   "instructorLives": {

@@ -38,7 +38,7 @@ const UnifiedCard = ({ item, contentType }: UnifiedCardProps) => {
         id: learningPath._id,
         title: learningPath.title,
         image: learningPath.image,
-        status: "active", // Add your status logic here
+        status: learningPath.status || "active",
         detailsLink: `/instructor-dashboard/learning-paths/learning-path-form?learningPathId=${learningPath._id}&mode=edit`,
       };
     }
@@ -49,7 +49,7 @@ const UnifiedCard = ({ item, contentType }: UnifiedCardProps) => {
         id: service._id,
         title: service.title,
         image: service.image,
-        status: "active", // Add your status logic here
+        status: service.status || "active",
         detailsLink: `/instructor-dashboard/services/${service._id}`,
       };
     }
@@ -61,10 +61,20 @@ const UnifiedCard = ({ item, contentType }: UnifiedCardProps) => {
   if (!itemData) return null;
 
   const getStatusInfo = (status: string) => {
-    const isActive = status === "active";
+    const isActive = status === "active" || status === "published";
+    const isPending = status === "pending" || status === "under_review";
+
+    let statusText = text("inactive");
+    if (isActive) {
+      statusText = text("active");
+    } else if (isPending) {
+      statusText = text("pending");
+    }
+
     return {
       isActive,
-      text: isActive ? text("active") : text("inactive"),
+      isPending,
+      text: statusText,
     };
   };
 
@@ -94,7 +104,11 @@ const UnifiedCard = ({ item, contentType }: UnifiedCardProps) => {
             <p
               className={cn(
                 "font-semibold text-muted-foreground",
-                !statusInfo.isActive ? "text-destructive" : "text-green"
+                statusInfo.isActive
+                  ? "text-green"
+                  : statusInfo.isPending
+                  ? "text-yellow-600 dark:text-yellow-500"
+                  : "text-destructive"
               )}
             >
               {statusInfo.text}

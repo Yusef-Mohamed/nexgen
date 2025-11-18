@@ -36,6 +36,8 @@ const AddServiceClient = () => {
     serviceId,
     currentService,
     initialStep,
+    imagePreview,
+    handleImageFilesSelected,
   } = useServiceForm();
 
   // Use URL-based current step from hook to persist state across refreshes
@@ -151,6 +153,8 @@ const AddServiceClient = () => {
             courses={courses}
             selectedCourse={selectedCourse}
             setSelectedCourse={setSelectedCourse}
+            imagePreview={imagePreview}
+            onImageFilesSelected={handleImageFilesSelected}
             commonFormStyles={commonFormStyles}
             loading={loading}
           />

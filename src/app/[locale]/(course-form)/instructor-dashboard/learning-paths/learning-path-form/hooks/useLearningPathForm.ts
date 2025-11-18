@@ -110,6 +110,7 @@ export interface ILearningPath {
   updatedAt?: string;
   status?: string;
   slug?: string;
+  image?: string;
 }
 
 // Export the form data type
@@ -141,6 +142,8 @@ export const useLearningPathForm = () => {
   const [selectedCourses, setSelectedCourses] = useState<ICourse[]>([]);
   const [currentLearningPath, setCurrentLearningPath] =
     useState<ILearningPath | null>(null);
+  const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -305,6 +308,14 @@ export const useLearningPathForm = () => {
           // The courses are already full objects, not just IDs
           setSelectedCourses(learningPath.courses);
         }
+
+        // Set image preview if image exists
+        if (learningPath.image) {
+          setImagePreview(learningPath.image);
+        } else {
+          setImagePreview(null);
+        }
+        setImage(null);
       } catch (error) {
         console.error("Error fetching learning path:", error);
         toast.error(text("failed_to_load_learning_path"));
@@ -329,6 +340,35 @@ export const useLearningPathForm = () => {
   useEffect(() => {
     fetchCourses();
   }, [fetchCourses]);
+
+  // Handle image file selection
+  const handleImageFilesSelected = useCallback(
+    (files: File[]) => {
+      const file = files?.[0];
+      if (!file) return;
+
+      const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+      if (!validTypes.includes(file.type)) {
+        toast.error(text("validation.image_invalid") || "Invalid image type");
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(
+          text("validation.image_size") || "Image size must be less than 5MB"
+        );
+        return;
+      }
+
+      setImage(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    },
+    [text]
+  );
 
   // Add learningPathId to search params
   const addLearningPathIdToParams = useCallback(
@@ -362,7 +402,8 @@ export const useLearningPathForm = () => {
             stepData.title?.ar !== currentTitle.ar ||
             stepData.description?.en !== currentDescription.en ||
             stepData.description?.ar !== currentDescription.ar ||
-            stepData.type !== currentLearningPath.type
+            stepData.type !== currentLearningPath.type ||
+            imagePreview !== currentLearningPath.image
           );
         case 1: // Content (Courses)
           const currentCourseIds = (currentLearningPath.courses || [])
@@ -450,45 +491,277 @@ export const useLearningPathForm = () => {
 
     setLoading(true);
     try {
-      const learningPathData: Record<string, unknown> = {};
+      const formData = new FormData();
+
+      // Add image if selected
+      if (image) {
+        formData.append("image", image);
+      }
 
       // Prepare step-specific data
       if (stepNumber === 0) {
         // Step 1: Basic Info
-        if (stepData.title) {
-          learningPathData.title = stepData.title;
-        }
-        if (stepData.description) {
-          learningPathData.description = stepData.description;
-        }
-        if (stepData.type) {
-          learningPathData.type = stepData.type;
+        if (currentLearningPath) {
+          // Compare with current learning path and only send changed fields
+          const currentTitle =
+            currentLearningPath.translationTitle ||
+            getStringObject(currentLearningPath.title || "");
+          const currentDescription =
+            currentLearningPath.translationDescription ||
+            getStringObject(currentLearningPath.description || "");
+
+          // Only send title.en if it changed
+          if (
+            stepData.title?.en !== undefined &&
+            stepData.title.en !== currentTitle.en
+          ) {
+            formData.append("title.en", stepData.title.en);
+          }
+
+          // Only send title.ar if it changed
+          if (
+            stepData.title?.ar !== undefined &&
+            stepData.title.ar !== currentTitle.ar
+          ) {
+            formData.append("title.ar", stepData.title.ar);
+          }
+
+          // Only send description.en if it changed
+          if (
+            stepData.description?.en !== undefined &&
+            stepData.description.en !== currentDescription.en
+          ) {
+            formData.append("description.en", stepData.description.en);
+          }
+
+          // Only send description.ar if it changed
+          if (
+            stepData.description?.ar !== undefined &&
+            stepData.description.ar !== currentDescription.ar
+          ) {
+            formData.append("description.ar", stepData.description.ar);
+          }
+
+          // Only send type if it changed
+          if (
+            stepData.type !== undefined &&
+            stepData.type !== currentLearningPath.type
+          ) {
+            formData.append("type", stepData.type);
+          }
+        } else {
+          // New learning path - send all fields
+          if (stepData.title) {
+            formData.append("title.en", stepData.title.en);
+            formData.append("title.ar", stepData.title.ar);
+          }
+          if (stepData.description) {
+            formData.append("description.en", stepData.description.en);
+            formData.append("description.ar", stepData.description.ar);
+          }
+          if (stepData.type) {
+            formData.append("type", stepData.type);
+          }
         }
       } else if (stepNumber === 1) {
         // Step 2: Content (Courses)
-        learningPathData.courses = selectedCourses.map(
-          (course) => course._id || course.id
-        );
+        if (currentLearningPath) {
+          // Only send courses if they changed
+          const currentCourseIds = (currentLearningPath.courses || [])
+            .map((c) => c._id || c.id)
+            .sort();
+          const selectedCourseIds = selectedCourses
+            .map((c) => c._id || c.id)
+            .sort();
+          if (
+            JSON.stringify(currentCourseIds) !==
+            JSON.stringify(selectedCourseIds)
+          ) {
+            selectedCourses.forEach((course) => {
+              formData.append("courses", course._id || course.id);
+            });
+          }
+        } else {
+          // New learning path - send all courses
+          selectedCourses.forEach((course) => {
+            formData.append("courses", course._id || course.id);
+          });
+        }
       } else if (stepNumber === 2) {
         // Step 3: Highlights
-        if (stepData.whatWillLearn) {
-          learningPathData.whatWillLearn = stepData.whatWillLearn;
-        }
-        if (stepData.coursePrerequisites) {
-          learningPathData.coursePrerequisites = stepData.coursePrerequisites;
-        }
-        if (stepData.whoThisCourseFor) {
-          learningPathData.whoThisCourseFor = stepData.whoThisCourseFor;
+        if (currentLearningPath) {
+          // Compare with current learning path and only send changed arrays
+          const currentWhatWillLearn =
+            currentLearningPath.whatWillLearn?.map(
+              (h: { en: string; ar: string } | string) => {
+                if (typeof h === "string") {
+                  const formatted = getStringObject(h);
+                  return { en: formatted.en || "", ar: formatted.ar || "" };
+                }
+                return { en: h.en || "", ar: h.ar || "" };
+              }
+            ) || [];
+          const currentPrerequisites =
+            currentLearningPath.coursePrerequisites?.map(
+              (h: { en: string; ar: string } | string) => {
+                if (typeof h === "string") {
+                  const formatted = getStringObject(h);
+                  return { en: formatted.en || "", ar: formatted.ar || "" };
+                }
+                return { en: h.en || "", ar: h.ar || "" };
+              }
+            ) || [];
+          const currentWhoFor =
+            currentLearningPath.whoThisCourseFor?.map(
+              (h: { en: string; ar: string } | string) => {
+                if (typeof h === "string") {
+                  const formatted = getStringObject(h);
+                  return { en: formatted.en || "", ar: formatted.ar || "" };
+                }
+                return { en: h.en || "", ar: h.ar || "" };
+              }
+            ) || [];
+
+          // Only send whatWillLearn if it changed
+          if (
+            stepData.whatWillLearn &&
+            Array.isArray(stepData.whatWillLearn) &&
+            JSON.stringify(stepData.whatWillLearn) !==
+              JSON.stringify(currentWhatWillLearn)
+          ) {
+            stepData.whatWillLearn.forEach(
+              (highlight: { en: string; ar: string }, index: number) => {
+                formData.append(
+                  `whatWillLearn[${index}][en]`,
+                  highlight.en?.trim() || ""
+                );
+                formData.append(
+                  `whatWillLearn[${index}][ar]`,
+                  highlight.ar?.trim() || ""
+                );
+              }
+            );
+          }
+
+          // Only send coursePrerequisites if it changed
+          if (
+            stepData.coursePrerequisites &&
+            Array.isArray(stepData.coursePrerequisites) &&
+            JSON.stringify(stepData.coursePrerequisites) !==
+              JSON.stringify(currentPrerequisites)
+          ) {
+            stepData.coursePrerequisites.forEach(
+              (highlight: { en: string; ar: string }, index: number) => {
+                formData.append(
+                  `coursePrerequisites[${index}][en]`,
+                  highlight.en?.trim() || ""
+                );
+                formData.append(
+                  `coursePrerequisites[${index}][ar]`,
+                  highlight.ar?.trim() || ""
+                );
+              }
+            );
+          }
+
+          // Only send whoThisCourseFor if it changed
+          if (
+            stepData.whoThisCourseFor &&
+            Array.isArray(stepData.whoThisCourseFor) &&
+            JSON.stringify(stepData.whoThisCourseFor) !==
+              JSON.stringify(currentWhoFor)
+          ) {
+            stepData.whoThisCourseFor.forEach(
+              (highlight: { en: string; ar: string }, index: number) => {
+                formData.append(
+                  `whoThisCourseFor[${index}][en]`,
+                  highlight.en?.trim() || ""
+                );
+                formData.append(
+                  `whoThisCourseFor[${index}][ar]`,
+                  highlight.ar?.trim() || ""
+                );
+              }
+            );
+          }
+        } else {
+          // New learning path - send all highlights
+          if (stepData.whatWillLearn && Array.isArray(stepData.whatWillLearn)) {
+            stepData.whatWillLearn.forEach(
+              (highlight: { en: string; ar: string }, index: number) => {
+                formData.append(
+                  `whatWillLearn[${index}][en]`,
+                  highlight.en?.trim() || ""
+                );
+                formData.append(
+                  `whatWillLearn[${index}][ar]`,
+                  highlight.ar?.trim() || ""
+                );
+              }
+            );
+          }
+          if (
+            stepData.coursePrerequisites &&
+            Array.isArray(stepData.coursePrerequisites)
+          ) {
+            stepData.coursePrerequisites.forEach(
+              (highlight: { en: string; ar: string }, index: number) => {
+                formData.append(
+                  `coursePrerequisites[${index}][en]`,
+                  highlight.en?.trim() || ""
+                );
+                formData.append(
+                  `coursePrerequisites[${index}][ar]`,
+                  highlight.ar?.trim() || ""
+                );
+              }
+            );
+          }
+          if (
+            stepData.whoThisCourseFor &&
+            Array.isArray(stepData.whoThisCourseFor)
+          ) {
+            stepData.whoThisCourseFor.forEach(
+              (highlight: { en: string; ar: string }, index: number) => {
+                formData.append(
+                  `whoThisCourseFor[${index}][en]`,
+                  highlight.en?.trim() || ""
+                );
+                formData.append(
+                  `whoThisCourseFor[${index}][ar]`,
+                  highlight.ar?.trim() || ""
+                );
+              }
+            );
+          }
         }
       } else if (stepNumber === 3) {
         // Step 4: Pricing
-        if (stepData.price) {
-          learningPathData.price = parseFloat(stepData.price);
-        }
-        if (stepData.priceAfterDiscount) {
-          learningPathData.priceAfterDiscount = parseFloat(
-            stepData.priceAfterDiscount
-          );
+        if (currentLearningPath) {
+          // Only send price if it changed
+          if (
+            stepData.price !== undefined &&
+            stepData.price !== currentLearningPath.price?.toString()
+          ) {
+            formData.append("price", stepData.price);
+          }
+
+          // Only send priceAfterDiscount if it changed
+          if (
+            stepData.priceAfterDiscount !== undefined &&
+            stepData.priceAfterDiscount !==
+              currentLearningPath.priceAfterDiscount?.toString()
+          ) {
+            formData.append("priceAfterDiscount", stepData.priceAfterDiscount);
+          }
+        } else {
+          // New learning path - send all pricing fields
+          if (stepData.price) {
+            formData.append("price", stepData.price);
+          }
+          if (stepData.priceAfterDiscount) {
+            formData.append("priceAfterDiscount", stepData.priceAfterDiscount);
+          }
         }
       }
 
@@ -497,10 +770,10 @@ export const useLearningPathForm = () => {
         // Update existing learning path
         response = await axiosInstance.put(
           `/coursePackages/${currentLearningPath._id}`,
-          learningPathData,
+          formData,
           {
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${token}`,
             },
           }
@@ -508,20 +781,19 @@ export const useLearningPathForm = () => {
       } else {
         // Create new learning path (only on first step)
         if (stepNumber === 0) {
-          response = await axiosInstance.post(
-            "/coursePackages",
-            learningPathData,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+          response = await axiosInstance.post("/coursePackages", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          });
 
           const createdLearningPath = response.data.data as ILearningPath;
           setCurrentLearningPath(createdLearningPath);
           addLearningPathIdToParams(createdLearningPath._id);
+          // Clear image after successful creation
+          setImage(null);
+          setImagePreview(null);
           toast.success(text("learning_path_created_successfully"));
           return { success: false };
         } else {
@@ -536,6 +808,11 @@ export const useLearningPathForm = () => {
       if (response?.data?.data) {
         const learningPath = response.data.data as ILearningPath;
         setCurrentLearningPath(learningPath);
+        // Clear image after successful update
+        if (image) {
+          setImage(null);
+          setImagePreview(learningPath.image || null);
+        }
         toast.success(text("learning_path_updated_successfully"));
         return { success: true, learningPath };
       }
@@ -569,5 +846,7 @@ export const useLearningPathForm = () => {
     setSelectedCourses,
     fetchCourses,
     submitStepData,
+    imagePreview,
+    handleImageFilesSelected,
   };
 };

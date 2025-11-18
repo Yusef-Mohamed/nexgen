@@ -37,6 +37,8 @@ const AddLearningPathClient = () => {
     learningPathId,
     currentLearningPath,
     initialStep,
+    imagePreview,
+    handleImageFilesSelected,
   } = useLearningPathForm();
 
   // Use URL-based current step from hook to persist state across refreshes
@@ -62,7 +64,13 @@ const AddLearningPathClient = () => {
   const getCurrentStepFields = () => {
     switch (currentStep) {
       case 0: // Basic Info
-        return ["title.en", "title.ar", "description.en", "description.ar", "type"];
+        return [
+          "title.en",
+          "title.ar",
+          "description.en",
+          "description.ar",
+          "type",
+        ];
       case 1: // Content (Courses)
         return []; // No form fields to validate, just selectedCourses state
       case 2: // Highlights
@@ -164,6 +172,8 @@ const AddLearningPathClient = () => {
         return (
           <Step1BasicInfo
             form={form}
+            imagePreview={imagePreview}
+            onImageFilesSelected={handleImageFilesSelected}
             commonFormStyles={commonFormStyles}
             loading={loading}
           />

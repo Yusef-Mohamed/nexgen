@@ -175,8 +175,18 @@
     "highlight_min_length": "Highlight must be at least 3 characters",
     "what_will_learn_min_required": "At least 1 item is required",
     "highlights_array_max_length": "Maximum 50 items allowed",
+    "learning_path_image": "Learning Path Image",
+    "learning_path_image_preview": "Learning path image preview",
+    "learning_path_image_upload_instruction": "Upload an image for your learning path. Click the image area or use the button below.",
+    "guidelines": "Guidelines",
+    "learning_path_image_guideline_size": "Maximum file size: 5MB",
+    "learning_path_image_guideline_format": "Accepted formats: JPG, PNG, GIF",
+    "upload_file": "Upload file",
+    "no_file_selected": "No file selected",
     "validation": {
-      "highlight_cannot_be_empty": "Highlight cannot be empty"
+      "highlight_cannot_be_empty": "Highlight cannot be empty",
+      "image_invalid": "Please select a valid image file (JPG, PNG, GIF)",
+      "image_size": "Image size must be less than 5MB"
     }
   },
   "whyChooseUs": {
@@ -1207,6 +1217,7 @@
     "draft": "Draft",
     "active": "Active",
     "inactive": "Inactive",
+    "pending": "Pending",
     "add_new_course": "Add new course",
     "my_courses": "My Courses",
     "course_edit": "Edit your course",
@@ -1677,8 +1688,18 @@
     "highlight_min_length": "Highlight must be at least 3 characters",
     "what_will_learn_min_required": "At least 1 item is required",
     "highlights_array_max_length": "Maximum 50 items allowed",
+    "service_image": "Service Image",
+    "service_image_preview": "Service image preview",
+    "service_image_upload_instruction": "Upload an image for your service. Click the image area or use the button below.",
+    "guidelines": "Guidelines",
+    "service_image_guideline_size": "Maximum file size: 5MB",
+    "service_image_guideline_format": "Accepted formats: JPG, PNG, GIF",
+    "upload_file": "Upload file",
+    "no_file_selected": "No file selected",
     "validation": {
-      "highlight_cannot_be_empty": "Highlight cannot be empty"
+      "highlight_cannot_be_empty": "Highlight cannot be empty",
+      "image_invalid": "Please select a valid image file (JPG, PNG, GIF)",
+      "image_size": "Image size must be less than 5MB"
     }
   },
   "instructorLives": {

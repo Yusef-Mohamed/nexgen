@@ -123,6 +123,7 @@ const SearchAndFilters = ({
           <SelectItem value="all">{text("all")}</SelectItem>
           <SelectItem value="active">{text("active")}</SelectItem>
           <SelectItem value="inactive">{text("inactive")}</SelectItem>
+          <SelectItem value="pending">{text("pending")}</SelectItem>
         </SelectContent>
       </Select>
     </div>
@@ -170,6 +171,7 @@ const MyCourses = () => {
           const statusMap: Record<string, string> = {
             active: "published",
             inactive: "inActive",
+            pending: "pending",
           };
           filtersParams.append(
             "status",

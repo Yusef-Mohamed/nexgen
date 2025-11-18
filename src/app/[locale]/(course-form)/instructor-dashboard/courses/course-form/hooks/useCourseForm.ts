@@ -529,7 +529,8 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
             stepData.needAccessibleCourse !==
               currentCourse.needAccessibleCourse ||
             (stepData.promotionVideo || "") !== currentPromotionVideo ||
-            Number(stepData.courseDuration) !== currentCourse.courseDuration
+            Number(stepData.courseDuration) !== currentCourse.courseDuration ||
+            imagePreview !== currentCourse.image
           );
         case 1: // Pricing
           return (
@@ -647,148 +648,515 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
       // Prepare step-specific data (NEW STEP STRUCTURE)
       if (stepNumber === 0) {
         // Step 1: Basic Info + Accessible Courses
-        if (stepData.title) {
-          formData.append("title.ar", stepData.title.ar);
-          formData.append("title.en", stepData.title.en);
-        }
-        if (stepData.description) {
-          formData.append("description.ar", stepData.description.ar);
-          formData.append("description.en", stepData.description.en);
-        }
-        if (stepData.category) {
-          formData.append("category", stepData.category);
-        }
-        if (stepData.type) {
-          formData.append("type", stepData.type);
-        }
-        if (stepData.courseDuration) {
-          formData.append("courseDuration", stepData.courseDuration);
-        }
-        if (stepData.needAccessibleCourse !== undefined) {
-          formData.append(
-            "needAccessibleCourse",
-            stepData.needAccessibleCourse.toString()
+        if (currentCourse) {
+          // Compare with current course and only send changed fields
+          const currentTitle = getStringObject(currentCourse.title || "");
+          const currentDescription = getStringObject(
+            currentCourse.description || ""
           );
-        }
-        if (stepData.needAccessibleCourse && accessibleCourses.length > 0) {
-          accessibleCourses.forEach((course) => {
-            formData.append("accessibleCourses", course._id);
-          });
-        }
-        if (stepData.promotionVideo) {
-          formData.append("promotionVideo", stepData.promotionVideo);
+          const currentPromotionVideo =
+            (currentCourse as ICourse & { promotionVideo?: string })
+              .promotionVideo || "";
+
+          // Only send title.en if it changed
+          if (
+            stepData.title?.en !== undefined &&
+            stepData.title.en !== currentTitle.en
+          ) {
+            formData.append("title.en", stepData.title.en);
+          }
+
+          // Only send title.ar if it changed
+          if (
+            stepData.title?.ar !== undefined &&
+            stepData.title.ar !== currentTitle.ar
+          ) {
+            formData.append("title.ar", stepData.title.ar);
+          }
+
+          // Only send description.en if it changed
+          if (
+            stepData.description?.en !== undefined &&
+            stepData.description.en !== currentDescription.en
+          ) {
+            formData.append("description.en", stepData.description.en);
+          }
+
+          // Only send description.ar if it changed
+          if (
+            stepData.description?.ar !== undefined &&
+            stepData.description.ar !== currentDescription.ar
+          ) {
+            formData.append("description.ar", stepData.description.ar);
+          }
+
+          // Only send category if it changed
+          if (
+            stepData.category !== undefined &&
+            stepData.category !== currentCourse.category?._id
+          ) {
+            formData.append("category", stepData.category);
+          }
+
+          // Only send type if it changed
+          if (
+            stepData.type !== undefined &&
+            stepData.type !== currentCourse.type
+          ) {
+            formData.append("type", stepData.type);
+          }
+
+          // Only send courseDuration if it changed
+          if (
+            stepData.courseDuration !== undefined &&
+            Number(stepData.courseDuration) !== currentCourse.courseDuration
+          ) {
+            formData.append("courseDuration", stepData.courseDuration);
+          }
+
+          // Only send needAccessibleCourse if it changed
+          if (
+            stepData.needAccessibleCourse !== undefined &&
+            stepData.needAccessibleCourse !== currentCourse.needAccessibleCourse
+          ) {
+            formData.append(
+              "needAccessibleCourse",
+              stepData.needAccessibleCourse.toString()
+            );
+          }
+
+          // Only send accessibleCourses if they changed
+          if (stepData.needAccessibleCourse && accessibleCourses.length > 0) {
+            const currentAccessibleCourseIds = (
+              currentCourse.accessibleCourses || []
+            )
+              .map((c) => c._id)
+              .sort();
+            const newAccessibleCourseIds = accessibleCourses
+              .map((c) => c._id)
+              .sort();
+            if (
+              JSON.stringify(currentAccessibleCourseIds) !==
+              JSON.stringify(newAccessibleCourseIds)
+            ) {
+              accessibleCourses.forEach((course) => {
+                formData.append("accessibleCourses", course._id);
+              });
+            }
+          }
+
+          // Only send promotionVideo if it changed
+          if (
+            stepData.promotionVideo !== undefined &&
+            (stepData.promotionVideo || "") !== currentPromotionVideo
+          ) {
+            formData.append("promotionVideo", stepData.promotionVideo || "");
+          }
+        } else {
+          // New course - send all fields
+          if (stepData.title) {
+            formData.append("title.ar", stepData.title.ar);
+            formData.append("title.en", stepData.title.en);
+          }
+          if (stepData.description) {
+            formData.append("description.ar", stepData.description.ar);
+            formData.append("description.en", stepData.description.en);
+          }
+          if (stepData.category) {
+            formData.append("category", stepData.category);
+          }
+          if (stepData.type) {
+            formData.append("type", stepData.type);
+          }
+          if (stepData.courseDuration) {
+            formData.append("courseDuration", stepData.courseDuration);
+          }
+          if (stepData.needAccessibleCourse !== undefined) {
+            formData.append(
+              "needAccessibleCourse",
+              stepData.needAccessibleCourse.toString()
+            );
+          }
+          if (stepData.needAccessibleCourse && accessibleCourses.length > 0) {
+            accessibleCourses.forEach((course) => {
+              formData.append("accessibleCourses", course._id);
+            });
+          }
+          if (stepData.promotionVideo) {
+            formData.append("promotionVideo", stepData.promotionVideo);
+          }
         }
       } else if (stepNumber === 1) {
         // Step 2: Pricing
-        if (stepData.price) {
-          formData.append("price", stepData.price);
-        }
-        if (stepData.priceAfterDiscount) {
-          formData.append("priceAfterDiscount", stepData.priceAfterDiscount);
-        }
-        if (stepData.freePackageSubscriptionInDays !== undefined) {
-          formData.append(
-            "freePackageSubscriptionInDays",
-            stepData.freePackageSubscriptionInDays.toString()
-          );
+        if (currentCourse) {
+          // Only send price if it changed
+          if (
+            stepData.price !== undefined &&
+            stepData.price !== currentCourse.price?.toString()
+          ) {
+            formData.append("price", stepData.price);
+          }
+
+          // Only send priceAfterDiscount if it changed
+          if (
+            stepData.priceAfterDiscount !== undefined &&
+            stepData.priceAfterDiscount !==
+              currentCourse.priceAfterDiscount?.toString()
+          ) {
+            formData.append("priceAfterDiscount", stepData.priceAfterDiscount);
+          }
+
+          // Only send freePackageSubscriptionInDays if it changed
+          if (
+            stepData.freePackageSubscriptionInDays !== undefined &&
+            stepData.freePackageSubscriptionInDays !==
+              currentCourse.freePackageSubscriptionInDays
+          ) {
+            formData.append(
+              "freePackageSubscriptionInDays",
+              stepData.freePackageSubscriptionInDays.toString()
+            );
+          }
+        } else {
+          // New course - send all pricing fields
+          if (stepData.price) {
+            formData.append("price", stepData.price);
+          }
+          if (stepData.priceAfterDiscount) {
+            formData.append("priceAfterDiscount", stepData.priceAfterDiscount);
+          }
+          if (stepData.freePackageSubscriptionInDays !== undefined) {
+            formData.append(
+              "freePackageSubscriptionInDays",
+              stepData.freePackageSubscriptionInDays.toString()
+            );
+          }
         }
       } else if (stepNumber === 2) {
         // Step 3: Certificate
-        if (stepData.certificateDescription) {
-          formData.append(
-            "certificateDescription.ar",
-            stepData.certificateDescription.ar
+        if (currentCourse) {
+          const currentCertDesc = getStringObject(
+            currentCourse.certificateDescription || ""
           );
-          formData.append(
-            "certificateDescription.en",
-            stepData.certificateDescription.en
-          );
-        }
-        if (stepData.rating) {
-          formData.append("rating", stepData.rating);
+
+          // Only send certificateDescription.en if it changed
+          if (
+            stepData.certificateDescription?.en !== undefined &&
+            stepData.certificateDescription.en !== currentCertDesc.en
+          ) {
+            formData.append(
+              "certificateDescription.en",
+              stepData.certificateDescription.en
+            );
+          }
+
+          // Only send certificateDescription.ar if it changed
+          if (
+            stepData.certificateDescription?.ar !== undefined &&
+            stepData.certificateDescription.ar !== currentCertDesc.ar
+          ) {
+            formData.append(
+              "certificateDescription.ar",
+              stepData.certificateDescription.ar
+            );
+          }
+
+          // Only send rating if it changed
+          if (
+            stepData.rating !== undefined &&
+            stepData.rating !== currentCourse.rating?.toString()
+          ) {
+            formData.append("rating", stepData.rating);
+          }
+        } else {
+          // New course - send all certificate fields
+          if (stepData.certificateDescription) {
+            formData.append(
+              "certificateDescription.ar",
+              stepData.certificateDescription.ar
+            );
+            formData.append(
+              "certificateDescription.en",
+              stepData.certificateDescription.en
+            );
+          }
+          if (stepData.rating) {
+            formData.append("rating", stepData.rating);
+          }
         }
       } else if (stepNumber === 3) {
         // Step 4: Highlights (whatWillLearn, coursePrerequisites, whoThisCourseFor)
-        if (stepData.whatWillLearn && Array.isArray(stepData.whatWillLearn)) {
-          stepData.whatWillLearn.forEach(
-            (highlight: { en: string; ar: string }, index: number) => {
-              formData.append(
-                `whatWillLearn[${index}][en]`,
-                highlight.en?.trim() || ""
-              );
-              formData.append(
-                `whatWillLearn[${index}][ar]`,
-                highlight.ar?.trim() || ""
-              );
-            }
-          );
-        }
-        if (
-          stepData.coursePrerequisites &&
-          Array.isArray(stepData.coursePrerequisites)
-        ) {
-          stepData.coursePrerequisites.forEach(
-            (highlight: { en: string; ar: string }, index: number) => {
-              formData.append(
-                `coursePrerequisites[${index}][en]`,
-                highlight.en?.trim() || ""
-              );
-              formData.append(
-                `coursePrerequisites[${index}][ar]`,
-                highlight.ar?.trim() || ""
-              );
-            }
-          );
-        }
-        if (
-          stepData.whoThisCourseFor &&
-          Array.isArray(stepData.whoThisCourseFor)
-        ) {
-          stepData.whoThisCourseFor.forEach(
-            (highlight: { en: string; ar: string }, index: number) => {
-              formData.append(
-                `whoThisCourseFor[${index}][en]`,
-                highlight.en?.trim() || ""
-              );
-              formData.append(
-                `whoThisCourseFor[${index}][ar]`,
-                highlight.ar?.trim() || ""
-              );
-            }
-          );
+        if (currentCourse) {
+          // Compare with current course and only send changed arrays
+          const currentWhatWillLearn =
+            currentCourse.whatWillLearn?.map((h) => {
+              if (!h) return { en: "", ar: "" };
+              const formatted = getStringObject(h);
+              return {
+                en: formatted.en || "",
+                ar: formatted.ar || "",
+              };
+            }) || [];
+          const currentCoursePrerequisites =
+            currentCourse.coursePrerequisites?.map((h) => {
+              if (!h) return { en: "", ar: "" };
+              const formatted = getStringObject(h);
+              return {
+                en: formatted.en || "",
+                ar: formatted.ar || "",
+              };
+            }) || [];
+          const currentWhoThisCourseFor =
+            currentCourse.whoThisCourseFor?.map((h) => {
+              if (!h) return { en: "", ar: "" };
+              const formatted = getStringObject(h);
+              return {
+                en: formatted.en || "",
+                ar: formatted.ar || "",
+              };
+            }) || [];
+
+          // Only send whatWillLearn if it changed
+          if (
+            stepData.whatWillLearn &&
+            Array.isArray(stepData.whatWillLearn) &&
+            JSON.stringify(stepData.whatWillLearn || []) !==
+              JSON.stringify(currentWhatWillLearn)
+          ) {
+            stepData.whatWillLearn.forEach(
+              (highlight: { en: string; ar: string }, index: number) => {
+                formData.append(
+                  `whatWillLearn[${index}][en]`,
+                  highlight.en?.trim() || ""
+                );
+                formData.append(
+                  `whatWillLearn[${index}][ar]`,
+                  highlight.ar?.trim() || ""
+                );
+              }
+            );
+          }
+
+          // Only send coursePrerequisites if it changed
+          if (
+            stepData.coursePrerequisites &&
+            Array.isArray(stepData.coursePrerequisites) &&
+            JSON.stringify(stepData.coursePrerequisites || []) !==
+              JSON.stringify(currentCoursePrerequisites)
+          ) {
+            stepData.coursePrerequisites.forEach(
+              (highlight: { en: string; ar: string }, index: number) => {
+                formData.append(
+                  `coursePrerequisites[${index}][en]`,
+                  highlight.en?.trim() || ""
+                );
+                formData.append(
+                  `coursePrerequisites[${index}][ar]`,
+                  highlight.ar?.trim() || ""
+                );
+              }
+            );
+          }
+
+          // Only send whoThisCourseFor if it changed
+          if (
+            stepData.whoThisCourseFor &&
+            Array.isArray(stepData.whoThisCourseFor) &&
+            JSON.stringify(stepData.whoThisCourseFor || []) !==
+              JSON.stringify(currentWhoThisCourseFor)
+          ) {
+            stepData.whoThisCourseFor.forEach(
+              (highlight: { en: string; ar: string }, index: number) => {
+                formData.append(
+                  `whoThisCourseFor[${index}][en]`,
+                  highlight.en?.trim() || ""
+                );
+                formData.append(
+                  `whoThisCourseFor[${index}][ar]`,
+                  highlight.ar?.trim() || ""
+                );
+              }
+            );
+          }
+        } else {
+          // New course - send all highlights
+          if (stepData.whatWillLearn && Array.isArray(stepData.whatWillLearn)) {
+            stepData.whatWillLearn.forEach(
+              (highlight: { en: string; ar: string }, index: number) => {
+                formData.append(
+                  `whatWillLearn[${index}][en]`,
+                  highlight.en?.trim() || ""
+                );
+                formData.append(
+                  `whatWillLearn[${index}][ar]`,
+                  highlight.ar?.trim() || ""
+                );
+              }
+            );
+          }
+          if (
+            stepData.coursePrerequisites &&
+            Array.isArray(stepData.coursePrerequisites)
+          ) {
+            stepData.coursePrerequisites.forEach(
+              (highlight: { en: string; ar: string }, index: number) => {
+                formData.append(
+                  `coursePrerequisites[${index}][en]`,
+                  highlight.en?.trim() || ""
+                );
+                formData.append(
+                  `coursePrerequisites[${index}][ar]`,
+                  highlight.ar?.trim() || ""
+                );
+              }
+            );
+          }
+          if (
+            stepData.whoThisCourseFor &&
+            Array.isArray(stepData.whoThisCourseFor)
+          ) {
+            stepData.whoThisCourseFor.forEach(
+              (highlight: { en: string; ar: string }, index: number) => {
+                formData.append(
+                  `whoThisCourseFor[${index}][en]`,
+                  highlight.en?.trim() || ""
+                );
+                formData.append(
+                  `whoThisCourseFor[${index}][ar]`,
+                  highlight.ar?.trim() || ""
+                );
+              }
+            );
+          }
         }
       } else if (stepNumber === 4) {
         // Step 5: Appearance
-        if (stepData.bgColor)
-          formData.append("colors.bgColor", stepData.bgColor);
-        if (stepData.bgDarkMode)
-          formData.append("colors.bgDarkMode", stepData.bgDarkMode);
-        if (stepData.fontColor)
-          formData.append("colors.fontColor", stepData.fontColor);
-        if (stepData.fontDarkMode)
-          formData.append("colors.fontDarkMode", stepData.fontDarkMode);
+        if (currentCourse) {
+          // Only send bgColor if it changed
+          if (
+            stepData.bgColor !== undefined &&
+            (stepData.bgColor || "#ffffff") !==
+              (currentCourse.colors?.bgColor || "#ffffff")
+          ) {
+            formData.append("colors.bgColor", stepData.bgColor);
+          }
+
+          // Only send bgDarkMode if it changed
+          if (
+            stepData.bgDarkMode !== undefined &&
+            (stepData.bgDarkMode || "#000000") !==
+              (currentCourse.colors?.bgDarkMode || "#000000")
+          ) {
+            formData.append("colors.bgDarkMode", stepData.bgDarkMode);
+          }
+
+          // Only send fontColor if it changed
+          if (
+            stepData.fontColor !== undefined &&
+            (stepData.fontColor || "#000000") !==
+              (currentCourse.colors?.fontColor || "#000000")
+          ) {
+            formData.append("colors.fontColor", stepData.fontColor);
+          }
+
+          // Only send fontDarkMode if it changed
+          if (
+            stepData.fontDarkMode !== undefined &&
+            (stepData.fontDarkMode || "#ffffff") !==
+              (currentCourse.colors?.fontDarkMode || "#ffffff")
+          ) {
+            formData.append("colors.fontDarkMode", stepData.fontDarkMode);
+          }
+        } else {
+          // New course - send all appearance fields
+          if (stepData.bgColor)
+            formData.append("colors.bgColor", stepData.bgColor);
+          if (stepData.bgDarkMode)
+            formData.append("colors.bgDarkMode", stepData.bgDarkMode);
+          if (stepData.fontColor)
+            formData.append("colors.fontColor", stepData.fontColor);
+          if (stepData.fontDarkMode)
+            formData.append("colors.fontDarkMode", stepData.fontDarkMode);
+        }
       } else if (stepNumber === 5) {
         // Step 6: Messages
+        if (currentCourse) {
+          const currentWelcomeMessage = getStringObject(
+            currentCourse.courseWelcomeMessage || ""
+          );
+          const currentGoodbyeMessage = getStringObject(
+            currentCourse.goodByeMessage || ""
+          );
 
-        if (stepData.courseWelcomeMessage) {
-          formData.append(
-            "courseWelcomeMessage.en",
-            stepData.courseWelcomeMessage.en || ""
-          );
-          formData.append(
-            "courseWelcomeMessage.ar",
-            stepData.courseWelcomeMessage.ar || ""
-          );
-        }
-        if (stepData.goodByeMessage) {
-          formData.append(
-            "goodByeMessage.en",
-            stepData.goodByeMessage.en || ""
-          );
-          formData.append(
-            "goodByeMessage.ar",
-            stepData.goodByeMessage.ar || ""
-          );
+          // Only send courseWelcomeMessage.en if it changed
+          if (
+            stepData.courseWelcomeMessage?.en !== undefined &&
+            (stepData.courseWelcomeMessage.en || "") !==
+              (currentWelcomeMessage.en || "")
+          ) {
+            formData.append(
+              "courseWelcomeMessage.en",
+              stepData.courseWelcomeMessage.en || ""
+            );
+          }
+
+          // Only send courseWelcomeMessage.ar if it changed
+          if (
+            stepData.courseWelcomeMessage?.ar !== undefined &&
+            (stepData.courseWelcomeMessage.ar || "") !==
+              (currentWelcomeMessage.ar || "")
+          ) {
+            formData.append(
+              "courseWelcomeMessage.ar",
+              stepData.courseWelcomeMessage.ar || ""
+            );
+          }
+
+          // Only send goodByeMessage.en if it changed
+          if (
+            stepData.goodByeMessage?.en !== undefined &&
+            (stepData.goodByeMessage.en || "") !==
+              (currentGoodbyeMessage.en || "")
+          ) {
+            formData.append(
+              "goodByeMessage.en",
+              stepData.goodByeMessage.en || ""
+            );
+          }
+
+          // Only send goodByeMessage.ar if it changed
+          if (
+            stepData.goodByeMessage?.ar !== undefined &&
+            (stepData.goodByeMessage.ar || "") !==
+              (currentGoodbyeMessage.ar || "")
+          ) {
+            formData.append(
+              "goodByeMessage.ar",
+              stepData.goodByeMessage.ar || ""
+            );
+          }
+        } else {
+          // New course - send all message fields
+          if (stepData.courseWelcomeMessage) {
+            formData.append(
+              "courseWelcomeMessage.en",
+              stepData.courseWelcomeMessage.en || ""
+            );
+            formData.append(
+              "courseWelcomeMessage.ar",
+              stepData.courseWelcomeMessage.ar || ""
+            );
+          }
+          if (stepData.goodByeMessage) {
+            formData.append(
+              "goodByeMessage.en",
+              stepData.goodByeMessage.en || ""
+            );
+            formData.append(
+              "goodByeMessage.ar",
+              stepData.goodByeMessage.ar || ""
+            );
+          }
         }
       }
 

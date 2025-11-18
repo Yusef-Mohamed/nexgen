@@ -170,6 +170,7 @@ export interface IPackage {
   price: number;
   priceAfterDiscount?: number;
   subscriptionDurationDays: number;
+  status: "active" | "inActive" | "pending";
   course: ICourse;
   _id: string;
   createdAt: string;
@@ -179,6 +180,7 @@ export interface ICoursePackage {
   title: DynamicString;
   description: DynamicString;
   highlights: DynamicString[];
+  status: "active" | "inActive" | "pending";
   price: number;
   priceAfterDiscount?: number;
   courses: ICourse[];
