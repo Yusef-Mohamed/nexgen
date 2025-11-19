@@ -61,7 +61,7 @@ const UnifiedCard = ({ item, contentType }: UnifiedCardProps) => {
   if (!itemData) return null;
 
   const getStatusInfo = (status: string) => {
-    const isActive = status === "active" || status === "published";
+    const isActive = status === "active" || status === "active";
     const isPending = status === "pending" || status === "under_review";
 
     let statusText = text("inactive");

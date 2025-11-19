@@ -124,7 +124,7 @@ const MyCourses = () => {
         if (search) filtersParams.append("search", search);
         // Map filter values to API status values
         const statusMap: Record<"active" | "inactive" | "pending", string> = {
-          active: "published",
+          active: "active",
           inactive: "inActive",
           pending: "pending",
         };

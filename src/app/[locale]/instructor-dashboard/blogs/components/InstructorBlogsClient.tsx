@@ -83,7 +83,7 @@ const InstructorBlogsClient = () => {
       }
 
       const statusMap: Record<BlogStatus, string> = {
-        active: "published",
+        active: "active",
         inactive: "inActive",
         pending: "pending",
       };
