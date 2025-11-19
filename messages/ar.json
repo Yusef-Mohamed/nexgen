@@ -942,7 +942,11 @@
       "confirmWithdraw": "تأكيد السحب",
       "totalEnrollments": "إجمالي التسجيلات",
       "averageRate": "متوسط السعر",
-      "instructorProfits": "أرباح المدرب"
+      "instructorProfits": "أرباح المدرب",
+      "unitStudent": "طالب",
+      "unitRating": "/5",
+      "unitCurrency": "$",
+      "info": "معلومات"
     },
     "tabs": {
       "commission": "العمولات",

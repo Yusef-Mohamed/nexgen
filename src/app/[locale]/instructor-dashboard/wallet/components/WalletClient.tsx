@@ -8,6 +8,7 @@ import TrendBadge from "@/components/TrendBadge";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Info } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -113,7 +114,6 @@ const WalletClient = () => {
     };
     if (token && user) fetchMarketLog();
   }, [token, user]);
-
   if (isLoading && !marketLog) {
     return <LoadingState />;
   }
@@ -188,21 +188,33 @@ const StatsCards = ({
         value={marketLog?.totalEnrollments || 0}
         percentage={marketLog?.totalEnrollmentsDiff || 0}
         total={marketLog?.totalEnrollments || 0}
+        unit={t("stats.unitStudent")}
+        t={t}
       />
       <StatCard
         title={t("stats.averageRate")}
         value={marketLog?.avgRate || 0}
         percentage={marketLog?.avgRateDiff || 0}
         total={marketLog?.avgRate || 0}
+        unit={t("stats.unitRating")}
+        t={t}
       />
       <StatCard
         title={t("stats.instructorProfits")}
         value={marketLog?.instructorProfits || 0}
         percentage={marketLog?.instructorProfitsDiff || 0}
         total={marketLog?.instructorProfits || 0}
+        unit={t("stats.unitCurrency")}
+        t={t}
       />
     </div>
-    <BalanceCard balance={marketLog?.withdrawals || 0} t={t} locale={locale} />
+    <BalanceCard
+      balance={
+        (marketLog?.instructorProfits || 0) - (marketLog?.withdrawals || 0)
+      }
+      t={t}
+      locale={locale}
+    />
   </div>
 );
 
@@ -211,32 +223,71 @@ const StatCard = ({
   value,
   percentage,
   total,
+  unit,
+  t,
 }: {
   title: string;
   value: number;
   total: number;
   percentage: number;
-}) => (
-  <Card>
-    <CardContent className="p-4">
-      <div>
-        <p className="text-sm text-muted-foreground">{title}</p>
-        <h3 className="mt-1 mb-2 font-semibold h1-5">
-          ${value?.toLocaleString()}
-        </h3>
-      </div>
-      {percentage && total ? (
+  unit?: string;
+  t: (key: string) => string;
+}) => {
+  const isPositive = percentage > 0;
+  const currencyUnit = t("stats.unitCurrency");
+  const ratingUnit = t("stats.unitRating");
+
+  const renderValue = () => {
+    if (unit === currencyUnit) {
+      return `${currencyUnit}${value?.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`;
+    } else if (unit === ratingUnit) {
+      return (
         <>
-          <TrendBadge
-            percentage={percentage.toString()}
-            positive={percentage > 0}
-          />
-          <RenderFakeChart positive={percentage > 0} />
+          {value?.toFixed(1)}{" "}
+          <span className="text-base text-muted-foreground">{ratingUnit}</span>
         </>
-      ) : null}
-    </CardContent>
-  </Card>
-);
+      );
+    } else {
+      return (
+        <>
+          {value?.toLocaleString()}{" "}
+          {unit && (
+            <span className="text-base text-muted-foreground">{unit}</span>
+          )}
+        </>
+      );
+    }
+  };
+
+  return (
+    <Card>
+      <CardContent className="p-4">
+        <div>
+          <p className="text-sm text-muted-foreground mb-1">{title}</p>
+          <p className="!text-2xl font-semibold mb-3">{renderValue()}</p>
+        </div>
+        {percentage !== undefined && percentage !== null && total ? (
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <TrendBadge
+                percentage={Math.abs(percentage).toFixed(0)}
+                positive={isPositive}
+              />
+              <Info
+                className="w-4 h-4 text-muted-foreground"
+                aria-label={t("stats.info")}
+              />
+            </div>
+            <RenderFakeChart positive={isPositive} />
+          </div>
+        ) : null}
+      </CardContent>
+    </Card>
+  );
+};
 
 const BalanceCard = ({
   balance,
@@ -303,7 +354,7 @@ const BalanceCard = ({
               {t("stats.currentBalance")}
             </p>
             <h3 className="font-semibold text-white dark:text-black h1-5">
-              ${balance?.toLocaleString()}
+              ${balance.toFixed(2)?.toLocaleString()}
             </h3>
           </div>
         </div>

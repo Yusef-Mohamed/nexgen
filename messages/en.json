@@ -945,7 +945,11 @@
       "confirmWithdraw": "Confirm Withdrawal",
       "totalEnrollments": "Total Enrollments",
       "averageRate": "Average Rate",
-      "instructorProfits": "Instructor Profits"
+      "instructorProfits": "Instructor Profits",
+      "unitStudent": "Student",
+      "unitRating": "/5",
+      "unitCurrency": "$",
+      "info": "Information"
     },
     "tabs": {
       "commission": "Commissions",
