@@ -11,20 +11,7 @@ import { useRouter, usePathname } from "@/i18n/routing";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 import { getStringObject } from "@/lib/utils";
-
-// Backend error response type
-interface BackendError {
-  type: string;
-  value: unknown;
-  msg: string;
-  path: string;
-  location: string;
-}
-
-interface BackendErrorResponse {
-  errors?: BackendError[];
-  message?: string;
-}
+import handleBackendFormErrors from "@/lib/handleBackendFormErrors";
 
 interface UseCourseFormProps {
   onCourseUpdated?: (updatedCourse?: ICourse) => void;
@@ -455,55 +442,6 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
       router.push(`${pathname}?${currentParams.toString()}`);
     },
     [router, pathname]
-  );
-
-  // Handle backend validation errors
-  const handleBackendErrors = useCallback(
-    (error: AxiosError<BackendErrorResponse>) => {
-      const backendErrors = error.response?.data?.errors;
-
-      if (Array.isArray(backendErrors)) {
-        // Clear existing form errors first
-        form.clearErrors();
-
-        // Map backend errors to form field errors
-        backendErrors.forEach((backendError) => {
-          if (backendError.type === "field" && backendError.path) {
-            // Convert backend field path to form field path
-            let fieldPath: keyof CourseFormSchema | string = backendError.path;
-
-            // Handle nested fields (e.g., title.en, title.ar)
-            if (backendError.path === "title") {
-              // If it's a title error, we might need to set it on both languages
-              // For now, let's set it on the English version
-              fieldPath = "title.en";
-            } else if (backendError.path === "description") {
-              fieldPath = "description.en";
-            } else if (backendError.path === "certificateDescription") {
-              fieldPath = "certificateDescription.en";
-            }
-
-            // Set the error on the form field
-            (
-              form.setError as (
-                name: string,
-                error: { type: string; message: string }
-              ) => void
-            )(fieldPath, {
-              type: "server",
-              message: backendError.msg,
-            });
-          }
-        });
-
-        // Show a general error message if there are field errors
-        toast.error(text("validation_errors_found"));
-        return true; // Indicates that field errors were handled
-      }
-
-      return false; // No field errors to handle
-    },
-    [form, text]
   );
 
   // Check if step data has changes compared to current course
@@ -1212,11 +1150,11 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
       console.error("Error submitting step data:", error);
 
       if (error instanceof AxiosError) {
-        // Try to handle backend validation errors first
-        const fieldErrorsHandled = handleBackendErrors(error);
+        const fieldErrorsHandled = handleBackendFormErrors(form, error);
 
-        if (!fieldErrorsHandled) {
-          // If no field errors were handled, show general error message
+        if (fieldErrorsHandled) {
+          toast.error(text("validation_errors_found"));
+        } else {
           const errorMessage =
             error.response?.data?.message || text("save_step_failed");
           toast.error(errorMessage);

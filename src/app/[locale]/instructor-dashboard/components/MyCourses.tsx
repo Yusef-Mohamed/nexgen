@@ -6,22 +6,17 @@ import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Link } from "@/i18n/routing";
 import { FilterTabs, FilterOption } from "@/components/filters/FilterTabs";
 import { getDynamicContent, ContentType } from "@/lib/dynamicContent";
 import UnifiedCard from "@/components/cards/UnifiedCard";
 import { IPackage, ICoursePackage } from "@/types";
+import SearchWithStatusFilter, {
+  StatusOption,
+} from "@/components/SearchWithStatusFilter";
 
 // Dynamic Card Component
 const DynamicCard = ({
@@ -89,47 +84,6 @@ const EmptyState = ({
   );
 };
 
-// Search and Filters Component
-const SearchAndFilters = ({
-  searchTerm,
-  setSearchTerm,
-  statusFilter,
-  setStatusFilter,
-}: {
-  searchTerm: string;
-  setSearchTerm: (value: string) => void;
-  statusFilter: string;
-  setStatusFilter: (value: string) => void;
-}) => {
-  const text = useTranslations("courses");
-
-  return (
-    <div className="flex gap-4 items-center">
-      <div className="relative flex-1 w-full">
-        <Search className="absolute end-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-        <Input
-          placeholder={text("search")}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
-        />
-      </div>
-
-      <Select value={statusFilter} onValueChange={setStatusFilter}>
-        <SelectTrigger className="w-32">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">{text("all")}</SelectItem>
-          <SelectItem value="active">{text("active")}</SelectItem>
-          <SelectItem value="inactive">{text("inactive")}</SelectItem>
-          <SelectItem value="pending">{text("pending")}</SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
-  );
-};
-
 // Error State Component
 const ErrorState = ({ haveError }: { haveError: boolean }) => {
   const text = useTranslations("courses");
@@ -148,7 +102,9 @@ const MyCourses = () => {
   const { token, user } = useAuth();
   const [haveError, setHaveError] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState<
+    "active" | "inactive" | "pending"
+  >("active");
   const [typeFilter, setTypeFilter] = useState("courses");
 
   const fetchData = useCallback(
@@ -166,18 +122,13 @@ const MyCourses = () => {
         filtersParams.append("page", `${page}`);
 
         if (search) filtersParams.append("search", search);
-        if (statusFilter !== "all") {
-          // Map filter values to API status values
-          const statusMap: Record<string, string> = {
-            active: "published",
-            inactive: "inActive",
-            pending: "pending",
-          };
-          filtersParams.append(
-            "status",
-            statusMap[statusFilter] || statusFilter
-          );
-        }
+        // Map filter values to API status values
+        const statusMap: Record<"active" | "inactive" | "pending", string> = {
+          active: "published",
+          inactive: "inActive",
+          pending: "pending",
+        };
+        filtersParams.append("status", statusMap[statusFilter]);
 
         const filters = filtersParams.toString();
         let endpoint = "";
@@ -237,6 +188,12 @@ const MyCourses = () => {
     { value: "services", label: text("services") },
   ];
 
+  const statusOptions: StatusOption<"active" | "inactive" | "pending">[] = [
+    { value: "active", label: text("active") },
+    { value: "inactive", label: text("inactive") },
+    { value: "pending", label: text("pending") },
+  ];
+
   return (
     <div className="w-full container mx-auto sm:py-8 py-6 space-y-6">
       {/* Filter Tabs */}
@@ -259,11 +216,13 @@ const MyCourses = () => {
 
       {/* Search and Filters */}
       <div className="space-y-4">
-        <SearchAndFilters
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
+        <SearchWithStatusFilter
+          searchPlaceholder={text("search")}
+          searchValue={searchTerm}
+          onSearchChange={setSearchTerm}
+          statusValue={statusFilter}
+          onStatusChange={(value) => setStatusFilter(value)}
+          statusOptions={statusOptions}
         />
       </div>
 

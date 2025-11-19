@@ -1,6 +1,6 @@
 "use client";
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,12 +10,11 @@ import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { useAuth } from "@/components/auth-provider";
-import { AiFillDelete } from "react-icons/ai";
 import { ArrowLeft, Plus } from "lucide-react";
 import { Link, useRouter } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import dynamic from "next/dynamic";
+import ImageUploadField from "@/components/form/ImageUploadField";
 
 // Dynamically import ReactQuill to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -36,6 +35,16 @@ interface BlogFormData {
   };
   readTime: string;
 }
+
+interface BackendError {
+  type: string;
+  value: unknown;
+  msg: string;
+  path: string;
+  location: string;
+}
+
+type FieldErrors = Record<string, string>;
 
 const commonFormStyles =
   "!px-4 !py-3 !h-auto !rounded-md min-h-12 items-center";
@@ -79,6 +88,7 @@ const BlogFormClient = () => {
   const params = useParams();
   const router = useRouter();
   const instructorText = useTranslations("instructorBlogs");
+  const coursesText = useTranslations("courses");
   const { user } = useAuth();
   const id = params?.id as string;
   const isEdit = id !== "new";
@@ -103,6 +113,22 @@ const BlogFormClient = () => {
     },
     readTime: "",
   });
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+
+  const clearFieldError = useCallback((path: string) => {
+    if (!path) return;
+    setFieldErrors((prev) => {
+      if (!(path in prev)) return prev;
+      const next = { ...prev };
+      delete next[path];
+      return next;
+    });
+  }, []);
+
+  const getFieldError = useCallback(
+    (path: string) => fieldErrors[path],
+    [fieldErrors]
+  );
 
   // Fetch blog data for editing
   useEffect(() => {
@@ -160,6 +186,10 @@ const BlogFormClient = () => {
     lang: "en" | "ar" | null,
     value: string
   ) => {
+    const path = lang ? `${field}.${lang}` : field;
+    if (path) {
+      clearFieldError(path);
+    }
     setFormData((prev) => {
       if (
         lang &&
@@ -181,13 +211,18 @@ const BlogFormClient = () => {
     });
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
-  };
+  const handleImageFilesSelected = useCallback((files: File[]) => {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    setImage(file);
+    setImagePreview(URL.createObjectURL(file));
+  }, []);
+
+  const handleRemoveImage = useCallback(() => {
+    if (loading) return;
+    setImage(null);
+    setImagePreview("");
+  }, [loading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -213,6 +248,7 @@ const BlogFormClient = () => {
 
     try {
       setLoading(true);
+      setFieldErrors({});
 
       const submitData = new FormData();
 
@@ -245,14 +281,34 @@ const BlogFormClient = () => {
     } catch (error) {
       console.error("Error saving blog:", error);
       const typedError = error as AxiosError<{ message: string }>;
-      const errorMessage =
-        typedError?.response?.data?.message || typedError?.message;
-      toast.error(
-        errorMessage ||
-          (isEdit
-            ? instructorText("failedToUpdateBlog")
-            : instructorText("failedToCreateBlog"))
-      );
+      const backendErrors = (
+        typedError?.response?.data as {
+          errors?: BackendError[];
+        }
+      )?.errors;
+
+      if (Array.isArray(backendErrors) && backendErrors.length > 0) {
+        const mappedErrors: FieldErrors = {};
+        backendErrors.forEach((backendError) => {
+          if (backendError.path && backendError.msg) {
+            mappedErrors[backendError.path] = backendError.msg;
+          }
+        });
+        setFieldErrors(mappedErrors);
+        toast.error(
+          instructorText("pleaseFillRequiredFields") ||
+            "Validation errors occurred"
+        );
+      } else {
+        const errorMessage =
+          typedError?.response?.data?.message || typedError?.message;
+        toast.error(
+          errorMessage ||
+            (isEdit
+              ? instructorText("failedToUpdateBlog")
+              : instructorText("failedToCreateBlog"))
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -318,49 +374,6 @@ const BlogFormClient = () => {
       {/* Form */}
       <div className="bg-card rounded-lg border p-4 sm:p-6 lg:p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Image Upload */}
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                {instructorText("imageCover")}
-              </label>
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  {imagePreview ? (
-                    <Image
-                      src={imagePreview}
-                      alt="blog cover"
-                      width={128}
-                      height={128}
-                      className="w-32 h-32 object-cover rounded-lg border"
-                    />
-                  ) : (
-                    <div className="size-32 rounded-lg bg-muted" />
-                  )}
-                  {imagePreview && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setImage(null);
-                        setImagePreview("");
-                      }}
-                      className="absolute top-0 right-0 flex items-center justify-center w-6 h-6 rounded-full bg-destructive text-background"
-                    >
-                      <AiFillDelete className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className={cn(commonFormStyles, "flex-1")}
-                  disabled={loading}
-                />
-              </div>
-            </div>
-          </div>
-
           {/* Title Fields */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <div className="space-y-2">
@@ -373,10 +386,19 @@ const BlogFormClient = () => {
                   handleInputChange("title", "en", e.target.value)
                 }
                 placeholder={instructorText("enterTitleEn")}
-                className={commonFormStyles}
+                className={cn(
+                  commonFormStyles,
+                  getFieldError("title.en") &&
+                    "border-destructive focus-visible:ring-destructive"
+                )}
                 disabled={loading}
                 required
               />
+              {getFieldError("title.en") && (
+                <p className="text-xs text-destructive">
+                  {getFieldError("title.en")}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -389,13 +411,21 @@ const BlogFormClient = () => {
                   handleInputChange("title", "ar", e.target.value)
                 }
                 placeholder={instructorText("enterTitleAr")}
-                className={commonFormStyles}
+                className={cn(
+                  commonFormStyles,
+                  getFieldError("title.ar") &&
+                    "border-destructive focus-visible:ring-destructive"
+                )}
                 disabled={loading}
                 required
               />
+              {getFieldError("title.ar") && (
+                <p className="text-xs text-destructive">
+                  {getFieldError("title.ar")}
+                </p>
+              )}
             </div>
           </div>
-
           <div className="space-y-2">
             <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               {instructorText("readTime")} *
@@ -406,10 +436,19 @@ const BlogFormClient = () => {
                 handleInputChange("readTime", null, e.target.value)
               }
               placeholder={instructorText("enterReadTime")}
-              className={commonFormStyles}
+              className={cn(
+                commonFormStyles,
+                getFieldError("readTime") &&
+                  "border-destructive focus-visible:ring-destructive"
+              )}
               disabled={loading}
               required
             />
+            {getFieldError("readTime") && (
+              <p className="text-xs text-destructive">
+                {getFieldError("readTime")}
+              </p>
+            )}
           </div>
           {/* Description Fields */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
@@ -423,10 +462,20 @@ const BlogFormClient = () => {
                   handleInputChange("description", "en", e.target.value)
                 }
                 placeholder={instructorText("enterDescriptionEn")}
-                className={cn(commonFormStyles, "min-h-[100px] resize-none")}
+                className={cn(
+                  commonFormStyles,
+                  "min-h-[100px] resize-none",
+                  getFieldError("description.en") &&
+                    "border-destructive focus-visible:ring-destructive"
+                )}
                 disabled={loading}
                 required
               />
+              {getFieldError("description.en") && (
+                <p className="text-xs text-destructive">
+                  {getFieldError("description.en")}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -439,13 +488,22 @@ const BlogFormClient = () => {
                   handleInputChange("description", "ar", e.target.value)
                 }
                 placeholder={instructorText("enterDescriptionAr")}
-                className={cn(commonFormStyles, "min-h-[100px] resize-none")}
+                className={cn(
+                  commonFormStyles,
+                  "min-h-[100px] resize-none",
+                  getFieldError("description.ar") &&
+                    "border-destructive focus-visible:ring-destructive"
+                )}
                 disabled={loading}
                 required
               />
+              {getFieldError("description.ar") && (
+                <p className="text-xs text-destructive">
+                  {getFieldError("description.ar")}
+                </p>
+              )}
             </div>
           </div>
-
           {/* Content Fields */}
           <div className="space-y-6">
             <div className="space-y-2 pb-8">
@@ -464,6 +522,11 @@ const BlogFormClient = () => {
                 theme="snow"
                 readOnly={loading}
               />
+              {getFieldError("content.en") && (
+                <p className="text-xs text-destructive">
+                  {getFieldError("content.en")}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2 pb-8">
@@ -482,9 +545,35 @@ const BlogFormClient = () => {
                 theme="snow"
                 readOnly={loading}
               />
+              {getFieldError("content.ar") && (
+                <p className="text-xs text-destructive">
+                  {getFieldError("content.ar")}
+                </p>
+              )}
             </div>
           </div>
-
+          {/* Image Upload */}
+          <div className="space-y-4 mt-8">
+            <label className="text-base font-semibold">
+              {instructorText("imageCover")}
+            </label>
+            <ImageUploadField
+              onFilesSelected={handleImageFilesSelected}
+              onRemoveImage={handleRemoveImage}
+              previewUrl={imagePreview}
+              loading={loading}
+              infoDescription={coursesText("course_image_upload_instruction")}
+              guidelinesTitle={coursesText("guidelines")}
+              fileInputButtonText={coursesText("upload_file")}
+              fileInputDescription={coursesText("no_file_selected")}
+              accept={coursesText("imageUploadAccept")}
+              className={coursesText("imageUploadClassName")}
+              guidelines={[
+                coursesText("course_image_guideline_size"),
+                coursesText("course_image_guideline_format"),
+              ]}
+            />
+          </div>{" "}
           {/* Submit Button */}
           <div className="flex justify-end pt-6">
             <Button type="submit" disabled={loading} className="min-w-[120px]">

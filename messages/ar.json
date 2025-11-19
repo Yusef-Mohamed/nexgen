@@ -1745,6 +1745,12 @@
   "instructorBlogs": {
     "myBlogs": "مقالاتي",
     "addBlog": "إضافة مقال",
+    "search": "ابحث في المقالات...",
+    "statusFilter": "الحالة",
+    "all": "الكل",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "pending": "قيد الانتظار",
     "createBlog": "إنشاء مقال",
     "editBlog": "تعديل المقال",
     "updateBlog": "تحديث المقال",

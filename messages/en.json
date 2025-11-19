@@ -1755,6 +1755,12 @@
   "instructorBlogs": {
     "myBlogs": "My Blogs",
     "addBlog": "Add Blog",
+    "search": "Search blogs...",
+    "statusFilter": "Status",
+    "all": "All",
+    "active": "Active",
+    "inactive": "Inactive",
+    "pending": "Pending",
     "createBlog": "Create Blog",
     "editBlog": "Edit Blog",
     "updateBlog": "Update Blog",

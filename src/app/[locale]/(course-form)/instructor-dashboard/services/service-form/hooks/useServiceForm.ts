@@ -11,6 +11,7 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { getStringObject } from "@/lib/utils";
 import { DynamicString, ICourse, IPackage } from "@/types";
+import handleBackendFormErrors from "@/lib/handleBackendFormErrors";
 
 // Define the service form data interface
 export interface ServiceFormData {
@@ -715,10 +716,21 @@ export const useServiceForm = () => {
       return { success: false };
     } catch (error) {
       console.error("Error saving service step:", error);
-      const axiosError = error as AxiosError<{ message?: string }>;
-      const errorMessage =
-        axiosError.response?.data?.message || text("error_creating_service");
-      toast.error(errorMessage);
+      if (error instanceof AxiosError) {
+        const fieldErrorsHandled = handleBackendFormErrors(form, error);
+        if (fieldErrorsHandled) {
+          toast.error(
+            text("pleaseFillRequiredFields") ||
+              "Please fill in all required fields"
+          );
+        } else {
+          const errorMessage =
+            error.response?.data?.message || text("error_creating_service");
+          toast.error(errorMessage);
+        }
+      } else {
+        toast.error(text("error_creating_service"));
+      }
       return { success: false };
     } finally {
       setLoading(false);

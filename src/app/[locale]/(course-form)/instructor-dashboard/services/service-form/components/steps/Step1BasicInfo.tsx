@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
@@ -21,7 +21,7 @@ import { X } from "lucide-react";
 import { ServiceFormData } from "../../hooks/useServiceForm";
 import { cn, getDynamicString } from "@/lib/utils";
 import { ICourse } from "@/types";
-import FileInput from "@/components/ui/file-input";
+import ImageUploadField from "@/components/form/ImageUploadField";
 
 interface Step1BasicInfoProps {
   form: UseFormReturn<ServiceFormData>;
@@ -45,76 +45,6 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
   loading = false,
 }) => {
   const text = useTranslations("serviceForm");
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isDragOver, setIsDragOver] = useState(false);
-
-  const handleFiles = useCallback(
-    (filesList: FileList | null) => {
-      if (!filesList || filesList.length === 0) return;
-      const files = Array.from(filesList);
-      onImageFilesSelected(files);
-    },
-    [onImageFilesSelected]
-  );
-
-  const handleDragEnter = useCallback(
-    (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (loading) return;
-      setIsDragOver(true);
-    },
-    [loading]
-  );
-
-  const handleDragOver = useCallback(
-    (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (loading) return;
-      setIsDragOver(true);
-    },
-    [loading]
-  );
-
-  const handleDragLeave = useCallback(
-    (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (loading) return;
-      setIsDragOver(false);
-    },
-    [loading]
-  );
-
-  const handleDrop = useCallback(
-    (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (loading) return;
-      setIsDragOver(false);
-      const files = e.dataTransfer?.files ?? null;
-      if (files && files.length > 0) {
-        handleFiles(files);
-      }
-    },
-    [loading, handleFiles]
-  );
-
-  const handleClick = useCallback(() => {
-    if (loading) return;
-    fileInputRef.current?.click();
-  }, [loading]);
-
-  const handleFileChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files) {
-        handleFiles(e.target.files);
-      }
-    },
-    [handleFiles]
-  );
-
   return (
     <div className="space-y-6">
       {/* Step Header */}
@@ -267,106 +197,26 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
         <FormLabel className="text-base font-semibold">
           {text("service_image") || "Service Image"}
         </FormLabel>
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Image Preview Placeholder with Drag and Drop */}
-          <div
-            onClick={handleClick}
-            onDragEnter={handleDragEnter}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            className={cn(
-              "flex-shrink-0 w-full lg:w-[400px] h-[240px] rounded-lg border-2 border-dashed flex items-center justify-center overflow-hidden transition-all cursor-pointer",
-              {
-                "bg-primary/5 border-primary border-solid": isDragOver,
-                "bg-muted border-muted-foreground/30": !isDragOver,
-                "opacity-60 cursor-not-allowed": loading,
-              }
-            )}
-          >
-            {imagePreview ? (
-              <img
-                src={imagePreview}
-                alt={text("service_image_preview") || "Service image preview"}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="flex flex-col items-center justify-center text-muted-foreground">
-                <svg
-                  width="80"
-                  height="80"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="mb-2 opacity-60"
-                >
-                  <path
-                    d="M3 18L9 12L13 16L21 8V18C21 19.1 20.1 20 19 20H5C3.9 20 3 19.1 3 18Z"
-                    fill="currentColor"
-                    fillOpacity="0.4"
-                  />
-                  <path
-                    d="M3 18L7 14L13 20L21 10V18C21 19.1 20.1 20 19 20H5C3.9 20 3 19.1 3 18Z"
-                    fill="currentColor"
-                    fillOpacity="0.6"
-                  />
-                  <circle
-                    cx="6"
-                    cy="6"
-                    r="2.5"
-                    fill="currentColor"
-                    fillOpacity="0.5"
-                  />
-                </svg>
-              </div>
-            )}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/png,image/jpeg,image/jpg,image/gif"
-              className="hidden"
-              disabled={loading}
-              onChange={handleFileChange}
-            />
-          </div>
-
-          {/* Upload Instructions and Button */}
-          <div className="flex-1 space-y-4">
-            <div className="space-y-2">
-              <p className="text-sm text-foreground">
-                {text("service_image_upload_instruction") ||
-                  "Upload an image for your service. Click the image area or use the button below."}
-              </p>
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-foreground">
-                  {text("guidelines") || "Guidelines"}
-                </p>
-                <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                  <li>
-                    {text("service_image_guideline_size") ||
-                      "Maximum file size: 5MB"}
-                  </li>
-                  <li>
-                    {text("service_image_guideline_format") ||
-                      "Accepted formats: JPG, PNG, GIF"}
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <FileInput
-                accept="image/png,image/jpeg,image/jpg,image/gif"
-                multiple={false}
-                onFilesSelected={onImageFilesSelected}
-                disabled={loading}
-                buttonText={text("upload_file") || "Upload File"}
-                description={text("no_file_selected") || "No file selected"}
-                className="max-w-md"
-              />
-            </div>
-          </div>
-        </div>
+        <ImageUploadField
+          previewUrl={imagePreview}
+          loading={loading}
+          placeholderText={
+            text("service_image_preview") || "Service image preview"
+          }
+          infoDescription={
+            text("service_image_upload_instruction") ||
+            "Upload an image for your service. Click the image area or use the button below."
+          }
+          guidelinesTitle={text("guidelines") || "Guidelines"}
+          guidelines={[
+            text("service_image_guideline_size") || "Maximum file size: 5MB",
+            text("service_image_guideline_format") ||
+              "Accepted formats: JPG, PNG, GIF",
+          ]}
+          fileInputButtonText={text("upload_file") || "Upload File"}
+          fileInputDescription={text("no_file_selected") || "No file selected"}
+          onFilesSelected={onImageFilesSelected}
+        />
       </div>
     </div>
   );

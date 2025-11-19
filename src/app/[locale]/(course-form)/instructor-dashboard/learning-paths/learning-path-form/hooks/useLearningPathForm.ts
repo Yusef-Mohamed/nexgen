@@ -12,6 +12,7 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { ICourse } from "@/types";
 import { getStringObject } from "@/lib/utils";
+import handleBackendFormErrors from "@/lib/handleBackendFormErrors";
 
 // Form schema - will be created dynamically with localized messages
 const createLearningPathFormSchema = (text: (key: string) => string) => {
@@ -820,11 +821,22 @@ export const useLearningPathForm = () => {
       return { success: false };
     } catch (error) {
       console.error("Error saving learning path step:", error);
-      const axiosError = error as AxiosError<{ message?: string }>;
-      const errorMessage =
-        axiosError.response?.data?.message ||
-        text("error_creating_learning_path");
-      toast.error(errorMessage);
+      if (error instanceof AxiosError) {
+        const fieldErrorsHandled = handleBackendFormErrors(form, error);
+        if (fieldErrorsHandled) {
+          toast.error(
+            text("pleaseFillRequiredFields") ||
+              "Please fill in all required fields"
+          );
+        } else {
+          const errorMessage =
+            error.response?.data?.message ||
+            text("error_creating_learning_path");
+          toast.error(errorMessage);
+        }
+      } else {
+        toast.error(text("error_creating_learning_path"));
+      }
       return { success: false };
     } finally {
       setLoading(false);

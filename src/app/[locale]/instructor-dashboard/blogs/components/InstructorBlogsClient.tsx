@@ -1,15 +1,18 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Plus } from "lucide-react";
-import { IBlog } from "@/types";
+import { IBlog, BlogStatus } from "@/types";
 import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { Link } from "@/i18n/routing";
 import BlogCard from "./BlogCard";
+import SearchWithStatusFilter, {
+  StatusOption,
+} from "@/components/SearchWithStatusFilter";
 
 // BlogCard Skeleton Component
 const BlogCardSkeleton = () => (
@@ -64,12 +67,34 @@ const InstructorBlogsClient = () => {
   const instructorText = useTranslations("instructorBlogs");
   const [blogs, setBlogs] = useState<IBlog[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<BlogStatus>("active");
 
-  // Fetch blogs
-  const fetchBlogs = async () => {
+  // Fetch blogs with server-side filters
+  const fetchBlogs = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get("/articals/getAll");
+
+      const params = new URLSearchParams();
+      const normalizedSearch = searchTerm.trim();
+
+      if (normalizedSearch) {
+        params.append("search", normalizedSearch);
+      }
+
+      const statusMap: Record<BlogStatus, string> = {
+        active: "published",
+        inactive: "inActive",
+        pending: "pending",
+      };
+      params.append("status", statusMap[statusFilter]);
+
+      const queryString = params.toString();
+      const endpoint = queryString
+        ? `/articals/getAll?${queryString}`
+        : "/articals/getAll";
+
+      const response = await axiosInstance.get(endpoint);
       setBlogs(response.data.data || []);
     } catch (error) {
       console.error("Error fetching blogs:", error);
@@ -80,11 +105,26 @@ const InstructorBlogsClient = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchTerm, statusFilter]);
 
   useEffect(() => {
     fetchBlogs();
-  }, []);
+  }, [fetchBlogs]);
+
+  const statusOptions: StatusOption<BlogStatus>[] = [
+    {
+      value: "active",
+      label: instructorText("active", { defaultMessage: "Active" }),
+    },
+    {
+      value: "inactive",
+      label: instructorText("inactive", { defaultMessage: "Inactive" }),
+    },
+    {
+      value: "pending",
+      label: instructorText("pending", { defaultMessage: "Pending" }),
+    },
+  ];
 
   const handleBlogDeleted = async (blogId: string) => {
     try {
@@ -118,6 +158,20 @@ const InstructorBlogsClient = () => {
           </Link>
         </Button>
       </div>
+
+      <SearchWithStatusFilter
+        searchPlaceholder={instructorText("search", {
+          defaultMessage: "Search",
+        })}
+        searchValue={searchTerm}
+        onSearchChange={setSearchTerm}
+        statusPlaceholder={instructorText("statusFilter", {
+          defaultMessage: "Status",
+        })}
+        statusValue={statusFilter}
+        onStatusChange={(value) => setStatusFilter(value as BlogStatus)}
+        statusOptions={statusOptions}
+      />
 
       {blogs.length !== 0 ? (
         <div

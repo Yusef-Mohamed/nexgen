@@ -417,6 +417,8 @@ export interface INotification {
   updatedAt: string;
   __v: number;
 }
+export type BlogStatus = "active" | "inactive" | "pending";
+
 export interface IBlog {
   title: string;
   videoUrl: string;
@@ -431,6 +433,7 @@ export interface IBlog {
     profileImg: string;
   };
   readTime: number;
+  status?: BlogStatus;
 }
 export interface IProgress {
   lesson: ILesson;

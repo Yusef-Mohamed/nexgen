@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useCallback } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
@@ -18,11 +18,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
-import FileInput from "@/components/ui/file-input";
 import { cn, getDynamicString } from "@/lib/utils";
 import { X, Play } from "lucide-react";
 import { ICategory, ICourse } from "@/types";
 import { CourseFormSchema } from "../../hooks/useCourseForm";
+import ImageUploadField from "@/components/form/ImageUploadField";
 
 interface Step1BasicInfoAccessibleProps {
   form: UseFormReturn<CourseFormSchema>;
@@ -48,75 +48,6 @@ const Step1BasicInfoAccessible: React.FC<Step1BasicInfoAccessibleProps> = ({
   loading = false,
 }) => {
   const text = useTranslations("courses");
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isDragOver, setIsDragOver] = useState(false);
-
-  const handleFiles = useCallback(
-    (filesList: FileList | null) => {
-      if (!filesList || filesList.length === 0) return;
-      const files = Array.from(filesList);
-      onImageFilesSelected(files);
-    },
-    [onImageFilesSelected]
-  );
-
-  const handleDragEnter = useCallback(
-    (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (loading) return;
-      setIsDragOver(true);
-    },
-    [loading]
-  );
-
-  const handleDragOver = useCallback(
-    (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (loading) return;
-      setIsDragOver(true);
-    },
-    [loading]
-  );
-
-  const handleDragLeave = useCallback(
-    (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (loading) return;
-      setIsDragOver(false);
-    },
-    [loading]
-  );
-
-  const handleDrop = useCallback(
-    (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (loading) return;
-      setIsDragOver(false);
-      const files = e.dataTransfer?.files ?? null;
-      if (files && files.length > 0) {
-        handleFiles(files);
-      }
-    },
-    [loading, handleFiles]
-  );
-
-  const handleClick = useCallback(() => {
-    if (loading) return;
-    fileInputRef.current?.click();
-  }, [loading]);
-
-  const handleFileChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files) {
-        handleFiles(e.target.files);
-      }
-    },
-    [handleFiles]
-  );
 
   // Extract YouTube video ID and convert to embed URL
   const extractYouTubeEmbedUrl = useCallback((input: string): string | null => {
@@ -452,101 +383,20 @@ const Step1BasicInfoAccessible: React.FC<Step1BasicInfoAccessibleProps> = ({
         <FormLabel className="text-base font-semibold">
           {text("course_image")}
         </FormLabel>
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Image Preview Placeholder with Drag and Drop */}
-          <div
-            onClick={handleClick}
-            onDragEnter={handleDragEnter}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            className={cn(
-              "flex-shrink-0 w-full lg:w-[400px] h-[240px] rounded-lg border-2 border-dashed flex items-center justify-center overflow-hidden transition-all cursor-pointer",
-              {
-                "bg-primary/5 border-primary border-solid": isDragOver,
-                "bg-muted border-muted-foreground/30": !isDragOver,
-                "opacity-60 cursor-not-allowed": loading,
-              }
-            )}
-          >
-            {imagePreview ? (
-              <img
-                src={imagePreview}
-                alt={text("course_image_preview")}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="flex flex-col items-center justify-center text-muted-foreground">
-                <svg
-                  width="80"
-                  height="80"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="mb-2 opacity-60"
-                >
-                  {/* Landscape/Mountain icon similar to the reference */}
-                  <path
-                    d="M3 18L9 12L13 16L21 8V18C21 19.1 20.1 20 19 20H5C3.9 20 3 19.1 3 18Z"
-                    fill="currentColor"
-                    fillOpacity="0.4"
-                  />
-                  <path
-                    d="M3 18L7 14L13 20L21 10V18C21 19.1 20.1 20 19 20H5C3.9 20 3 19.1 3 18Z"
-                    fill="currentColor"
-                    fillOpacity="0.6"
-                  />
-                  {/* Sun/Moon icon in upper left */}
-                  <circle
-                    cx="6"
-                    cy="6"
-                    r="2.5"
-                    fill="currentColor"
-                    fillOpacity="0.5"
-                  />
-                </svg>
-              </div>
-            )}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/png,image/jpeg,image/jpg,image/gif"
-              className="hidden"
-              disabled={loading}
-              onChange={handleFileChange}
-            />
-          </div>
-
-          {/* Upload Instructions and Button */}
-          <div className="flex-1 space-y-4">
-            <div className="space-y-2">
-              <p className="text-sm text-foreground">
-                {text("course_image_upload_instruction")}
-              </p>
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-foreground">
-                  {text("guidelines")}
-                </p>
-                <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                  <li>{text("course_image_guideline_size")}</li>
-                  <li>{text("course_image_guideline_format")}</li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <FileInput
-                accept="image/png,image/jpeg,image/jpg,image/gif"
-                multiple={false}
-                onFilesSelected={onImageFilesSelected}
-                disabled={loading}
-                buttonText={text("upload_file")}
-                description={text("no_file_selected")}
-                className="max-w-md"
-              />
-            </div>
-          </div>
-        </div>
+        <ImageUploadField
+          previewUrl={imagePreview}
+          loading={loading}
+          placeholderText={text("course_image_preview")}
+          infoDescription={text("course_image_upload_instruction")}
+          guidelinesTitle={text("guidelines")}
+          guidelines={[
+            text("course_image_guideline_size"),
+            text("course_image_guideline_format"),
+          ]}
+          fileInputButtonText={text("upload_file")}
+          fileInputDescription={text("no_file_selected")}
+          onFilesSelected={onImageFilesSelected}
+        />
       </div>
 
       {/* Promotion Video */}

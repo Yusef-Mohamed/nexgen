@@ -51,6 +51,12 @@ const formatDate = (date: Date): string => {
   return `${day}/${month}/${year}`;
 };
 
+const addDays = (date: Date, days: number): Date => {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+};
+
 // Parse date string (DD/MM/YYYY) to Date object
 const parseDateString = (dateString: string): Date | null => {
   const parts = dateString.split("/");
@@ -154,7 +160,7 @@ const UsersList: React.FC<UsersListProps> = ({
         // Use user.createdAt as startDate (or current date if unavailable)
         const startDate = user?.createdAt
           ? formatDate(new Date(user.createdAt))
-          : formatDate(new Date());
+          : formatDate(addDays(new Date(), 1));
 
         // Use current date as endDate
         const endDate = formatDate(new Date());
