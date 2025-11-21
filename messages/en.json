@@ -772,6 +772,7 @@
     "andMyCouponIs": "and my coupon is"
   },
   "learn": {
+    "retry": "Retry",
     "backToMyLearning": "Back to my learning",
     "welcomeTo": "Welcome to",
     "pleaseSelectLessonToKeepLearning": "Please select lesson to keep learning",
@@ -858,7 +859,9 @@
     "correctAnswer": "correct",
     "incorrectAnswer": "incorrect",
     "next": "Next",
-    "completedAllContent": "You've completed all available content!"
+    "completedAllContent": "You've completed all available content!",
+    "aboutLesson": "About Lesson",
+    "reviews": "Reviews"
   },
   "learn_extra": {},
   "settings": {
@@ -995,6 +998,8 @@
     "clickOrDragImageToUpload": "Click or drag image to upload",
     "acceptedFormats": "Accepted formats: ",
     "pleaseSelectImage": "Please select an image",
+    "pleaseSelectCourse": "Please select a course",
+    "loading": "Loading...",
     "postCreatedSuccessfully": "Post created successfully",
     "contentIsRequired": "Content is required",
     "yourCommentIsAddedSuccessfully": "Your comment was added successfully",
@@ -1561,6 +1566,7 @@
       "question_text_required": "Question text is required"
     },
     "form": {
+      "title": "Title",
       "title_optional": "Title (Optional)",
       "title_placeholder": "Enter exam title...",
       "model": "Model",

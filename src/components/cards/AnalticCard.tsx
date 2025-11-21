@@ -1,5 +1,5 @@
+"use client";
 import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -111,9 +111,8 @@ const AnalyticCard = ({
     return (
       <div
         onClick={() => setIsFocusedView(true)}
-        className={cn(`grid gap-0.5 cursor-pointer`, {
-          "grid-cols-1": images.length === 1,
-          "grid-cols-2": images.length >= 2,
+        className={cn(`grid grid-cols-1 gap-0.5 cursor-pointer`, {
+          "grid-cols-2": images.length === 1,
         })}
       >
         <Image
@@ -121,27 +120,39 @@ const AnalyticCard = ({
           height={600}
           src={images[0]}
           alt=""
-          className="object-cover w-full rounded-md aspect-video"
+          className="object-cover w-full aspect-video"
         />
-        {images.length >= 2 && (
-          <div className="relative">
+        {images.length === 1 && images[0] && (
+          <Image
+            width={600}
+            height={600}
+            src={images[0]}
+            alt=""
+            className="object-cover w-full aspect-video"
+          />
+        )}
+        {images.length > 1 && (
+          <div className="grid grid-cols-2 gap-0.5 w-full">
             <Image
               width={600}
               height={600}
-              src={images[1]}
+              src={images[0]}
               alt=""
-              className="object-cover w-full rounded-md aspect-video"
+              className="object-cover w-full aspect-video"
             />
-            {images.length > 2 && (
-              <>
-                <div className="flex absolute inset-0 justify-center items-center opacity-25 bg-background" />
-                <div className="flex absolute inset-0 justify-center items-center">
-                  <span className="text-4xl font-bold">
-                    +{images.length - 2}
-                  </span>
-                </div>
-              </>
-            )}
+            <div className="relative w-full">
+              <Image
+                width={100}
+                height={100}
+                src={images[1]}
+                alt=""
+                className="object-cover w-full aspect-video"
+              />
+              <div className="flex items-center justify-center bg-background opacity-25 z-[1] w-full h-full absolute top-0 right-0" />
+              <div className="flex items-center justify-center z-[2] w-full h-full absolute top-0 right-0">
+                <span className="text-4xl font-bold">+{images.length - 1}</span>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -149,45 +160,55 @@ const AnalyticCard = ({
   };
 
   return (
-    <Card className="p-3 w-full rounded-md sm:p-6 bg-background">
-      <CardContent className="p-0">
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center gap-1.5 sm:gap-3">
-            <UserAvatar user={analytic.user} />
-            <div className="flex flex-col">
-              <h4>{analytic.user?.name}</h4>
-              <span className="text-sm max-sm:text-xs text-muted-foreground">
-                {new Date(analytic.createdAt).toLocaleDateString()}
-              </span>
-            </div>
+    <div className="relative w-full rounded-md cardShadow bg-card">
+      {isAdmin && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              size={"sm"}
+              variant="outline"
+              className="absolute top-4 left-4"
+            >
+              <BsThreeDots />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel asChild>
+              <button
+                onClick={() => setIsDeleting(true)}
+                className="flex gap-2 w-full"
+              >
+                <AiFillDelete size={18} />
+                {text("delete")}
+              </button>
+            </DropdownMenuLabel>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+      <div className="p-3">
+        <div className="flex items-center gap-2">
+          <UserAvatar user={analytic.user} />
+          <div className="flex flex-col">
+            <h4 className="text-sm">{analytic.user?.name}</h4>
+            <span className="text-xs text-muted-foreground">
+              {new Date(analytic.createdAt).toLocaleDateString()}
+            </span>
           </div>
-
-          {isAdmin && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <BsThreeDots />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>
-                  <button
-                    onClick={() => setIsDeleting(true)}
-                    className="flex gap-2 items-center text-destructive"
-                  >
-                    <AiFillDelete size={18} />
-                    {text("delete")}
-                  </button>
-                </DropdownMenuLabel>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
         </div>
 
-        <p className="my-2 sm:my-4 max-sm:text-sm">{analytic.content}</p>
+        <p className="mt-1 px-2 text-sm">
+          {analytic.content.split("\n").map((line, index) => (
+            <span key={index}>
+              {line}
+              {index !== analytic.content.split("\n").length - 1 && <br />}
+            </span>
+          ))}
+        </p>
+      </div>
 
-        {renderMediaGrid()}
+      {renderMediaGrid()}
 
+      <div className="p-3">
         {!isEditing && analytic.marketerComment && (
           <div className="p-4 mt-4 rounded-md border bg-muted/30">
             <div className="flex gap-4 items-center">
@@ -254,7 +275,7 @@ const AnalyticCard = ({
             </div>
           </div>
         )}
-      </CardContent>
+      </div>
 
       {/* Focused Image View Dialog */}
       <Dialog open={isFocusedView} onOpenChange={setIsFocusedView}>
@@ -358,60 +379,30 @@ const AnalyticCard = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </Card>
+    </div>
   );
 };
 
 export const AnalyticCardSkeleton = () => {
   return (
-    <Card className="p-3 w-full rounded-md sm:p-6 bg-background">
-      <CardContent className="p-0">
-        {/* Header with avatar and name */}
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center gap-1.5 sm:gap-3">
-            {/* Avatar skeleton */}
-            <div className="w-10 h-10 rounded-full animate-pulse bg-muted" />
-            <div className="flex flex-col gap-2">
-              {/* Name skeleton */}
-              <div className="w-32 h-4 rounded-md animate-pulse bg-muted" />
-              {/* Date skeleton */}
-              <div className="w-24 h-3 rounded-md animate-pulse bg-muted" />
-            </div>
-          </div>
+    <div className="w-full rounded-md animate-pulse bg-card">
+      <div className="flex gap-2 items-center px-4 pt-4 my-2 sm:my-4">
+        <div className="w-12 h-12 rounded-full animate-pulse bg-muted-foreground"></div>
+        <div className="flex flex-col gap-2">
+          <div className="w-12 h-2 rounded-xl animate-pulse bg-muted-foreground" />
+          <div className="w-16 h-1 rounded-xl animate-pulse bg-muted-foreground" />
         </div>
-
-        {/* Content skeleton */}
-        <div className="my-2 space-y-2 sm:my-4">
-          <div className="w-full h-4 rounded-md animate-pulse bg-muted" />
-          <div className="w-3/4 h-4 rounded-md animate-pulse bg-muted" />
-          <div className="w-1/2 h-4 rounded-md animate-pulse bg-muted" />
-        </div>
-
-        {/* Media skeleton */}
-        <div className="grid grid-cols-2 gap-0.5 mt-4">
-          <div className="w-full rounded-md animate-pulse bg-muted aspect-video" />
-          <div className="w-full rounded-md animate-pulse bg-muted aspect-video" />
-        </div>
-
-        {/* Comment box skeleton */}
-        <div className="p-4 mt-4 rounded-md border bg-muted/30">
-          <div className="flex gap-4 items-center">
-            <div className="flex-1 space-y-2">
-              <div className="w-full h-4 rounded-md animate-pulse bg-muted" />
-              <div className="w-3/4 h-4 rounded-md animate-pulse bg-muted" />
-            </div>
-            {/* Status circle skeleton */}
-            <div className="w-8 h-8 rounded-full animate-pulse bg-muted" />
-          </div>
-        </div>
-
-        {/* Action buttons skeleton */}
-        <div className="flex gap-4 justify-center mt-4">
-          <div className="w-28 h-9 rounded-md animate-pulse bg-muted" />
-          <div className="w-28 h-9 rounded-md animate-pulse bg-muted" />
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+      <div className="px-5 my-2 sm:my-4">
+        <div className="mb-2 w-full h-2 rounded-xl animate-pulse bg-muted-foreground" />
+        <div className="w-1/2 h-2 rounded-xl animate-pulse bg-muted-foreground" />
+      </div>
+      <div className="w-full animate-pulse aspect-video bg-muted-foreground" />
+      <div className="flex gap-4 justify-center items-center p-2 m-2 border-t">
+        <button className="py-1 w-full h-8 rounded-md animate-pulse bg-muted-foreground"></button>
+        <button className="py-1 w-full h-8 rounded-md animate-pulse bg-muted-foreground"></button>
+      </div>
+    </div>
   );
 };
 

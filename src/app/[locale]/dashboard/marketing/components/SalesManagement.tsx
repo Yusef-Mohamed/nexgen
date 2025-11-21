@@ -13,12 +13,15 @@ import {
 import { useAuth } from "@/components/auth-provider";
 import TrendBadge from "@/components/TrendBadge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useFilterCourses } from "@/hooks/useFilterCourses";
+import { useFilterPackages } from "@/hooks/useFilterPackages";
+import { useFilterCoursePackages } from "@/hooks/useFilterCoursePackages";
 
 import { axiosInstance } from "@/app/lib/utils";
 import { RiTeamFill } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
-import { ICourse, ICoursePackage, IPackage, IUser } from "@/types";
+import { IUser } from "@/types";
 import {
   Select,
   SelectContent,
@@ -162,9 +165,9 @@ const MainComponent = ({
 }) => {
   const t = useTranslations("salesManagement");
   const [item, setItem] = useState("");
-  const [courses, setCourses] = useState<ICourse[]>([]);
-  const [coursePackages, setCoursePackages] = useState<ICoursePackage[]>([]);
-  const [packages, setPackages] = useState<IPackage[]>([]);
+  const { courses } = useFilterCourses();
+  const { coursePackages } = useFilterCoursePackages();
+  const { packages } = useFilterPackages();
 
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -185,32 +188,6 @@ const MainComponent = ({
     }[];
   }>(null);
   const { token } = useAuth();
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const res = await axiosInstance.get("/courses");
-        setCourses(res.data.data);
-      } catch (err) {
-        console.log(err);
-        setCourses([]);
-      }
-      try {
-        const res = await axiosInstance.get("/coursePackages");
-        setCoursePackages(res.data.data);
-      } catch (err) {
-        console.log(err);
-        setCoursePackages([]);
-      }
-      try {
-        const res = await axiosInstance.get("/packages");
-        setPackages(res.data.data);
-      } catch (err) {
-        console.log(err);
-        setPackages([]);
-      }
-    };
-    fetchCourses();
-  }, []);
   useEffect(() => {
     const fetchData = async () => {
       if (!date?.from) return;

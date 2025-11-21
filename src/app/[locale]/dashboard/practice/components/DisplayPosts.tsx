@@ -1,6 +1,5 @@
 "use client";
 import { useAuth } from "@/components/auth-provider";
-import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import { useCallback, useState } from "react";
 import CreatePractice from "./CreatePractice";
@@ -10,15 +9,31 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import AnalyticCard, {
   AnalyticCardSkeleton,
 } from "@/components/cards/AnalticCard";
+import { FilterTabs, FilterOption } from "@/components/filters/FilterTabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { getDynamicString } from "@/lib/utils";
+import { useFilterPackages } from "@/hooks/useFilterPackages";
 
 const DisplayPosts = () => {
   const text = useTranslations("practice");
+  const inputs = useTranslations("Forms");
   const { token, user } = useAuth();
   const [show, setShow] = useState<"completed" | "onProgress" | "addNew">(
-    "onProgress"
+    "completed"
   );
+  const [selectedCourse, setSelectedCourse] = useState("");
   const [haveError, setHaveError] = useState(false);
-
+  const { packages, isLoadingPackages } = useFilterPackages({
+    enable: true,
+    onlyActive: false,
+  });
   const fetchPosts = useCallback(
     async (page: number, search?: string): Promise<IAnalytic[]> => {
       try {
@@ -35,7 +50,9 @@ const DisplayPosts = () => {
         } else if (show === "onProgress") {
           filtersParams.append("isSeen", "0");
         }
-        if (user?.isMarketer) filtersParams.append("asMarketer", "1");
+        if (selectedCourse) {
+          filtersParams.append("course", selectedCourse);
+        }
 
         const filters = filtersParams.toString();
 
@@ -57,7 +74,8 @@ const DisplayPosts = () => {
         return [];
       }
     },
-    [token, setHaveError, haveError, user, show]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [token, setHaveError, haveError, user, show, selectedCourse]
   );
 
   const {
@@ -69,33 +87,68 @@ const DisplayPosts = () => {
     observerRef,
   } = useInfiniteScroll<IAnalytic>({
     fetchData: fetchPosts,
-    dependencies: [show], // Add show as a dependency to trigger reset
+    dependencies: [show, selectedCourse], // Add show and selectedCourse as dependencies to trigger reset
   });
   const handleShowChange = (newShow: typeof show) => {
     setShow(newShow);
     resetData(); // Reset the data when show changes
   };
+  const handleCourseChange = (courseId: string) => {
+    setSelectedCourse(courseId);
+    resetData(); // Reset the data when course changes
+  };
+
+  // Filter tabs configuration
+  const filterOptions: FilterOption[] = user?.isMarketer
+    ? [
+        { value: "completed", label: text("completed") },
+        { value: "onProgress", label: text("onProgress") },
+      ]
+    : [
+        { value: "completed", label: text("completed") },
+        { value: "onProgress", label: text("onProgress") },
+        { value: "addNew", label: text("addNew") },
+      ];
 
   return (
     <section className="mx-auto space-y-4 w-full max-w-4xl">
-      <div className="flex overflow-hidden items-center rounded-full border w-fit">
-        {(user?.isMarketer
-          ? (["completed", "onProgress"] as const)
-          : (["completed", "onProgress", "addNew"] as const)
-        ).map((item) => (
-          <Button
-            key={item}
-            variant={show === item ? "default" : "outline"}
-            className="rounded-none border-none min-w-28 sm:min-w-32"
-            onClick={() => handleShowChange(item)}
+      {/* Course Filter */}{" "}
+      <FilterTabs
+        options={filterOptions}
+        activeValue={show}
+        onChange={(value) => handleShowChange(value as typeof show)}
+      />
+      <div className="flex items-center gap-4 p-3 rounded-md cardShadow bg-card">
+        <div>
+          <Label htmlFor="course" className="text-sm sr-only">
+            {inputs("course")}:
+          </Label>
+          <Select
+            value={selectedCourse}
+            onValueChange={handleCourseChange}
+            disabled={isLoadingPackages}
           >
-            {text(item)}
-          </Button>
-        ))}
+            <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs !h-10">
+              <SelectValue
+                placeholder={
+                  isLoadingPackages ? text("loading") : inputs("SelectCourse")
+                }
+              />
+            </SelectTrigger>
+            <SelectContent>
+              {packages.map((pkg) => (
+                <SelectItem value={pkg.course._id} key={pkg.course._id}>
+                  {getDynamicString(pkg.course.title)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
-
       {show === "addNew" ? (
-        <CreatePractice />
+        <div className="p-4 cardShadow bg-card rounded-md">
+          <CreatePractice />
+        </div>
       ) : (
         <div className="space-y-4">
           {posts.map((post) => (

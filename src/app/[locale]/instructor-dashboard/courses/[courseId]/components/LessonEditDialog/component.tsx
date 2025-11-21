@@ -244,7 +244,7 @@ const LessonEditDialog = ({
                     {attachments.map((file, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                        className="flex items-center justify-between p-2 bg-muted/50 rounded"
                       >
                         <span className="text-sm">{file.name}</span>
                         <button

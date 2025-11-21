@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { TeamData, User, UserStats } from "./TeamManagement";
 import { DatePickerWithRange } from "@/components/DatePickerWithRange";
@@ -24,10 +24,11 @@ import OrdersDialog from "./OrdersDialog";
 import { format } from "date-fns";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
-import { ICourse, ICoursePackage, IPackage } from "@/types";
-import { axiosInstance } from "@/app/lib/utils";
 import * as XLSX from "xlsx";
 import { getDynamicString } from "@/lib/utils";
+import { useFilterCourses } from "@/hooks/useFilterCourses";
+import { useFilterCoursePackages } from "@/hooks/useFilterCoursePackages";
+import { useFilterPackages } from "@/hooks/useFilterPackages";
 const formatDate = (date: Date) => {
   return format(date, "yyyy MM dd").split(" ").join("-");
 };
@@ -43,35 +44,10 @@ const TeamTable = ({ data }: { data: TeamData }) => {
   });
   const [isShowAll, setIsShowAll] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<string>("");
-  const [courses, setCourses] = useState<ICourse[]>([]);
-  const [coursePackages, setCoursePackages] = useState<ICoursePackage[]>([]);
-  const [packages, setPackages] = useState<IPackage[]>([]);
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const res = await axiosInstance.get("/courses");
-        setCourses(res.data.data);
-      } catch (err) {
-        console.log(err);
-        setCourses([]);
-      }
-      try {
-        const res = await axiosInstance.get("/coursePackages");
-        setCoursePackages(res.data.data);
-      } catch (err) {
-        console.log(err);
-        setCoursePackages([]);
-      }
-      try {
-        const res = await axiosInstance.get("/packages");
-        setPackages(res.data.data);
-      } catch (err) {
-        console.log(err);
-        setPackages([]);
-      }
-    };
-    fetchCourses();
-  }, []);
+  const { courses } = useFilterCourses();
+  const { coursePackages } = useFilterCoursePackages();
+  const { packages } = useFilterPackages();
+
   const filteredUsers = useMemo(() => {
     let filteredUsers: User[] = [];
     if (purchaseFilter === "buyers") {

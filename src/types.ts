@@ -112,6 +112,7 @@ export interface IUser {
     totalTimeSpent: number;
   };
   isMarketer: boolean;
+  isAffiliateMarketer: boolean;
   bio?: string;
   __v: number;
   lang: "ar" | "en";
@@ -459,12 +460,7 @@ export interface ICourseProgress {
   totalProgress: string;
   status: "Completed" | "failed";
   totalLessonsExamsPercentage: string;
-
-  certificate: {
-    isTaken: boolean;
-    isDeserved: boolean;
-    file?: string;
-  };
+  certificate: string;
 }
 export interface ICoupon {
   couponName: string;

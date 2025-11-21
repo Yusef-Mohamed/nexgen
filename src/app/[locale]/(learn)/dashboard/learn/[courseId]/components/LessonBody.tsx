@@ -25,8 +25,8 @@ const LessonBody = ({
   const [activeTab, setActiveTab] = useState<string>("about");
 
   const tabOptions: FilterOption[] = [
-    { value: "about", label: "About Lesson" },
-    { value: "reviews", label: "Reviews" },
+    { value: "about", label: text("aboutLesson") },
+    { value: "reviews", label: text("reviews") },
   ];
 
   useEffect(() => {

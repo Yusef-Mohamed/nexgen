@@ -770,6 +770,7 @@
     "andMyCouponIs": "والكوبون الخاص بي هو"
   },
   "learn": {
+    "retry": "إعادة",
     "backToMyLearning": "العودة إلى تعلمي",
     "welcomeTo": "مرحباً بك في",
     "pleaseSelectLessonToKeepLearning": "يرجى اختيار درس للاستمرار في التعلم",
@@ -856,7 +857,9 @@
     "correctAnswer": "صحيح",
     "incorrectAnswer": "غير صحيح",
     "next": "التالي",
-    "completedAllContent": "لقد أكملت كل المحتوى المتاح!"
+    "completedAllContent": "لقد أكملت كل المحتوى المتاح!",
+    "aboutLesson": "عن الدرس",
+    "reviews": "التقييمات"
   },
   "settings": {
     "myProfile": "الملف الشخصي",
@@ -992,6 +995,8 @@
     "clickOrDragImageToUpload": "انقر أو اسحب الصورة للتحميل",
     "acceptedFormats": "الصيغ المقبولة: ",
     "pleaseSelectImage": "يرجى اختيار صورة",
+    "pleaseSelectCourse": "يرجى اختيار دورة",
+    "loading": "جاري التحميل...",
     "postCreatedSuccessfully": "تم إنشاء المنشور بنجاح",
     "contentIsRequired": "المحتوى مطلوب",
     "yourCommentIsAddedSuccessfully": "تمت إضافة تعليقك بنجاح",
@@ -1553,6 +1558,7 @@
       "question_text_required": "نص السؤال مطلوب"
     },
     "form": {
+      "title": "العنوان",
       "title_optional": "العنوان (اختياري)",
       "title_placeholder": "أدخل عنوان الامتحان...",
       "model": "النموذج",

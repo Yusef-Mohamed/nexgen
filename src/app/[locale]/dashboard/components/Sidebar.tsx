@@ -139,6 +139,52 @@ const Sidebar: React.FC<
     },
   ];
 
+  if (user && !user.authToReview) {
+    linkGroups = linkGroups
+      .map((group) => ({
+        ...group,
+        links: group.links.filter((link) => {
+          return !reqAuthToReview?.includes(link.label);
+        }),
+      }))
+      .filter((group) => group.links.length > 0);
+  }
+
+  // Handle marketing section visibility and sublinks
+  if (user) {
+    const isMarketer = user.isMarketer;
+    const isAffiliateMarketer = user.isAffiliateMarketer;
+
+    // Show marketing section if user is either marketer or affiliate marketer
+    if (!isMarketer && !isAffiliateMarketer) {
+      linkGroups = linkGroups
+        .map((group) => ({
+          ...group,
+          links: group.links.filter((link) => {
+            return link.label !== "marketing";
+          }),
+        }))
+        .filter((group) => group.links.length > 0);
+    } else {
+      // If affiliate marketer (but not regular marketer), remove "myTeam" sublink
+      if (isAffiliateMarketer && !isMarketer) {
+        linkGroups = linkGroups.map((group) => ({
+          ...group,
+          links: group.links.map((link) => {
+            if (link.label === "marketing" && "links" in link && link.links) {
+              return {
+                ...link,
+                links: link.links.filter(
+                  (sublink: { label: string }) => sublink.label !== "myTeam"
+                ),
+              };
+            }
+            return link;
+          }),
+        }));
+      }
+    }
+  }
   if (pathname.includes("instructor-dashboard")) {
     linkGroups = [
       {
@@ -179,31 +225,16 @@ const Sidebar: React.FC<
             label: "chat",
             icon: <IoMdChatboxes />,
           },
+          {
+            href: "/instructor-dashboard/practice",
+            label: "practice",
+            icon: <AiFillFolderOpen />,
+          },
         ],
       },
     ];
   }
 
-  if (user && !user.authToReview) {
-    linkGroups = linkGroups
-      .map((group) => ({
-        ...group,
-        links: group.links.filter((link) => {
-          return !reqAuthToReview?.includes(link.label);
-        }),
-      }))
-      .filter((group) => group.links.length > 0);
-  }
-  if (user && !user.isMarketer) {
-    linkGroups = linkGroups
-      .map((group) => ({
-        ...group,
-        links: group.links.filter((link) => {
-          return link.label !== "marketing";
-        }),
-      }))
-      .filter((group) => group.links.length > 0);
-  }
   return (
     <aside
       {...props}

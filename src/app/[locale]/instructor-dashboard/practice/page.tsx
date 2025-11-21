@@ -1,5 +1,5 @@
 import { unstable_setRequestLocale } from "next-intl/server";
-import DisplayPosts from "./components/DisplayPosts";
+import DisplayPosts from "../../dashboard/practice/components/DisplayPosts";
 
 const Dashboard = async ({
   params: { locale },
@@ -12,7 +12,7 @@ const Dashboard = async ({
       style={{
         minHeight: "calc(100vh - 76px)",
       }}
-      className="flex flex-col px-2 py-6 lg:px-6 sm:px-4 bg-dash-ground"
+      className="flex flex-col px-2 py-6 lg:px-6 sm:px-4"
     >
       <DisplayPosts />
     </main>

@@ -18,17 +18,18 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { axiosInstance } from "@/app/lib/utils";
-import { ICourse, ICoursePackage, IPackage } from "@/types";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
 import UsersList from "./UsersList";
+import { useFilterCourses } from "@/hooks/useFilterCourses";
+import { useFilterCoursePackages } from "@/hooks/useFilterCoursePackages";
+import { useFilterPackages } from "@/hooks/useFilterPackages";
 
 const WalletClient = () => {
   const t = useTranslations("invoicesManagement");
   const locale = useLocale();
   const { token, user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingCourses, setIsLoadingCourses] = useState(true);
   const [marketLog, setMarketLog] = useState<{
     totalEnrollments: number;
     totalEnrollmentsDiff: number;
@@ -38,56 +39,9 @@ const WalletClient = () => {
     instructorProfitsDiff: number;
     withdrawals: number;
   } | null>(null);
-  const [courses, setCourses] = useState<ICourse[]>([]);
-  const [coursePackages, setCoursePackages] = useState<ICoursePackage[]>([]);
-  const [packages, setPackages] = useState<IPackage[]>([]);
-  // Fetch active courses, course packages, and packages
-  useEffect(() => {
-    const fetchAllItems = async () => {
-      if (!token || !user?._id) return;
-      try {
-        setIsLoadingCourses(true);
-
-        // Fetch courses
-        const coursesRes = await axiosInstance.get(
-          `/courses/getAll?instructor=${user._id}&status=active`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setCourses(coursesRes.data.data || []);
-
-        // Fetch course packages
-        const coursePackagesRes = await axiosInstance.get(
-          `/coursePackages/getAll?limit=1000`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setCoursePackages(coursePackagesRes.data.data || []);
-
-        // Fetch packages (services)
-        const packagesRes = await axiosInstance.get(
-          `/packages/getAll?limit=1000`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setPackages(packagesRes.data.data || []);
-      } catch (err) {
-        console.error("Error fetching items:", err);
-      } finally {
-        setIsLoadingCourses(false);
-      }
-    };
-    if (token && user) fetchAllItems();
-  }, [token, user]);
+  const { courses, isLoadingCourses } = useFilterCourses();
+  const { coursePackages } = useFilterCoursePackages();
+  const { packages } = useFilterPackages();
 
   // Fetch analytics data
   useEffect(() => {

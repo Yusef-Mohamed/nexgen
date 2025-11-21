@@ -65,7 +65,7 @@ const CommunitySidebar = () => {
         top: "76px",
         height: "calc(100vh - 76px)",
       }}
-      className="w-full max-w-2xl p-4 py-4 overflow-auto bg-clear-ground lg:border-s lg:sticky max-xl:mx-auto xl:w-80 sm:py-8"
+      className="w-full max-w-2xl p-4 py-4 overflow-auto bg-clear-ground lg:sticky max-xl:mx-auto xl:w-80 sm:py-8"
     >
       <h2 className="mb-3 sm:mb-6">{text("followingRecommendation")}</h2>
       {loading ? (

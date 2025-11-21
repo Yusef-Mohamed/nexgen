@@ -9,9 +9,13 @@ import { ICourse } from "@/types";
 
 interface LearnCourseCardProps {
   course: ICourse;
+  minimal?: boolean;
 }
 
-export const LearnCourseCard = ({ course }: LearnCourseCardProps) => {
+export const LearnCourseCard = ({
+  course,
+  minimal = false,
+}: LearnCourseCardProps) => {
   const text = useTranslations("learn");
   const locale = useLocale();
 
@@ -46,9 +50,9 @@ export const LearnCourseCard = ({ course }: LearnCourseCardProps) => {
                 <p className="max-md:text-sm">
                   {text("congratsOnFinishingTheCourse")}
                 </p>
-                {course.courseProgress.certificate.file ? (
+                {course.courseProgress.certificate ? (
                   <a
-                    href={course.courseProgress.certificate.file}
+                    href={course.courseProgress.certificate}
                     target="_blank"
                     rel="noreferrer"
                     className="mt-1 underline text-primary max-md:text-sm"
@@ -88,40 +92,41 @@ export const LearnCourseCard = ({ course }: LearnCourseCardProps) => {
             )}
           </div>
         </div>
-        <div className="md:border-s border-primary/20 md:px-10 flex">
-          {course.courseProgress?.certificate?.file ? (
-            <a
-              className="max-md:hidden w-auto aspect-[28/19] max-md:w-full md:h-36 rounded-xl"
-              href={course.courseProgress.certificate.file}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {!course.courseProgress.certificate.file.endsWith(".pdf") && (
-                <Image
-                  loading="lazy"
-                  src={course.courseProgress.certificate.file}
-                  alt={getDynamicString(course.title)}
-                  width={600}
-                  height={600}
-                  className="object-cover w-full h-full"
-                />
-              )}
-            </a>
-          ) : (
-            <div className="flex items-center self-center group gap-3">
-              <PlayIcon />
-              <div className="flex flex-col">
-                <h3 className="font-medium text-primary group-hover:underline">
-                  Fundamental Analysis
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Week 1 | Video 34 min
-                </p>
+        {!minimal && (
+          <div className="md:border-s border-primary/20 md:px-10 flex">
+            {course.courseProgress?.certificate ? (
+              <a
+                className="max-md:hidden w-auto aspect-[28/19] max-md:w-full md:h-36 rounded-xl"
+                href={course.courseProgress.certificate}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {!course.courseProgress.certificate.endsWith(".pdf") && (
+                  <Image
+                    loading="lazy"
+                    src={course.courseProgress.certificate}
+                    alt={getDynamicString(course.title)}
+                    width={600}
+                    height={600}
+                    className="object-cover w-full h-full"
+                  />
+                )}
+              </a>
+            ) : (
+              <div className="flex items-center self-center group gap-3">
+                <PlayIcon />
+                <div className="flex flex-col">
+                  <h3 className="font-medium text-primary group-hover:underline">
+                    Fundamental Analysis
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Week 1 | Video 34 min
+                  </p>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-
+            )}
+          </div>
+        )}
         <Link
           href={`/dashboard/learn/exams-history/${course._id}`}
           className="flex items-center gap-2 text-xs  absolute top-4 end-4 border bg-primary-faded text-primary border-primary/20 px-1 py-0.5 rounded"

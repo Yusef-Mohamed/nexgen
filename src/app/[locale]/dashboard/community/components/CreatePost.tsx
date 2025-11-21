@@ -173,8 +173,8 @@ const CreatePost = ({
       {" "}
       {isInstructor && (
         <div className="pb-3 flex gap-4 flex-wrap">
-          <div className="space-y-2">
-            <Label htmlFor="postType" className="text-sm">
+          <div>
+            <Label htmlFor="postType" className="text-sm sr-only">
               {text("sharedTo")}:
             </Label>
             <Select
@@ -201,8 +201,8 @@ const CreatePost = ({
           </div>
 
           {postType === "course" && (
-            <div className="space-y-2">
-              <Label htmlFor="course" className="text-sm">
+            <div>
+              <Label htmlFor="course" className="text-sm sr-only">
                 {inputs("course")}:
               </Label>
               <Select
@@ -229,8 +229,8 @@ const CreatePost = ({
           )}
 
           {postType === "service" && (
-            <div className="space-y-2">
-              <Label htmlFor="service" className="text-sm">
+            <div>
+              <Label htmlFor="service" className="text-sm sr-only">
                 {inputs("service")}:
               </Label>
               <Select
@@ -238,7 +238,7 @@ const CreatePost = ({
                 onValueChange={setSelectedPackage}
                 disabled={loadingPackages}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs !h-10">
                   <SelectValue
                     placeholder={
                       loadingPackages

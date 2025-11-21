@@ -93,7 +93,7 @@ const DisplayPosts = ({ userId }: { userId?: string }) => {
 
   if (!userId) {
     return (
-      <section className="flex-1 w-full max-w-2xl px-4 mx-auto space-y-3 sm:space-y-6">
+      <section className="flex-1 w-full max-w-4xl px-4 mx-auto space-y-3 sm:space-y-6">
         <HomeEvents />
         <HomeCourses />
 

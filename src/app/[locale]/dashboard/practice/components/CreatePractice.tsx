@@ -4,10 +4,18 @@ import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import TextWithEmojiBox from "@/components/TextWithEmojiBox";
 import UserAvatar from "@/components/UserAvatar";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { useRef, useState, DragEvent } from "react";
 import { toast } from "react-toastify";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import { FaCloudArrowUp } from "react-icons/fa6";
 import { FaImage } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
@@ -16,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "@/i18n/routing";
 import { useCourseContextSafe } from "@/app/[locale]/(learn)/dashboard/learn/[courseId]/context/CourseContext";
 import { unlockLessonsSequentially } from "@/app/[locale]/(learn)/dashboard/learn/[courseId]/components/unlockLessons";
+import { useFilterPackages } from "@/hooks/useFilterPackages";
 
 const CreatePractice = ({
   lessonId,
@@ -29,10 +38,19 @@ const CreatePractice = ({
   const [media, setMedia] = useState<File[]>([]);
   const { user, token } = useAuth();
   const text = useTranslations("practice");
+  const inputs = useTranslations("Forms");
   const router = useRouter();
   const inputRef = useRef(null);
   // Get CourseContext - returns null if not within CourseProvider (e.g., when used in practice page)
   const courseContext = useCourseContextSafe();
+
+  // Course selection states - always require course selection
+  const [selectedCourse, setSelectedCourse] = useState(courseId || "");
+  const { packages, isLoadingPackages } = useFilterPackages({
+    enable: !courseId,
+    onlyActive: true,
+  });
+
   const handelCreatePractice = async () => {
     setIsLoading(true);
     try {
@@ -47,12 +65,19 @@ const CreatePractice = ({
         return;
       }
 
+      // Always require user to select a course (even if courseId prop is provided)
+      if (!selectedCourse) {
+        toast.error(text("pleaseSelectCourse") || "Please select a course");
+        setIsLoading(false);
+        return;
+      }
+
       const formData = new FormData();
       media.forEach((file) => {
         formData.append("media", file);
       });
       if (lessonId) formData.append("lesson", lessonId);
-      if (courseId) formData.append("course", courseId);
+      if (selectedCourse) formData.append("course", selectedCourse);
       formData.append("content", content);
 
       await axiosInstance.post("/analytics", formData, {
@@ -72,20 +97,36 @@ const CreatePractice = ({
           .flatMap((section) => section.lessons || [])
           .find((lesson) => lesson._id === lessonId);
 
-        // Only unlock if lesson has no quiz
-        if (currentLesson && !currentLesson.hasQuiz) {
-          const updatedSections = unlockLessonsSequentially(
-            courseContext.sections,
-            lessonId,
-            true // checkForNoQuiz = true for practice
-          );
-          courseContext.updateSections(updatedSections);
+        if (currentLesson) {
+          // Mark the lesson as passedAnalyticsTask = true
+          const updatedSections = courseContext.sections.map((section) => ({
+            ...section,
+            lessons: section.lessons.map((lesson) =>
+              lesson._id === lessonId
+                ? { ...lesson, passedAnalyticsTask: true }
+                : lesson
+            ),
+          }));
+
+          // Only unlock next lessons if lesson has no quiz
+          if (!currentLesson.hasQuiz) {
+            const unlockedSections = unlockLessonsSequentially(
+              updatedSections,
+              lessonId,
+              true // checkForNoQuiz = true for practice
+            );
+            courseContext.updateSections(unlockedSections);
+          } else {
+            // Just update the passedAnalyticsTask without unlocking
+            courseContext.updateSections(updatedSections);
+          }
         }
       }
 
       router.refresh();
       setContent("");
       setMedia([]);
+      setSelectedCourse("");
       toast.success(text("postCreatedSuccessfully"));
     } catch (e) {
       const typedError = e as AxiosError<{ message: string }>;
@@ -127,6 +168,34 @@ const CreatePractice = ({
   };
   return (
     <div className={""}>
+      {/* Course selection dropdown - always show and require selection */}
+      <div className="pb-3 flex gap-4 flex-wrap">
+        <div>
+          <Label htmlFor="course" className="text-sm sr-only">
+            {inputs("course")}:
+          </Label>
+          <Select
+            value={selectedCourse}
+            onValueChange={setSelectedCourse}
+            disabled={isLoadingPackages}
+          >
+            <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs !h-10">
+              <SelectValue
+                placeholder={
+                  isLoadingPackages ? text("loading") : inputs("SelectCourse")
+                }
+              />
+            </SelectTrigger>
+            <SelectContent>
+              {packages.map((pkg) => (
+                <SelectItem value={pkg.course._id} key={pkg.course._id}>
+                  {getDynamicString(pkg.course.title)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
       <div className="flex gap-2 justify-between items-start">
         <UserAvatar user={user || undefined} size="md" />
         <TextWithEmojiBox

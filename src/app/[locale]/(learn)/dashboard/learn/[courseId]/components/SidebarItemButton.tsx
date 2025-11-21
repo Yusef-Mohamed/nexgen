@@ -30,7 +30,7 @@ const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
       onClick={onClick}
       disabled={disabled}
       variant={isFocused ? "default" : "ghost"}
-      className="w-full flex items-center !h-auto justify-between gap-2 py-3 px-3 rounded-lg text-left"
+      className="w-full flex items-center !h-auto justify-between gap-2 py-3 px-3 rounded-lg text-start"
     >
       <div className="flex items-center gap-5 flex-1 min-w-0">
         <Icon className="w-10 h-10 flex-shrink-0" />

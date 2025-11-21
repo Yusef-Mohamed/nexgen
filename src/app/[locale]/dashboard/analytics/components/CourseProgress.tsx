@@ -47,7 +47,7 @@ const CourseProgress = () => {
           </p>
 
           <a
-            href={courseProgress.certificate.file}
+            href={courseProgress.certificate}
             download
             className="underline text-primary"
           >

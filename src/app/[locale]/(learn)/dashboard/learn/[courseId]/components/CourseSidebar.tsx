@@ -188,13 +188,13 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                       <button
                         onClick={() => toggleSection(section.section)}
                         className={cn(
-                          "w-full bg-primary/10 border border-primary/20 flex items-center justify-between p-4 rounded-lg transition-all"
+                          "w-full bg-primary/10 border border-primary/20 flex items-start justify-between p-4 rounded-lg transition-all"
                         )}
                       >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
                           <FaBook className="w-10 h-10 text-primary flex-shrink-0" />
                           {
-                            <div className="flex-1 min-w-0 text-left">
+                            <div className="flex-1 min-w-0 text-start">
                               <div className="font-semibold text-lg truncate">
                                 {section.section}
                               </div>

@@ -26,7 +26,7 @@ import { axiosInstance } from "@/app/lib/utils";
 // import { useAuth } from "@/components/auth-provider";
 import {
   Plus,
-  // Edit,
+  Edit,
   Trash2,
   Eye,
   FileText,
@@ -41,7 +41,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link } from "@/i18n/routing";
-import { cn, getDynamicString } from "@/lib/utils";
+import { cn, getDynamicString, getStringObject } from "@/lib/utils";
 import { AxiosError } from "axios";
 
 interface ExamsDisplayProps {
@@ -77,8 +77,8 @@ export const ExamsDisplay = ({
   const [loading, setLoading] = useState<boolean>(loadingProp ?? true);
   const [error, setError] = useState<string | null>(errorProp ?? null);
   const [examDialogOpen, setExamDialogOpen] = useState(false);
-  // const [editingExam, setEditingExam] = useState<IExam | null>(null);
-  // const [isEditExam, setIsEditExam] = useState(false);
+  const [editingExam, setEditingExam] = useState<IExam | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deletingExamId, setDeletingExamId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -111,16 +111,14 @@ export const ExamsDisplay = ({
 
   const handleAddExam = () => {
     if (exams.length >= 2) return;
-    // setEditingExam(null);
-    // setIsEditExam(false);
+    setEditingExam(null);
     setExamDialogOpen(true);
   };
 
-  // const handleEditExam = (exam: IExam) => {
-  //   setEditingExam(exam);
-  //   setIsEditExam(true);
-  //   setExamDialogOpen(true);
-  // };
+  const handleEditExam = (exam: IExam) => {
+    setEditingExam(exam);
+    setEditDialogOpen(true);
+  };
 
   const handleDeleteExam = (examId: string) => {
     setDeletingExamId(examId);
@@ -160,6 +158,17 @@ export const ExamsDisplay = ({
       }
     }
     setExamDialogOpen(false);
+  };
+
+  const handleEditExamUpdated = (examData?: IExam) => {
+    if (examData) {
+      setExams((prev) =>
+        prev.map((exam) => (exam._id === examData._id ? examData : exam))
+      );
+      toast.success(text("update_success"));
+    }
+    setEditDialogOpen(false);
+    setEditingExam(null);
   };
 
   const locale = useLocale();
@@ -235,6 +244,7 @@ export const ExamsDisplay = ({
                 <ExamCard
                   key={exam._id}
                   exam={exam}
+                  onEdit={() => handleEditExam(exam)}
                   onDelete={() => handleDeleteExam(exam._id)}
                   onViewQuestions={() => onViewQuestions(exam)}
                 />
@@ -254,6 +264,16 @@ export const ExamsDisplay = ({
           isEdit={false}
         />
 
+        {/* Edit Exam Dialog */}
+        {editingExam && (
+          <EditExamDialog
+            open={editDialogOpen}
+            onOpenChange={setEditDialogOpen}
+            exam={editingExam}
+            onExamUpdated={handleEditExamUpdated}
+          />
+        )}
+
         {/* Delete Confirmation */}
         <ConfirmationDialog
           open={!!deletingExamId}
@@ -272,30 +292,30 @@ export const ExamsDisplay = ({
 // Exam Card Component
 interface ExamCardProps {
   exam: IExam;
-  // onEdit: () => void;
+  onEdit: () => void;
   onDelete: () => void;
   onViewQuestions: () => void;
 }
 
 const ExamCard = ({
   exam,
-  // onEdit,
+  onEdit,
   onDelete,
   onViewQuestions,
 }: ExamCardProps) => {
   const text = useTranslations("exams");
-
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">
-            {getDynamicString(exam.title) ||
-              text("exam_title", {
-                model: text(`form.model_${exam.model.toLowerCase()}`),
-              }) ||
-              ""}
-          </CardTitle>
+          <div className="flex-1">
+            <CardTitle className="text-lg">
+              {getDynamicString(exam.title)}
+            </CardTitle>
+            <p className="text-sm text-muted-foreground mt-1">
+              {text(`form.model_${exam.model.toLowerCase()}`)}
+            </p>
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -313,7 +333,7 @@ const ExamCard = ({
                 <Eye className="w-4 h-4 mr-2" />
                 {text("view_questions")}
               </DropdownMenuItem>
-              {/* <DropdownMenuItem
+              <DropdownMenuItem
                 onClick={() => {
                   setTimeout(() => {
                     onEdit();
@@ -322,7 +342,7 @@ const ExamCard = ({
               >
                 <Edit className="w-4 h-4 mr-2" />
                 {text("edit_exam")}
-              </DropdownMenuItem> */}
+              </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={(e) => {
                   e.preventDefault();
@@ -339,9 +359,6 @@ const ExamCard = ({
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex items-center gap-2">
-          <Badge variant="secondary">
-            {text(`form.model_${exam.model.toLowerCase()}`)}
-          </Badge>
           <Badge variant="outline">
             {text("passing_score", { score: exam.passingScore })}
           </Badge>
@@ -381,8 +398,27 @@ const ExamDialog = ({
   const [formData, setFormData] = useState({
     model: exam?.model || "A",
     passingScore: exam?.passingScore?.toString() || "70",
-    title: exam?.title || "",
+    title: exam?.title ? getStringObject(exam.title) : { en: "", ar: "" },
   });
+
+  // Reset form when dialog opens or exam changes
+  useEffect(() => {
+    if (open) {
+      if (isEdit && exam) {
+        setFormData({
+          model: exam.model || "A",
+          passingScore: exam.passingScore?.toString() || "70",
+          title: exam.title ? getStringObject(exam.title) : { en: "", ar: "" },
+        });
+      } else {
+        setFormData({
+          model: "A",
+          passingScore: "70",
+          title: { en: "", ar: "" },
+        });
+      }
+    }
+  }, [open, exam, isEdit]);
 
   const handleSubmit = async () => {
     if (!formData.model || !formData.passingScore) {
@@ -390,21 +426,49 @@ const ExamDialog = ({
       return;
     }
 
+    // Validate title is required (both en and ar)
+    if (!formData.title.en || !formData.title.en.trim()) {
+      toast.error(
+        text("validation.question_text_required") ||
+          "Title (English) is required"
+      );
+      return;
+    }
+    if (!formData.title.ar || !formData.title.ar.trim()) {
+      toast.error(
+        text("validation.question_text_required") ||
+          "Title (Arabic) is required"
+      );
+      return;
+    }
+
     setLoading(true);
     try {
-      const data = {
-        model: formData.model,
-        passingScore: parseInt(formData.passingScore),
-        title: formData.title,
-        type: type,
-        [type === "placement" ? "course" : type]: parentId,
-      };
+      const formDataToSend = new FormData();
+      formDataToSend.append("model", formData.model);
+      formDataToSend.append("passingScore", formData.passingScore);
+      formDataToSend.append("title.en", formData.title.en);
+      formDataToSend.append("title.ar", formData.title.ar);
+      formDataToSend.append("type", type);
+      formDataToSend.append(type === "placement" ? "course" : type, parentId);
 
       let response;
       if (isEdit && exam) {
-        response = await axiosInstance.put(`/exams/${exam._id}`, data);
+        response = await axiosInstance.put(
+          `/exams/${exam._id}`,
+          formDataToSend,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
       } else {
-        response = await axiosInstance.post("/exams", data);
+        response = await axiosInstance.post("/exams", formDataToSend, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
       }
 
       // API returns { data: { exam: {...} } } for create/update
@@ -434,14 +498,37 @@ const ExamDialog = ({
         <div className="space-y-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">
-              {text("form.title_optional")}
+              {text("form.title")} (English){" "}
+              <span className="text-red-500">*</span>
             </label>
             <Input
               placeholder={text("form.title_placeholder")}
-              value={getDynamicString(formData.title)}
+              value={formData.title.en}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, title: e.target.value }))
+                setFormData((prev) => ({
+                  ...prev,
+                  title: { ...prev.title, en: e.target.value },
+                }))
               }
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium">
+              {text("form.title")} (Arabic){" "}
+              <span className="text-red-500">*</span>
+            </label>
+            <Input
+              placeholder={text("form.title_placeholder")}
+              value={formData.title.ar}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  title: { ...prev.title, ar: e.target.value },
+                }))
+              }
+              required
             />
           </div>
 
@@ -490,6 +577,169 @@ const ExamDialog = ({
           <Button onClick={handleSubmit} disabled={loading}>
             {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             {isEdit ? text("update") : text("create")}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// Edit Exam Dialog Component (only title and passing score)
+interface EditExamDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  exam: IExam;
+  onExamUpdated: (examData?: IExam) => void;
+}
+
+const EditExamDialog = ({
+  open,
+  onOpenChange,
+  exam,
+  onExamUpdated,
+}: EditExamDialogProps) => {
+  const text = useTranslations("exams");
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    passingScore: exam?.passingScore?.toString() || "70",
+    title: exam?.title ? getStringObject(exam.title) : { en: "", ar: "" },
+  });
+
+  // Reset form when exam changes
+  useEffect(() => {
+    if (exam) {
+      setFormData({
+        passingScore: exam.passingScore?.toString() || "70",
+        title: exam.title ? getStringObject(exam.title) : { en: "", ar: "" },
+      });
+    }
+  }, [exam]);
+
+  const handleSubmit = async () => {
+    if (!formData.passingScore) {
+      toast.error(text("validation.fill_required_fields"));
+      return;
+    }
+
+    // Validate title is required (both en and ar)
+    if (!formData.title.en || !formData.title.en.trim()) {
+      toast.error(
+        text("validation.question_text_required") ||
+          "Title (English) is required"
+      );
+      return;
+    }
+    if (!formData.title.ar || !formData.title.ar.trim()) {
+      toast.error(
+        text("validation.question_text_required") ||
+          "Title (Arabic) is required"
+      );
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append("passingScore", formData.passingScore);
+      formDataToSend.append("title.en", formData.title.en);
+      formDataToSend.append("title.ar", formData.title.ar);
+
+      const response = await axiosInstance.put(
+        `/exams/${exam._id}`,
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      // API returns { data: { exam: {...} } } for update
+      const returnedExam = response?.data?.data?.exam ?? response?.data?.data;
+      onExamUpdated(returnedExam);
+    } catch (err) {
+      const typedError = err as AxiosError<{ message: string }>;
+      const errorMessage =
+        typedError?.response?.data?.message ||
+        typedError?.message ||
+        text("save_error");
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{text("edit_exam_title")}</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">
+              {text("form.title")} (English){" "}
+              <span className="text-red-500">*</span>
+            </label>
+            <Input
+              placeholder={text("form.title_placeholder")}
+              value={formData.title.en}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  title: { ...prev.title, en: e.target.value },
+                }))
+              }
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium">
+              {text("form.title")} (Arabic){" "}
+              <span className="text-red-500">*</span>
+            </label>
+            <Input
+              placeholder={text("form.title_placeholder")}
+              value={formData.title.ar}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  title: { ...prev.title, ar: e.target.value },
+                }))
+              }
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium">
+              {text("form.passing_score")}
+            </label>
+            <Input
+              type="number"
+              min="1"
+              max="100"
+              placeholder="70"
+              value={formData.passingScore}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  passingScore: e.target.value,
+                }))
+              }
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            {text("cancel")}
+          </Button>
+          <Button onClick={handleSubmit} disabled={loading}>
+            {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+            {text("update")}
           </Button>
         </div>
       </DialogContent>
