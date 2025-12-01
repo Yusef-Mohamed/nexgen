@@ -39,9 +39,15 @@ const WalletClient = () => {
     instructorProfitsDiff: number;
     withdrawals: number;
   } | null>(null);
-  const { courses, isLoadingCourses } = useFilterCourses();
-  const { coursePackages } = useFilterCoursePackages();
-  const { packages } = useFilterPackages();
+  const { courses, isLoadingCourses } = useFilterCourses({
+    enable: true,
+  });
+  const { coursePackages } = useFilterCoursePackages({
+    enable: true,
+  });
+  const { packages } = useFilterPackages({
+    enable: true,
+  });
 
   // Fetch analytics data
   useEffect(() => {
@@ -73,9 +79,6 @@ const WalletClient = () => {
   }
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Overview</h2>
-      </div>
       {isLoading ? (
         <LoadingState />
       ) : (
@@ -136,32 +139,30 @@ const StatsCards = ({
   locale: string;
 }) => (
   <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-    <div className="grid gap-4 grid-cols-3 col-span-3">
-      <StatCard
-        title={t("stats.totalEnrollments")}
-        value={marketLog?.totalEnrollments || 0}
-        percentage={marketLog?.totalEnrollmentsDiff || 0}
-        total={marketLog?.totalEnrollments || 0}
-        unit={t("stats.unitStudent")}
-        t={t}
-      />
-      <StatCard
-        title={t("stats.averageRate")}
-        value={marketLog?.avgRate || 0}
-        percentage={marketLog?.avgRateDiff || 0}
-        total={marketLog?.avgRate || 0}
-        unit={t("stats.unitRating")}
-        t={t}
-      />
-      <StatCard
-        title={t("stats.instructorProfits")}
-        value={marketLog?.instructorProfits || 0}
-        percentage={marketLog?.instructorProfitsDiff || 0}
-        total={marketLog?.instructorProfits || 0}
-        unit={t("stats.unitCurrency")}
-        t={t}
-      />
-    </div>
+    <StatCard
+      title={t("stats.totalEnrollments")}
+      value={marketLog?.totalEnrollments || 0}
+      percentage={marketLog?.totalEnrollmentsDiff || 0}
+      total={marketLog?.totalEnrollments || 0}
+      unit={t("stats.unitStudent")}
+      t={t}
+    />
+    <StatCard
+      title={t("stats.averageRate")}
+      value={marketLog?.avgRate || 0}
+      percentage={marketLog?.avgRateDiff || 0}
+      total={marketLog?.avgRate || 0}
+      unit={t("stats.unitRating")}
+      t={t}
+    />
+    <StatCard
+      title={t("stats.instructorProfits")}
+      value={marketLog?.instructorProfits || 0}
+      percentage={marketLog?.instructorProfitsDiff || 0}
+      total={marketLog?.instructorProfits || 0}
+      unit={t("stats.unitCurrency")}
+      t={t}
+    />
     <BalanceCard
       balance={
         (marketLog?.instructorProfits || 0) - (marketLog?.withdrawals || 0)

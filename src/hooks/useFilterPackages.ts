@@ -27,18 +27,28 @@ export const useFilterPackages = ({
 
   const getInstructorPackages = useCallback(async () => {
     setIsLoadingInstructorPackages(true);
-    const res = await axiosInstance.get(`/packages/getAll?status=active`);
-    setInstructorPackages(res.data.data);
-    setIsLoadingInstructorPackages(false);
+    try {
+      const res = await axiosInstance.get(`/packages/getAll?status=active`);
+      setInstructorPackages(res.data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingInstructorPackages(false);
+    }
   }, []);
 
   const getMarketerPackages = useCallback(async () => {
     setIsLoadingMarketerPackages(true);
-    const res = await axiosInstance.get(
-      `/marketing/getProfitableItemsByType?type=package`
-    );
-    setMarketerPackages(res.data.data);
-    setIsLoadingMarketerPackages(false);
+    try {
+      const res = await axiosInstance.get(
+        `/marketing/getProfitableItemsByType?type=package`
+      );
+      setMarketerPackages(res.data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingMarketerPackages(false);
+    }
   }, []);
 
   useEffect(() => {

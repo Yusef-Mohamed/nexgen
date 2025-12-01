@@ -20,17 +20,27 @@ export const useFilterCourses = ({ enable = true }: { enable?: boolean }) => {
     useState(false);
   const getInstructorCourses = useCallback(async () => {
     setIsLoadingInstructorCourses(true);
-    const res = await axiosInstance.get(`/courses/getAll?status=active`);
-    setInstructorCourses(res.data.data);
-    setIsLoadingInstructorCourses(false);
+    try {
+      const res = await axiosInstance.get(`/courses/getAll?status=active`);
+      setInstructorCourses(res.data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingInstructorCourses(false);
+    }
   }, []);
   const getMarketerCourses = useCallback(async () => {
     setIsLoadingMarketerCourses(true);
-    const res = await axiosInstance.get(
-      `/marketing/getProfitableItemsByType?type=course`
-    );
-    setMarketerCourses(res.data.data);
-    setIsLoadingMarketerCourses(false);
+    try {
+      const res = await axiosInstance.get(
+        `/marketing/getProfitableItemsByType?type=course`
+      );
+      setMarketerCourses(res.data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingMarketerCourses(false);
+    }
   }, []);
 
   useEffect(() => {

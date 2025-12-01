@@ -45,8 +45,12 @@ const CommunityFilters = () => {
   const [selectedPackage, setSelectedPackage] = useState(
     searchParams.get("package") || ""
   );
-  const { courses } = useFilterCourses();
-  const { packages } = useFilterPackages();
+  const { courses } = useFilterCourses({
+    enable: true,
+  });
+  const { packages } = useFilterPackages({
+    enable: true,
+  });
   useEffect(() => {
     const isRelatedToStudents =
       selectedSharedTo === "students" ||

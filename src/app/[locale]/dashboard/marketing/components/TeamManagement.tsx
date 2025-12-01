@@ -1,22 +1,14 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
 import { useLocale } from "next-intl";
 import { useAuth } from "@/components/auth-provider";
 import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
-import { IMarketLog, IOrder, IUser } from "@/types";
+import { IOrder, IUser } from "@/types";
 import TeamTable from "./TeamTable";
-import LinksTable from "./LinksTable";
+import InvitationLinksBlock from "./InvitationLinksBlock";
 import { AxiosError } from "axios";
 interface User extends IUser {
   orders?: IOrder[];
@@ -52,7 +44,6 @@ const TeamManagement: React.FC = () => {
   const t = useTranslations("teamManagement");
   const { token, user } = useAuth();
   const [isFetching, setIsFetching] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState<TeamData>({
     status: "success",
     totalRegistrations: 0,
@@ -61,82 +52,34 @@ const TeamManagement: React.FC = () => {
     teamMembers1: [],
     teamMembers2: [],
   });
-  const [marketLog, setMarketLog] = useState<IMarketLog | null>(null);
 
-  const [formData, setFormData] = useState({
-    name: "",
-  });
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!user?._id) return;
-
-      setIsFetching(true);
-      try {
-        const logRes = await axiosInstance.get<{
-          marketLog: IMarketLog;
-        }>(`/marketing/getMarketLog/${user._id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setMarketLog(logRes.data.marketLog);
-        const res = await axiosInstance.get<TeamData>(
-          `/marketing/getMarketerChildren/${user._id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setData(res.data);
-      } catch (error) {
-        const typedError = error as AxiosError<{ message?: string }>;
-        if (typedError.response?.data?.message)
-          toast.error(typedError.response.data.message);
-        else toast.error(t("fetchError"));
-      }
-      setIsFetching(false);
-    };
-
-    if (token) fetchData();
-  }, [token, user?._id, t]);
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const fetchData = useCallback(async () => {
     if (!user?._id) return;
 
+    setIsFetching(true);
     try {
-      setIsLoading(true);
-
-      await axiosInstance.put(
-        `/marketing/modifyInvitationKeys/${user._id}`,
-        {
-          keys: [formData.name],
-          invitationKeys: [formData.name],
-          invitationKey: formData.name,
-          option: "add",
-        },
+      const res = await axiosInstance.get<TeamData>(
+        `/marketing/getMarketerChildren/${user._id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      toast.success(t("createLink.success"));
-      setFormData({ name: "" });
+
+      setData(res.data);
     } catch (error) {
-      console.error("Error creating link:", error);
-      toast.error(t("createLink.error"));
-    } finally {
-      setIsLoading(false);
+      const typedError = error as AxiosError<{ message?: string }>;
+      if (typedError.response?.data?.message)
+        toast.error(typedError.response.data.message);
+      else toast.error(t("fetchError"));
     }
-  };
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+    setIsFetching(false);
+  }, [token, user?._id, t]);
+
+  useEffect(() => {
+    if (token) fetchData();
+  }, [token, fetchData]);
   return (
     <section className="space-y-4">
       <h2 className="font-semibold">{t("affiliateMarketing")}</h2>
@@ -161,33 +104,7 @@ const TeamManagement: React.FC = () => {
           <TeamTable data={data} />
         </>
       )}
-      <Card id="invites" className="mb-4 border-none">
-        <CardHeader>
-          <CardTitle>{t("createLink.title")}</CardTitle>
-          <CardDescription>{t("createLink.description")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                {t("createLink.form.linkName.label")}
-              </label>
-              <Input
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder={t("createLink.form.linkName.placeholder")}
-                className="w-full"
-                disabled={isLoading}
-              />
-            </div>
-            <Button isLoading={isLoading} type="submit" className="mt-4">
-              {t("createLink.form.submitButton")}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-      <LinksTable links={marketLog?.invitationKeys || []} />
+      <InvitationLinksBlock />
     </section>
   );
 };

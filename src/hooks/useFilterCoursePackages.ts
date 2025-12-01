@@ -35,17 +35,30 @@ export const useFilterCoursePackages = ({
 
   const getInstructorCoursePackages = useCallback(async () => {
     setIsLoadingInstructorCoursePackages(true);
-    const res = await axiosInstance.get(`/coursePackages/getAll?status=active`);
-    setInstructorCoursePackages(res.data.data);
-    setIsLoadingInstructorCoursePackages(false);
+    try {
+      const res = await axiosInstance.get(
+        `/coursePackages/getAll?status=active`
+      );
+      setInstructorCoursePackages(res.data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingInstructorCoursePackages(false);
+    }
   }, []);
 
   const getMarketerCoursePackages = useCallback(async () => {
     setIsLoadingMarketerCoursePackages(true);
-    const res = await axiosInstance.get(
-      `/marketing/getProfitableItemsByType?type=coursePackage`
-    );
-    setMarketerCoursePackages(res.data.data);
+    try {
+      const res = await axiosInstance.get(
+        `/marketing/getProfitableItemsByType?type=coursePackage`
+      );
+      setMarketerCoursePackages(res.data.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingMarketerCoursePackages(false);
+    }
     setIsLoadingMarketerCoursePackages(false);
   }, []);
 

@@ -905,6 +905,23 @@
           "label": "السبب",
           "placeholder": "اشرح الغرض من هذا الكوبون"
         },
+        "appliesTo": {
+          "label": "حدد العناصر التي ينطبق عليها الكوبون:",
+          "courses": "الدورات",
+          "services": "الخدمات",
+          "learningPaths": "مسارات التعلم",
+          "noCourses": "لا توجد دورات متاحة",
+          "noServices": "لا توجد خدمات متاحة",
+          "noLearningPaths": "لا توجد مسارات تعلم متاحة",
+          "checkAll": "تحديد الكل"
+        },
+        "validation": {
+          "reasonRequired": "السبب مطلوب",
+          "reasonMin": "يجب أن يكون السبب أكثر من 3 أحرف",
+          "percentageRequired": "نسبة الخصم مطلوبة",
+          "percentageInvalid": "يجب أن تكون نسبة الخصم رقمًا صحيحًا",
+          "percentageMax": "يجب أن تكون نسبة الخصم أقل من 100"
+        },
         "submitButton": "إنشاء الكوبون"
       }
     },
@@ -1145,6 +1162,12 @@
     "copy": "نسخ",
     "link": "الرابط",
     "linkCopied": "تم نسخ الرابط",
+    "actions": "الإجراءات",
+    "deleteLink": {
+      "success": "تم حذف الرابط بنجاح",
+      "error": "فشل حذف الرابط",
+      "confirmation": "هل أنت متأكد أنك تريد حذف هذا الرابط؟ لا يمكن التراجع عن هذا الإجراء."
+    },
     "allItems": "جميع العناصر",
     "course": "دورة",
     "service": "خدمة",
@@ -1216,7 +1239,8 @@
     "saving": "جاري الحفظ...",
     "save_success": "تم حفظ التغييرات بنجاح!",
     "update_success": "تم التحديث بنجاح!",
-    "create_success": "تم الإنشاء بنجاح!"
+    "create_success": "تم الإنشاء بنجاح!",
+    "deleting": "جاري الحذف..."
   },
   "courses": {
     "step": "الخطوة",

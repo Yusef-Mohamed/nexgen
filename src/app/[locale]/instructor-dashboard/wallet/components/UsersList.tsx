@@ -157,13 +157,13 @@ const UsersList: React.FC<UsersListProps> = ({
           return;
         }
 
-        // Use user.createdAt as startDate (or current date if unavailable)
+        // Use user.createdAt as startDate (remove 2 days from it)
         const startDate = user?.createdAt
-          ? formatDate(new Date(user.createdAt))
-          : formatDate(addDays(new Date(), 1));
+          ? formatDate(addDays(new Date(user.createdAt), -2))
+          : formatDate(addDays(new Date(), -2));
 
-        // Use current date as endDate
-        const endDate = formatDate(new Date());
+        // Use current date as endDate (add 2 days to it)
+        const endDate = formatDate(addDays(new Date(), 2));
 
         // Map types for API
         const typeMap: Record<string, string> = {
@@ -227,47 +227,9 @@ const UsersList: React.FC<UsersListProps> = ({
     <Card>
       <CardContent className="p-6 space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold">Purchased Users</h3>
-          <Select
-            value={selectedCourseId}
-            onValueChange={setSelectedCourseId}
-            disabled={isLoadingCourses}
-          >
-            <SelectTrigger className="w-[250px]">
-              <SelectValue placeholder="Select course" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All courses</SelectItem>
-              {courses.map((course) => (
-                <SelectItem
-                  key={`course:${course._id}`}
-                  value={`course:${course._id}`}
-                >
-                  {getDynamicString(course.title)} - course
-                </SelectItem>
-              ))}
-              {coursePackages.map((coursePackage) => (
-                <SelectItem
-                  key={`coursePackage:${coursePackage._id}`}
-                  value={`coursePackage:${coursePackage._id}`}
-                >
-                  {getDynamicString(coursePackage.title)} - coursePackage
-                </SelectItem>
-              ))}
-              {packages.map((pkg) => (
-                <SelectItem
-                  key={`package:${pkg._id}`}
-                  value={`package:${pkg._id}`}
-                >
-                  {getDynamicString(pkg.title)} - package
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {selectedCourseId !== "all" && (
+          <h3 className="text-xl font-semibold">Purchased Users</h3>{" "}
           <div className="flex flex-wrap gap-4">
+            {" "}
             <Select
               value={resaleFilter.toString()}
               onValueChange={(value) => setResaleFilter(value === "true")}
@@ -280,12 +242,47 @@ const UsersList: React.FC<UsersListProps> = ({
                 <SelectItem value="true">{t("resaleOrdersOnly")}</SelectItem>
               </SelectContent>
             </Select>
-
             <div className="relative">
               <DatePickerWithRange date={date} setDate={setDate} />
             </div>
+            <Select
+              value={selectedCourseId}
+              onValueChange={setSelectedCourseId}
+              disabled={isLoadingCourses}
+            >
+              <SelectTrigger className="w-[250px]">
+                <SelectValue placeholder="Select course" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All courses</SelectItem>
+                {courses.map((course) => (
+                  <SelectItem
+                    key={`course:${course._id}`}
+                    value={`course:${course._id}`}
+                  >
+                    {getDynamicString(course.title)} - course
+                  </SelectItem>
+                ))}
+                {coursePackages.map((coursePackage) => (
+                  <SelectItem
+                    key={`coursePackage:${coursePackage._id}`}
+                    value={`coursePackage:${coursePackage._id}`}
+                  >
+                    {getDynamicString(coursePackage.title)} - coursePackage
+                  </SelectItem>
+                ))}
+                {packages.map((pkg) => (
+                  <SelectItem
+                    key={`package:${pkg._id}`}
+                    value={`package:${pkg._id}`}
+                  >
+                    {getDynamicString(pkg.title)} - package
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-        )}
+        </div>
 
         {selectedCourseId === "all" ? (
           <div className="flex flex-col items-center justify-center py-8 text-center">

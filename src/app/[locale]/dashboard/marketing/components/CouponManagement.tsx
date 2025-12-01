@@ -19,10 +19,50 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { useAuth } from "@/components/auth-provider";
 import { axiosInstance } from "@/app/lib/utils";
 import { ICoupon } from "@/types";
 import { toast } from "react-toastify";
+import { useFilterCourses } from "@/hooks/useFilterCourses";
+import { useFilterPackages } from "@/hooks/useFilterPackages";
+import { useFilterCoursePackages } from "@/hooks/useFilterCoursePackages";
+import CouponAppliesToSelector from "./CouponAppliesToSelector";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+// Validation schema
+const createCouponSchema = (t: (key: string) => string) =>
+  z.object({
+    name: z.string().optional(),
+    percentage: z
+      .string()
+      .min(1, t("createCoupon.form.validation.percentageRequired"))
+      .refine(
+        (val) => !isNaN(Number(val)) && Number(val) > 0,
+        t("createCoupon.form.validation.percentageInvalid")
+      )
+      .refine(
+        (val) => Number(val) < 100,
+        t("createCoupon.form.validation.percentageMax")
+      ),
+    maxUses: z.string().optional(),
+    reason: z
+      .string()
+      .min(1, t("createCoupon.form.validation.reasonRequired"))
+      .min(4, t("createCoupon.form.validation.reasonMin")),
+  });
+
+type CouponFormValues = z.infer<ReturnType<typeof createCouponSchema>>;
 
 const CouponManagement = () => {
   const t = useTranslations("couponManagement");
@@ -31,6 +71,17 @@ const CouponManagement = () => {
   const { token } = useAuth();
   const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Initialize form with validation
+  const form = useForm<CouponFormValues>({
+    resolver: zodResolver(createCouponSchema(t)),
+    defaultValues: {
+      name: "",
+      percentage: "",
+      maxUses: "",
+      reason: "",
+    },
+  });
 
   useEffect(() => {
     const fetchCoupons = async () => {
@@ -50,25 +101,37 @@ const CouponManagement = () => {
     if (token) fetchCoupons();
   }, [token]);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    percentage: "",
-    maxUses: "",
-    reason: "",
+  // Selection state for courses, packages, and coursePackages
+  const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
+  const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
+  const [selectedCoursePackages, setSelectedCoursePackages] = useState<
+    string[]
+  >([]);
+
+  // Fetch data from hooks
+  const { courses, isLoadingCourses } = useFilterCourses({ enable: true });
+  const { packages, isLoadingPackages } = useFilterPackages({
+    enable: true,
+    onlyActive: false,
+  });
+  const { coursePackages, isLoadingCoursePackages } = useFilterCoursePackages({
+    enable: true,
   });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = async (data: CouponFormValues) => {
     try {
       setIsLoading(true);
 
       const res = await axiosInstance.post(
         "/coupons",
         {
-          couponName: formData.name,
-          discount: formData.percentage,
-          maxUsageTimes: formData.maxUses,
-          reason: formData.reason,
+          couponName: data.name || "",
+          discount: data.percentage,
+          maxUsageTimes: data.maxUses || "",
+          reason: data.reason,
+          courses: selectedCourses,
+          packages: selectedPackages,
+          coursePackages: selectedCoursePackages,
         },
         {
           headers: {
@@ -78,22 +141,16 @@ const CouponManagement = () => {
       );
       setCoupons([res.data.data, ...coupons]);
       toast.success(t("createCoupon.success"));
+      // Reset form and selections
+      form.reset();
+      setSelectedCourses([]);
+      setSelectedPackages([]);
+      setSelectedCoursePackages([]);
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
-    setFormData({ name: "", percentage: "", maxUses: "", reason: "" });
-  };
-
-  const handleInputChange = (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
   };
 
   const getStatusColor = (status: string) => {
@@ -150,69 +207,145 @@ const CouponManagement = () => {
           <CardDescription>{t("createCoupon.description")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("createCoupon.form.couponName.label")}
-                </label>
-                <Input
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <FormField
+                  control={form.control}
                   name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  placeholder={t("createCoupon.form.couponName.placeholder")}
-                  className="w-full"
-                  disabled={isLoading}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("createCoupon.form.discountPercentage.label")}
-                </label>
-                <Input
-                  name="percentage"
-                  type="number"
-                  value={formData.percentage}
-                  onChange={handleInputChange}
-                  placeholder={t(
-                    "createCoupon.form.discountPercentage.placeholder"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {t("createCoupon.form.couponName.label")}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder={t(
+                            "createCoupon.form.couponName.placeholder"
+                          )}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                  className="w-full"
-                  disabled={isLoading}
                 />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("createCoupon.form.maxUses.label")}
-                </label>
-                <Input
+                <FormField
+                  control={form.control}
+                  name="percentage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {t("createCoupon.form.discountPercentage.label")}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          placeholder={t(
+                            "createCoupon.form.discountPercentage.placeholder"
+                          )}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
                   name="maxUses"
-                  type="number"
-                  value={formData.maxUses}
-                  onChange={handleInputChange}
-                  placeholder={t("createCoupon.form.maxUses.placeholder")}
-                  className="w-full"
-                  disabled={isLoading}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {t("createCoupon.form.maxUses.label")}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          placeholder={t(
+                            "createCoupon.form.maxUses.placeholder"
+                          )}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  {t("createCoupon.form.reason.label")}
-                </label>
-                <Input
+                <FormField
+                  control={form.control}
                   name="reason"
-                  value={formData.reason}
-                  onChange={handleInputChange}
-                  placeholder={t("createCoupon.form.reason.placeholder")}
-                  className="w-full"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {t("createCoupon.form.reason.label")}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder={t(
+                            "createCoupon.form.reason.placeholder"
+                          )}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Selection Section */}
+              <div className="space-y-4 border-t pt-4 mt-4">
+                <Label className="text-base font-semibold">
+                  {t("createCoupon.form.appliesTo.label")}
+                </Label>
+
+                {/* Courses Selection */}
+                <CouponAppliesToSelector
+                  title={t("createCoupon.form.appliesTo.courses")}
+                  items={courses}
+                  selectedIds={selectedCourses}
+                  onSelectionChange={setSelectedCourses}
+                  isLoading={isLoadingCourses}
+                  emptyMessageKey="createCoupon.form.appliesTo.noCourses"
+                  itemIdPrefix="course"
+                  disabled={isLoading}
+                />
+
+                {/* Services (Packages) Selection */}
+                <CouponAppliesToSelector
+                  title={t("createCoupon.form.appliesTo.services")}
+                  items={packages}
+                  selectedIds={selectedPackages}
+                  onSelectionChange={setSelectedPackages}
+                  isLoading={isLoadingPackages}
+                  emptyMessageKey="createCoupon.form.appliesTo.noServices"
+                  itemIdPrefix="package"
+                  disabled={isLoading}
+                />
+
+                {/* Learning Paths (Course Packages) Selection */}
+                <CouponAppliesToSelector
+                  title={t("createCoupon.form.appliesTo.learningPaths")}
+                  items={coursePackages}
+                  selectedIds={selectedCoursePackages}
+                  onSelectionChange={setSelectedCoursePackages}
+                  isLoading={isLoadingCoursePackages}
+                  emptyMessageKey="createCoupon.form.appliesTo.noLearningPaths"
+                  itemIdPrefix="coursePackage"
                   disabled={isLoading}
                 />
               </div>
-            </div>
-            <Button isLoading={isLoading} type="submit" className="mt-4">
-              {t("createCoupon.form.submitButton")}
-            </Button>
-          </form>
+
+              <Button isLoading={isLoading} type="submit" className="mt-4">
+                {t("createCoupon.form.submitButton")}
+              </Button>
+            </form>
+          </Form>
         </CardContent>
       </Card>
 

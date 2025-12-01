@@ -165,9 +165,15 @@ const MainComponent = ({
 }) => {
   const t = useTranslations("salesManagement");
   const [item, setItem] = useState("");
-  const { courses } = useFilterCourses();
-  const { coursePackages } = useFilterCoursePackages();
-  const { packages } = useFilterPackages();
+  const { courses } = useFilterCourses({
+    enable: true,
+  });
+  const { coursePackages } = useFilterCoursePackages({
+    enable: true,
+  });
+  const { packages } = useFilterPackages({
+    enable: true,
+  });
 
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
