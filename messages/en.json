@@ -978,7 +978,18 @@
     "commission": {
       "member": "Member",
       "profit": "Profit",
-      "lastUpdate": "Last Update"
+      "lastUpdate": "Last Update",
+      "user": "User",
+      "order": "Order",
+      "type": "Type",
+      "amount": "Amount",
+      "percentage": "Percentage",
+      "date": "Date",
+      "types": {
+        "course": "Course",
+        "coursePackage": "Learning Path",
+        "package": "Service"
+      }
     },
     "sales": {
       "purchaser": "Purchaser",
@@ -1003,7 +1014,8 @@
     },
     "common": {
       "showAll": "Show All",
-      "loading": "Loading..."
+      "loading": "Loading...",
+      "noData": "No data found"
     }
   },
   "practice": {
@@ -1072,14 +1084,17 @@
     "manageCoupones": "Manage Coupons",
     "manageInvitaionKeys": "Manage Invitation Links",
     "salesAnalytics": "Sales Analytics",
-    "topCoursesSell": "Best-Selling Courses",
+    "topCoursesSell": "Best-Selling Items",
     "course": "Course",
     "percentage": "Percentage",
     "noOrdersFound": "No Orders Found",
+    "ordersCount": "Orders Count",
+    "itemName": "Item Name",
     "total": "Total",
     "nCourse": "Course",
     "path": "Path",
-    "service": "Service"
+    "service": "Service",
+    "failedToLoadSalesAnalytics": "Failed to load sales analytics data"
   },
   "teamManagement": {
     "showLess": "Show Less",

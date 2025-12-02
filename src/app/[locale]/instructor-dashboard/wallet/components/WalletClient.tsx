@@ -1,8 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Card, CardContent } from "@/components/ui/card";
-
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/components/auth-provider";
 import TrendBadge from "@/components/TrendBadge";
 import Image from "next/image";
@@ -20,10 +28,7 @@ import { cn } from "@/lib/utils";
 import { axiosInstance } from "@/app/lib/utils";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
-import UsersList from "./UsersList";
-import { useFilterCourses } from "@/hooks/useFilterCourses";
-import { useFilterCoursePackages } from "@/hooks/useFilterCoursePackages";
-import { useFilterPackages } from "@/hooks/useFilterPackages";
+import UserAvatar from "@/components/UserAvatar";
 
 const WalletClient = () => {
   const t = useTranslations("invoicesManagement");
@@ -38,16 +43,33 @@ const WalletClient = () => {
     instructorProfits: number;
     instructorProfitsDiff: number;
     withdrawals: number;
+    commissions?: Array<{
+      order: string;
+      type: string;
+      amount: number;
+      percentage: number;
+      profit: number;
+      marketerPercentage?: number;
+      marketerProfits?: number;
+      marketer?: string;
+      totalProfits?: number;
+      createdAt: string;
+      user?: {
+        _id: string;
+        name: string;
+        email: string;
+        phone: string;
+        profileImg?: string;
+      };
+    }>;
+    invoices?: Array<{
+      _id: string;
+      profits: number;
+      desc: string;
+      status: string;
+      createdAt: string;
+    }>;
   } | null>(null);
-  const { courses, isLoadingCourses } = useFilterCourses({
-    enable: true,
-  });
-  const { coursePackages } = useFilterCoursePackages({
-    enable: true,
-  });
-  const { packages } = useFilterPackages({
-    enable: true,
-  });
 
   // Fetch analytics data
   useEffect(() => {
@@ -84,14 +106,12 @@ const WalletClient = () => {
       ) : (
         <StatsCards marketLog={marketLog} locale={locale} t={t} />
       )}
-      <UsersList
-        token={token}
-        user={user}
-        courses={courses}
-        coursePackages={coursePackages}
-        packages={packages}
-        isLoadingCourses={isLoadingCourses}
-      />
+      {!isLoading && marketLog && (
+        <>
+          <CommissionsTable marketLog={marketLog} locale={locale} t={t} />
+          <InvoicesTable marketLog={marketLog} locale={locale} t={t} />
+        </>
+      )}
     </div>
   );
 };
@@ -134,6 +154,32 @@ const StatsCards = ({
     instructorProfits: number;
     instructorProfitsDiff: number;
     withdrawals: number;
+    commissions?: Array<{
+      order: string;
+      type: string;
+      amount: number;
+      percentage: number;
+      profit: number;
+      marketerPercentage?: number;
+      marketerProfits?: number;
+      marketer?: string;
+      totalProfits?: number;
+      createdAt: string;
+      user?: {
+        _id: string;
+        name: string;
+        email: string;
+        phone: string;
+        profileImg?: string;
+      };
+    }>;
+    invoices?: Array<{
+      _id: string;
+      profits: number;
+      desc: string;
+      status: string;
+      createdAt: string;
+    }>;
   } | null;
   t: (key: string) => string;
   locale: string;
@@ -360,5 +406,236 @@ const RenderFakeChart = ({ positive }: { positive: boolean }) => (
     className="w-full aspect-[189/120] mt-4 object-cover"
   />
 );
+
+const CommissionsTable = ({
+  marketLog,
+  locale,
+  t,
+}: {
+  marketLog: {
+    commissions?: Array<{
+      order: string;
+      type: string;
+      amount: number;
+      percentage: number;
+      profit: number;
+      marketerPercentage?: number;
+      marketerProfits?: number;
+      marketer?: string;
+      totalProfits?: number;
+      createdAt: string;
+      user?: {
+        _id: string;
+        name: string;
+        email: string;
+        phone: string;
+        profileImg?: string;
+      };
+    }>;
+  };
+  locale: string;
+  t: (key: string) => string;
+}) => {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString(
+      locale === "ar" ? "ar-EG" : "en-US",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }
+    );
+  };
+
+  const getTranslatedType = (type: string) => {
+    const typeKey = type.toLowerCase();
+    switch (typeKey) {
+      case "course":
+        return t("commission.types.course");
+      case "coursepackage":
+        return t("commission.types.coursePackage");
+      case "package":
+        return t("commission.types.package");
+      default:
+        return type;
+    }
+  };
+
+  const commissions = marketLog.commissions || [];
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{t("tabs.commission")}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {commissions.length === 0 ? (
+          <p className="text-center text-muted-foreground py-8">
+            {t("common.noData") || "No commissions found"}
+          </p>
+        ) : (
+          <div className="relative overflow-x-auto whitespace-nowrap">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t("commission.user") || "User"}</TableHead>
+                  <TableHead>{t("commission.order") || "Order"}</TableHead>
+                  <TableHead>{t("commission.type") || "Type"}</TableHead>
+                  <TableHead>{t("commission.amount") || "Amount"}</TableHead>
+                  <TableHead>
+                    {t("commission.percentage") || "Percentage"}
+                  </TableHead>
+                  <TableHead>{t("commission.profit")}</TableHead>
+                  <TableHead>{t("commission.date") || "Date"}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {commissions.map((commission, index) => (
+                  <TableRow key={`${commission.order}-${index}`}>
+                    <TableCell>
+                      {commission.user ? (
+                        <div className="flex items-center gap-3">
+                          <UserAvatar
+                            user={{
+                              name: commission.user.name,
+                              profileImg: commission.user.profileImg,
+                            }}
+                            size="sm"
+                          />
+                          <div className="flex flex-col">
+                            <span className="font-medium">
+                              {commission.user.name}
+                            </span>
+                            <span className="text-sm text-muted-foreground">
+                              {commission.user.email}
+                            </span>
+                            {commission.user.phone && (
+                              <span
+                                className="text-xs text-muted-foreground w-fit"
+                                dir="ltr"
+                              >
+                                {commission.user.phone}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">-</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-xs font-mono">
+                        {commission.order.slice(-8)}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">
+                        {getTranslatedType(commission.type)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>${commission.amount.toLocaleString()}</TableCell>
+                    <TableCell>{commission.percentage}%</TableCell>
+                    <TableCell className="font-semibold">
+                      ${commission.profit.toLocaleString()}
+                    </TableCell>
+                    <TableCell>{formatDate(commission.createdAt)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+const InvoicesTable = ({
+  marketLog,
+  locale,
+  t,
+}: {
+  marketLog: {
+    invoices?: Array<{
+      _id: string;
+      profits: number;
+      desc: string;
+      status: string;
+      createdAt: string;
+    }>;
+  };
+  locale: string;
+  t: (key: string) => string;
+}) => {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString(
+      locale === "ar" ? "ar-EG" : "en-US",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }
+    );
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "paid":
+        return "bg-primary";
+      case "rejected":
+        return "bg-destructive";
+      default:
+        return "bg-yellow-500 dark:bg-yellow-600";
+    }
+  };
+
+  const invoices = marketLog.invoices || [];
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{t("invoices.title") || "Invoices"}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {invoices.length === 0 ? (
+          <p className="text-center text-muted-foreground py-8">
+            {t("common.noData") || "No invoices found"}
+          </p>
+        ) : (
+          <div className="relative overflow-x-auto whitespace-nowrap">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t("invoices.period")}</TableHead>
+                  <TableHead>{t("invoices.profit")}</TableHead>
+                  <TableHead>{t("invoices.status")}</TableHead>
+                  <TableHead>{t("invoices.date")}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {invoices.map((invoice) => (
+                  <TableRow key={invoice._id}>
+                    <TableCell className="max-w-md">
+                      <div className="truncate">{invoice.desc}</div>
+                    </TableCell>
+                    <TableCell className="font-semibold">
+                      ${invoice.profits.toLocaleString()}
+                    </TableCell>
+                    <TableCell>
+                      <Badge className={getStatusColor(invoice.status)}>
+                        {t(invoice.status)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{formatDate(invoice.createdAt)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
 
 export default WalletClient;

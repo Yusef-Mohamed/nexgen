@@ -17,6 +17,22 @@ import Logo from "@/components/logo";
 import { usePathname } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 
+type SidebarLinkType = {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+  links?: {
+    href: string;
+    label: string;
+    icon: React.ReactNode;
+  }[];
+};
+
+type LinkGroup = {
+  title: string | null;
+  links: SidebarLinkType[];
+};
+
 const Sidebar: React.FC<
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
     collapsed?: boolean;
@@ -34,7 +50,7 @@ const Sidebar: React.FC<
   const pathname = usePathname();
   const text = useTranslations("dashboard");
 
-  let linkGroups = [
+  let linkGroups: LinkGroup[] = [
     // First group - no title (main links)
     {
       title: null,
@@ -206,9 +222,26 @@ const Sidebar: React.FC<
             icon: <BsNewspaper />,
           },
           {
-            href: "/instructor-dashboard/wallet",
-            label: "wallet",
-            icon: <CiMoneyBill />,
+            href: "/dashboard/marketing",
+            label: "marketing",
+            icon: <GiCash />,
+            links: [
+              {
+                href: "/instructor-dashboard/wallet",
+                label: "wallet",
+                icon: <CiMoneyBill />,
+              },
+              {
+                href: "/instructor-dashboard/my-team",
+                label: "myTeam",
+                icon: <RiTeamFill />,
+              },
+              {
+                href: "/instructor-dashboard/coupons",
+                label: "coupons",
+                icon: <RiDiscountPercentLine />,
+              },
+            ],
           },
         ],
       },

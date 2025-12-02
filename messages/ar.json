@@ -975,7 +975,18 @@
     "commission": {
       "member": "العضو",
       "profit": "الربح",
-      "lastUpdate": "آخر تحديث"
+      "lastUpdate": "آخر تحديث",
+      "user": "المستخدم",
+      "order": "الطلب",
+      "type": "النوع",
+      "amount": "المبلغ",
+      "percentage": "النسبة المئوية",
+      "date": "التاريخ",
+      "types": {
+        "course": "دورة",
+        "coursePackage": "مسار تعليمي",
+        "package": "خدمة"
+      }
     },
     "sales": {
       "purchaser": "المشتري",
@@ -1000,7 +1011,8 @@
     },
     "common": {
       "showAll": "عرض الكل",
-      "loading": "جاري التحميل..."
+      "loading": "جاري التحميل...",
+      "noData": "لا توجد بيانات"
     }
   },
   "practice": {
@@ -1069,14 +1081,17 @@
     "manageCoupones": "إدارة الكوبونات",
     "manageInvitaionKeys": "إدارة روابط الدعوة",
     "salesAnalytics": "تحليلات المبيعات",
-    "topCoursesSell": "أفضل الدورات مبيعا",
+    "topCoursesSell": "أفضل العناصر مبيعا",
     "course": "الدورة",
     "percentage": "النسبة",
     "noOrdersFound": "لا توجد طلبات",
+    "ordersCount": "عدد الطلبات",
+    "itemName": "اسم العنصر",
     "total": "المجموع",
     "nCourse": "دورة",
     "path": "مسار",
-    "service": "خدمة"
+    "service": "خدمة",
+    "failedToLoadSalesAnalytics": "فشل تحميل بيانات تحليلات المبيعات"
   },
   "teamManagement": {
     "showLess": "عرض أقل",

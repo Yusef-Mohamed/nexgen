@@ -1,7 +1,7 @@
 import { unstable_setRequestLocale } from "next-intl/server";
 import TeamManagement from "../components/TeamManagement";
 
-const SalesAnalyticsPage = async ({
+const MyTeamPage = async ({
   params: { locale },
 }: {
   params: { locale: string };
@@ -19,4 +19,4 @@ const SalesAnalyticsPage = async ({
   );
 };
 
-export default SalesAnalyticsPage;
+export default MyTeamPage;
