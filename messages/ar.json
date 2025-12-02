@@ -985,7 +985,8 @@
       "types": {
         "course": "دورة",
         "coursePackage": "مسار تعليمي",
-        "package": "خدمة"
+        "package": "خدمة",
+        "unknown": "غير معروف"
       }
     },
     "sales": {

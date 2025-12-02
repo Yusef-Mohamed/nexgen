@@ -988,7 +988,8 @@
       "types": {
         "course": "Course",
         "coursePackage": "Learning Path",
-        "package": "Service"
+        "package": "Service",
+        "unknown": "Unknown"
       }
     },
     "sales": {

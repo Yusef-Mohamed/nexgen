@@ -436,7 +436,10 @@ const CommissionsTable = ({
   locale: string;
   t: (key: string) => string;
 }) => {
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) {
+      return "-";
+    }
     return new Date(dateString).toLocaleDateString(
       locale === "ar" ? "ar-EG" : "en-US",
       {
@@ -447,7 +450,10 @@ const CommissionsTable = ({
     );
   };
 
-  const getTranslatedType = (type: string) => {
+  const getTranslatedType = (type: string | undefined) => {
+    if (!type) {
+      return t("commission.types.unknown") || "Unknown";
+    }
     const typeKey = type.toLowerCase();
     switch (typeKey) {
       case "course":
@@ -525,7 +531,7 @@ const CommissionsTable = ({
                     </TableCell>
                     <TableCell>
                       <span className="text-xs font-mono">
-                        {commission.order.slice(-8)}
+                        {commission.order ? commission.order.slice(-8) : "-"}
                       </span>
                     </TableCell>
                     <TableCell>
@@ -533,10 +539,16 @@ const CommissionsTable = ({
                         {getTranslatedType(commission.type)}
                       </Badge>
                     </TableCell>
-                    <TableCell>${commission.amount.toLocaleString()}</TableCell>
-                    <TableCell>{commission.percentage}%</TableCell>
+                    <TableCell>
+                      ${(commission.amount ?? 0).toLocaleString()}
+                    </TableCell>
+                    <TableCell>
+                      {commission.percentage != null
+                        ? `${commission.percentage}%`
+                        : "-"}
+                    </TableCell>
                     <TableCell className="font-semibold">
-                      ${commission.profit.toLocaleString()}
+                      ${(commission.profit ?? 0).toLocaleString()}
                     </TableCell>
                     <TableCell>{formatDate(commission.createdAt)}</TableCell>
                   </TableRow>
@@ -567,7 +579,10 @@ const InvoicesTable = ({
   locale: string;
   t: (key: string) => string;
 }) => {
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) {
+      return "-";
+    }
     return new Date(dateString).toLocaleDateString(
       locale === "ar" ? "ar-EG" : "en-US",
       {
@@ -578,7 +593,10 @@ const InvoicesTable = ({
     );
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string | undefined) => {
+    if (!status) {
+      return "bg-yellow-500 dark:bg-yellow-600";
+    }
     switch (status.toLowerCase()) {
       case "paid":
         return "bg-primary";
@@ -616,14 +634,14 @@ const InvoicesTable = ({
                 {invoices.map((invoice) => (
                   <TableRow key={invoice._id}>
                     <TableCell className="max-w-md">
-                      <div className="truncate">{invoice.desc}</div>
+                      <div className="truncate">{invoice.desc || "-"}</div>
                     </TableCell>
                     <TableCell className="font-semibold">
-                      ${invoice.profits.toLocaleString()}
+                      ${(invoice.profits ?? 0).toLocaleString()}
                     </TableCell>
                     <TableCell>
                       <Badge className={getStatusColor(invoice.status)}>
-                        {t(invoice.status)}
+                        {invoice.status ? t(invoice.status) : "-"}
                       </Badge>
                     </TableCell>
                     <TableCell>{formatDate(invoice.createdAt)}</TableCell>
