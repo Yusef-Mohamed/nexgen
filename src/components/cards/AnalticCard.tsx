@@ -35,6 +35,7 @@ import { useTranslations } from "next-intl";
 import { IAnalytic } from "@/types";
 import { axiosInstance } from "@/app/lib/utils";
 import ImageWithZoom from "../ImageWithZoom";
+import { useAuth } from "../auth-provider";
 const isPDF = (url: string) => url.endsWith(".pdf");
 
 const AnalyticCard = ({
@@ -45,7 +46,7 @@ const AnalyticCard = ({
   setAnalytics: React.Dispatch<React.SetStateAction<IAnalytic[]>>;
 }) => {
   const text = useTranslations("practice");
-  const myAccount = JSON.parse(getCookie("user") || "{}");
+  const { user } = useAuth();
   const [marketerComment, setMarketerComment] = useState(
     analytic?.marketerComment || ""
   );
@@ -57,8 +58,8 @@ const AnalyticCard = ({
   const [isFocusedView, setIsFocusedView] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  const isMyChild = myAccount._id === analytic.marketer;
-  const isAdmin = myAccount.role === "admin";
+  const isMyChild = user?._id === analytic.marketer || user?.isInstructor;
+  const isAdmin = user?.role === "admin";
 
   const handleSubmit = async () => {
     try {
