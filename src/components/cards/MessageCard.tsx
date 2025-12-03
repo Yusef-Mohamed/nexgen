@@ -171,7 +171,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                     hour: "2-digit",
                     minute: "2-digit",
                   })
-                  .toLowerCase()}
+                  ?.toLowerCase()}
               </span>
             </div>
             <DropdownMenu>

@@ -49,7 +49,7 @@ const Main = () => {
       ".svg",
       ".bmp",
     ];
-    const urlLower = url.toLowerCase();
+    const urlLower = url?.toLowerCase();
     return imageExtensions.some((ext) => urlLower.includes(ext));
   };
   return (

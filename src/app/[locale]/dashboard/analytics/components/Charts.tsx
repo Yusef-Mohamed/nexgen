@@ -147,7 +147,7 @@ const Charts = () => {
   const filteredUsers = useMemo(() => {
     if (!userSearchTerm) return children;
     return children.filter((user) =>
-      user.name.toLowerCase().includes(userSearchTerm.toLowerCase())
+      user.name?.toLowerCase().includes(userSearchTerm?.toLowerCase())
     );
   }, [children, userSearchTerm]);
   return (

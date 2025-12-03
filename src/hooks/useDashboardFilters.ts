@@ -325,7 +325,7 @@ export const useDashboardFilters = (
 
   // Filtered instructors based on search term
   const filteredInstructors = instructors.filter((instructor) =>
-    instructor.name.toLowerCase().includes(instructorSearchTerm.toLowerCase())
+    instructor.name?.toLowerCase().includes(instructorSearchTerm?.toLowerCase())
   );
 
   return {

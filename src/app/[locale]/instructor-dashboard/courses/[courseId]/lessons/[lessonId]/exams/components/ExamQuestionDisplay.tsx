@@ -407,14 +407,14 @@ export const ExamQuestionDisplay = ({
                 title:
                   getDynamicString(exam.title) ||
                   text("exam_title", {
-                    model: text(`form.model_${exam.model.toLowerCase()}`),
+                    model: text(`form.model_${exam.model?.toLowerCase()}`),
                   }) ||
                   "",
               })}
             </h1>
             <p className="text-muted-foreground mt-1">
               {text("manage_exam_questions", {
-                model: text(`form.model_${exam.model.toLowerCase()}`),
+                model: text(`form.model_${exam.model?.toLowerCase()}`),
               })}
             </p>
           </div>

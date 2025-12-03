@@ -72,7 +72,7 @@ const SalesAnalytics: React.FC = () => {
   }, [token, user, t]);
 
   const getTranslatedType = (type: string) => {
-    const typeKey = type.toLowerCase();
+    const typeKey = type?.toLowerCase();
     switch (typeKey) {
       case "course":
         return tInvoices("commission.types.course");

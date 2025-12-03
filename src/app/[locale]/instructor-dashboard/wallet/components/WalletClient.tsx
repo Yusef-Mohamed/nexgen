@@ -454,7 +454,7 @@ const CommissionsTable = ({
     if (!type) {
       return t("commission.types.unknown") || "Unknown";
     }
-    const typeKey = type.toLowerCase();
+    const typeKey = type?.toLowerCase();
     switch (typeKey) {
       case "course":
         return t("commission.types.course");
@@ -597,7 +597,7 @@ const InvoicesTable = ({
     if (!status) {
       return "bg-yellow-500 dark:bg-yellow-600";
     }
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case "paid":
         return "bg-primary";
       case "rejected":

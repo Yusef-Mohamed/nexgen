@@ -313,7 +313,7 @@ const ExamCard = ({
               {getDynamicString(exam.title)}
             </CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
-              {text(`form.model_${exam.model.toLowerCase()}`)}
+              {text(`form.model_${exam.model?.toLowerCase()}`)}
             </p>
           </div>
           <DropdownMenu>
@@ -444,31 +444,31 @@ const ExamDialog = ({
 
     setLoading(true);
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("model", formData.model);
-      formDataToSend.append("passingScore", formData.passingScore);
-      formDataToSend.append("title.en", formData.title.en);
-      formDataToSend.append("title.ar", formData.title.ar);
-      formDataToSend.append("type", type);
-      formDataToSend.append(type === "placement" ? "course" : type, parentId);
+      const requestBody: {
+        model: string;
+        passingScore: string;
+        title: { en: string; ar: string };
+        type: string;
+        [key: string]: string | { en: string; ar: string };
+      } = {
+        model: formData.model,
+        passingScore: formData.passingScore,
+        title: {
+          en: formData.title.en,
+          ar: formData.title.ar,
+        },
+        type: type,
+      };
+
+      // Add the parent ID with the appropriate key
+      const parentKey = type === "placement" ? "course" : type;
+      requestBody[parentKey] = parentId;
 
       let response;
       if (isEdit && exam) {
-        response = await axiosInstance.put(
-          `/exams/${exam._id}`,
-          formDataToSend,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        response = await axiosInstance.put(`/exams/${exam._id}`, requestBody);
       } else {
-        response = await axiosInstance.post("/exams", formDataToSend, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        response = await axiosInstance.post("/exams", requestBody);
       }
 
       // API returns { data: { exam: {...} } } for create/update

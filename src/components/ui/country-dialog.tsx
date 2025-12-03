@@ -31,8 +31,8 @@ const CountryDialog = ({
   const filteredCountries = React.useMemo(() => {
     return countries.filter((country) => {
       return country.name[locale as "ar" | "en"]
-        .toLowerCase()
-        .includes(search.toLowerCase());
+        ?.toLowerCase()
+        .includes(search?.toLowerCase());
     });
   }, [search, locale]);
 
