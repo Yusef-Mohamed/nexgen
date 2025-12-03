@@ -10,7 +10,7 @@ import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import { ICourse } from "@/types";
+import { DynamicString, ICourse } from "@/types";
 import { getStringObject } from "@/lib/utils";
 import handleBackendFormErrors from "@/lib/handleBackendFormErrors";
 
@@ -85,28 +85,16 @@ const createLearningPathFormSchema = (text: (key: string) => string) => {
 export interface ILearningPath {
   _id: string;
   id?: string;
-  title: string;
-  description: string;
-  highlights?: string[];
-  whatWillLearn?: Array<{ en: string; ar: string } | string>;
-  coursePrerequisites?: Array<{ en: string; ar: string } | string>;
-  whoThisCourseFor?: Array<{ en: string; ar: string } | string>;
+  whatWillLearn?: DynamicString[];
+  coursePrerequisites?: DynamicString[];
+  whoThisCourseFor?: DynamicString[];
   price: number;
   priceAfterDiscount?: number;
   type: string;
   courses?: ICourse[];
-  translationTitle?: {
-    en: string;
-    ar: string;
-  };
-  translationDescription?: {
-    en: string;
-    ar: string;
-  };
-  translationHighlights?: Array<{
-    en: string;
-    ar: string;
-  }>;
+  title?: DynamicString;
+  description?: DynamicString;
+  highlights?: DynamicString[];
   createdAt?: string;
   updatedAt?: string;
   status?: string;
@@ -231,16 +219,14 @@ export const useLearningPathForm = () => {
         setCurrentLearningPath(learningPath);
 
         // Initialize form with learning path data
-        const formattedTitle = getStringObject(
-          learningPath.translationTitle || learningPath.title || ""
-        );
-        const formattedDescription = getStringObject(
-          learningPath.translationDescription || learningPath.description || ""
+        const formattedTitle = getStringObject(learningPath.title || "");
+        const descriptionObject = getStringObject(
+          learningPath.description || ""
         );
 
         form.reset({
           title: formattedTitle,
-          description: formattedDescription,
+          description: descriptionObject,
           whatWillLearn:
             learningPath.whatWillLearn?.map(
               (h: { en: string; ar: string } | string) => {
@@ -389,12 +375,10 @@ export const useLearningPathForm = () => {
   const hasStepChanges = useCallback(
     (stepData: Partial<LearningPathFormData>, stepNumber: number) => {
       if (!currentLearningPath) return true; // Always submit for new learning paths
-      const currentTitle =
-        currentLearningPath.translationTitle ||
-        getStringObject(currentLearningPath.title || "");
-      const currentDescription =
-        currentLearningPath.translationDescription ||
-        getStringObject(currentLearningPath.description || "");
+      const currentTitle = getStringObject(currentLearningPath.title || "");
+      const currentDescription = getStringObject(
+        currentLearningPath.description || ""
+      );
 
       switch (stepNumber) {
         case 0: // Basic Info
@@ -504,12 +488,10 @@ export const useLearningPathForm = () => {
         // Step 1: Basic Info
         if (currentLearningPath) {
           // Compare with current learning path and only send changed fields
-          const currentTitle =
-            currentLearningPath.translationTitle ||
-            getStringObject(currentLearningPath.title || "");
-          const currentDescription =
-            currentLearningPath.translationDescription ||
-            getStringObject(currentLearningPath.description || "");
+          const currentTitle = getStringObject(currentLearningPath.title || "");
+          const currentDescription = getStringObject(
+            currentLearningPath.description || ""
+          );
 
           // Only send title.en if it changed
           if (

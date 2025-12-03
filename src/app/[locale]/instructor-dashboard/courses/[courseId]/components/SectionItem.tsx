@@ -1,5 +1,5 @@
 "use client";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -20,6 +20,7 @@ import {
 import { ISection } from "@/types";
 import LessonItem from "./LessonItem";
 import { DropTargetIndicator } from "./DropTargetIndicator";
+import { getDynamicString } from "@/lib/utils";
 
 interface SectionItemProps {
   section: ISection;
@@ -67,27 +68,9 @@ const SectionItem = ({
   dropTarget,
 }: SectionItemProps) => {
   const text = useTranslations("courses");
-  const locale = useLocale();
 
-  const getSectionTitle = (
-    s:
-      | ISection
-      | (ISection & { translationTitle?: { ar?: string; en?: string } })
-      | undefined
-  ) => {
-    const anyS = s as unknown as {
-      translationTitle?: Record<string, string>;
-      title?: string;
-      section?: string;
-    };
-    return (
-      anyS?.translationTitle?.[String(locale)] ||
-      anyS?.title ||
-      anyS?.translationTitle?.en ||
-      anyS?.translationTitle?.ar ||
-      anyS?.section ||
-      ""
-    );
+  const getSectionTitle = (s: ISection | undefined) => {
+    return getDynamicString(s?.title || "");
   };
 
   const sectionId = section?.sectionId || section?._id || "";

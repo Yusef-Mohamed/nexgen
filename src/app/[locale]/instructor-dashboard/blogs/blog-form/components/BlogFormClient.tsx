@@ -12,7 +12,7 @@ import { AxiosError } from "axios";
 import { useAuth } from "@/components/auth-provider";
 import { ArrowLeft, Plus } from "lucide-react";
 import { Link, useRouter } from "@/i18n/routing";
-import { cn } from "@/lib/utils";
+import { cn, getStringObject } from "@/lib/utils";
 import dynamic from "next/dynamic";
 import ImageUploadField from "@/components/form/ImageUploadField";
 
@@ -139,27 +139,14 @@ const BlogFormClient = () => {
         setFetchingData(true);
         const response = await axiosInstance.get(`/articals/${id}`);
         const blogData = response?.data?.data;
-
+        const titleObject = getStringObject(blogData.title);
+        const descriptionObject = getStringObject(blogData.description);
+        const contentObject = getStringObject(blogData.content);
         if (blogData) {
           setFormData({
-            title: {
-              en: blogData.translationTitle?.en || blogData.title || "",
-              ar: blogData.translationTitle?.ar || blogData.title || "",
-            },
-            description: {
-              en:
-                blogData.translationDescription?.en ||
-                blogData.description ||
-                "",
-              ar:
-                blogData.translationDescription?.ar ||
-                blogData.description ||
-                "",
-            },
-            content: {
-              en: blogData.translationContent?.en || blogData.content || "",
-              ar: blogData.translationContent?.ar || blogData.content || "",
-            },
+            title: titleObject,
+            description: descriptionObject,
+            content: contentObject,
             readTime: blogData.readTime?.toString() || "",
           });
 

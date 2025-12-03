@@ -199,16 +199,12 @@ export const useServiceForm = () => {
         setCurrentService(service);
 
         // Initialize form with service data
-        const formattedTitle = getStringObject(
-          service.translationTitle || service.title || ""
-        );
-        const formattedDescription = getStringObject(
-          service.translationDescription || service.description || ""
-        );
+        const titleObject = getStringObject(service.title || "");
+        const descriptionObject = getStringObject(service.description || "");
 
         form.reset({
-          title: formattedTitle,
-          description: formattedDescription,
+          title: titleObject,
+          description: descriptionObject,
           whatWillLearn:
             service.whatWillLearn?.map((h: DynamicString) => {
               if (!h) return { en: "", ar: "" };

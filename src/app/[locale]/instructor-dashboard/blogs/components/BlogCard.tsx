@@ -60,7 +60,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
   };
 
   return (
-    <article className="flex flex-col w-full h-full border rounded-lg p-4">
+    <div className="flex flex-col h-full border rounded-lg p-4">
       <Link href={`/blogs/${_id}`} className="w-full">
         <Image
           src={imageCover}
@@ -145,7 +145,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </article>
+    </div>
   );
 };
 
