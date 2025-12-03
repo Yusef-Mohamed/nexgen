@@ -280,7 +280,8 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                     )}
                                     isDone={lesson.passedAnalyticsTask}
                                     disabled={
-                                      !lesson.videoUrl || !lesson.passedExam
+                                      !lesson.videoUrl ||
+                                      (!lesson.passedExam && !lesson.hasQuiz)
                                     }
                                     onClick={() =>
                                       handleLessonChange(
