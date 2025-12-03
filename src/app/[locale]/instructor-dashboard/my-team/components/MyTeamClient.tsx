@@ -8,7 +8,7 @@ import SalesAnalytics from "./SalesAnalytics";
 import { useFilterCourses } from "@/hooks/useFilterCourses";
 import { useFilterCoursePackages } from "@/hooks/useFilterCoursePackages";
 import { useFilterPackages } from "@/hooks/useFilterPackages";
-import CouponManagement from "@/app/[locale]/dashboard/marketing/components/CouponManagement";
+import InvitationLinksBlock from "@/app/[locale]/dashboard/marketing/components/InvitationLinksBlock";
 
 const MyTeamClient = () => {
   const { token, user } = useAuth();
@@ -33,7 +33,7 @@ const MyTeamClient = () => {
         packages={packages}
         isLoadingCourses={isLoadingCourses}
       />
-      <CouponManagement />
+      <InvitationLinksBlock />
     </div>
   );
 };
