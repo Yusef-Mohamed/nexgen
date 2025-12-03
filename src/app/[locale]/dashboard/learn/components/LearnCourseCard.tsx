@@ -112,19 +112,23 @@ export const LearnCourseCard = ({
                   />
                 )}
               </a>
-            ) : (
-              <div className="flex items-center self-center group gap-3">
+            ) : course.lastLesson ? (
+              <Link
+                href={`/dashboard/learn/${course._id}?display=lesson&lesson=${course.lastLesson._id}`}
+                className="flex items-center self-center group gap-3"
+              >
                 <PlayIcon />
                 <div className="flex flex-col">
                   <h3 className="font-medium text-primary group-hover:underline">
-                    Fundamental Analysis
+                    {getDynamicString(course.lastLesson.title)}
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Week 1 | Video 34 min
+                    {getDynamicString(course.lastLesson.section.title)} |{" "}
+                    {course.lastLesson.lessonDuration} {text("min")}
                   </p>
                 </div>
-              </div>
-            )}
+              </Link>
+            ) : null}
           </div>
         )}
         <Link

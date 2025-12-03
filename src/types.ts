@@ -61,6 +61,16 @@ export interface ICourse {
   totalProgress?: number;
   userScore?: IUserScore;
   courseProgress?: ICourseProgress;
+  lastLesson?: {
+    title: DynamicString;
+    description: DynamicString;
+    _id: string;
+    section: {
+      title: DynamicString;
+      _id: string;
+    };
+    lessonDuration: number;
+  };
 }
 export interface ILesson {
   course: ICourse;

@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/components/auth-provider";
 import { useTranslations } from "next-intl";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CreatePractice from "./CreatePractice";
 import { IAnalytic } from "@/types";
 import { axiosInstance } from "@/app/lib/utils";
@@ -37,7 +37,7 @@ const DisplayPosts = () => {
   const fetchPosts = useCallback(
     async (page: number, search?: string): Promise<IAnalytic[]> => {
       try {
-        if (haveError) {
+        if (haveError || !selectedCourse) {
           return [];
         }
 
@@ -109,7 +109,11 @@ const DisplayPosts = () => {
         { value: "onProgress", label: text("onProgress") },
         { value: "addNew", label: text("addNew") },
       ];
-
+  useEffect(() => {
+    if (packages.length > 0) {
+      setSelectedCourse(packages[0].course._id);
+    }
+  }, [packages]);
   return (
     <section className="mx-auto space-y-4 w-full max-w-4xl">
       {/* Course Filter */}{" "}

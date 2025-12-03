@@ -31,7 +31,6 @@ const DisplayCourses = () => {
       );
     }
   }, [show, courses]);
-  console.log(courses);
   return (
     <section className="space-y-4">
       <FilterTabs
