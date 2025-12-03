@@ -169,33 +169,35 @@ const CreatePractice = ({
   return (
     <div className={""}>
       {/* Course selection dropdown - always show and require selection */}
-      <div className="pb-3 flex gap-4 flex-wrap">
-        <div>
-          <Label htmlFor="course" className="text-sm sr-only">
-            {inputs("course")}:
-          </Label>
-          <Select
-            value={selectedCourse}
-            onValueChange={setSelectedCourse}
-            disabled={isLoadingPackages}
-          >
-            <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs !h-10">
-              <SelectValue
-                placeholder={
-                  isLoadingPackages ? text("loading") : inputs("SelectCourse")
-                }
-              />
-            </SelectTrigger>
-            <SelectContent>
-              {packages.map((pkg) => (
-                <SelectItem value={pkg.course._id} key={pkg.course._id}>
-                  {getDynamicString(pkg.course.title)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      {!courseId && (
+        <div className="pb-3 flex gap-4 flex-wrap">
+          <div>
+            <Label htmlFor="course" className="text-sm sr-only">
+              {inputs("course")}:
+            </Label>
+            <Select
+              value={selectedCourse}
+              onValueChange={setSelectedCourse}
+              disabled={isLoadingPackages}
+            >
+              <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs !h-10">
+                <SelectValue
+                  placeholder={
+                    isLoadingPackages ? text("loading") : inputs("SelectCourse")
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {packages.map((pkg) => (
+                  <SelectItem value={pkg.course._id} key={pkg.course._id}>
+                    {getDynamicString(pkg.course.title)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-      </div>
+      )}
       <div className="flex gap-2 justify-between items-start">
         <UserAvatar user={user || undefined} size="md" />
         <TextWithEmojiBox
