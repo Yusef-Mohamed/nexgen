@@ -63,7 +63,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
   const inputRef = useRef(null);
 
   const handleCommentSubmit = async () => {
-    if (!user?.authToReview) {
+    if (!user?.authToReview && !user?.isInstructor) {
       toast.error(text("youShouldBuyCourseOrServiceToDoThisAction"));
       return;
     }

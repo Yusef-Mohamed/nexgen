@@ -27,7 +27,7 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
   const { user, token } = useAuth();
 
   const addReactToPost = async (type: keyof typeof emojis) => {
-    if (!user?.authToReview) {
+    if (!user?.authToReview && !user?.isInstructor) {
       toast.error(text("youShouldBuyCourseOrServiceToDoThisAction"));
       return;
     }

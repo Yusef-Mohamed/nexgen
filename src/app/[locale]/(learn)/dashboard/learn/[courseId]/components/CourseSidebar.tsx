@@ -37,7 +37,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
   const selectedLesson = searchParams.get("lesson");
   const selectedDisplay = searchParams.get("display");
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
-  console.log(sections, course);
+  console.log(sections);
   const toggleSection = (sectionName: string) => {
     setExpandedSections((prev) =>
       prev.includes(sectionName)
@@ -106,7 +106,6 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
     );
     return `${totalMinutes} min`;
   };
-
   if (isLoading) {
     return (
       <CourseSidebarSkeleton className={className} collapsed={collapsed} />
@@ -281,7 +280,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                     isDone={lesson.passedAnalyticsTask}
                                     disabled={
                                       !lesson.videoUrl ||
-                                      (!lesson.passedExam && !lesson.hasQuiz)
+                                      (!lesson.passedExam && lesson.hasQuiz)
                                     }
                                     onClick={() =>
                                       handleLessonChange(

@@ -216,7 +216,7 @@ const BalanceCard = ({
     setIsLoading(true);
     try {
       await axiosInstance.put(
-        `/marketing/withdrawMoney/${user?._id}`,
+        `/marketing/withdrawMoney/${user?._id}?type=marketer`,
         {
           amount: Number(amount),
         },

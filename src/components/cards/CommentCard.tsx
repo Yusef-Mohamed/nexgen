@@ -241,7 +241,7 @@ const CommentAction: React.FC<{
   const { user, token } = useAuth();
 
   const handleSend = async () => {
-    if (!user?.authToReview) {
+    if (!user?.authToReview && !user?.isInstructor) {
       toast.error(text("youShouldBuyCourseOrServiceToDoThisAction"));
       return;
     }
@@ -339,7 +339,7 @@ const DeleteComment: React.FC<{
   const { token, user } = useAuth();
 
   const handleDelete = async () => {
-    if (!user?.authToReview) {
+    if (!user?.authToReview && !user?.isInstructor) {
       toast.error(text("youShouldBuyCourseOrServiceToDoThisAction"));
       return;
     }
