@@ -30,6 +30,7 @@ import { axiosInstance } from "@/app/lib/utils";
 import { IMarketLog } from "@/types";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 
 const InvoicesManagement = () => {
   const t = useTranslations("invoicesManagement");
@@ -230,6 +231,10 @@ const BalanceCard = ({
       toast.success(t("stats.withdrawInvoiceHasSent"));
     } catch (error) {
       console.error("Withdrawal failed:", error);
+      const typedError = error as AxiosError<{ message?: string }>;
+      if (typedError.response?.data?.message) {
+        toast.error(typedError.response.data.message);
+      }
     } finally {
       setIsLoading(false);
     }

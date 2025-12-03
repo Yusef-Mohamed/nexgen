@@ -728,6 +728,7 @@
     "loading": "Loading...",
     "applyFilters": "Apply Filters",
     "pleaseSelectImage": "Please select an image",
+    "contentRequired": "Content is required",
     "postCreatedSuccessfully": "Post created successfully",
     "customizePosts": "Customize Posts",
     "acceptedFormats": "Accepted formats: ",

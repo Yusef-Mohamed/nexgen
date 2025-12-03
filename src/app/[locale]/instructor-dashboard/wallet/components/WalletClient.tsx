@@ -29,6 +29,7 @@ import { axiosInstance } from "@/app/lib/utils";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
 import UserAvatar from "@/components/UserAvatar";
+import { AxiosError } from "axios";
 
 const WalletClient = () => {
   const t = useTranslations("invoicesManagement");
@@ -325,6 +326,10 @@ const BalanceCard = ({
       toast.success(t("stats.withdrawInvoiceHasSent"));
     } catch (error) {
       console.error("Withdrawal failed:", error);
+      const typedError = error as AxiosError<{ message?: string }>;
+      if (typedError.response?.data?.message) {
+        toast.error(typedError.response.data.message);
+      }
     } finally {
       setIsLoading(false);
     }

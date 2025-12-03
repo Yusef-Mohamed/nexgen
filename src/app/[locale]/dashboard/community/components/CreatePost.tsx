@@ -107,6 +107,12 @@ const CreatePost = ({
   }, [isInstructor, postType, token]);
 
   const handelCreatePost = async () => {
+    // Validate content is required
+    if (!content || !content.trim()) {
+      toast.error(text("contentRequired"));
+      return;
+    }
+
     setIsLoading(true);
     try {
       const formData = new FormData();
