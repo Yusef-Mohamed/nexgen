@@ -16,13 +16,6 @@ import { getDynamicString } from "@/lib/utils";
 const ProgressCircle: FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [coursesWithProgress, setCoursesWithProgress] = useState<
-    | {
-        course: ICourse;
-        progress: number;
-      }[]
-    | null
-  >(null);
-  const [coursesWithRealProgress, setCoursesWithRealProgress] = useState<
     {
       course: ICourse;
       progress: number;
@@ -34,10 +27,10 @@ const ProgressCircle: FC = () => {
 
   // Extract unique categories from user's courses
   const availableCategories = useMemo(() => {
-    if (!coursesWithRealProgress.length) return [];
+    if (!coursesWithProgress.length) return [];
 
     const categoryMap = new Map();
-    coursesWithRealProgress.forEach(({ course }) => {
+    coursesWithProgress.forEach(({ course }) => {
       if (!categoryMap.has(course.category._id)) {
         categoryMap.set(course.category._id, {
           _id: course.category._id,
@@ -47,42 +40,38 @@ const ProgressCircle: FC = () => {
     });
 
     return Array.from(categoryMap.values());
-  }, [coursesWithRealProgress]);
+  }, [coursesWithProgress]);
 
-  // Filter courses by selected category and recalculate accumulated progress
-  const filteredCoursesWithProgress = useMemo(() => {
-    if (!coursesWithProgress || !selectedCategory) return coursesWithProgress;
+  // Filter courses by selected category
+  const filteredCourses = useMemo(() => {
+    if (!coursesWithProgress.length || !selectedCategory)
+      return coursesWithProgress;
 
-    const filteredCourses = coursesWithProgress.filter(
+    return coursesWithProgress.filter(
       (course) => course.course.category._id === selectedCategory
     );
+  }, [coursesWithProgress, selectedCategory]);
 
-    if (filteredCourses.length === 0) return [];
+  // Calculate accumulated progress for visualization (from real/individual progress)
+  const coursesWithAccumulatedProgress = useMemo(() => {
+    if (!filteredCourses.length) return [];
 
-    // Recalculate accumulated progress for filtered courses
     let accumulatedProgress = 0;
     return filteredCourses
-      .map((course, index) => {
-        if (course.progress === 0) return { ...course, progress: 0 };
-        if (index !== 0) {
-          accumulatedProgress += course.progress;
-        } else {
-          accumulatedProgress = course.progress;
-        }
+      .map((course) => {
+        // Ensure progress is a valid number
+        const progress =
+          isNaN(course.progress) || course.progress == null
+            ? 0
+            : course.progress;
+
+        // Accumulate progress (add current course progress to accumulated)
+        accumulatedProgress += progress;
+
         return { ...course, progress: accumulatedProgress };
       })
       .sort((a, b) => b.progress - a.progress);
-  }, [coursesWithProgress, selectedCategory]);
-
-  // Filter real progress courses by selected category
-  const filteredCoursesWithRealProgress = useMemo(() => {
-    if (!coursesWithRealProgress.length || !selectedCategory)
-      return coursesWithRealProgress;
-
-    return coursesWithRealProgress.filter(
-      (course) => course.course.category._id === selectedCategory
-    );
-  }, [coursesWithRealProgress, selectedCategory]);
+  }, [filteredCourses]);
 
   const getData = useCallback(async () => {
     setIsLoading(true);
@@ -102,11 +91,13 @@ const ProgressCircle: FC = () => {
             }
           );
           const courseProgress = courseScore.data.data as ICourseProgress;
+          const totalProgress = Number(courseProgress.totalProgress) || 0;
+          const coursePercentage = course.coursePercentage || 0;
+          const calculatedProgress = (totalProgress * coursePercentage) / 100;
+
           return {
             course,
-            progress:
-              (Number(courseProgress.totalProgress) * course.coursePercentage) /
-              100,
+            progress: isNaN(calculatedProgress) ? 0 : calculatedProgress,
           };
         } catch (err) {
           console.log(err);
@@ -118,23 +109,7 @@ const ProgressCircle: FC = () => {
       })
     );
     coursesWithProgressTemp.sort((a, b) => b.progress - a.progress);
-    setCoursesWithRealProgress(coursesWithProgressTemp);
-    let accumulatedProgress = 0;
-
-    setCoursesWithProgress(
-      coursesWithProgressTemp
-        .map((course, index) => {
-          if (course.progress === 0) return { ...course, progress: 0 };
-          if (index !== 0) {
-            accumulatedProgress += course.progress;
-          } else {
-            accumulatedProgress = course.progress;
-          }
-
-          return { ...course, progress: accumulatedProgress };
-        })
-        .sort((a, b) => b.progress - a.progress)
-    );
+    setCoursesWithProgress(coursesWithProgressTemp);
 
     // Set initial selected category to the first category
     if (coursesWithProgressTemp.length > 0) {
@@ -150,7 +125,7 @@ const ProgressCircle: FC = () => {
   }, [selectedUser, getData]);
   return (
     <div>
-      {!isLoading && coursesWithProgress && (
+      {!isLoading && coursesWithProgress.length > 0 && (
         <>
           {/* Category Select - only show if user has courses from multiple categories */}
           {availableCategories.length > 1 && (
@@ -174,28 +149,31 @@ const ProgressCircle: FC = () => {
           )}
 
           <ProgressUnit
-            layers={
-              filteredCoursesWithProgress?.map((course) => ({
-                progress:
-                  course.progress * (course.course.coursePercentage / 100) || 0,
+            layers={coursesWithAccumulatedProgress.map((course) => {
+              const coursePercentage = course.course.coursePercentage || 0;
+              const progressValue = course.progress * (coursePercentage / 100);
+              return {
+                progress: isNaN(progressValue) ? 0 : progressValue,
                 darkColor: course.course.colors?.bgDarkMode || "#000000",
                 lightColor: course.course.colors?.bgColor || "#000000",
-              })) || []
-            }
+              };
+            })}
             totalProgress={
-              filteredCoursesWithProgress?.[0]
-                ? parseInt(
-                    (
-                      filteredCoursesWithProgress[0].progress *
-                      (filteredCoursesWithProgress[0].course.coursePercentage /
-                        100)
-                    ).toFixed(0)
-                  )
+              coursesWithAccumulatedProgress[0]
+                ? (() => {
+                    const firstCourse = coursesWithAccumulatedProgress[0];
+                    const coursePercentage =
+                      firstCourse.course.coursePercentage || 0;
+                    const totalProgressValue =
+                      firstCourse.progress * (coursePercentage / 100);
+                    const roundedValue = Math.round(totalProgressValue);
+                    return isNaN(roundedValue) ? 0 : roundedValue;
+                  })()
                 : 0
             }
           />
           <div className="flex flex-wrap items-center justify-center gap-4">
-            {filteredCoursesWithRealProgress.map((course, index) => {
+            {filteredCourses.map((course, index) => {
               return (
                 <div key={index} className="flex items-center gap-2">
                   <div
@@ -213,7 +191,7 @@ const ProgressCircle: FC = () => {
 
                   <span className="text-xs">
                     {getDynamicString(course.course.title)} (
-                    {course.progress.toFixed(0)}%)
+                    {isNaN(course.progress) ? 0 : course.progress.toFixed(0)}%)
                   </span>
                 </div>
               );
