@@ -107,7 +107,7 @@ const AnalyticCard = ({
 
   const renderMediaGrid = () => {
     const images = analytic.media?.filter((m) => !isPDF(m));
-    if (!images || images.length === 0) return null;
+    if (!images || images.length === 0 || !analytic.imageCover) return null;
 
     return (
       <div
@@ -119,11 +119,11 @@ const AnalyticCard = ({
         <Image
           width={600}
           height={600}
-          src={images[0]}
+          src={analytic.imageCover}
           alt=""
           className="object-cover w-full aspect-video"
         />
-        {images.length === 1 && images[0] && (
+        {images.length === 1 && (
           <Image
             width={600}
             height={600}
