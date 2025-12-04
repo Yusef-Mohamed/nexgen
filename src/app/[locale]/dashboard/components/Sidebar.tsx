@@ -181,24 +181,6 @@ const Sidebar: React.FC<
           }),
         }))
         .filter((group) => group.links.length > 0);
-    } else {
-      // If affiliate marketer (but not regular marketer), remove "myTeam" sublink
-      if (isAffiliateMarketer && !isMarketer) {
-        linkGroups = linkGroups.map((group) => ({
-          ...group,
-          links: group.links.map((link) => {
-            if (link.label === "marketing" && "links" in link && link.links) {
-              return {
-                ...link,
-                links: link.links.filter(
-                  (sublink: { label: string }) => sublink.label !== "myTeam"
-                ),
-              };
-            }
-            return link;
-          }),
-        }));
-      }
     }
   }
   if (pathname.includes("instructor-dashboard")) {
