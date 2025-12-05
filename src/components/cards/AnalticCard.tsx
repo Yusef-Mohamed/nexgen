@@ -107,22 +107,16 @@ const AnalyticCard = ({
 
   const renderMediaGrid = () => {
     const images = analytic.media?.filter((m) => !isPDF(m));
-    if (!images || images.length === 0 || !analytic.imageCover) return null;
+    if (!images || images.length === 0) return null;
 
     return (
       <div
         onClick={() => setIsFocusedView(true)}
-        className={cn(`grid grid-cols-1 gap-0.5 cursor-pointer`, {
-          "grid-cols-2": images.length === 1,
+        className={cn(`grid gap-0.5 cursor-pointer`, {
+          "grid-cols-1": images.length === 1,
+          "grid-cols-2": images.length > 1,
         })}
       >
-        <Image
-          width={600}
-          height={600}
-          src={analytic.imageCover}
-          alt=""
-          className="object-cover w-full aspect-video"
-        />
         {images.length === 1 && (
           <Image
             width={600}
@@ -133,7 +127,7 @@ const AnalyticCard = ({
           />
         )}
         {images.length > 1 && (
-          <div className="grid grid-cols-2 gap-0.5 w-full">
+          <>
             <Image
               width={600}
               height={600}
@@ -154,7 +148,7 @@ const AnalyticCard = ({
                 <span className="text-4xl font-bold">+{images.length - 1}</span>
               </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     );
