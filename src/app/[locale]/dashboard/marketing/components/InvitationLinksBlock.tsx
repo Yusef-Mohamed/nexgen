@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/components/auth-provider";
 import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
-import { IMarketLog } from "@/types";
+import { ApiError, IMarketLog } from "@/types";
 import LinksTable from "./LinksTable";
 import { AxiosError } from "axios";
 
@@ -26,6 +26,7 @@ const InvitationLinksBlock: React.FC = () => {
   const [formData, setFormData] = useState({
     name: "",
   });
+  const [validationError, setValidationError] = useState<string>("");
 
   const fetchInvitationLinks = useCallback(async () => {
     if (!user?._id) return;
@@ -57,15 +58,34 @@ const InvitationLinksBlock: React.FC = () => {
     e.preventDefault();
     if (!user?._id) return;
 
+    // Validate that the invitation link only contains English letters or hyphens
+    const isValidFormat = /^[a-zA-Z-]+$/.test(formData.name.trim());
+
+    if (!formData.name.trim()) {
+      setValidationError(
+        t("createLink.validation.required") || "Link name is required"
+      );
+      return;
+    }
+
+    if (!isValidFormat) {
+      setValidationError(
+        t("createLink.validation.invalidFormat") ||
+          "Link name can only contain English letters (a-z, A-Z) and hyphens (-)"
+      );
+      return;
+    }
+
     try {
       setIsLoading(true);
+      setValidationError("");
 
       await axiosInstance.put(
         `/marketing/modifyInvitationKeys/${user._id}`,
         {
-          keys: [formData.name],
-          invitationKeys: [formData.name],
-          invitationKey: formData.name,
+          keys: [formData.name.trim()],
+          invitationKeys: [formData.name.trim()],
+          invitationKey: formData.name.trim(),
           option: "add",
         },
         {
@@ -76,11 +96,17 @@ const InvitationLinksBlock: React.FC = () => {
       );
       toast.success(t("createLink.success"));
       setFormData({ name: "" });
+      setValidationError("");
       // Refresh data after creating link
       await fetchInvitationLinks();
     } catch (error) {
       console.error("Error creating link:", error);
-      toast.error(t("createLink.error"));
+      const typedError = error as AxiosError<{ errors?: ApiError[] }>;
+      if (typedError.response?.data?.errors) {
+        typedError.response.data.errors.forEach(({ param, msg }: ApiError) => {
+          if (param) toast.error(msg);
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -116,10 +142,19 @@ const InvitationLinksBlock: React.FC = () => {
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow English letters (a-z, A-Z) and hyphens (-)
+    const sanitizedValue = value.replace(/[^a-zA-Z-]/g, "");
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: sanitizedValue,
     });
+
+    // Clear validation error when user starts typing valid characters
+    if (validationError) {
+      setValidationError("");
+    }
   };
 
   return (
@@ -140,9 +175,14 @@ const InvitationLinksBlock: React.FC = () => {
                 value={formData.name}
                 onChange={handleInputChange}
                 placeholder={t("createLink.form.linkName.placeholder")}
-                className="w-full"
+                className={`w-full ${
+                  validationError ? "border-destructive" : ""
+                }`}
                 disabled={isLoading}
               />
+              {validationError && (
+                <p className="text-sm text-destructive">{validationError}</p>
+              )}
             </div>
             <Button isLoading={isLoading} type="submit" className="mt-4">
               {t("createLink.form.submitButton")}

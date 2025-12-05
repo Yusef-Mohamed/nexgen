@@ -1112,6 +1112,10 @@
           "placeholder": "مثال: INVITE2025"
         },
         "submitButton": "إنشاء الرابط"
+      },
+      "validation": {
+        "required": "اسم الرابط مطلوب",
+        "invalidFormat": "اسم الرابط يمكن أن يحتوي فقط على الأحرف الإنجليزية (a-z, A-Z) والشرطة (-)"
       }
     },
     "couponsList": {

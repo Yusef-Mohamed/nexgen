@@ -1115,6 +1115,10 @@
           "placeholder": "Example: INVITE2025"
         },
         "submitButton": "Create Link"
+      },
+      "validation": {
+        "required": "Link name is required",
+        "invalidFormat": "Link name can only contain English letters (a-z, A-Z) and hyphens (-)"
       }
     },
     "couponsList": {
