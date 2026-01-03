@@ -25,7 +25,6 @@ const OurValues = () => {
               height={100}
               src={"/images/values_" + (index + 1) + ".png"}
               alt={text(`case_${index + 1}_title`)}
-              className="rounded-md bg-muted"
             />
             <h3 className="mt-4 mb-3 sm:mt-8 sm:mb-6">
               {text(`case_${index + 1}_title`)}

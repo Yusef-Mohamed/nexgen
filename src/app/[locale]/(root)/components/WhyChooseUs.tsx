@@ -38,7 +38,7 @@ const getCardStyle = (index: number, isDark: boolean) => {
 const WhyChooseUs: React.FC = () => {
   const text = useTranslations("whyChooseUs");
   const theme = useTheme();
-  const isDark = theme.theme === "dark";
+  const isDark = theme.resolvedTheme === "dark";
   // why_chose_us_1.png
   return (
     <section className="container grid gap-8 md:gap-12 lg:gap-24 lg:grid-cols-2">

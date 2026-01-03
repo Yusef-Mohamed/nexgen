@@ -6,6 +6,7 @@ import Features from "../components/Features";
 import FAQ from "../components/FAQ";
 import CoursesFilterContent from "../components/CoursesFilterContent";
 import Image from "next/image";
+import MobileAppHero from "../components/MobileAppHero";
 
 export function generateMetadata({
   params,
@@ -45,7 +46,7 @@ const CoursesPage = async ({ params }: { params: { locale: string } }) => {
 
       {/* Client Component for Filter System */}
       <CoursesFilterContent />
-
+      <MobileAppHero />
       <FAQ />
     </main>
   );

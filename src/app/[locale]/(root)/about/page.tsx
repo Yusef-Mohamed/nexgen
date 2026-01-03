@@ -7,6 +7,7 @@ import OurValues from "./components/OurValues";
 import ReviewsSection from "./components/ReviewsSection";
 import { PromoBanner2 } from "../components/PromoBanner";
 import { unstable_setRequestLocale } from "next-intl/server";
+import MobileAppHero from "../components/MobileAppHero";
 
 export function generateMetadata({
   params,
@@ -25,6 +26,7 @@ const AboutPage = ({ params }: { params: { locale: string } }) => {
       <HeroSection />
       <PartnersSection />
       <OurValues />
+      <MobileAppHero />
       <ReviewsSection />
       <PromoBanner2 />
       <BlogSection2 />

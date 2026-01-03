@@ -504,8 +504,11 @@
     "certificateOfCompletion": "شهادة إتمام",
     "lifetimeAccess": "الوصول مدى الحياة",
     "whatYouWillLearn": "ما ستتعلمه",
+    "whoThisCourseFor": "لمن هذه الدورة",
+    "coursePrerequisites": "متطلبات الدورة",
     "requirements": "المتطلبات",
     "noExperienceRequired": "لا حاجة لخبرة سابقة",
+    "recommendedToSee": "يُنصح بمشاهدة",
     "studentsReviews": "تقييمات الطلاب",
     "courseContent": "محتوى الدورة",
     "displayMore": "عرض المزيد",
@@ -551,7 +554,12 @@
     "startLearning": "ابدأ التعلم",
     "thisServiceIncludes": "تتضمن هذه الخدمة:",
     "nHourOfVideos": "{n} ساعة من الفيديوهات",
-    "whatYouWillLearn": "ما ستتعلمه"
+    "whatYouWillLearn": "ما ستتعلمه",
+    "subscriptionDuration": "اشتراك لمدة {days} يوم",
+    "accessOnMobile": "الوصول عبر الهاتف المحمول",
+    "subscriptionAccess": "الوصول خلال فترة الاشتراك",
+    "certificateOfCompletion": "شهادة إتمام",
+    "free": "مجاني"
   },
   "contact": {
     "contactFormTitle": "تواصل معنا",

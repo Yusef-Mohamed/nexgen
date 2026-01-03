@@ -192,6 +192,9 @@ export interface ICoursePackage {
   title: DynamicString;
   description: DynamicString;
   highlights: DynamicString[];
+  whoThisCourseFor: DynamicString[];
+  coursePrerequisites: DynamicString[];
+  whatWillLearn: DynamicString[];
   status: "active" | "inActive" | "pending";
   price: number;
   priceAfterDiscount?: number;

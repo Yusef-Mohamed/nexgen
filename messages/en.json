@@ -507,8 +507,11 @@
     "certificateOfCompletion": "Certificate of completion",
     "lifetimeAccess": "Lifetime access",
     "whatYouWillLearn": "What you will learn",
+    "whoThisCourseFor": "Who this course is for",
+    "coursePrerequisites": "Course Prerequisites",
     "requirements": "Requirements",
     "noExperienceRequired": "No prior experience required",
+    "recommendedToSee": "Recommended to see",
     "studentsReviews": "Student Reviews",
     "courseContent": "Course Content",
     "displayMore": "Show More",
@@ -553,7 +556,12 @@
     "startLearning": "Start Learning",
     "thisServiceIncludes": "This service includes:",
     "nHourOfVideos": "{n} hours of videos",
-    "whatYouWillLearn": "What you will learn"
+    "whatYouWillLearn": "What you will learn",
+    "subscriptionDuration": "{days} days subscription",
+    "accessOnMobile": "Mobile access",
+    "subscriptionAccess": "Access during subscription period",
+    "certificateOfCompletion": "Certificate of completion",
+    "free": "Free"
   },
   "contact": {
     "contactFormTitle": "Contact Us",

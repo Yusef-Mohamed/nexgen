@@ -29,12 +29,12 @@ const PromoBanner: React.FC = () => {
 export const PromoBanner2: React.FC = () => {
   const text = useTranslations("promoBanner2");
   return (
-    <section className="container flex flex-col items-center justify-between gap-8 text-center lg:text-start lg:gap-16 secPadding lg:flex-row">
+    <section className="container flex flex-col lg:items-end justify-between gap-8 text-center lg:text-start lg:gap-16 secPadding lg:flex-row">
       <div className="max-w-4xl">
         <h2 className="mb-4 sm:mb-6">{text("heading")}</h2>
         <p className=" text-text-2">{text("description")}</p>
       </div>
-      <Button size={"lg"} asChild className="sm:w-[20rem] w-[15rem]">
+      <Button size={"lg"} asChild className="w-[15rem] rounded-full">
         <Link href={"/sign-up"}>{text("action")}</Link>
       </Button>
     </section>

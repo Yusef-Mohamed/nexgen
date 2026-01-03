@@ -1,7 +1,6 @@
 import Hero from "./components/Hero";
 import Features from "./components/Features";
 import WhyChooseUs from "./components/WhyChooseUs";
-import PromoBanner from "./components/PromoBanner";
 import SuccessStories from "./components/SuccessStories";
 import Testimonials from "./components/Testimonials";
 import BlogSection from "./components/BlogSection";
@@ -35,7 +34,6 @@ const LandingPage = ({ params }: { params: { locale: string } }) => {
       <OurServices />
       <WhyChooseUs />
       <MobileAppHero />
-      <PromoBanner />
       <SuccessStories />
       <Testimonials />
       {/* <FeaturedInstructors /> */}

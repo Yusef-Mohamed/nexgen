@@ -54,8 +54,14 @@ const FAQ: React.FC = () => {
       <h3 className="mb-4 md:mb-8">{text("courseContent")}</h3>
       <Accordion type="single" collapsible className="flex-1 w-full">
         {sections.map((section, index) => (
-          <AccordionItem key={index} value={section.section}>
-            <AccordionTrigger>{section.section}</AccordionTrigger>
+          <AccordionItem
+            key={index}
+            value={section.section}
+            className="border-primary/20 border bg-primary/5"
+          >
+            <AccordionTrigger className="text-primary">
+              {section.section}
+            </AccordionTrigger>
             <AccordionContent>
               {section.lessons?.map((lesson, index) => (
                 <div

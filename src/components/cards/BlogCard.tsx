@@ -24,7 +24,7 @@ const BlogCard: React.FC<IBlog & { inDashboard?: boolean }> = ({
     <article className="flex flex-col w-full h-full ">
       <Link
         href={`${inDashboard ? "/dashboard/blogs" : "/blogs"}/${_id}`}
-        className="w-full"
+        className="w-full shadow-md rounded-2xl shadow-primary/20"
       >
         <Image
           src={imageCover}
@@ -86,14 +86,14 @@ export const BlogCard2: React.FC<BlogCardProps> = ({
   inDashboard,
 }) => {
   return (
-    <article
+    <div
       className={cn("flex flex-col w-full h-full", {
         "md:flex-row md:items-center md:gap-12": isRow,
       })}
     >
       <Link
         href={`${inDashboard ? "/dashboard/blogs" : "/blogs"}/${_id}`}
-        className={cn("w-full", {
+        className={cn("w-full shadow-md rounded-2xl shadow-primary/20", {
           "md:basis-1/2": isRow,
         })}
       >
@@ -129,7 +129,7 @@ export const BlogCard2: React.FC<BlogCardProps> = ({
           />
         )}
       </div>
-    </article>
+    </div>
   );
 };
 export const BlogUserComponent = ({

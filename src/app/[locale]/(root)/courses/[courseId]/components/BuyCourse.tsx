@@ -54,7 +54,7 @@ const BuyCourse = ({ id, price }: { id: string; price: number }) => {
 
   if (isCourseBought) {
     return (
-      <Button asChild className="w-full mb-4 md:mb-8">
+      <Button asChild className="w-full rounded-full mb-4 md:mb-8">
         <Link href={`/dashboard/learn/${id}`}>{text("startLearning")}</Link>
       </Button>
     );
@@ -63,7 +63,7 @@ const BuyCourse = ({ id, price }: { id: string; price: number }) => {
   if (price === 0) {
     return (
       <Button
-        className="w-full mb-4 md:mb-8"
+        className="w-full mb-4 md:mb-8 rounded-full"
         onClick={handleFreeCourseEnrollment}
         isLoading={isLoading}
       >
@@ -73,7 +73,7 @@ const BuyCourse = ({ id, price }: { id: string; price: number }) => {
   }
 
   return (
-    <Button asChild className="w-full mb-4 md:mb-8">
+    <Button asChild className="w-full mb-4 md:mb-8 rounded-full">
       <Link href={`/checkout/course/${id}`}>{text("startNow")}</Link>
     </Button>
   );

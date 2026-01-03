@@ -174,11 +174,13 @@ export const CourseReviewOverView: React.FC<{
 }> = ({ ratingsAverage, ratingsQuantity }) => {
   return (
     <div className="flex items-center gap-2 my-2 sm:my-3 whitespace-nowrap">
-      <FaStar className="text-xl text-gold" />
+      <FaStar className="text-xl text-gold" />{" "}
+      <div className="text-base font-medium sm:text-xl">
+        {ratingsAverage || 0}
+      </div>
       <div className="text-xs sm:text-base text-text-3">
         ({ratingsQuantity})
       </div>
-      <div className="text-base font-medium sm:text-xl">{ratingsAverage}</div>
     </div>
   );
 };

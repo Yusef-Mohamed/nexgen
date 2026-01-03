@@ -15,12 +15,12 @@ import { CiMobile2 } from "react-icons/ci";
 import { GoInfinity } from "react-icons/go";
 import { GrCertificate } from "react-icons/gr";
 import { Link } from "@/i18n/routing";
-import PromoBanner from "../../components/PromoBanner";
 import PopularCourses from "../../components/PopularCourses";
 import ReviewsGrid from "@/components/ReviewsGrid";
 import CourseContent from "./components/CourseContent";
 import BuyCourse from "./components/BuyCourse";
-import { getDynamicString } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
+import MobileAppHero from "../../components/MobileAppHero";
 export async function generateMetadata({
   params,
 }: {
@@ -55,60 +55,84 @@ const CoursesPage = async ({
         <section className="container flex gap-20 secPadding">
           <div className="flex-1 w-full">
             <CourseHeading courseData={courseData} className="max-lg:hidden" />
-            <CourseCard courseData={courseData} className="lg:hidden" />
-            <div className="my-4 md:my-8">
-              <h3 className="mb-4 md:mb-8">{text("whatYouWillLearn")}</h3>
-              <ul className="grid gap-4 md:grid-cols-2 md:gap-8">
-                {courseData.highlights.map((highlight, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start gap-2 text-sm text-text-2 md:text-base"
-                  >
-                    <div className="w-1 h-1 mt-2 rounded-full bg-text-2"></div>
-                    <p className="flex-1 ">
-                      {typeof highlight === "string" ? highlight : null}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="my-4 md:my-8">
-              <h3 className="mb-4 md:mb-8">{text("requirements")}</h3>
-              <ul className="grid gap-4 md:grid-cols-2 md:gap-8">
-                {courseData.accessibleCourses &&
-                courseData.accessibleCourses.length ? (
-                  courseData.accessibleCourses.map((course, index) => (
+            <CourseCard
+              courseData={courseData}
+              className="lg:hidden relative overflow-hidden"
+            />
+            {courseData.whoThisCourseFor &&
+              courseData.whoThisCourseFor.length > 0 && (
+                <div className="my-4 md:my-8">
+                  <h3 className="mb-4 md:mb-8">{text("whoThisCourseFor")}</h3>
+                  <ul className="grid gap-4 list-disc md:grid-cols-2 md:gap-8">
+                    {courseData.whoThisCourseFor.map((item, index) => (
+                      <li
+                        key={index}
+                        className="flex items-start gap-2 text-sm text-text-2 md:text-base"
+                      >
+                        <p className="flex-1">{getDynamicString(item)}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            {courseData.whatWillLearn &&
+              courseData.whatWillLearn.length > 0 && (
+                <div className="my-4 md:my-8">
+                  <h3 className="mb-4 md:mb-8">{text("whatYouWillLearn")}</h3>
+                  <ul className="grid gap-4 md:grid-cols-2 md:gap-8">
+                    {courseData.whatWillLearn.map((item, index) => (
+                      <li
+                        key={index}
+                        className="flex items-start gap-2 text-sm text-text-2 md:text-base"
+                      >
+                        <p className="flex-1"> {getDynamicString(item)}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            {courseData.coursePrerequisites && (
+              <div className="my-4 md:my-8">
+                <h3 className="mb-4 md:mb-8">{text("coursePrerequisites")}</h3>
+                <ul className="grid gap-4 md:grid-cols-2 md:gap-8">
+                  {courseData.coursePrerequisites.map((item, index) => (
                     <li
                       key={index}
-                      className="flex items-start gap-2 text-sm text-text-1 md:text-base"
+                      className="flex items-start gap-2 text-sm text-text-2 md:text-base"
                     >
-                      <div className="w-1.5 h-1.5 mt-3 rounded-full bg-text-1"></div>
-                      <Link
-                        href={`/courses/${course._id}`}
-                        target="_blank"
-                        className="flex-1 font-semibold underline md:text-lg"
-                      >
-                        {getDynamicString(course.title)}
-                      </Link>
+                      <p className="flex-1"> {getDynamicString(item)}</p>
                     </li>
-                  ))
-                ) : (
-                  <li className="flex items-start gap-2 text-sm text-text-1 md:text-base">
-                    <div className="w-1.5 h-1.5 mt-3 rounded-full bg-text-1"></div>
-                    <p className="flex-1 font-semibold md:text-lg">
-                      {text("noExperienceRequired")}
-                    </p>
-                  </li>
-                )}
-              </ul>
-            </div>
+                  ))}{" "}
+                  {courseData.accessibleCourses &&
+                    courseData.accessibleCourses.length > 0 &&
+                    courseData.accessibleCourses.map((course, index) => (
+                      <li
+                        key={`accessible-${index}`}
+                        className="flex items-start gap-2 text-sm text-text-1 md:text-base"
+                      >
+                        <p className="flex-1 font-semibold md:text-lg">
+                          {text("recommendedToSee")}{" "}
+                          <Link
+                            href={`/courses/${course._id}`}
+                            target="_blank"
+                            className="underline"
+                          >
+                            {getDynamicString(course.title)}
+                          </Link>
+                        </p>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            )}
+
             <CourseContent />
           </div>
-          <div className="max-w-[29rem] hidden  h-fit lg:block rounded-3xl  basis-[40%] bg-clear-ground cardShadow p-6">
+          <div className="max-w-[29rem] hidden  relative overflow-hidden h-fit lg:block rounded-3xl  basis-[40%] bg-clear-ground cardShadow p-6">
             <CourseCard courseData={courseData} />
           </div>
         </section>
-        <PromoBanner />
+        <MobileAppHero />
         <section className="container secPadding">
           <h2 className="mb-6 md:mb-12">{text("studentsReviews")}</h2>
           <ReviewsGrid
@@ -173,7 +197,16 @@ const CourseCard: React.FC<{
     },
   ];
   return (
-    <div className={className}>
+    <div className={cn(className)}>
+      <div
+        style={{
+          filter: "blur(100px)",
+          width: "300px",
+          height: "300px",
+          borderRadius: "50%",
+        }}
+        className="absolute  max-lg:hidden dark:bg-purple-400 bg-purple-200  opacity-70 bottom-0 right-0 translate-x-1/4 translate-y-1/4 size-20"
+      ></div>
       <Image
         src={courseData.image}
         width={1000}
@@ -203,7 +236,7 @@ const CourseCard: React.FC<{
           >
             <CiDiscount1 className="w-6 h-6" />
             <span>
-              {text("discounted")}{" "}
+              <span className="!text-sm">{text("discounted")} </span>
               {(
                 ((courseData.price - courseData.priceAfterDiscount) /
                   courseData.price) *

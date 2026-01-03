@@ -7,7 +7,7 @@ import { useTheme } from "next-themes";
 const Features: React.FC = () => {
   const text = useTranslations("features");
   const theme = useTheme();
-  const isDark = theme.theme === "dark";
+  const isDark = theme.resolvedTheme === "dark";
   return (
     <section className="container secPadding">
       <div className="grid gap-4 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
