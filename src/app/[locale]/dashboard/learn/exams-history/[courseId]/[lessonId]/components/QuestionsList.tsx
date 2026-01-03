@@ -1,8 +1,6 @@
-import { CorrectIcon, InCorrectIcon } from "@/components/icons";
 import ImageWithZoom from "@/components/ImageWithZoom";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import { IQuestion } from "@/types";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 interface QuestionsListProps {
@@ -10,13 +8,14 @@ interface QuestionsListProps {
 }
 
 const QuestionsList = ({ questions }: QuestionsListProps) => {
-  const text = useTranslations("learn");
+  // const text = useTranslations("learn");
   return (
     <div className="mt-8 space-y-6 sm:space-y-8">
       {questions.map((question, index) => (
         <div className="space-y-4 sm:space-y-6" key={question._id}>
           <h2 className="flex items-start gap-2 text-2xl font-semibold text-text-2">
-            <span>{index + 1}. </span> <p>{question?.question}</p>
+            <span>{index + 1}. </span>{" "}
+            <p>{getDynamicString(question?.question)}</p>
           </h2>
           {question?.questionImage && (
             <ImageWithZoom
@@ -64,7 +63,7 @@ const QuestionsList = ({ questions }: QuestionsListProps) => {
                 </div>
 
                 {/* Feedback message under the chosen option */}
-                {question.correctOption === optionIndex + 1 && (
+                {/* {question.correctOption === optionIndex + 1 && (
                   <div className="mt-2 rounded-md border px-3 py-2 text-success bg-success/10 border-success/20">
                     <div className="flex items-center text-xl gap-2 font-semibold">
                       <span>
@@ -74,8 +73,8 @@ const QuestionsList = ({ questions }: QuestionsListProps) => {
                     </div>
                     <p className="mt-1 text-lg">STATIC</p>
                   </div>
-                )}
-                {Number(question.wrongAnswer) === optionIndex + 1 && (
+                )} */}
+                {/* {Number(question.wrongAnswer) === optionIndex + 1 && (
                   <div className="mt-2 rounded-md border px-3 py-2 text-destructive bg-destructive/10 border-destructive/20">
                     <div className="flex items-center text-xl gap-2 font-semibold">
                       <span>
@@ -85,7 +84,7 @@ const QuestionsList = ({ questions }: QuestionsListProps) => {
                     </div>
                     <p className="mt-1 text-lg">STATIC</p>
                   </div>
-                )}
+                )} */}
               </>
             ))}
           </div>

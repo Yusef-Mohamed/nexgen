@@ -48,6 +48,14 @@
     "newDescription": "Explore expert-led courses designed to help you achieve your goals and elevate your knowledge.",
     "getStarted": "Get Started"
   },
+  "mobileAppHero": {
+    "subtitle": "Learn anytime, anywhere.",
+    "headingPart1": "Take your courses with",
+    "headingPart2": "you on the go and",
+    "headingPart3": "never miss a lesson.",
+    "description": "Seamless learning across web and mobile.",
+    "downloadButton": "Download Now"
+  },
   "features": {
     "intro_text": "Whether you're just starting or looking to advance, explore courses designed to fit your learning goals and schedule.",
     "feature_1_title": "Live Class",

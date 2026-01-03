@@ -12,6 +12,7 @@ import { unstable_setRequestLocale } from "next-intl/server";
 import OurLearningPaths from "./components/OurLearningPaths";
 import OurCourses from "./components/OurCourses";
 import OurServices from "./components/OurServices";
+import MobileAppHero from "./components/MobileAppHero";
 export function generateMetadata({
   params,
 }: {
@@ -31,8 +32,9 @@ const LandingPage = ({ params }: { params: { locale: string } }) => {
       <Features />
       <OurCourses />
       <OurLearningPaths />
-      <WhyChooseUs />
       <OurServices />
+      <WhyChooseUs />
+      <MobileAppHero />
       <PromoBanner />
       <SuccessStories />
       <Testimonials />

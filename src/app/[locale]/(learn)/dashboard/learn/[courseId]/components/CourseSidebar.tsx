@@ -295,7 +295,10 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                 {/* Final Exam (only for last lesson) */}
                                 {isLastLesson && (
                                   <SidebarItemButton
-                                    title={text("final_exam")}
+                                    title={
+                                      getDynamicString(course?.examTitle) ??
+                                      text("final_exam")
+                                    }
                                     subtitle={`${text("final_exam")} | ${
                                       course?.examQuestionsNumber
                                     } ${text("questions")}`}

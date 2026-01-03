@@ -5,7 +5,6 @@ import { FaFacebookF, FaTelegramPlane, FaTiktok } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
 import { Link } from "@/i18n/routing";
 import { FaInstagram } from "react-icons/fa";
-import { cn } from "@/lib/utils";
 const aboutLinks = [
   {
     name: "about",
@@ -51,15 +50,10 @@ const socialLinks = [
     icon: <FaInstagram />,
   },
 ];
-const Footer = ({ clear }: { clear?: boolean }) => {
+const Footer = ({}: { clear?: boolean }) => {
   const text = useTranslations("footer");
   return (
-    <footer
-      className={cn({
-        "bg-muted/50": !clear,
-        "bg-clear-ground": clear,
-      })}
-    >
+    <footer className="bg-background-2">
       <div className="container pt-8 pb-4 text-text-3">
         <div className="flex flex-col justify-between gap-6 sm:gap-10 lg:flex-row">
           <div className="flex items-start gap-4 sm:gap-8 md:gap-10 lg:gap-14 justify-evenly lg:w-fit">

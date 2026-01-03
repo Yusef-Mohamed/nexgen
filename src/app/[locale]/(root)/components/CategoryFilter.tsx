@@ -9,6 +9,7 @@ import {
 import { ICategory } from "@/types";
 import { cn, getDynamicString } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
 interface CategoryFilterProps {
   categories: ICategory[];
@@ -41,33 +42,31 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
           {/* All Button - only show when search is enabled */}
           {enableSearch && (
             <CarouselItem className="px-2 basis-auto">
-              <button
+              <Button
                 onClick={() => onCategoryChange(null)}
                 className={cn(
-                  "rounded-full px-4 py-2 h-auto text-base whitespace-nowrap transition-colors",
-                  !selectedCategory
-                    ? "bg-primary text-primary-foreground hover:bg-primary/80"
-                    : "bg-transparent border border-text-3 text-text-1 hover:bg-primary hover:border-primary hover:text-primary-foreground"
+                  "rounded-full px-4 py-2 h-auto text-base whitespace-nowrap transition-colors"
                 )}
+                variant={selectedCategory ? "outline" : "default"}
               >
                 All
-              </button>
+              </Button>
             </CarouselItem>
           )}
 
           {categories.map((category) => (
             <CarouselItem key={category._id} className="px-2 basis-auto">
-              <button
+              <Button
                 onClick={() => onCategoryChange(category)}
                 className={cn(
-                  "rounded-full px-4 py-2 h-auto text-base whitespace-nowrap transition-colors",
-                  selectedCategory?._id === category._id
-                    ? "bg-primary text-primary-foreground hover:bg-primary/80"
-                    : "bg-transparent border border-text-3 text-text-1 hover:bg-primary hover:border-primary hover:text-primary-foreground"
+                  "rounded-full px-4 py-2 !h-auto text-base whitespace-nowrap transition-colors"
                 )}
+                variant={
+                  selectedCategory?._id === category._id ? "default" : "outline"
+                }
               >
                 {getDynamicString(category.title)}
-              </button>
+              </Button>
             </CarouselItem>
           ))}
           {loading &&

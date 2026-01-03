@@ -260,7 +260,7 @@ const Sidebar: React.FC<
       )}
     >
       <div className="flex flex-col h-full">
-        <div className="flex justify-between h-[76px] items-center flex-wrap mb-4 gap-4">
+        <div className="flex justify-between min-h-[76px] items-center flex-wrap mb-4 gap-4">
           <Logo size="sm" isIconic={collapsed} />
 
           {isCollapsable && (
@@ -301,7 +301,7 @@ const Sidebar: React.FC<
           <ul className="space-y-2">
             {linkGroups.map((group, groupIndex) => (
               <li key={groupIndex}>
-                {group.title && (
+                {group.title && !collapsed && (
                   <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     {text(group.title)}
                   </div>

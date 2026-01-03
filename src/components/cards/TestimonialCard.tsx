@@ -42,7 +42,7 @@ const TestimonialCard: React.FC<TestimonialsProps> = ({
   const locale = useLocale();
   const { ratings, title, user } = review;
   return (
-    <div className="flex relative flex-col gap-4 items-center px-4 py-6 text-center rounded-3xl sm:gap-5 sm:px-6 sm:py-8 bg-muted">
+    <div className="flex relative flex-col gap-4 items-center px-4 py-6 text-center rounded-3xl sm:gap-5 sm:px-6 sm:py-8 bg-primary/10">
       <ReviewActions reviewType={reviewType} review={review} />
       <UserAvatar
         user={user}

@@ -11,13 +11,41 @@ const Hero: React.FC = () => {
   const locale = useLocale();
   return (
     <section className="pt-8 max-xl:px-4">
-      <div className="container px-4 sm:px-8 md:px-16 lg:px-20 py-10 sm:pt-16 md:py-20 lg:py-[5.5rem] rounded-3xl bg-primary-faded lg:items-center gap-6 flex max-lg:flex-col lg:justify-between">
+      <div className="container px-4 sm:px-8 relative overflow-hidden md:px-16 lg:px-20 py-10 sm:pt-16 md:py-20 lg:py-[5.5rem] rounded-3xl bg-primary-faded lg:items-center gap-6 flex max-lg:flex-col lg:justify-between">
+        <div
+          style={{
+            filter: "blur(100px)",
+            width: "200px",
+            height: "200px",
+            borderRadius: "50%",
+          }}
+          className="absolute  dark:bg-purple-400 bg-purple-200  opacity-70 top-0 left-0 -translate-x-1/4 -translate-y-1/4 size-20"
+        ></div>
+        <div
+          style={{
+            filter: "blur(100px)",
+            width: "200px",
+            height: "200px",
+            borderRadius: "50%",
+          }}
+          className="absolute dark:bg-yellow-300 bg-yellow-200 opacity-70 bottom-0 right-0 translate-x-1/4 translate-y-1/4 size-20"
+        ></div>
+        {/* <div
+          style={{
+            backgroundColor: "rgba(151, 71, 255, 0.64)",
+            filter: "blur(100px)",
+            width: "200px",
+            height: "200px",
+            borderRadius: "50%",
+          }}
+          className="absolute bottom-0 right-0 size-20"
+        ></div> */}
         <TransitionBox
           containerClassName="overflow-visible"
           fromValue="200%"
           transitionType="fromRight"
         >
-          <div>
+          <div className="relative z-10">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-16 h-0.5 bg-primary"></div>
               <h2 className="text-primary h4 font-medium">
@@ -46,7 +74,7 @@ const Hero: React.FC = () => {
               <div className="block">{text("headingPart4")}</div>
             </h1>
           </div>
-          <p className="my-6 sm:my-10 !text-base md:!text-xl  text-text-1 max-w-xl">
+          <p className="my-6 sm:my-10  !text-base md:!text-xl  text-text-1 max-w-xl">
             {text("newDescription")}
           </p>
           <Button asChild className="sm:min-w-52 w-fit">

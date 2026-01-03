@@ -19,6 +19,16 @@ export interface UseQuizParams {
   quizType: QuizType;
 }
 
+export interface ExamAnalyticsItem {
+  question: string;
+  options: string[];
+  correctOption: number;
+  grade: number;
+  _id: string;
+  givenAnswer: number;
+  isAnswerCorrect: boolean;
+}
+
 export const useQuiz = ({ id, quizType }: UseQuizParams) => {
   const [quiz, setQuiz] = useState<IExam | null>(null);
   const [isStarted, setIsStarted] = useState(false);
@@ -32,6 +42,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
     passed: boolean;
     totalScore: number;
     score: number;
+    examAnalytics?: ExamAnalyticsItem[];
   }>({
     passed: false,
     totalScore: 0,
@@ -109,6 +120,50 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
       );
       const result = response.data.data;
       setSubmitData(result);
+
+      // Transform examAnalytics to feedback questions format
+      if (result.examAnalytics && quiz?.questions) {
+        const transformedQuestions: IQuestion[] = result.examAnalytics.map(
+          (analytic: ExamAnalyticsItem) => {
+            // Find the original question from quiz using the question ID from examAnalytics
+            // analytic._id is the question ID, analytic.question might also be the question ID
+            const originalQuestion = quiz.questions.find(
+              (q) => q._id === analytic._id || q._id === analytic.question
+            );
+
+            if (!originalQuestion) {
+              // Fallback if question not found - this shouldn't happen but handle gracefully
+              return {
+                _id: analytic._id,
+                question: String(analytic.question),
+                options: analytic.options,
+                correctOption: analytic.correctOption,
+                grade: analytic.grade,
+                // Set wrongAnswer only if the user answered incorrectly
+                wrongAnswer:
+                  !analytic.isAnswerCorrect && analytic.givenAnswer
+                    ? analytic.givenAnswer
+                    : undefined,
+              };
+            }
+
+            return {
+              _id: analytic._id,
+              question: originalQuestion.question,
+              options: analytic.options,
+              correctOption: analytic.correctOption,
+              grade: analytic.grade,
+              questionImage: originalQuestion.questionImage,
+              // Set wrongAnswer only if the user answered incorrectly
+              wrongAnswer:
+                !analytic.isAnswerCorrect && analytic.givenAnswer
+                  ? analytic.givenAnswer
+                  : undefined,
+            };
+          }
+        );
+        setFeedbackQuestions(transformedQuestions);
+      }
 
       // Unlock lessons if quiz was passed successfully and it's a lesson quiz
       if (result.passed && quizType === "lesson" && sections && id) {
@@ -218,31 +273,6 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
     }
   }, [findNextItem, setSearchParams, text]);
 
-  const showStaticFeedback = useCallback(() => {
-    const staticQuestions: IQuestion[] = [
-      {
-        _id: "q1",
-        question: "What is Forex trading?",
-        options: [
-          "Buying and selling currencies",
-          "Buying groceries",
-          "Learning languages",
-          "Playing games",
-        ],
-        correctOption: 1,
-      },
-      {
-        _id: "q2",
-        question: "Which is a currency pair?",
-        options: ["EUR/USD", "Apple/Orange", "Car/Bike", "Dog/Cat"],
-        correctOption: 1,
-        wrongAnswer: 2,
-      },
-    ];
-    setFeedbackQuestions(staticQuestions);
-    setShowFeedback(true);
-  }, []);
-
   return {
     // state
     quiz,
@@ -263,9 +293,9 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
     setError,
     handleSubmit,
     handleGoNext,
-    showStaticFeedback,
     retakeQuiz,
     getQuiz,
+    setShowFeedback,
   };
 };
 

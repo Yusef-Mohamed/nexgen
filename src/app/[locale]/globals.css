@@ -78,6 +78,8 @@ body {
 @layer base {
   :root {
     --background: 0 0% 99%;
+    --background-2: 210 40% 98%;
+
     --dash-ground: 213 40% 97%;
     --clear-ground: 0 0% 100%;
     --foreground: 210 22% 7%;
@@ -91,11 +93,11 @@ body {
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 213 92% 53%;
+    --primary: 213 92% 54%;
     --primary-main: 218 78% 40%;
     --primary-faded: 205 100% 97%;
     --primary-foreground: 205 100% 97%;
-    --secondary: 210 40% 96.1%;
+    --secondary: 266 100% 64%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 205 12% 95%;
     --muted-foreground: 208 21% 34%;
@@ -103,8 +105,8 @@ body {
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 212 25% 90%;
-    --input: 214.3 31.8% 91.4%;
+    --border: #cbd5e1;
+    --input: #cbd5e1;
     --ring: 221.2 83.2% 53.3%;
     --radius: 1rem;
     --success: 144 81% 25%;
@@ -116,7 +118,9 @@ body {
   }
 
   .dark {
+    color: hsl(266, 100%, 69%);
     --background: 0 0% 5%; /* Dark background */
+    --background-2: 0 0% 7%;
     --dash-ground: 210 22% 7%;
     --clear-ground: 210 15% 10%; /* Even darker for contrast */
     --foreground: 0 0% 90%; /* Light text color */
@@ -130,9 +134,9 @@ body {
     --popover-foreground: 0 0% 90%; /* Light text on popovers */
     --primary: 213 92% 58%; /* Brighter primary color */
     --primary-main: 218 78% 75%; /* Adjusted for contrast */
-    --primary-faded: 205 100% 20% / 0.2; /* Darker faded primary */
+    --primary-faded: 213 100% 6%; /* Darker faded primary */
     --primary-foreground: 0 0% 90%; /* Light text on primary elements */
-    --secondary: 210 40% 30%; /* Darker secondary color */
+    --secondary: 266 100% 69%; /* Darker secondary color */
     --secondary-foreground: 0 0% 90%; /* Light text on secondary elements */
     --muted: 205 12% 25%; /* Muted background elements */
     --muted-foreground: 210 40% 96%; /* Muted text */
@@ -140,8 +144,8 @@ body {
     --accent-foreground: 0 0% 90%; /* Light text on accents */
     --destructive: 0 84.2% 60.2%; /* Destructive action color */
     --destructive-foreground: 0 0% 90%; /* Light text on destructive elements */
-    --border: 210 10% 30%; /* Border color for dark mode */
-    --input: 210 10% 25%; /* Input backgrounds */
+    --border: #ced6df; /* Border color for dark mode */
+    --input: #ced6df; /* Input backgrounds */
     --ring: 221.2 83.2% 70%; /* Focus ring color */
     --radius: 1rem; /* Border radius remains the same */
     --success: 144 81% 25%;
@@ -213,7 +217,7 @@ body {
   }
 }
 main {
-  background-color: hsl(var(--clear-ground));
+  background-color: hsl(var(--background));
 }
 @layer base {
   * {

@@ -59,7 +59,7 @@ const LearningPath: React.FC<
   return (
     <div
       className={cn(
-        "flex flex-col w-full outline outline-1 outline-primary/20 bg-card rounded-xl border-[3px] hover:outline-primary/70 hover:border-primary/80 border-transparent overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 md:p-6 p-3 sm:p-4 h-full relative",
+        "flex flex-col w-full border hover:border-secondary hover:outline-secondary rounded-[40px] border-transparent outline outline-1  outline-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
         className
       )}
     >
@@ -70,60 +70,77 @@ const LearningPath: React.FC<
         createdAt={createdAt}
       />
 
-      <Image
-        src={imageUrl}
-        alt={getDynamicString(title)}
-        width={430}
-        height={300}
-        className="object-cover w-full rounded-2xl courseImage bg-muted"
-      />
-      <div className="flex-1 md:space-y-4 space-y-2.5 sm:space-y-3 my-5">
-        <div className="flex flex-col space-y-1 sm:space-y-1.5">
-          {/* Difficulty Level */}
-          <div className="flex items-center text-text-2 gap-2">
-            <LevelsIcons />
-            <span className="h5 font-medium">{getDifficultyLevel(type)}</span>
-          </div>
+      {/* Image */}
+      <div className="relative w-full aspect-[38/29] rounded-[24px] overflow-hidden shrink-0">
+        <Image
+          src={imageUrl}
+          alt={getDynamicString(title)}
+          title={getDynamicString(title)}
+          fill
+          className="object-cover"
+        />
+      </div>
 
-          {/* Category */}
+      {/* Content */}
+      <div className="flex-1 flex flex-col gap-3">
+        {/* Level and Category Row */}
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-end gap-1.5">
+            <LevelsIcons className="size-6 shrink-0" />
+            <span className="text-lg font-medium text-text-2">
+              {getDifficultyLevel(type)}
+            </span>
+          </div>
           {category?.title && (
             <div
-              className="text-primary h5 capitalize underline"
+              className="bg-secondary/10 px-3 py-1 rounded-full cursor-pointer"
               onClick={() => onCategoryClick?.(category as ICategory)}
             >
-              {getDynamicString(category?.title)}
+              <span className="text-secondary text-lg">
+                {getDynamicString(category?.title)}
+              </span>
             </div>
           )}
-
-          {/* Title */}
-          <h3 className="h3 font-bold">{getDynamicString(title)}</h3>
-
-          {/* Course Count and Duration */}
-          <p className="flex items-center gap-2 font-medium text-text-3">
-            <span className="text-text-2 font-semibold">
-              {countText("coursesCount", { count: courses.length })}
-            </span>{" "}
-            •
-            <FaRegClock /> {(totalDuration / 60).toFixed(1)}{" "}
-            {popularText("hours")}
-          </p>
         </div>
 
-        {/* Pricing */}
-        <div className="flex items-center gap-2">
-          <span className="h3 font-bold">
+        {/* Title */}
+        <h3 className="text-3xl font-bold text-text-1 leading-tight">
+          {getDynamicString(title)}
+        </h3>
+
+        {/* Course Count and Duration Row */}
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-2">
+            <span className="text-base font-semibold text-text-1">
+              {countText("coursesCount", { count: courses.length })}
+            </span>
+          </div>
+          <div className="flex items-center gap-1">
+            <FaRegClock className="size-[18px] text-text-3" />
+            <span className="text-base text-text-3">
+              {(totalDuration / 60)?.toFixed(0)} {popularText("hours")}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Button and Price Row */}
+      <div className="flex items-center gap-3 w-full">
+        <Button size="lg" className="rounded-full  flex-1" asChild>
+          <Link href={`/learning-paths/${_id}`}>{text("showDetails")}</Link>
+        </Button>
+        <div className="flex items-start gap-0.5 justify-end min-w-[103px]">
+          <span className="text-2xl font-medium text-foreground">
             {!isFree && "$"}
             {isFree ? popularText("free") : priceAfterDiscount || price || 0}
           </span>
           {priceAfterDiscount && priceAfterDiscount !== price && !isFree && (
-            <span className="text-text-3 line-through">${price || 0}</span>
+            <span className="text-xs text-destructive line-through">
+              {price || 0}
+            </span>
           )}
         </div>
       </div>
-      {/* Call to Action Button */}
-      <Button size="lg" className="w-full" asChild>
-        <Link href={`/learning-paths/${_id}`}>{text("showDetails")}</Link>
-      </Button>
     </div>
   );
 };
@@ -134,49 +151,47 @@ export const LearningPathSkeleton: React.FC<{ className?: string }> = ({
   return (
     <div
       className={cn(
-        "flex flex-col w-full bg-white rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
+        "flex flex-col w-full border border-primary/16 rounded-[40px] shadow-[4px_8px_24px_0px_rgba(27,125,245,0.06)] p-6 h-full relative gap-5",
         className
       )}
     >
-      {/* Image skeleton */}
-      <div className="relative">
-        <Skeleton className="w-full courseImage rounded-2xl bg-muted" />
-        {/* New tag skeleton */}
-        <div className="absolute top-3 left-3">
-          <Skeleton className="w-16 h-6 rounded-lg" />
-        </div>
+      {/* Card Badges skeleton */}
+      <div className="absolute top-4 start-4 z-10 flex gap-2">
+        <Skeleton className="w-12 h-6 rounded-sm" />
+        <Skeleton className="w-10 h-6 rounded-sm" />
       </div>
 
-      <div className="flex-1 md:space-y-4 space-y-2.5 sm:space-y-3 my-5">
-        <div className="flex flex-col space-y-1 sm:space-y-1.5">
-          {/* Difficulty level skeleton */}
-          <div className="flex items-center gap-2">
-            <Skeleton className="w-4 h-4 rounded" />
-            <Skeleton className="h-4 w-20" />
+      {/* Image skeleton */}
+      <Skeleton className="w-full aspect-[38/29] rounded-[24px] bg-muted" />
+
+      <div className="flex-1 flex flex-col gap-3">
+        {/* Level and Category Row skeleton */}
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-1.5">
+            <Skeleton className="w-6 h-6 rounded" />
+            <Skeleton className="h-5 w-20" />
           </div>
+          <Skeleton className="h-7 w-16 rounded-full" />
+        </div>
 
-          {/* Category skeleton */}
-          <Skeleton className="h-5 w-24" />
+        {/* Title skeleton */}
+        <Skeleton className="h-8 w-full" />
 
-          {/* Title skeleton */}
-          <Skeleton className="h-6 w-full" />
-
-          {/* Duration skeleton */}
-          <div className="flex items-center gap-2">
-            <Skeleton className="w-4 h-4 rounded" />
+        {/* Course Count and Duration Row skeleton */}
+        <div className="flex items-center justify-between w-full">
+          <Skeleton className="h-4 w-24" />
+          <div className="flex items-center gap-1">
+            <Skeleton className="w-[18px] h-[18px] rounded" />
             <Skeleton className="h-4 w-16" />
           </div>
         </div>
-
-        {/* Pricing skeleton */}
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-6 w-16" />
-          <Skeleton className="h-4 w-12" />
-        </div>
       </div>
 
-      {/* Button skeleton */}
-      <Skeleton className="w-full h-12 rounded-lg" />
+      {/* Button and Price Row skeleton */}
+      <div className="flex items-center gap-3 w-full">
+        <Skeleton className="h-[60px] flex-1 rounded-full" />
+        <Skeleton className="h-6 w-20" />
+      </div>
     </div>
   );
 };

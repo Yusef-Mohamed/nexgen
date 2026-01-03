@@ -359,7 +359,7 @@ const BalanceCard = ({
             <p className="text-sm text-gray-200 dark:text-gray-700">
               {t("stats.currentBalance")}
             </p>
-            <h3 className="font-semibold text-white dark:text-black h1-5">
+            <h3 className="font-semibold text-white dark:text-foreground h1-5">
               ${balance.toFixed(2)?.toLocaleString()}
             </h3>
           </div>

@@ -5,19 +5,24 @@ type FeatureCardProps = {
   title: string;
   description: string;
   iconSrc: string;
+  style?: React.CSSProperties;
 };
 
 const FeatureCard: React.FC<FeatureCardProps> = ({
   title,
   description,
   iconSrc,
+  style,
 }) => {
   return (
-    <div className="flex items-center gap-4 p-3 shadow-md cardShadow sm:p-4 sm:gap-5 bg-clear-ground rounded-xl">
+    <div
+      className="flex items-center gap-4 p-3 shadow-md  sm:p-4 sm:gap-5 rounded-xl"
+      style={style}
+    >
       <Image
         src={iconSrc}
         alt={title}
-        className="rounded-md aspect-square w-16 sm:w-[4.5rem] bg-muted"
+        className="rounded-md aspect-square w-16 sm:w-[4.5rem]"
         width={72}
         height={72}
       />

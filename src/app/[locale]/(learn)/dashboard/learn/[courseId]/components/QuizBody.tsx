@@ -34,9 +34,9 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
     setError,
     handleSubmit,
     handleGoNext,
-    showStaticFeedback,
     retakeQuiz,
     getQuiz,
+    setShowFeedback,
   } = useQuiz({ id, quizType: quizType as QuizType });
 
   // Add early return if quiz data is not ready
@@ -148,7 +148,7 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
                     variant="default"
                     onClick={() => {
                       if (showFeedback) handleGoNext();
-                      else showStaticFeedback();
+                      else setShowFeedback(true);
                     }}
                   >
                     {showFeedback ? text("next") : text("viewFeedback")}

@@ -36,7 +36,7 @@ const Header = () => {
   const text = useTranslations("header");
   const { token } = useAuth();
   return (
-    <header className="sticky top-0 z-50 py-1 w-full md:py-2 bg-clear-ground">
+    <header className="sticky top-0 z-50 py-1 w-full md:py-2 bg-background">
       <div className="container flex gap-10 justify-between items-center">
         <nav className="flex gap-10 items-center">
           <div className="flex gap-4 items-center">

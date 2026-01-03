@@ -71,6 +71,7 @@ export interface ICourse {
     };
     lessonDuration: number;
   };
+  examTitle?: DynamicString;
 }
 export interface ILesson {
   course: ICourse;

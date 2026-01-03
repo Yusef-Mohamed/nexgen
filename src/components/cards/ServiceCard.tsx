@@ -37,7 +37,7 @@ const ServiceCard: React.FC<
   return (
     <div
       className={cn(
-        "flex flex-col w-full outline outline-1 outline-primary/20 bg-card rounded-xl border-[3px] hover:outline-primary/70 hover:border-primary/80 border-transparent overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 md:p-6 p-3 sm:p-4 h-full relative",
+        "flex flex-col w-full border hover:border-secondary hover:outline-secondary rounded-[40px] border-transparent outline outline-1  outline-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
         className
       )}
     >
@@ -49,47 +49,63 @@ const ServiceCard: React.FC<
       />
 
       {/* Image */}
-      <Image
-        src={imageUrl}
-        alt={getDynamicString(title)}
-        width={430}
-        height={300}
-        className="object-cover w-full rounded-2xl courseImage bg-muted"
-      />
+      <div className="relative w-full aspect-[38/29] rounded-[24px] overflow-hidden shrink-0">
+        <Image
+          src={imageUrl}
+          alt={getDynamicString(title)}
+          title={getDynamicString(title)}
+          fill
+          className="object-cover"
+        />
+      </div>
 
-      <div className="flex-1 md:space-y-4 space-y-2.5 sm:space-y-3 my-5">
-        <div className="flex flex-col space-y-1 sm:space-y-1.5">
+      {/* Content */}
+      <div className="flex-1 flex flex-col gap-3">
+        {/* Category Row */}
+        <div className="flex items-center justify-end w-full">
           <div
-            className="text-primary h5 capitalize underline"
+            className="bg-secondary/10 px-3 py-1 rounded-full cursor-pointer"
             onClick={() => onCategoryClick?.(course?.category as ICategory)}
           >
-            {getDynamicString(course?.category?.title) || "Service"}
+            <span className="text-secondary text-lg">
+              {getDynamicString(course?.category?.title) || "Service"}
+            </span>
           </div>
-
-          {/* Title */}
-          <h3 className="h3 font-bold">{getDynamicString(title)}</h3>
-
-          <p className="flex items-center gap-2 font-medium text-text-3">
-            <FaRegClock /> {subscriptionDurationDays} {text("day")}
-          </p>
         </div>
 
-        {/* Pricing */}
-        <div className="flex items-center gap-2">
-          <span className="h3 font-bold">
-            {!isFree && "$"}
-            {isFree ? "Free" : priceAfterDiscount || price}
-          </span>
-          {priceAfterDiscount && priceAfterDiscount !== price && !isFree && (
-            <span className="text-text-3 line-through">${price}</span>
-          )}
+        {/* Title */}
+        <h3 className="text-3xl font-bold text-text-1 leading-tight">
+          {getDynamicString(title)}
+        </h3>
+
+        {/* Duration Row */}
+        <div className="flex items-center justify-end w-full">
+          <div className="flex items-center gap-1">
+            <FaRegClock className="size-[18px] text-text-3" />
+            <span className="text-base text-text-3">
+              {subscriptionDurationDays} {text("day")}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Call to Action Button */}
-      <Button size="lg" className="w-full" asChild>
-        <Link href={`/services/${_id}`}>{text("startNow")}</Link>
-      </Button>
+      {/* Button and Price Row */}
+      <div className="flex items-center gap-3 w-full">
+        <Button size="lg" className="rounded-full  flex-1" asChild>
+          <Link href={`/services/${_id}`}>{text("startNow")}</Link>
+        </Button>
+        <div className="flex items-start gap-0.5 justify-end min-w-[103px]">
+          <span className="text-2xl font-medium text-foreground">
+            {!isFree && "$"}
+            {isFree ? text("free") || "Free" : priceAfterDiscount || price}
+          </span>
+          {priceAfterDiscount && priceAfterDiscount !== price && !isFree && (
+            <span className="text-xs text-destructive line-through">
+              {price}
+            </span>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
@@ -100,56 +116,42 @@ export const ServiceCardSkeleton: React.FC<{ className?: string }> = ({
   return (
     <div
       className={cn(
-        "flex flex-col w-full bg-white rounded-xl border border-primary/20 overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 md:p-6 p-3 sm:p-4 h-full",
+        "flex flex-col w-full border border-primary/16 rounded-[40px] shadow-[4px_8px_24px_0px_rgba(27,125,245,0.06)] p-6 h-full relative gap-5",
         className
       )}
     >
+      {/* Card Badges skeleton */}
+      <div className="absolute top-4 start-4 z-10 flex gap-2">
+        <Skeleton className="w-12 h-6 rounded-sm" />
+        <Skeleton className="w-10 h-6 rounded-sm" />
+      </div>
+
       {/* Image skeleton */}
-      <Skeleton className="w-full courseImage rounded-2xl bg-muted" />
+      <Skeleton className="w-full aspect-[38/29] rounded-[24px] bg-muted" />
 
-      <div className="flex-1 md:space-y-4 space-y-2.5 sm:space-y-3 my-5">
-        <div className="flex flex-col space-y-1 sm:space-y-1.5">
-          {/* Service type skeleton */}
-          <div className="flex items-center gap-2">
-            <Skeleton className="w-4 h-4 rounded" />
-            <Skeleton className="h-4 w-16" />
-          </div>
-
-          {/* Category skeleton */}
-          <Skeleton className="h-5 w-24" />
-
-          {/* Title skeleton */}
-          <Skeleton className="h-6 w-full" />
-
-          {/* Duration skeleton */}
-          <div className="flex items-center gap-2">
-            <Skeleton className="w-4 h-4 rounded" />
-            <Skeleton className="h-4 w-16" />
-          </div>
+      <div className="flex-1 flex flex-col gap-3">
+        {/* Category Row skeleton */}
+        <div className="flex items-center justify-end w-full">
+          <Skeleton className="h-7 w-16 rounded-full" />
         </div>
 
-        {/* Pricing skeleton */}
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-6 w-16" />
-          <Skeleton className="h-4 w-12" />
-        </div>
+        {/* Title skeleton */}
+        <Skeleton className="h-8 w-full" />
 
-        {/* Highlights skeleton */}
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-20" />
-          <div className="space-y-1">
-            {[...Array(3)].map((_, index) => (
-              <div key={index} className="flex items-start gap-2">
-                <Skeleton className="w-4 h-4 rounded flex-shrink-0" />
-                <Skeleton className="h-4 flex-1" />
-              </div>
-            ))}
+        {/* Duration Row skeleton */}
+        <div className="flex items-center justify-end w-full">
+          <div className="flex items-center gap-1">
+            <Skeleton className="w-[18px] h-[18px] rounded" />
+            <Skeleton className="h-4 w-16" />
           </div>
         </div>
       </div>
 
-      {/* Button skeleton */}
-      <Skeleton className="w-full h-12 rounded-lg" />
+      {/* Button and Price Row skeleton */}
+      <div className="flex items-center gap-3 w-full">
+        <Skeleton className="h-[60px] flex-1 rounded-full" />
+        <Skeleton className="h-6 w-20" />
+      </div>
     </div>
   );
 };
