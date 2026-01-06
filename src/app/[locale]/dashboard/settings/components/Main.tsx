@@ -24,8 +24,10 @@ const Main = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [signatureImage, setSignatureImage] = useState<File | null>(null);
   const profileImageRef = useRef<HTMLInputElement>(null);
   const coverImageRef = useRef<HTMLInputElement>(null);
+  const signatureImageRef = useRef<HTMLInputElement>(null);
   const text = useTranslations("Forms");
   const formSchema = z.object({
     name: z.string(),
@@ -61,6 +63,15 @@ const Main = () => {
     return user?.coverImg;
   }, [coverImage, user?.coverImg]);
 
+  const signatureImageLink = useMemo(() => {
+    if (signatureImage) {
+      return URL.createObjectURL(signatureImage);
+    }
+    return user?.signatureImage;
+  }, [signatureImage, user?.signatureImage]);
+
+  const isInstructor = user?.role === "instructor" || user?.isInstructor;
+
   useEffect(() => {
     if (user) {
       form.reset({
@@ -83,6 +94,7 @@ const Main = () => {
         formData.append("country", data.country);
       if (profileImage) formData.append("profileImg", profileImage);
       if (coverImage) formData.append("coverImg", coverImage);
+      if (signatureImage) formData.append("signatureImage", signatureImage);
       if (data.bio) formData.append("bio", data.bio);
 
       const res = await axiosInstance.put(`/users/changeMyData`, formData, {
@@ -175,6 +187,21 @@ const Main = () => {
               setCoverImage(e.target.files ? e.target.files[0] : null);
             }}
           />
+          <input
+            type="file"
+            disabled={isLoading}
+            ref={signatureImageRef}
+            className="hidden"
+            accept="image/png"
+            onChange={(e) => {
+              const file = e.target.files ? e.target.files[0] : null;
+              if (file && file.type !== "image/png") {
+                toast.error(text("signatureMustBePng"));
+                return;
+              }
+              setSignatureImage(file);
+            }}
+          />
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">{text("name")} :</Label>
@@ -231,6 +258,48 @@ const Main = () => {
                 {...form.register("bio")}
               />
             </div>
+
+            {isInstructor && (
+              <div className="space-y-2">
+                <Label htmlFor="signatureImage">
+                  {text("signatureImage")} :
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  {text("signatureImageHint")}
+                </p>
+                <div className="flex items-center gap-4">
+                  {signatureImageLink && (
+                    <div className="relative w-32 h-20 border rounded-md overflow-hidden bg-muted">
+                      <Image
+                        src={signatureImageLink}
+                        alt="signature"
+                        className="object-contain w-full h-full"
+                        width={128}
+                        height={80}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setSignatureImage(null)}
+                        className="absolute flex items-center justify-center w-6 h-6 rounded-full top-1 right-1 bg-destructive text-destructive-foreground"
+                      >
+                        <FaRegTrashAlt className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => signatureImageRef.current?.click()}
+                    disabled={isLoading}
+                  >
+                    {signatureImageLink
+                      ? text("changeSignature")
+                      : text("uploadSignature")}
+                  </Button>
+                </div>
+              </div>
+            )}
+
             <Button className="ms-auto w-fit" isLoading={isLoading}>
               {text("save")}
             </Button>

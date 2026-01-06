@@ -295,32 +295,32 @@ const CourseDetailClient = () => {
     setLessonDialogOpen(true);
   };
 
-  const handleLessonUpdated = (lessonData?: unknown, isEdit?: boolean) => {
-    const lesson = lessonData as ILesson | undefined;
-    if (!lesson) return;
-    if (isEdit) {
-      updateLessonInSections(lesson);
-      toast.success(postActionText("update_success"));
-    } else {
-      const sid = activeSectionIdForLesson || lesson?.course?._id || "";
-      if (sid) addLessonToSection(sid, lesson);
-      toast.success(postActionText("create_success"));
-    }
-  };
-
-  const handleSaveOrder = async () => {
+  // Reusable function to save order
+  const saveOrder = async (
+    sectionsToOrder: typeof sections,
+    showToast = true
+  ) => {
     try {
-      setIsSaving(true);
+      // Calculate cumulative lesson order across all sections
+      let cumulativeLessonOrder = 0;
 
       // Prepare the data structure for the API
-      const sectionsData = sections.map((section, sectionIndex) => ({
-        sectionId: section.sectionId || section._id,
-        order: sectionIndex + 1,
-        lessons: (section.lessons || []).map((lesson, lessonIndex) => ({
-          lessonId: lesson._id,
-          order: lessonIndex + 1,
-        })),
-      }));
+      const sectionsData = sectionsToOrder.map((section, sectionIndex) => {
+        const sectionLessons = section.lessons || [];
+        const lessonsData = sectionLessons.map((lesson) => {
+          cumulativeLessonOrder += 1;
+          return {
+            lessonId: lesson._id,
+            order: cumulativeLessonOrder,
+          };
+        });
+
+        return {
+          sectionId: section.sectionId || section._id,
+          order: sectionIndex + 1,
+          lessons: lessonsData,
+        };
+      });
 
       const response = await axiosInstance.put(
         `/sections/update-sections-and-lessons`,
@@ -328,18 +328,69 @@ const CourseDetailClient = () => {
       );
 
       if (response.status === 200) {
-        toast.success(
-          postActionText("save_success") || "Order saved successfully!"
-        );
         setHasOrderChanged(false); // Reset the change flag
+        if (showToast) {
+          toast.success(
+            postActionText("save_success") || "Order saved successfully!"
+          );
+        }
+        return true;
       } else {
-        toast.error(
-          response.data?.message || postActionText("something_wrong")
-        );
+        if (showToast) {
+          toast.error(
+            response.data?.message || postActionText("something_wrong")
+          );
+        }
+        return false;
       }
     } catch (error) {
       console.error("Error saving order:", error);
-      toast.error(postActionText("something_wrong"));
+      if (showToast) {
+        toast.error(postActionText("something_wrong"));
+      }
+      return false;
+    }
+  };
+
+  const handleLessonUpdated = async (
+    lessonData?: unknown,
+    isEdit?: boolean
+  ) => {
+    const lesson = lessonData as ILesson | undefined;
+    if (!lesson) return;
+    if (isEdit) {
+      updateLessonInSections(lesson);
+      toast.success(postActionText("update_success"));
+    } else {
+      const sid = activeSectionIdForLesson || lesson?.course?._id || "";
+      if (sid) {
+        // Add lesson to section first
+        addLessonToSection(sid, lesson);
+        toast.success(postActionText("create_success"));
+
+        // Manually construct updated sections with the new lesson
+        const updatedSections = sections.map(
+          (s: ISection & { sectionId?: string; id?: string }) => {
+            const id = s.sectionId || s._id || s.id;
+            if (id === sid) {
+              const currentLessons = Array.isArray(s.lessons) ? s.lessons : [];
+              return { ...s, lessons: [...currentLessons, lesson] } as ISection;
+            }
+            return s;
+          }
+        );
+
+        // Save order with updated sections (includes the new lesson)
+        // Don't show toast since we already showed "create_success"
+        await saveOrder(updatedSections, false);
+      }
+    }
+  };
+
+  const handleSaveOrder = async () => {
+    setIsSaving(true);
+    try {
+      await saveOrder(sections, true);
     } finally {
       setIsSaving(false);
     }

@@ -113,7 +113,6 @@ export const useSectionEditDialog = ({
       // Update the section state with the response data
       if (response.data && response.data.data) {
         const updatedSection = response.data.data;
-        console.log(updatedSection);
         onSectionUpdated(
           { ...updatedSection, sectionId: updatedSection._id },
           isEdit

@@ -111,6 +111,7 @@ export interface IUser {
   active: boolean;
   profileImg?: string;
   coverImg?: string;
+  signatureImage?: string;
   authToReview: boolean;
   startMarketing: boolean;
   emailVerified: boolean;

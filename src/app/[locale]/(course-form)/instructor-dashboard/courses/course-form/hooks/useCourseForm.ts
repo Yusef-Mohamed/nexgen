@@ -189,7 +189,10 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
           text("validation.duration_invalid")
         )
         .refine((val) => Number(val) >= 1, text("validation.duration_min"))
-        .refine((val) => Number(val) <= 1000, text("validation.duration_max")),
+        .refine(
+          (val) => Number(val) <= 100000,
+          text("validation.duration_max")
+        ),
       needAccessibleCourse: z.boolean(),
       freePackageSubscriptionInDays: z
         .number()
