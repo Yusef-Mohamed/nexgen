@@ -762,7 +762,8 @@
   "checkout": {
     "title": "Checkout",
     "description": "Complete your purchase",
-    "card": "Card Payment",
+    "stripe": "Stripe Payment",
+    "lahza": "Lahza Payment",
     "crypto": "Crypto Payment",
     "pay": "Pay Now",
     "cryptoPaymentDisabled": "There is a problem with automatic crypto payment. You can pay with card or contact us via Telegram for manual payment.",

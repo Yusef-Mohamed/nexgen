@@ -24,9 +24,14 @@ import { useMyCoursesStore } from "@/stores/MyCoursesStore";
 import { axiosInstance } from "@/app/lib/utils";
 const methods = [
   {
-    label: "card",
+    label: "stripe",
     logos: ["visa.png", "master-card.svg"],
-    value: "card",
+    value: "stripe",
+  },
+  {
+    label: "lahza",
+    logos: ["visa.png", "master-card.svg"],
+    value: "lahza",
   },
   {
     label: "crypto",
@@ -42,9 +47,9 @@ const MainComponent = ({
   itemType?: ItemType;
 }) => {
   const text = useTranslations("checkout");
-  const [selectedMethod, setSelectedMethod] = useState<"card" | "crypto" | "">(
-    ""
-  );
+  const [selectedMethod, setSelectedMethod] = useState<
+    "stripe" | "lahza" | "crypto" | ""
+  >("");
   const [isVerified, setIsVerified] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [needPlacementExams, setNeedPlacementExams] = useState(false);
@@ -96,13 +101,20 @@ const MainComponent = ({
             : itemType === "learning-path"
             ? `/orders/plisio/coursePackageCheckout/${thisItem._id}`
             : `/orders/plisio/packageCheckout/${thisItem._id}`;
-        if (selectedMethod === "card") {
+        if (selectedMethod === "lahza") {
           endpoint =
             itemType === "course"
               ? `/orders/lahza/courseCheckout/${thisItem._id}`
               : itemType === "learning-path"
               ? `/orders/lahza/coursePackageCheckout/${thisItem._id}`
               : `/orders/lahza/packageCheckout/${thisItem._id}`;
+        } else if (selectedMethod === "stripe") {
+          endpoint =
+            itemType === "course"
+              ? `/orders/stripe/courseCheckout/${thisItem._id}`
+              : itemType === "learning-path"
+              ? `/orders/stripe/coursePackageCheckout/${thisItem._id}`
+              : `/orders/stripe/packageCheckout/${thisItem._id}`;
         }
         const res = await axiosInstance.put(
           endpoint,
@@ -176,7 +188,9 @@ const MainComponent = ({
                 disabled={isLoading}
                 key={method.value}
                 onClick={() =>
-                  setSelectedMethod(method.value as "card" | "crypto")
+                  setSelectedMethod(
+                    method.value as "stripe" | "lahza" | "crypto"
+                  )
                 }
                 className={cn(
                   "flex items-center disabled:opacity-80 disabled:cursor-not-allowed justify-between w-full px-4 py-3 border sm:py-4  sm:px-5 max-sm:text-sm",
