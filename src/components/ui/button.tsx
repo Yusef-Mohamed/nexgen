@@ -12,6 +12,7 @@ const buttonVariants = cva(
       variant: {
         default:
           "text-primary-foreground shadow bg-gradient-to-b from-[#1b7df5] to-[#10498F]",
+        primary: "bg-primary text-clear-ground hover:bg-primary/90",
         destructive:
           "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
@@ -24,6 +25,9 @@ const buttonVariants = cva(
         muted: "bg-muted shadow-sm hover:bg-muted/90",
         primaryOutline:
           "border border-primary text-primary shadow-sm hover:bg-primary/90 hover:text-primary-foreground",
+        none: "",
+        hoverToDefault:
+          "hover:text-primary-foreground bg-gradient-to-b hover:from-[#1b7df5] hover:to-[#10498F] from-transparent to-transparent",
       },
       // size: {
       //   default: "h-10 px-4 py-2",

@@ -70,7 +70,7 @@ const CommunityFilters = () => {
       });
   }, [selectedSharedTo, selectedCourse, selectedPackage, setSearchParams]);
   return (
-    <div className="flex items-center gap-4 p-3 rounded-md cardShadow bg-card">
+    <div className="flex items-center gap-4 p-3 rounded-md cardShadow bg-background-2">
       <div>
         <Label htmlFor={"sharedTo"} className="text-sm sr-only">
           {inputs("RelatedTo")}

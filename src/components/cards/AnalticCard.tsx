@@ -155,7 +155,7 @@ const AnalyticCard = ({
   };
 
   return (
-    <div className="relative w-full rounded-md cardShadow bg-card">
+    <div className="relative w-full rounded-md cardShadow bg-background-2">
       {isAdmin && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -380,7 +380,7 @@ const AnalyticCard = ({
 
 export const AnalyticCardSkeleton = () => {
   return (
-    <div className="w-full rounded-md animate-pulse bg-card">
+    <div className="w-full rounded-md animate-pulse bg-background-2">
       <div className="flex gap-2 items-center px-4 pt-4 my-2 sm:my-4">
         <div className="w-12 h-12 rounded-full animate-pulse bg-muted-foreground"></div>
         <div className="flex flex-col gap-2">

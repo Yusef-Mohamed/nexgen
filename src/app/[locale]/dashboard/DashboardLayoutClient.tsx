@@ -23,7 +23,7 @@ const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
         style={{
           minHeight: "calc(100vh)",
         }}
-        className="flex bg-dash-ground"
+        className="flex bg-background"
       >
         <Sidebar
           style={{
@@ -36,7 +36,7 @@ const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
           isCollapsable={true}
         />
         <div className="relative flex-1 w-full dashboardMain">
-          <header className="sticky top-0 z-50 w-full px-3 sm:px-6 bg-clear-ground">
+          <header className="sticky top-0 z-50 w-full px-3 sm:px-6 bg-background-2">
             <div className="flex items-center h-[76px] py-1 justify-between gap-10">
               <div>
                 <Logo className="lg:hidden" size="sm" />

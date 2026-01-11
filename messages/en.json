@@ -626,6 +626,7 @@
     "invoices": "Invoices",
     "coupons": "Discount Coupons",
     "followingRecommendation": "Following Recommendations",
+    "showMore": "Show More",
     "systemReview": "System Review",
     "myTeam": "My Team",
     "courses": "Courses",
@@ -884,7 +885,12 @@
     "next": "Next",
     "completedAllContent": "You've completed all available content!",
     "aboutLesson": "About Lesson",
-    "reviews": "Reviews"
+    "reviews": "Reviews",
+    "lessonCompleted": "Lesson completed!",
+    "movingToQuiz": "Moving to quiz...",
+    "movingToPractice": "Moving to practice...",
+    "movingToNextLesson": "Moving to next lesson...",
+    "allLessonsCompleted": "You've completed all lessons in this section!"
   },
   "learn_extra": {},
   "settings": {
@@ -1072,6 +1078,10 @@
   "event": {
     "upComingEvents": "Upcoming Events",
     "applyNow": "Apply Now",
+    "joinNow": "Join Now",
+    "viewAll": "View All",
+    "online": "Online",
+    "attendees": "+200 Joined",
     "noEvents": "No upcoming events"
   },
   "courseHome": {

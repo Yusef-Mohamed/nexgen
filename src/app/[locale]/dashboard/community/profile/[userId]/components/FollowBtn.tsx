@@ -1,5 +1,5 @@
 "use client";
-import { axiosInstance } from "@/app/lib/utils";
+import { axiosInstance, cn } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { useFollowingStore } from "@/stores/FollowingStore";
@@ -10,10 +10,12 @@ const FollowBtn = ({
   userId,
   sm,
   onlyText,
+  className,
 }: {
   userId: string;
   sm?: boolean;
   onlyText?: boolean;
+  className?: string;
 }) => {
   const text = useTranslations("dashboard");
   const common = useTranslations("common");
@@ -69,7 +71,7 @@ const FollowBtn = ({
     return (
       <button
         onClick={handleFollow}
-        className="text-primary text-xs font-semibold"
+        className={cn("text-primary text-xs font-semibold", className)}
         disabled={isLoading}
       >
         {isLoading
@@ -86,7 +88,7 @@ const FollowBtn = ({
         onClick={handleFollow}
         isLoading={isLoading}
         variant={isFollowed ? "outline" : "default"}
-        className="rounded"
+        className={cn("rounded", className)}
         size={"sm"}
       >
         {isFollowed ? text("unfollow") : text("follow")}
@@ -97,7 +99,7 @@ const FollowBtn = ({
       onClick={handleFollow}
       isLoading={isLoading}
       variant={isFollowed ? "outline" : "default"}
-      className="rounded-full min-w-32 w-fit"
+      className={cn("rounded-full min-w-32 w-fit", className)}
     >
       {isFollowed ? text("unfollow") : text("follow")}
     </Button>

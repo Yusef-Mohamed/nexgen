@@ -39,7 +39,7 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
   onChange,
 }) => {
   return (
-    <div className="flex flex-wrap  gap-2 bg-muted/50 dark:bg-card p-2 rounded-[24px]">
+    <div className="flex flex-wrap cardShadow  gap-2 bg-background-2 p-2 rounded-[24px]">
       {options.map((option) => (
         <FilterTab
           key={option.value}

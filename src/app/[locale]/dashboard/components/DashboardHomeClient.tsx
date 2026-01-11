@@ -65,7 +65,7 @@ const DashboardHomeClient: React.FC = () => {
         onChange={(value) => setActiveFilter(value as FilterType)}
       />
       {/* Advanced Filters */}
-      <div className="bg-card cardShadow rounded-lg p-6 space-y-4">
+      <div className="bg-background-2 cardShadow rounded-lg p-6 space-y-4">
         <div className="flex items-center gap-4 flex-wrap">
           <Input
             value={filterState.searchKeyword}

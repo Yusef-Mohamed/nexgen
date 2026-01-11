@@ -10,6 +10,7 @@ import SidebarLink from "./SidebarLink";
 import { IoMdSettings } from "react-icons/io";
 import { RiLogoutBoxLine, RiLogoutBoxRLine } from "react-icons/ri";
 import { useAuth } from "@/components/auth-provider";
+import { Button } from "@/components/ui/button";
 
 const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
   collapsed = false,
@@ -37,27 +38,24 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
           icon: <IoIosNotifications />,
         }}
       /> */}
-      <button
+      <Button
         onClick={logout}
+        variant="hoverToDefault"
         className={cn(
-          "flex w-full items-center gap-2 px-3 hover:text-clear-ground rounded-md py-2 hover:bg-primary transition-all",
-          {
-            "justify-center w-10 h-10 p-0 flex items-center": collapsed,
-          }
+          "flex w-full items-center gap-2 justify-start px-3 rounded-md py-2 transition-all"
         )}
-        title={collapsed ? text("logout") : undefined}
       >
         {locale === "ar" ? <RiLogoutBoxLine /> : <RiLogoutBoxRLine />}
         {!collapsed && text("logout")}
-      </button>
+      </Button>
       {!collapsed ? (
         <>
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-muted">
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-background">
             <button
               onClick={() => {
                 setTheme("light");
               }}
-              className="flex items-center w-full gap-2 px-3 py-2 rounded-md bg-clear-ground dark:bg-muted"
+              className="flex items-center w-full gap-2 px-3 py-2 rounded-md bg-background-2 dark:bg-background"
             >
               <FaSun />
               <span className="text-xs">{text("lightMode")}</span>
@@ -66,20 +64,20 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
               onClick={() => {
                 setTheme("dark");
               }}
-              className="flex items-center w-full gap-2 px-2 py-2 rounded-md dark:bg-clear-ground"
+              className="flex items-center w-full gap-2 px-2 py-2 rounded-md dark:bg-background-2"
             >
               <IoMoon />
               <span className="text-xs">{text("darkMode")}</span>
             </button>
           </div>
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-muted">
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-background">
             <Link
               locale="ar"
               href={pathname}
               className={cn(
                 "flex items-center text-xs w-full gap-2 px-3 py-2 rounded-md ",
                 {
-                  "bg-clear-ground": locale === "ar",
+                  "bg-background-2": locale === "ar",
                 }
               )}
             >
@@ -91,7 +89,7 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
               className={cn(
                 "flex items-center text-xs w-full gap-2 px-3 py-2 rounded-md ",
                 {
-                  "bg-clear-ground": locale === "en",
+                  "bg-background-2": locale === "en",
                 }
               )}
             >
@@ -103,7 +101,7 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
         <div className="space-y-2">
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="flex items-center justify-center size-10 rounded-md hover:bg-primary hover:text-clear-ground transition-all"
+            className="flex items-center justify-center size-10 rounded-md hover:bg-primary hover:text-background-2 transition-all"
             title={theme === "dark" ? text("lightMode") : text("darkMode")}
           >
             {theme === "dark" ? <FaSun /> : <IoMoon />}
@@ -111,7 +109,7 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
           <Link
             locale={locale === "ar" ? "en" : "ar"}
             href={pathname}
-            className="flex items-center justify-center size-10 rounded-md hover:bg-primary hover:text-clear-ground transition-all text-xs"
+            className="flex items-center justify-center size-10 rounded-md hover:bg-primary hover:text-background-2 transition-all text-xs"
             title={
               locale === "ar" ? "Switch to English" : "التبديل إلى العربية"
             }

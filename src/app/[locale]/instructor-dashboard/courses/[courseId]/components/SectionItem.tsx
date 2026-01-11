@@ -88,7 +88,7 @@ const SectionItem = ({
       }}
       data-section-id={sectionId}
       data-section-header="true"
-      className="mb-8 last:mb-0 relative bg-card px-6 py-8 rounded-xl"
+      className="mb-8 last:mb-0 relative bg-background-2 px-6 py-8 rounded-xl"
     >
       {/* Drop target indicator for sections */}
       {dropTarget?.id === sectionId && dropTarget.type === "section" && (

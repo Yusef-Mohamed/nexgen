@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
+import { Button } from "@/components/ui/button";
 
 const SidebarLink: React.FC<{
   link: {
@@ -25,19 +26,21 @@ const SidebarLink: React.FC<{
   const [isOpen, setIsOpen] = useState(false);
   const locale = useLocale();
 
-  if (link.links)
+  if (link.links) {
+    const isSelected =
+      (link.href !== "/dashboard"
+        ? pathname.startsWith(link.href.split("?")[0])
+        : pathname === link.href) || isOpen;
+
     return (
       <div>
-        <button
+        <Button
           key={link.href}
           onClick={() => setIsOpen((prev) => !prev)}
+          variant={isSelected ? "default" : "hoverToDefault"}
           className={cn(
-            "flex w-full items-center justify-between px-3 hover:text-clear-ground rounded-md py-2 hover:bg-primary transition-all",
+            "flex w-full items-center justify-between px-3 rounded-md py-2 transition-all",
             {
-              "bg-primary text-clear-ground":
-                (link.href !== "/dashboard"
-                  ? pathname.startsWith(link.href.split("?")[0])
-                  : pathname === link.href) || isOpen,
               "w-10 h-10 p-0 flex items-center justify-center": collapsed,
             }
           )}
@@ -57,7 +60,7 @@ const SidebarLink: React.FC<{
               })}
             />
           )}
-        </button>
+        </Button>
         {collapsed ? (
           <div
             style={{
@@ -109,24 +112,26 @@ const SidebarLink: React.FC<{
         )}
       </div>
     );
-  else
-    return (
-      <Link
-        key={link.href}
-        href={link.href}
-        target={link.target}
-        className={cn(
-          "flex w-full items-center gap-2 px-3 hover:text-clear-ground rounded-md py-2 hover:bg-primary justify-between transition-all",
-          {
-            "bg-primary text-clear-ground":
-              link.href !== "/dashboard"
-                ? pathname.startsWith(link.href.split("?")[0])
-                : pathname === link.href,
-            "w-10 h-10 p-0 flex items-center justify-center": collapsed,
-          }
-        )}
-        title={collapsed ? text(link.label) : undefined}
-      >
+  }
+
+  const isSelected =
+    link.href !== "/dashboard"
+      ? pathname.startsWith(link.href.split("?")[0])
+      : pathname === link.href;
+
+  return (
+    <Button
+      key={link.href}
+      asChild
+      variant={isSelected ? "default" : "hoverToDefault"}
+      className={cn(
+        "flex w-full items-center gap-2 px-3 rounded-md py-2 justify-between transition-all",
+        {
+          "w-10 h-10 p-0 flex items-center justify-center": collapsed,
+        }
+      )}
+    >
+      <Link href={link.href} target={link.target}>
         <div className={cn("flex items-center gap-2", { "gap-0": collapsed })}>
           {link.icon}
           {!collapsed && text(link.label)}
@@ -135,7 +140,8 @@ const SidebarLink: React.FC<{
           <div className="w-6 h-6 rounded-full bg-primary animate-ping" />
         )}
       </Link>
-    );
+    </Button>
+  );
 };
 
 export default SidebarLink;

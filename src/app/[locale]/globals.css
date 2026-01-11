@@ -165,7 +165,10 @@ body {
   }
 }
 .cardShadow {
-  box-shadow: 2px 6px 32px 0px #1b7df51f;
+  box-shadow: 2px 0px 32px 0px #1b7df51f;
+}
+.cardShadowSm {
+  box-shadow: 2px 0px 16px 0px #1b7df51f;
 }
 .courseImage {
   aspect-ratio: 381/295;

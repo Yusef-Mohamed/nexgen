@@ -624,6 +624,7 @@
     "invoices": "الفواتير",
     "coupons": "كوبونات الخصم",
     "followingRecommendation": "التوصيات  للمتابعة",
+    "showMore": "عرض المزيد",
     "systemReview": "تقييم النظام",
     "myTeam": "فريقي",
     "courses": "الدورات",
@@ -882,7 +883,12 @@
     "next": "التالي",
     "completedAllContent": "لقد أكملت كل المحتوى المتاح!",
     "aboutLesson": "عن الدرس",
-    "reviews": "التقييمات"
+    "reviews": "التقييمات",
+    "lessonCompleted": "تم إكمال الدرس!",
+    "movingToQuiz": "الانتقال إلى الاختبار...",
+    "movingToPractice": "الانتقال إلى التدريب...",
+    "movingToNextLesson": "الانتقال إلى الدرس التالي...",
+    "allLessonsCompleted": "لقد أكملت جميع الدروس في هذا القسم!"
   },
   "settings": {
     "myProfile": "الملف الشخصي",

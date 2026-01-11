@@ -175,7 +175,7 @@ const CreatePost = ({
   };
 
   return (
-    <div className="px-3 py-3 space-x-3 rounded-md bg-card cardShadow">
+    <div className="px-3 py-3 space-x-3 rounded-md bg-background-2 cardShadow">
       {" "}
       {isInstructor && (
         <div className="pb-3 flex gap-4 flex-wrap">

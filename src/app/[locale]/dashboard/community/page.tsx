@@ -1,8 +1,7 @@
 import { unstable_setRequestLocale } from "next-intl/server";
-import CommunityClient from "./components/CommunityClient";
 import { Metadata } from "next";
 import { getMetadataCommunityPage } from "@/getMetaData";
-import CommunitySidebar from "../components/CommunitySidebar";
+import { CommunityPageComponent } from "@/components/CommunityPageComponent";
 
 export async function generateMetadata({
   params,
@@ -18,12 +17,7 @@ const CommunityPage = ({
   params: { locale: string };
 }) => {
   unstable_setRequestLocale(locale);
-  return (
-    <main className="flex flex-col bg-background xl:flex-row">
-      <CommunityClient />
-      <CommunitySidebar />
-    </main>
-  );
+  return <CommunityPageComponent />;
 };
 
 export default CommunityPage;

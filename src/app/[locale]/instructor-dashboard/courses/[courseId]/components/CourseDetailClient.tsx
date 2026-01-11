@@ -428,7 +428,7 @@ const CourseDetailClient = () => {
               />
             ))
           ) : (
-            <div className="text-center py-12 bg-card rounded-2xl">
+            <div className="text-center py-12 bg-background-2 rounded-2xl">
               <div className="text-muted-foreground text-lg">
                 {coursesText("no_sections_found")}
               </div>

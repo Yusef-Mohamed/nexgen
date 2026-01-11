@@ -308,7 +308,7 @@ const BlogFormClient = () => {
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-12 w-64" />
       </div>
-      <div className="bg-card rounded-lg border p-4 sm:p-6 lg:p-8">
+      <div className="bg-background-2 rounded-lg border p-4 sm:p-6 lg:p-8">
         <div className="space-y-6">
           <Skeleton className="h-32 w-full" />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
@@ -359,7 +359,7 @@ const BlogFormClient = () => {
       </div>
 
       {/* Form */}
-      <div className="bg-card rounded-lg border p-4 sm:p-6 lg:p-8">
+      <div className="bg-background-2 rounded-lg border p-4 sm:p-6 lg:p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title Fields */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">

@@ -254,7 +254,7 @@ const Sidebar: React.FC<
     <aside
       {...props}
       className={cn(
-        "py-4 pt-0 flex flex-col justify-between bg-clear-ground h-screen max-h-screen overflow-auto top-0 sticky transition-all duration-300",
+        "py-4 pt-0 flex flex-col justify-between bg-background-2 h-screen max-h-screen overflow-auto top-0 sticky transition-all duration-300",
         collapsed ? "w-16 px-2 pt-4" : "w-80 px-3 sm:px-6 ",
         className
       )}
@@ -300,10 +300,13 @@ const Sidebar: React.FC<
           {/* <ul className="space-y-4"> */}
           <ul className="space-y-2">
             {linkGroups.map((group, groupIndex) => (
-              <li key={groupIndex}>
+              <li key={groupIndex} className="space-y-2">
                 {group.title && !collapsed && (
-                  <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    {text(group.title)}
+                  <div className="relative">
+                    <div className="h-0.5 w-full bg-foreground absolute top-1/2 -translate-y-1/2 " />
+                    <div className="px-3 pe-4 py-2 bg-background-2 w-fit text-xs font-semibold relative z-10 uppercase tracking-wider">
+                      {text(group.title)}
+                    </div>
                   </div>
                 )}
                 <ul className="space-y-2">

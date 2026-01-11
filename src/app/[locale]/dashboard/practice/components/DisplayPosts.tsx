@@ -122,7 +122,7 @@ const DisplayPosts = () => {
         activeValue={show}
         onChange={(value) => handleShowChange(value as typeof show)}
       />
-      <div className="flex items-center gap-4 p-3 rounded-md cardShadow bg-card">
+      <div className="flex items-center gap-4 p-3 rounded-md cardShadow bg-background-2">
         <div>
           <Label htmlFor="course" className="text-sm sr-only">
             {inputs("course")}:
@@ -150,7 +150,7 @@ const DisplayPosts = () => {
         </div>
       </div>
       {show === "addNew" ? (
-        <div className="p-4 cardShadow bg-card rounded-md">
+        <div className="p-4 cardShadow bg-background-2 rounded-md">
           <CreatePractice />
         </div>
       ) : (
