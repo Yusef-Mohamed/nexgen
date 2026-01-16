@@ -48,13 +48,21 @@ const ChatCard: React.FC<ChatCardProps> = ({ chat, selectedChat, onClick }) => {
   );
 
   const className = cn(
-    "hover:bg-primary-faded flex items-center p-3 rounded-md gap-2 my-0.5",
-    { "bg-primary-faded": selectedChat === chat._id }
+    "flex items-center p-3 rounded-md relative gap-2 my-0.5 cardShadowSm overflow-hidden hover:!shadow-none relative group/card",
+    { "!shadow-none": selectedChat === chat._id }
   );
 
   if (onClick) {
     return (
       <div onClick={onClick} className={cn(className, "cursor-pointer")}>
+        <div
+          className={cn(
+            "w-full bg-secondary/10 top-1/2 -translate-y-1/2 -translate-x-1/3 right-0 aspect-square absolute rounded-full blur-2xl  group-hover/card:block shape",
+            {
+              hidden: selectedChat !== chat._id,
+            }
+          )}
+        ></div>
         {content}
       </div>
     );
@@ -65,6 +73,14 @@ const ChatCard: React.FC<ChatCardProps> = ({ chat, selectedChat, onClick }) => {
       href={`/dashboard/chat?selectedChat=${chat._id}`}
       className={className}
     >
+      <div
+        className={cn(
+          "w-full bg-secondary/10 top-1/2 -translate-y-1/2 -translate-x-1/3 right-0 aspect-square absolute rounded-full blur-2xl  group-hover/card:block shape",
+          {
+            hidden: selectedChat !== chat._id,
+          }
+        )}
+      ></div>{" "}
       {content}
     </Link>
   );

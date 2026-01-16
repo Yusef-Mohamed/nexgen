@@ -152,7 +152,7 @@ const Charts = () => {
   }, [children, userSearchTerm]);
   return (
     <>
-      <main className="flex w-full bg-dash-ground px-2 py-6 lg:px-6 sm:px-4">
+      <main className="flex w-full px-2 py-6 bg-background lg:px-6 sm:px-4">
         <div className="grid w-full gap-8 xl:grid-cols-3">
           <div className="w-full space-y-8 max-lg:order-2 xl:col-span-2 ">
             <CourseProgress />
@@ -160,7 +160,7 @@ const Charts = () => {
             <PracticeChart />
           </div>
           <div className="w-full space-y-8 lg:col-span-1 ">
-            <div className="w-full p-4 mb-8 space-y-4 rounded-xl bg-clear-ground">
+            <div className="w-full p-4 mb-8 space-y-4 rounded-xl bg-background cardShadow">
               <ProgressCircle />
               <Select
                 value={selectedCourse}

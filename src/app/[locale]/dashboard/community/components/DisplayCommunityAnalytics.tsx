@@ -79,7 +79,7 @@ const DisplayCommunityAnalytics = () => {
   // Show welcome message for users without review access
   if (user && !user.authToReview && !user.isInstructor) {
     return (
-      <section className="flex-1 w-full max-w-4xl px-4 mx-auto space-y-3 sm:space-y-6">
+      <section className="flex-1 w-full space-y-3 sm:space-y-6">
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 p-8 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg border border-primary/20">
           <div className="space-y-4">
             <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
@@ -101,7 +101,7 @@ const DisplayCommunityAnalytics = () => {
   }
 
   return (
-    <section className="flex-1 w-full max-w-4xl px-4 mx-auto space-y-3 sm:space-y-6">
+    <section className="flex-1 w-full space-y-3 sm:space-y-6">
       <CommunityFilters />
       <CreatePost setData={setData} />
       {haveError && (

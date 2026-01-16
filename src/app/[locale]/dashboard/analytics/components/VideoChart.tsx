@@ -98,7 +98,7 @@ const VideoChart = () => {
   };
 
   return (
-    <Card>
+    <Card className="bg-background cardShadow">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>

@@ -116,7 +116,7 @@ export const ServiceCardSkeleton: React.FC<{ className?: string }> = ({
   return (
     <div
       className={cn(
-        "flex flex-col w-full border border-primary/16 rounded-[40px] shadow-[4px_8px_24px_0px_rgba(27,125,245,0.06)] p-6 h-full relative gap-5",
+        "flex flex-col w-full border hover:border-secondary hover:outline-secondary rounded-[40px] border-transparent outline outline-1 outline-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
         className
       )}
     >
@@ -136,7 +136,7 @@ export const ServiceCardSkeleton: React.FC<{ className?: string }> = ({
         </div>
 
         {/* Title skeleton */}
-        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-9 w-full" />
 
         {/* Duration Row skeleton */}
         <div className="flex items-center justify-end w-full">

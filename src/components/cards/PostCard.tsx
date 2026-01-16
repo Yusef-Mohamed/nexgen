@@ -51,7 +51,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
         onClick={() => {
           console.log(post);
         }}
-        className="relative w-full rounded-md cardShadow bg-background-2"
+        className="relative w-full rounded-md cardShadow bg-background"
       >
         <PostAction post={post} />
         <div className="p-3">

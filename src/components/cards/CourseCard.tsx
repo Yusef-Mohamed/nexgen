@@ -191,22 +191,23 @@ export const CourseCardSkeleton: React.FC<{ className?: string }> = ({
   return (
     <div
       className={cn(
-        "flex flex-col w-full border border-primary/16 rounded-[40px] shadow-[4px_8px_24px_0px_rgba(27,125,245,0.06)] p-6 h-full relative gap-5",
+        "flex flex-col w-full border hover:border-secondary hover:outline-secondary rounded-[40px] border-transparent outline outline-1 outline-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
         className
       )}
     >
       {/* Card Badges skeleton */}
-      <div className="absolute left-[39px] top-[39px] z-10">
-        <Skeleton className="w-20 h-8 rounded-[10px]" />
+      <div className="absolute top-4 start-4 z-10 flex gap-2">
+        <Skeleton className="w-12 h-6 rounded-sm" />
+        <Skeleton className="w-10 h-6 rounded-sm" />
       </div>
 
       {/* Image skeleton */}
-      <Skeleton className="w-full h-[295px] rounded-[24px] bg-muted" />
+      <Skeleton className="w-full aspect-[38/29] rounded-[24px] bg-muted" />
 
       <div className="flex-1 flex flex-col gap-3">
         {/* Level and Category Row skeleton */}
         <div className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-end gap-1.5">
             <Skeleton className="w-6 h-6 rounded" />
             <Skeleton className="h-5 w-20" />
           </div>
@@ -214,7 +215,7 @@ export const CourseCardSkeleton: React.FC<{ className?: string }> = ({
         </div>
 
         {/* Title skeleton */}
-        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-9 w-full" />
 
         {/* Rating and Duration Row skeleton */}
         <div className="flex items-center justify-between w-full">

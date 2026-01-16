@@ -17,7 +17,7 @@ const LeaderBoardCard = ({
 }) => {
   const locale = useLocale();
   return (
-    <Card className="p-4">
+    <Card className="p-4 bg-background cardShadow">
       <CardHeader className="p-0 mb-6">
         <CardTitle className="flex items-center gap-2 h3">
           <FaMedal className="text-xl" />

@@ -246,7 +246,7 @@ const Practice: React.FC = () => {
     if (selectedUser && selectedMonth) getData();
   }, [selectedUser, token, selectedMonth]);
   return (
-    <Card>
+    <Card className="bg-background cardShadow">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>

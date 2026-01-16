@@ -185,7 +185,12 @@ const CircleCell = ({
   const text = useTranslations("analytics");
   const locale = useLocale();
   return (
-    <div className={cn("p-4 rounded-md bg-clear-ground relative", className)}>
+    <div
+      className={cn(
+        "p-4 rounded-md bg-background cardShadow relative",
+        className
+      )}
+    >
       <div className="flex items-start justify-between ">
         <div>
           <div

@@ -7,7 +7,7 @@ import { LearnCourseCard } from "../learn/components/LearnCourseCard";
 
 const CourseSkeleton = () => {
   return (
-    <div className="flex items-center w-full p-3 rounded-md cardShadow sm:p-6 bg-background-2">
+    <div className="flex items-center w-full p-3 rounded-md cardShadow sm:p-6 bg-background">
       <div className="basis-2/3">
         <Skeleton className="w-48 h-4 mb-8 max-sm:mb-4" />
         <div className="flex items-center w-full gap-2">

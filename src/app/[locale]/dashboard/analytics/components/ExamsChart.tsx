@@ -58,7 +58,7 @@ const ExamsChart = () => {
     const getExams = async () => {
       try {
         setIsCourseProgressLoading(true);
-        
+
         const res = await axiosInstance.get(
           `/exams/courseProgress/${selectedCourse}/${selectedUser}`,
           {
@@ -194,7 +194,7 @@ const ExamsChart = () => {
   };
 
   return (
-    <Card>
+    <Card className="bg-background cardShadow">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>

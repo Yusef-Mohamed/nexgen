@@ -28,9 +28,11 @@ export function Sidebar({ selectedChat }: SidebarProps) {
           </span>
         </h1>
       </div>
-      <nav className="flex-1 flex-grow gap-1 px-4 py-6 overflow-auto">
+      <nav className="flex-1 flex-grow gap-1 px-4 py-4 overflow-auto">
         {chats.map((chat, index) => (
-          <ChatCard key={index} chat={chat} selectedChat={selectedChat} />
+          <div key={index} className="py-2 border-b border-b-primary/10 ">
+            <ChatCard key={index} chat={chat} selectedChat={selectedChat} />
+          </div>
         ))}
         {isFetchingChats &&
           Array.from({ length: 5 }).map((_, index) => (

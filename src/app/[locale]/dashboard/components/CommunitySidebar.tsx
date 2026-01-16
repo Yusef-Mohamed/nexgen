@@ -12,11 +12,9 @@ const CommunitySidebar = () => {
   }
 
   return (
-    <div className="w-full xl:max-w-2xl p-4 py-4 overflow-auto xl:sticky max-xl:mx-auto xl:w-80 sm:py-8 xl:[max-height:calc(100vh-76px)] xl:[top:76px] xl:[height:calc(100vh-76px)]">
-      <div className="max-xl:hidden">
-        <SidebarFollowing />
-        <SidebarEvents />
-      </div>
+    <div className="w-full flex flex-col gap-8  xl:max-w-2xl p-4 py-4 overflow-auto xl:sticky max-xl:mx-auto xl:w-80 sm:py-8 xl:[max-height:calc(100vh-76px)] xl:[top:76px] xl:[height:calc(100vh-76px)]">
+      <SidebarFollowing />
+      <SidebarEvents />
     </div>
   );
 };

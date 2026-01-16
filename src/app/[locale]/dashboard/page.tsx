@@ -20,7 +20,7 @@ const Dashboard = async ({
   unstable_setRequestLocale(locale);
 
   return (
-    <main className="flex flex-col bg-background xl:flex-row">
+    <main className="flex flex-col relative overflow-hidden bg-background xl:flex-row">
       <DashboardHomeClient />
     </main>
   );

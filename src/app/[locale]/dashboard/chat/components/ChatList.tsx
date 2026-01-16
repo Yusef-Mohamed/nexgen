@@ -106,6 +106,114 @@ export function ChatList() {
             ))}
           </div>
         ))}
+        {groupedMessages.map((group, index) => (
+          <div key={`group-${index}`} className="py-2">
+            {group.map((message, ind) => (
+              <MessageCard
+                key={message._id}
+                message={message}
+                isMine={message.sender._id === user?._id}
+                isFirst={ind === 0}
+              />
+            ))}
+          </div>
+        ))}
+        {groupedMessages.map((group, index) => (
+          <div key={`group-${index}`} className="py-2">
+            {group.map((message, ind) => (
+              <MessageCard
+                key={message._id}
+                message={message}
+                isMine={message.sender._id === user?._id}
+                isFirst={ind === 0}
+              />
+            ))}
+          </div>
+        ))}
+        {groupedMessages.map((group, index) => (
+          <div key={`group-${index}`} className="py-2">
+            {group.map((message, ind) => (
+              <MessageCard
+                key={message._id}
+                message={message}
+                isMine={message.sender._id === user?._id}
+                isFirst={ind === 0}
+              />
+            ))}
+          </div>
+        ))}
+        {groupedMessages.map((group, index) => (
+          <div key={`group-${index}`} className="py-2">
+            {group.map((message, ind) => (
+              <MessageCard
+                key={message._id}
+                message={message}
+                isMine={message.sender._id === user?._id}
+                isFirst={ind === 0}
+              />
+            ))}
+          </div>
+        ))}
+        {groupedMessages.map((group, index) => (
+          <div key={`group-${index}`} className="py-2">
+            {group.map((message, ind) => (
+              <MessageCard
+                key={message._id}
+                message={message}
+                isMine={message.sender._id === user?._id}
+                isFirst={ind === 0}
+              />
+            ))}
+          </div>
+        ))}
+        {groupedMessages.map((group, index) => (
+          <div key={`group-${index}`} className="py-2">
+            {group.map((message, ind) => (
+              <MessageCard
+                key={message._id}
+                message={message}
+                isMine={message.sender._id === user?._id}
+                isFirst={ind === 0}
+              />
+            ))}
+          </div>
+        ))}
+        {groupedMessages.map((group, index) => (
+          <div key={`group-${index}`} className="py-2">
+            {group.map((message, ind) => (
+              <MessageCard
+                key={message._id}
+                message={message}
+                isMine={message.sender._id === user?._id}
+                isFirst={ind === 0}
+              />
+            ))}
+          </div>
+        ))}
+        {groupedMessages.map((group, index) => (
+          <div key={`group-${index}`} className="py-2">
+            {group.map((message, ind) => (
+              <MessageCard
+                key={message._id}
+                message={message}
+                isMine={message.sender._id === user?._id}
+                isFirst={ind === 0}
+              />
+            ))}
+          </div>
+        ))}
+        {groupedMessages.map((group, index) => (
+          <div key={`group-${index}`} className="py-2">
+            {group.map((message, ind) => (
+              <MessageCard
+                key={message._id}
+                message={message}
+                isMine={message.sender._id === user?._id}
+                isFirst={ind === 0}
+              />
+            ))}
+          </div>
+        ))}
       </div>
       <ChatBottombar />
     </div>

@@ -126,10 +126,14 @@ export function Chat({ selectedChat }: ChatProps) {
   const locale = useLocale();
   return (
     <div
-      className={cn("flex flex-col justify-between flex-1 w-full h-full", {
-        "max-xl:hidden": !selectedChat,
-      })}
+      className={cn(
+        "flex flex-col relative justify-between flex-1 w-full h-full",
+        {
+          "max-xl:hidden": !selectedChat,
+        }
+      )}
     >
+      <div className=" w-auto aspect-square h-full bg-secondary/10 opacity-40 top-0 -translate-y-1/3 translate-x-1/3 right-0 absolute rounded-full blur-3xl"></div>
       {selectedChat ? (
         <>
           <ChatTopbar />

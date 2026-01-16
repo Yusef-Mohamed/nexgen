@@ -55,7 +55,7 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
               onClick={() => {
                 setTheme("light");
               }}
-              className="flex items-center w-full gap-2 px-3 py-2 rounded-md bg-background-2 dark:bg-background"
+              className="flex items-center w-full gap-2 px-3 py-2 rounded-md bg-primary/20 dark:bg-background"
             >
               <FaSun />
               <span className="text-xs">{text("lightMode")}</span>
@@ -64,7 +64,7 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
               onClick={() => {
                 setTheme("dark");
               }}
-              className="flex items-center w-full gap-2 px-2 py-2 rounded-md dark:bg-background-2"
+              className="flex items-center w-full gap-2 px-2 py-2 rounded-md dark:bg-primary/20"
             >
               <IoMoon />
               <span className="text-xs">{text("darkMode")}</span>
@@ -77,7 +77,7 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
               className={cn(
                 "flex items-center text-xs w-full gap-2 px-3 py-2 rounded-md ",
                 {
-                  "bg-background-2": locale === "ar",
+                  "bg-primary/20": locale === "ar",
                 }
               )}
             >
@@ -89,7 +89,7 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
               className={cn(
                 "flex items-center text-xs w-full gap-2 px-3 py-2 rounded-md ",
                 {
-                  "bg-background-2": locale === "en",
+                  "bg-primary/20": locale === "en",
                 }
               )}
             >
@@ -101,7 +101,7 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
         <div className="space-y-2">
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="flex items-center justify-center size-10 rounded-md hover:bg-primary hover:text-background-2 transition-all"
+            className="flex items-center justify-center size-10 rounded-md hover:bg-primary hover:text-primary/20 transition-all"
             title={theme === "dark" ? text("lightMode") : text("darkMode")}
           >
             {theme === "dark" ? <FaSun /> : <IoMoon />}
@@ -109,7 +109,7 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
           <Link
             locale={locale === "ar" ? "en" : "ar"}
             href={pathname}
-            className="flex items-center justify-center size-10 rounded-md hover:bg-primary hover:text-background-2 transition-all text-xs"
+            className="flex items-center justify-center size-10 rounded-md hover:bg-primary hover:text-primary/20 transition-all text-xs"
             title={
               locale === "ar" ? "Switch to English" : "التبديل إلى العربية"
             }

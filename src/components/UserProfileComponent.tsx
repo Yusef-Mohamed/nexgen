@@ -37,8 +37,10 @@ const UserProfileComponent = async ({
 }) => {
   const thisUser = (await getThisUser(userId)) as IUser;
   return (
-    <main className="flex flex-col xl:flex-row flex-col">
-      <section className="flex-1 w-full max-w-2xl px-4 py-6 mx-auto space-y-3 sm:px-4 sm:py-12 sm:space-y-6">
+    <main className="flex xl:flex-row relative flex-col-reverse bg-background">
+      <div className="absolute top-0 left-0 size-48 bg-primary/20 blur-3xl rounded-full z-10"></div>
+      <div className="absolute bottom-0 right-0 size-48 bg-secondary/20 blur-3xl rounded-full z-10"></div>
+      <section className="flex-1 w-full xl:max-w-2xl px-4 py-6 mx-auto space-y-3 sm:px-4 sm:py-6 sm:space-y-6">
         <div className="overflow-hidden rounded-md bg-clear-ground cardShadow">
           <Link
             href={`${
