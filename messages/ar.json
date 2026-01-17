@@ -1947,5 +1947,19 @@
   },
   "course": {
     "quiz_updated_successfully": "تم تحديث إعدادات الاختبار بنجاح"
+  },
+  "certificate": {
+    "title": "شهادة إتمام",
+    "awarded_to": "تُمنح هذه الشهادة لـ",
+    "for_completing": "لإكماله بنجاح دورة",
+    "download": "تحميل الشهادة",
+    "copy_link": "نسخ الرابط",
+    "issue_date": "تاريخ الإصدار",
+    "score": "الدرجة",
+    "grade": "التقدير",
+    "view_details": "عرض تفاصيل الدورة",
+    "verified_notice": "هذه شهادة معتمدة صادرة عن أكاديمية NexGen.",
+    "id": "رقم الشهادة",
+    "share": "مشاركة الشهادة"
   }
 }

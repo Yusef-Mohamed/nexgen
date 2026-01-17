@@ -1961,5 +1961,19 @@
   },
   "course": {
     "quiz_updated_successfully": "Quiz settings updated successfully"
+  },
+  "certificate": {
+    "title": "Certificate of Completion",
+    "awarded_to": "This certificate is awarded to",
+    "for_completing": "for successfully completing the course",
+    "download": "Download Certificate",
+    "copy_link": "Copy Link",
+    "issue_date": "Issue Date",
+    "score": "Score",
+    "grade": "Grade",
+    "view_details": "View Course Details",
+    "verified_notice": "This is a verified certificate issued by NexGen Academy.",
+    "id": "Certificate ID",
+    "share": "Share Certificate"
   }
 }
