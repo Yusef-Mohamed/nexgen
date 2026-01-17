@@ -62,7 +62,7 @@ const LinksTable = ({
     if (token) fetchData();
   }, [token, user?._id, t]);
   return (
-    <Card className="mb-4 border-none">
+    <Card className="mb-4 border-none cardShadow bg-background">
       <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4">
         <CardTitle>{t("inviteLinks")}</CardTitle>
       </CardHeader>

@@ -133,7 +133,7 @@ export function Chat({ selectedChat }: ChatProps) {
         }
       )}
     >
-      <div className=" w-auto aspect-square h-full bg-secondary/10 opacity-40 top-0 -translate-y-1/3 translate-x-1/3 right-0 absolute rounded-full blur-3xl"></div>
+      <div className=" w-auto aspect-square h-full bg-secondary/15 opacity-40 top-0 -translate-y-1/3 translate-x-1/3 right-0 absolute rounded-full blur-3xl"></div>
       {selectedChat ? (
         <>
           <ChatTopbar />

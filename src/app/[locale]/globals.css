@@ -165,10 +165,13 @@ body {
   }
 }
 .cardShadow {
-  box-shadow: 2px 0px 32px 0px #1b7df51f;
+  box-shadow: 2px 0px 32px 0px hsl(var(--primary) / 0.2);
 }
 .cardShadowSm {
-  box-shadow: 2px 0px 16px 0px #1b7df51f;
+  box-shadow: 2px 0px 16px 0px hsl(var(--primary) / 0.2);
+}
+.cardShadowSecondary {
+  box-shadow: 2px 0px 32px 0px hsl(var(--secondary) / 0.2);
 }
 .courseImage {
   aspect-ratio: 381/295;

@@ -216,7 +216,7 @@ const MainComponent = ({
     if (item && token) fetchData();
   }, [item, token, date]);
   return (
-    <Card className="mb-4 border-none">
+    <Card className="mb-4 border-none cardShadow bg-background">
       <CardHeader className="flex flex-row flex-wrap gap-4 justify-between items-center py-4">
         <CardTitle className="h2">{t("salesAnalytics")}</CardTitle>
         <div className="flex flex-wrap gap-4">
@@ -370,7 +370,7 @@ const OrdersChart = ({
   }, [givenPeriodOrders, startDate, endDate]);
 
   return (
-    <Card>
+    <Card className="cardShadow bg-background">
       <CardHeader>
         <CardTitle className="h3">{t("selectedPeriodOrders")}</CardTitle>
       </CardHeader>
@@ -535,7 +535,7 @@ const StatCard = ({
 }) => {
   const locale = useLocale();
   return (
-    <Card>
+    <Card className="cardShadowSecondary bg-background">
       <CardContent className="p-4">
         <div>
           <p className="mb-4 max-sm:text-sm text-muted-foreground">{title}</p>
@@ -564,7 +564,7 @@ const StatCard = ({
 const MyTeam = () => {
   const text = useTranslations("salesManagement");
   return (
-    <Card className="p-4">
+    <Card className="p-4 cardShadow bg-background">
       <CardHeader className="p-0 mb-6">
         <CardTitle className="flex gap-2 items-center h2">
           <RiTeamFill className="text-xl" />
@@ -627,7 +627,7 @@ const TopInstructors = () => {
 const AffiliateMarketing = () => {
   const text = useTranslations("salesManagement");
   return (
-    <Card className="p-4">
+    <Card className="p-4 cardShadow bg-background">
       <CardHeader className="p-0 mb-6">
         <CardTitle className="flex gap-2 items-center h2">
           <FaMoneyBill className="text-xl" />

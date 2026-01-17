@@ -201,7 +201,7 @@ const CouponManagement = () => {
   return (
     <section>
       {/* Create Coupon Form */}
-      <Card className="mb-4 border-none">
+      <Card className="mb-4 border-none cardShadow bg-background">
         <CardHeader>
           <CardTitle>{t("createCoupon.title")}</CardTitle>
           <CardDescription>{t("createCoupon.description")}</CardDescription>
@@ -350,7 +350,7 @@ const CouponManagement = () => {
       </Card>
 
       {/* Coupons Table */}
-      <Card className="border-none">
+      <Card className="border-none cardShadow bg-background">
         <CardHeader>
           <CardTitle>{t("couponsList.title")}</CardTitle>
           <CardDescription>{t("couponsList.description")}</CardDescription>

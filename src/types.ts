@@ -475,7 +475,10 @@ export interface ICourseProgress {
   totalProgress: string;
   status: "Completed" | "failed";
   totalLessonsExamsPercentage: string;
-  certificate: string;
+  certificate: {
+    file: string;
+    _id: string;
+  };
 }
 export interface ICoupon {
   couponName: string;

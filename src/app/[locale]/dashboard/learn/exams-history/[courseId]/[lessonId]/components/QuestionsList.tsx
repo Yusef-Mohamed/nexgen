@@ -1,3 +1,4 @@
+"use client";
 import ImageWithZoom from "@/components/ImageWithZoom";
 import { cn, getDynamicString } from "@/lib/utils";
 import { IQuestion } from "@/types";
@@ -9,6 +10,7 @@ interface QuestionsListProps {
 
 const QuestionsList = ({ questions }: QuestionsListProps) => {
   // const text = useTranslations("learn");
+  console.log(questions);
   return (
     <div className="mt-8 space-y-6 sm:space-y-8">
       {questions.map((question, index) => (

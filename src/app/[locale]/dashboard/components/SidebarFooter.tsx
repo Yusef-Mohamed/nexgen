@@ -42,7 +42,11 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
         onClick={logout}
         variant="hoverToDefault"
         className={cn(
-          "flex w-full items-center gap-2 justify-start px-3 rounded-md py-2 transition-all"
+          "flex w-full items-center gap-2 justify-start px-3 rounded-md py-2 transition-all",
+          {
+            "w-12 h-12 !p-0 flex min-w-12 items-center justify-center":
+              collapsed,
+          }
         )}
       >
         {locale === "ar" ? <RiLogoutBoxLine /> : <RiLogoutBoxRLine />}
@@ -101,7 +105,7 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
         <div className="space-y-2">
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="flex items-center justify-center size-10 rounded-md hover:bg-primary hover:text-primary/20 transition-all"
+            className="flex items-center justify-center size-12 rounded-md hover:bg-primary/20 hover:text-primary transition-all"
             title={theme === "dark" ? text("lightMode") : text("darkMode")}
           >
             {theme === "dark" ? <FaSun /> : <IoMoon />}
@@ -109,7 +113,7 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
           <Link
             locale={locale === "ar" ? "en" : "ar"}
             href={pathname}
-            className="flex items-center justify-center size-10 rounded-md hover:bg-primary hover:text-primary/20 transition-all text-xs"
+            className="flex items-center justify-center size-12 rounded-md hover:bg-primary/20 hover:text-primary transition-all text-xs"
             title={
               locale === "ar" ? "Switch to English" : "التبديل إلى العربية"
             }

@@ -133,7 +133,7 @@ const StatsCards: React.FC<StatsCardsProps> = ({
 const StatCard: React.FC<StatCardProps> = ({ title, value, base, mark }) => {
   const locale = useLocale();
   return (
-    <Card>
+    <Card className="cardShadowSecondary bg-background">
       <CardContent className="p-4">
         <div>
           <p className="mb-4 max-sm:text-sm text-muted-foreground">{title}</p>

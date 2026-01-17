@@ -106,23 +106,28 @@ const MessageCard: React.FC<MessageCardProps> = ({
             "flex-row-reverse": isMine,
           })}
         >
-          <UserAvatar
-            user={message.sender}
-            innerClassName="!rounded-md"
-            className={cn("w-10 h-10 rounded-md", {
-              "opacity-0": !isFirst,
-            })}
-          />
+          {!isMine && (
+            <UserAvatar
+              user={message.sender}
+              innerClassName="!rounded-md"
+              className={cn("w-10 h-10 rounded-md", {
+                "opacity-0": !isFirst,
+              })}
+            />
+          )}
           <div
             className={cn("flex items-center gap-3", {
               "flex-row-reverse": isMine,
             })}
           >
             <div
-              className={cn("p-2 flex-1 group relative rounded max-w-md", {
-                "bg-primary text-white": isMine,
-                "bg-muted": !isMine,
-              })}
+              className={cn(
+                "px-4 py-3 rounded-[2rem]  flex-1 group relative max-w-md",
+                {
+                  "bg-primary text-white": isMine,
+                  "bg-muted": !isMine,
+                }
+              )}
             >
               {message.repliedTo && (
                 <div

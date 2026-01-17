@@ -176,7 +176,7 @@ const StatCard = ({
   difference: number;
   total: number;
 }) => (
-  <Card>
+  <Card className="cardShadow bg-background">
     <CardContent className="p-4">
       <div>
         <p className="text-sm text-muted-foreground">{title}</p>
@@ -241,7 +241,7 @@ const BalanceCard = ({
   };
 
   return (
-    <Card>
+    <Card className="cardShadow bg-background">
       <CardContent className="flex flex-col justify-center items-center p-4 h-full">
         <div className="relative">
           <Image
@@ -320,7 +320,7 @@ const MarketingTabs = ({
   getStatusColor: (status: string) => string;
   locale: string;
 }) => (
-  <Card>
+  <Card className="cardShadow bg-background">
     <Tabs
       defaultValue="commission"
       dir={locale === "ar" ? "rtl" : "ltr"}
@@ -385,7 +385,7 @@ const InvoicesTabs = ({
   all?: boolean;
   locale: string;
 }) => (
-  <Card>
+  <Card className="cardShadow bg-background">
     <Tabs
       defaultValue="regular"
       dir={locale === "ar" ? "rtl" : "ltr"}

@@ -100,6 +100,7 @@ const WalletClient = () => {
   if (isLoading && !marketLog) {
     return <LoadingState />;
   }
+  console.log(marketLog);
   return (
     <div className="space-y-8">
       {isLoading ? (

@@ -41,7 +41,8 @@ const SidebarLink: React.FC<{
           className={cn(
             "flex w-full items-center justify-between px-3 rounded-md py-2 transition-all",
             {
-              "w-10 h-10 p-0 flex items-center justify-center": collapsed,
+              "w-12 h-12 !p-0 flex min-w-12 items-center justify-center":
+                collapsed,
             }
           )}
           title={collapsed ? text(link.label) : undefined}
@@ -127,7 +128,7 @@ const SidebarLink: React.FC<{
       className={cn(
         "flex w-full items-center gap-2 px-3 rounded-md py-2 justify-between transition-all",
         {
-          "w-10 h-10 p-0 flex items-center justify-center": collapsed,
+          "w-12 h-12 !p-0 flex min-w-12 items-center justify-center": collapsed,
         }
       )}
     >

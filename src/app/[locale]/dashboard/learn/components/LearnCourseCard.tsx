@@ -18,6 +18,7 @@ export const LearnCourseCard = ({
 }: LearnCourseCardProps) => {
   const text = useTranslations("learn");
   const locale = useLocale();
+  console.log(course);
 
   return (
     <div className="relative flex items-stretch gap-4 p-3 md:p-6 md:gap-10 max-md:flex-col cardShadow rounded-xl bg-clear-ground">
@@ -50,9 +51,9 @@ export const LearnCourseCard = ({
                 <p className="max-md:text-sm">
                   {text("congratsOnFinishingTheCourse")}
                 </p>
-                {course.courseProgress.certificate ? (
+                {course.courseProgress.certificate?.file ? (
                   <a
-                    href={course.courseProgress.certificate}
+                    href={course.courseProgress.certificate.file}
                     target="_blank"
                     rel="noreferrer"
                     className="mt-1 underline text-primary max-md:text-sm"
@@ -96,15 +97,15 @@ export const LearnCourseCard = ({
           <div className="md:border-s border-primary/20 md:px-10 flex">
             {course.courseProgress?.certificate ? (
               <a
-                className="max-md:hidden w-auto aspect-[28/19] max-md:w-full md:h-36 rounded-xl"
-                href={course.courseProgress.certificate}
+                className="max-md:hidden w-auto aspect-[126/90] max-md:w-full md:h-36 overflow-hidden rounded-xl"
+                href={course.courseProgress.certificate.file}
                 target="_blank"
                 rel="noreferrer"
               >
-                {!course.courseProgress.certificate.endsWith(".pdf") && (
+                {!course.courseProgress.certificate.file?.endsWith(".pdf") && (
                   <Image
                     loading="lazy"
-                    src={course.courseProgress.certificate}
+                    src={course.courseProgress.certificate.file}
                     alt={getDynamicString(course.title)}
                     width={600}
                     height={600}

@@ -159,7 +159,7 @@ const InvitationLinksBlock: React.FC = () => {
 
   return (
     <>
-      <Card id="invites" className="mb-4 border-none">
+      <Card id="invites" className="mb-4 border-none cardShadow bg-background ">
         <CardHeader>
           <CardTitle>{t("createLink.title")}</CardTitle>
           <CardDescription>{t("createLink.description")}</CardDescription>

@@ -107,7 +107,7 @@ const SalesAnalytics: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Card>
+      <Card className="bg-background cardShadow">
         <CardHeader>
           <CardTitle>
             <Skeleton className="h-6 w-48" />
@@ -145,7 +145,7 @@ const SalesAnalytics: React.FC = () => {
 
   if (!data || !data.sales || data.sales.length === 0) {
     return (
-      <Card>
+      <Card className="bg-background cardShadow">
         <CardHeader>
           <CardTitle>{t("topCoursesSell")}</CardTitle>
         </CardHeader>
@@ -159,7 +159,7 @@ const SalesAnalytics: React.FC = () => {
   }
 
   return (
-    <Card>
+    <Card className="bg-background cardShadow">
       <CardHeader>
         <CardTitle>{t("topCoursesSell")}</CardTitle>
       </CardHeader>
