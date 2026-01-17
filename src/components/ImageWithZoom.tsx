@@ -1,9 +1,10 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { Dialog } from "@radix-ui/react-dialog";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React, { useState } from "react";
-import { DialogContent } from "./ui/dialog";
+import { DialogContent, DialogTitle, DialogDescription } from "./ui/dialog";
 
 interface ImageWithZoomProps {
   className?: string;
@@ -20,6 +21,7 @@ const ImageWithZoom: React.FC<ImageWithZoomProps> = ({
   height,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const t = useTranslations("common");
   return (
     <>
       <Image
@@ -38,7 +40,11 @@ const ImageWithZoom: React.FC<ImageWithZoomProps> = ({
           }}
         >
           <DialogContent className="max-w-[95vw] sm:max-w-[95vw] p-0 overflow-hidden flex flex-col w-[95vw] max-h-[95vh] h-[95vh] ">
-            <div className="flex-grow w-full overflow-hidden">
+            <DialogTitle className="sr-only">{t("dialog.image_zoom_title")}</DialogTitle>
+            <DialogDescription className="sr-only">
+              {alt}
+            </DialogDescription>
+            <div className="grow w-full overflow-hidden">
               <Image
                 width={2000}
                 height={2000}

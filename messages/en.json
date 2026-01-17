@@ -21,7 +21,18 @@
       "contact_support": "Contact Support"
     },
     "you_are_banned_can_not_use_the_platform": "You are banned from using the platform, contact us to learn more",
-    "please_verify_your_identity_to_be_able_to_use_the_platform": "Please verify your identity to be able to use the platform"
+    "please_verify_your_identity_to_be_able_to_use_the_platform": "Please verify your identity to be able to use the platform",
+    "dialog": {
+      "command_menu_title": "Command Menu",
+      "command_menu_description": "Search and execute commands.",
+      "image_zoom_title": "Image View",
+      "exam_form_description": "Provide exam details like model and passing score.",
+      "exam_question_description": "Configure question details, options, and correct answers.",
+      "manage_questions_description": "Manage questions for this exam.",
+      "testimonials_description": "Read what our learners say about their experience.",
+      "success_stories_title": "Success Story Video",
+      "success_stories_description": "Watch our learners' success stories."
+    }
   },
   "header": {
     "home": "Home",
@@ -460,6 +471,7 @@
     "invalidPhoneCode": "Invalid phone code",
     "countryRequired": "Country is required",
     "selectCountry": "Select country",
+    "selectCountryDescription": "Choose your country from the list to update your phone code.",
     "fileInput": {
       "dragAndDropText": "Drag and drop files here, or click to select files",
       "selectFilesText": "Select Files",

@@ -31,16 +31,11 @@ const CoursesPage = async (
   }
 ) => {
   const params = await props.params;
-  
-  try {
-    return (
-      <CourseProvider courseId={params.courseId}>
-        <LearnLayoutClient />
-      </CourseProvider>
-    );
-  } catch (e) {
-    console.log(e);
-    return notFound();
-  }
+
+  return (
+    <CourseProvider courseId={params.courseId}>
+      <LearnLayoutClient />
+    </CourseProvider>
+  );
 };
 export default CoursesPage;

@@ -11,6 +11,7 @@ import { IReview } from "@/types";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -18,6 +19,7 @@ import { axiosInstance } from "@/app/lib/utils";
 
 const Testimonials: React.FC = () => {
   const text = useTranslations("learnerReviews");
+  const commonT = useTranslations("common");
   const [reviews, setReviews] = useState<IReview[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -72,9 +74,12 @@ const Testimonials: React.FC = () => {
       </GridSection>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className="sm:w-[30rem] overflow-auto max-h-[80vh] rounded-e-none sm:rounded-e-none">
+        <DialogContent className="sm:w-120 overflow-auto max-h-[80vh] rounded-e-none sm:rounded-e-none">
           <DialogHeader>
             <DialogTitle>{text("heading")}</DialogTitle>
+            <DialogDescription className="sr-only">
+              {commonT("dialog.testimonials_description")}
+            </DialogDescription>
           </DialogHeader>
           {reviews?.map((testimonial, index) => (
             <TestimonialCard2

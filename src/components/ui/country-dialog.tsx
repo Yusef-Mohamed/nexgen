@@ -5,7 +5,7 @@ import { Input } from "./input";
 import { useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Search } from "lucide-react";
-import { Dialog, DialogContent } from "./dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "./dialog";
 import { countries } from "@/data/countries";
 import { useTranslations } from "next-intl";
 
@@ -39,6 +39,10 @@ const CountryDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg max-w-[95vw]">
+        <DialogTitle className="sr-only">{t("searchCountry")}</DialogTitle>
+        <DialogDescription className="sr-only">
+          {t("selectCountryDescription")}
+        </DialogDescription>
         <div className="relative">
           <Search
             className={cn(

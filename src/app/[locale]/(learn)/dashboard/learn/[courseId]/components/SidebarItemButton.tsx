@@ -58,7 +58,7 @@ const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
             {badge && (
               <span
                 className={cn(
-                  "px-2 py-0.5 text-xs font-bold rounded-md flex-shrink-0",
+                  "px-2 py-0.5 text-xs font-bold rounded-md shrink-0",
                   isPrimary ? "bg-white/20 text-white" : "bg-primary/10 text-primary"
                 )}
               >
@@ -86,26 +86,29 @@ const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
       </div>
 
       <div className="flex items-center gap-2">
-        {disabled ? (
-          <Lock
-            className={cn(
-              "w-4 h-4 flex-shrink-0",
-              isPrimary ? "text-white/60" : "text-gray-400"
-            )}
-          />
-        ) : isDone === false ? (
-          <MdOutlineErrorOutline className="w-5 h-5 text-destructive flex-shrink-0" />
-        ) : null}
+        {!disabled && isDone === false && (
+          <MdOutlineErrorOutline className="w-5 h-5 text-destructive shrink-0" />
+        )}
 
-        {onToggle && (
+        {onToggle ? (
           <div
             onClick={(e) => {
+              if (disabled) return;
               e.stopPropagation();
               onToggle(e);
             }}
-            className="p-1 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
+            className={cn("p-1 rounded-full transition-colors", {
+              "hover:bg-white/10 cursor-pointer": !disabled,
+            })}
           >
-            {isExpanded ? (
+            {disabled ? (
+              <Lock
+                className={cn(
+                  "w-4 h-4 shrink-0",
+                  isPrimary ? "text-white/60" : "text-gray-400"
+                )}
+              />
+            ) : isExpanded ? (
               <ChevronUp
                 className={cn("w-5 h-5", isPrimary ? "text-white" : "text-gray-400")}
               />
@@ -115,6 +118,15 @@ const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
               />
             )}
           </div>
+        ) : (
+          disabled && (
+            <Lock
+              className={cn(
+                "w-4 h-4 shrink-0",
+                isPrimary ? "text-white/60" : "text-gray-400"
+              )}
+            />
+          )
         )}
       </div>
     </Button>

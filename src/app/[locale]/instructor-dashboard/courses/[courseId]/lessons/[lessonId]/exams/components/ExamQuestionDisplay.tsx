@@ -18,6 +18,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -50,6 +51,7 @@ export const ExamQuestionDisplay = ({
   onExamUpdate,
 }: ExamQuestionDisplayProps) => {
   const text = useTranslations("exams");
+  const commonT = useTranslations("common");
   const ui = useTranslations("exams.ui");
   const [isAddingQuestion, setIsAddingQuestion] = useState(false);
   const [isEditingQuestion, setIsEditingQuestion] = useState(false);
@@ -525,6 +527,9 @@ export const ExamQuestionDisplay = ({
                     ? text("add_question_title")
                     : text("multiple_questions.title")}
                 </DialogTitle>
+                <DialogDescription className="sr-only">
+                  {commonT("dialog.exam_question_description")}
+                </DialogDescription>
               </DialogHeader>
 
               {/* Question Mode Tabs (hidden while editing a question) */}

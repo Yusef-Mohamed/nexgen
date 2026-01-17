@@ -1,5 +1,5 @@
 "use client";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
@@ -9,6 +9,7 @@ import { AiOutlinePlayCircle } from "react-icons/ai";
 
 const SuccessStories: React.FC = () => {
   const text = useTranslations("successStories");
+  const commonT = useTranslations("common");
   return (
     <section className="container grid gap-4 lg:grid-cols-2 md:gap-14 secPadding">
       <div className="order-2 lg:order-1">
@@ -26,14 +27,14 @@ const SuccessStories: React.FC = () => {
       </div>
       <Dialog>
         <DialogTrigger asChild>
-          <div className="  aspect-[75/45] relative overflow-hidden rounded-3xl cursor-pointer">
+          <div className="  aspect-75/45 relative overflow-hidden rounded-3xl cursor-pointer">
             <Image
               loading="lazy"
               src="/images/success.jpeg"
               alt="Success story background"
               width={825}
               height={500}
-              className="aspect-[75/45] w-full object-cover"
+              className="aspect-75/45 w-full object-cover"
             />
             <div className="flex absolute top-0 right-0 justify-center items-center w-full h-full bg-foreground/30">
               <div className="flex justify-center items-center p-3 w-16 h-16 rounded-full sm:w-20 sm:h-20 bg-background/20">
@@ -43,6 +44,12 @@ const SuccessStories: React.FC = () => {
           </div>
         </DialogTrigger>
         <DialogContent className="p-0 max-w-4xl bg-transparent border-none">
+          <DialogTitle className="sr-only">
+            {commonT("dialog.success_stories_title")}
+          </DialogTitle>
+          <DialogDescription className="sr-only">
+            {commonT("dialog.success_stories_description")}
+          </DialogDescription>
           <iframe
             className="w-full aspect-video"
             src="https://www.youtube.com/embed/PrpYc-IaUlk?si=z0s9FHtgJIEuPPTG"

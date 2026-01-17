@@ -269,7 +269,6 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
   const fetchCourse = useCallback(
     async (courseId: string) => {
       if (!token) return;
-      console.log("courseId", courseId);
       try {
         setIsFetchingCourse(true);
         setLoading(true);

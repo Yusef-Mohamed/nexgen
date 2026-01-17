@@ -60,6 +60,10 @@ const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
     const response = await axiosInstance.post("/auth/signup", formattedData);
     const user = response.data.data;
     const token = response.data.token;
+    console.log({
+      user,
+      token,
+    });
     updateUser({
       userData: user,
       token,
@@ -128,6 +132,14 @@ const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
   return (
     <CustomForm
       schema={formSchema}
+      defaultValues={{
+        name: "",
+        email: "",
+        phone: "",
+        country: "",
+        password: "",
+        passwordConfirm: "",
+      }}
       fields={fields}
       submitLabel={t("heading")}
       onSubmit={onSubmit}

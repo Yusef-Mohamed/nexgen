@@ -60,7 +60,52 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const text = useTranslations("common");
   const router = useRouter();
   const [status, setStatus] = useState<number>();
+  const handleNotActive = async (user: IUser | null, token: string) => {
+    try {
+      if (!user?.email) return;
+      if (pathname === "/email-verification") return;
+      await axiosInstance.post(
+        "auth/resendEmailCode",
+        {
+          email: user?.email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      router.push("/email-verification");
+      toast.success(text("please_verify_your_email"));
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const locale = useLocale();
+  const updateUser = ({
+    userData,
+    token,
+  }: {
+    userData: IUser;
+    token?: string;
+  }) => {
+    setCookie("user", JSON.stringify(userData), { maxAge: 60 * 60 * 24 });
+    setUser(userData);
+    if (token) {
+      setCookie("token", token, { maxAge: 60 * 60 * 24 });
+      setToken(token);
+    }
+    if (userData.emailVerified === false) {
+      handleNotActive(userData, token || "");
+    } else if (userData.active === false) {
+      router.push("/banned");
+      setStatus(405);
+    } else if (!userData.country && !countryAlertDismissed) {
+      setShowCountryAlert(true);
+    }
+
+    router.refresh();
+  };
   useLayoutEffect(() => {
     if (token) {
       axiosInstance.defaults.headers.common[
@@ -96,7 +141,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }
         }
         updateUser({
-          userData: user,
+          userData: user, token: token || "",
         });
         router.refresh();
       } catch (err) {
@@ -105,7 +150,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           typedError.response?.status === 401 ||
           typedError.response?.status === 407
         )
-          handleNotActive();
+          handleNotActive(user, token || "");
         if (typedError.response?.status === 406) {
           setShowIdVerificationModal(true);
           setStatus(406);
@@ -118,51 +163,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
     fetchUser();
   }, []);
-  const updateUser = ({
-    userData,
-    token,
-  }: {
-    userData: IUser;
-    token?: string;
-  }) => {
-    setCookie("user", JSON.stringify(userData), { maxAge: 60 * 60 * 24 });
-    setUser(userData);
-    if (token) {
-      setCookie("token", token, { maxAge: 60 * 60 * 24 });
-      setToken(token);
-    }
-    if (userData.emailVerified === false) {
-      handleNotActive();
-    } else if (userData.active === false) {
-      router.push("/banned");
-      setStatus(405);
-    } else if (!userData.country && !countryAlertDismissed) {
-      setShowCountryAlert(true);
-    }
 
-    router.refresh();
-  };
 
-  const handleNotActive = async () => {
-    try {
-      if (pathname === "/email-verification") return;
-      await axiosInstance.post(
-        "auth/resendEmailCode",
-        {
-          email: user?.email,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      router.push("/email-verification");
-      toast.success(text("please_verify_your_email"));
-    } catch (err) {
-      console.log(err);
-    }
-  };
+
   const logout = () => {
     router.push("/");
     setTimeout(() => {

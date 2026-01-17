@@ -1,5 +1,3 @@
-import { use } from "react";
-import { useTranslations } from "next-intl";
 
 import AuthPage from "@/components/AuthPage";
 import { getMetadataResetCodePage } from "@/getMetaData";
@@ -9,6 +7,7 @@ import { cookies } from "next/headers";
 import { IUser } from "@/types";
 import Resend from "./components/Resend";
 import { DropdownMenuLogout } from "@/components/SimpleClientComponents";
+import { getTranslations } from "next-intl/server";
 export async function generateMetadata(
   props: {
     params: Promise<{ locale: string }>;
@@ -19,15 +18,8 @@ export async function generateMetadata(
     params,
   });
 }
-const ResetCode = async (props: { params: Promise<{ locale: string }> }) => {
-  const params = await props.params;
-
-  const {
-    locale
-  } = params;
-
-  
-  const t = useTranslations("ResetCode");
+const ResetCode = async () => {
+  const t = await getTranslations("ResetCode");
   const cookieStore = await cookies();
   const user = JSON.parse(cookieStore.get("user")?.value || "{}") as IUser;
   return (

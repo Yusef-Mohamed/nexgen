@@ -21,7 +21,18 @@
       "contact_support": "الاتصال بالدعم"
     },
     "you_are_banned_can_not_use_the_platform": "تم حظرك من استخدام المنصة , تواصل معنا لمعرفة المزيد",
-    "please_verify_your_identity_to_be_able_to_use_the_platform": "يرجى التحقق من هويتك لتتمكن من استخدام المنصة"
+    "please_verify_your_identity_to_be_able_to_use_the_platform": "يرجى التحقق من هويتك لتتمكن من استخدام المنصة",
+    "dialog": {
+      "command_menu_title": "قائمة الأوامر",
+      "command_menu_description": "البحث عن الأوامر وتنفيذها.",
+      "image_zoom_title": "عرض الصورة",
+      "exam_form_description": "تقديم تفاصيل الامتحان مثل النموذج ودرجة النجاح.",
+      "exam_question_description": "تكوين تفاصيل السؤال والخيارات والإجابات الصحيحة.",
+      "manage_questions_description": "إدارة الأسئلة لهذا الامتحان.",
+      "testimonials_description": "اقرأ ما يقوله طلابنا عن تجربتهم.",
+      "success_stories_title": "فيديو قصص النجاح",
+      "success_stories_description": "شاهد قصص نجاح طلابنا."
+    }
   },
   "header": {
     "home": "الرئيسية",
@@ -457,6 +468,7 @@
     "invalidPhoneCode": "رمز الهاتف غير صالح",
     "countryRequired": "البلد مطلوب",
     "selectCountry": "اختر البلد",
+    "selectCountryDescription": "اختر بلدك من القائمة لتحديث رمز الهاتف الخاص بك.",
     "fileInput": {
       "dragAndDropText": "اسحب وأسقط الملفات هنا، أو انقر لاختيار الملفات",
       "selectFilesText": "اختر الملفات",

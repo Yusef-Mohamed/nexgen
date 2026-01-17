@@ -17,6 +17,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -56,6 +57,7 @@ export const QuestionsManager = ({
   onQuestionsUpdated,
 }: QuestionsManagerProps) => {
   const text = useTranslations("exams");
+  const commonT = useTranslations("common");
   const [questions, setQuestions] = useState<IQuestion[]>(exam.questions);
   const [loading, setLoading] = useState(false);
   const [addQuestionDialogOpen, setAddQuestionDialogOpen] = useState(false);
@@ -274,6 +276,9 @@ export const QuestionsManager = ({
         <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{text("add_question_title")}</DialogTitle>
+            <DialogDescription className="sr-only">
+              {commonT("dialog.manage_questions_description")}
+            </DialogDescription>
           </DialogHeader>
 
           <QuestionForm
@@ -307,6 +312,9 @@ export const QuestionsManager = ({
         <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{text("edit_question_title")}</DialogTitle>
+            <DialogDescription className="sr-only">
+              {commonT("dialog.manage_questions_description")}
+            </DialogDescription>
           </DialogHeader>
 
           <QuestionForm

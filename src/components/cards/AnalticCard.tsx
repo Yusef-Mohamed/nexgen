@@ -13,6 +13,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -143,8 +144,8 @@ const AnalyticCard = ({
                 alt=""
                 className="object-cover w-full aspect-video"
               />
-              <div className="flex items-center justify-center bg-background opacity-25 z-[1] w-full h-full absolute top-0 right-0" />
-              <div className="flex items-center justify-center z-[2] w-full h-full absolute top-0 right-0">
+              <div className="flex items-center justify-center bg-background opacity-25 z-1 w-full h-full absolute top-0 right-0" />
+              <div className="flex items-center justify-center z-2 w-full h-full absolute top-0 right-0">
                 <span className="text-4xl font-bold">+{images.length - 1}</span>
               </div>
             </div>
@@ -277,6 +278,9 @@ const AnalyticCard = ({
         <DialogContent className="sm:max-w-2xl max-h-[95vh] overflow-hidden bg-background p-0 gap-0">
           <DialogHeader className="sticky top-0 z-10 p-4 text-center border-b bg-background">
             <DialogTitle>{text("preview")}</DialogTitle>
+            <DialogDescription className="sr-only">
+              {analytic.content}
+            </DialogDescription>
           </DialogHeader>
           <div className="relative">
             {analytic.media &&

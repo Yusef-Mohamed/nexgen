@@ -17,6 +17,7 @@ import ConfirmationDialog from "@/components/ui/confirmation-dialog";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -394,6 +395,7 @@ const ExamDialog = ({
   isEdit,
 }: ExamDialogProps) => {
   const text = useTranslations("exams");
+  const commonT = useTranslations("common");
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     model: exam?.model || "A",
@@ -493,6 +495,9 @@ const ExamDialog = ({
           <DialogTitle>
             {isEdit ? text("edit_exam_title") : text("create_exam_title")}
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            {commonT("dialog.exam_form_description")}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -599,6 +604,7 @@ const EditExamDialog = ({
   onExamUpdated,
 }: EditExamDialogProps) => {
   const text = useTranslations("exams");
+  const commonT = useTranslations("common");
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     passingScore: exam?.passingScore?.toString() || "70",
@@ -674,6 +680,9 @@ const EditExamDialog = ({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{text("edit_exam_title")}</DialogTitle>
+          <DialogDescription className="sr-only">
+            {commonT("dialog.exam_form_description")}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">

@@ -3,7 +3,7 @@ import { SetStateAction, useEffect, useRef, useState } from "react";
 import UserAvatar from "../UserAvatar";
 import { FaChevronLeft, FaChevronRight, FaRegComment } from "react-icons/fa";
 import { useTranslations, useLocale } from "next-intl";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import CommentCard from "./CommentCard";
 import TextWithEmojiBox from "../TextWithEmojiBox";
 import { toast } from "react-toastify";
@@ -129,6 +129,9 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
                 name: post.user?.name,
               })}
             </DialogTitle>
+            <DialogDescription className="sr-only">
+              {post.content}
+            </DialogDescription>
             <Button
               onClick={() => setIsOpen(false)}
               variant="ghost"
@@ -138,7 +141,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
               <MdClose />
             </Button>
           </DialogHeader>
-          <div className="overflow-auto flex-grow w-full rounded-md">
+          <div className="overflow-auto grow w-full rounded-md">
             <div className="p-3">
               {inCommunity ? (
                 <div className="flex items-center gap-2">
@@ -297,7 +300,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
 const CommentSkeleton = () => {
   return (
     <li className="relative mt-2">
-      <div className="flex items-start gap-2 z-[2] relative">
+      <div className="flex items-start gap-2 z-2 relative">
         <div className="relative">
           <Skeleton className="w-10 h-10 rounded-full" />
         </div>

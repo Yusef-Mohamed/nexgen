@@ -99,22 +99,22 @@ const MainComponent = ({
           itemType === "course"
             ? `/orders/plisio/courseCheckout/${thisItem._id}`
             : itemType === "learning-path"
-            ? `/orders/plisio/coursePackageCheckout/${thisItem._id}`
-            : `/orders/plisio/packageCheckout/${thisItem._id}`;
+              ? `/orders/plisio/coursePackageCheckout/${thisItem._id}`
+              : `/orders/plisio/packageCheckout/${thisItem._id}`;
         if (selectedMethod === "lahza") {
           endpoint =
             itemType === "course"
               ? `/orders/lahza/courseCheckout/${thisItem._id}`
               : itemType === "learning-path"
-              ? `/orders/lahza/coursePackageCheckout/${thisItem._id}`
-              : `/orders/lahza/packageCheckout/${thisItem._id}`;
+                ? `/orders/lahza/coursePackageCheckout/${thisItem._id}`
+                : `/orders/lahza/packageCheckout/${thisItem._id}`;
         } else if (selectedMethod === "stripe") {
           endpoint =
             itemType === "course"
               ? `/orders/stripe/courseCheckout/${thisItem._id}`
               : itemType === "learning-path"
-              ? `/orders/stripe/coursePackageCheckout/${thisItem._id}`
-              : `/orders/stripe/packageCheckout/${thisItem._id}`;
+                ? `/orders/stripe/coursePackageCheckout/${thisItem._id}`
+                : `/orders/stripe/packageCheckout/${thisItem._id}`;
         }
         const res = await axiosInstance.put(
           endpoint,
@@ -276,7 +276,7 @@ const MainComponent = ({
           <div className="flex justify-between ">
             <div>
               <h5>{getDynamicString(thisItem?.title)}</h5>
-              <span className="text-sm text-text-3">{itemType && text(itemType as any)}</span>
+              <span className="text-sm text-text-3">{itemType && text(itemType as ItemType)}</span>
 
             </div>
             <div className="flex items-start gap-1 font-medium whitespace-nowrap">
@@ -316,9 +316,9 @@ const MainComponent = ({
                 $
                 {thisItem?.priceAfterDiscount
                   ? //@ts-ignore
-                    thisItem?.priceAfterDiscount * (discount / 100)
+                  thisItem?.priceAfterDiscount * (discount / 100)
                   : //@ts-ignore
-                    thisItem?.price * (discount / 100)}
+                  thisItem?.price * (discount / 100)}
               </span>
             </div>
             <div className="flex justify-between mt-1 text-sm">
@@ -328,10 +328,10 @@ const MainComponent = ({
                 {
                   //@ts-ignore
                   thisItem?.priceAfterDiscount -
-                    //@ts-ignore
-                    thisItem?.priceAfterDiscount * (discount / 100) ||
-                    //@ts-ignore
-                    thisItem?.price - thisItem?.price * (discount / 100)
+                  //@ts-ignore
+                  thisItem?.priceAfterDiscount * (discount / 100) ||
+                  //@ts-ignore
+                  thisItem?.price - thisItem?.price * (discount / 100)
                 }
               </span>
             </div>

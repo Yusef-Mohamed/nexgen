@@ -4,7 +4,7 @@ import { TestimonialCard2 } from "./cards/TestimonialCard";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 
 const ReviewsGrid = ({
   reviews,
@@ -43,9 +43,12 @@ const ReviewsGrid = ({
             {text("viewAllReviews")}
           </Button>
           <Dialog open={isShowAll} onOpenChange={setIsShowAll}>
-            <DialogContent className="sm:w-[30rem] overflow-auto max-h-[80vh] rounded-e-none sm:rounded-e-none">
+            <DialogContent className="sm:w-120 overflow-auto max-h-[80vh] rounded-e-none sm:rounded-e-none">
               <DialogHeader>
                 <DialogTitle>{dialogHeader}</DialogTitle>
+                <DialogDescription className="sr-only">
+                  {text("reviews")}
+                </DialogDescription>
               </DialogHeader>
               {reviews?.map((review) => (
                 <TestimonialCard2

@@ -35,7 +35,6 @@ const VideoPlayer = ({ otp, playbackInfo, onVideoEnd }: VideoPlayerProps) => {
   const handleVideoComplete = useCallback(() => {
     if (!isMarkedDone.current) {
       isMarkedDone.current = true;
-      console.log("Video marked as watched.");
       if (onVideoEnd) onVideoEnd();
     }
   }, [onVideoEnd]);
