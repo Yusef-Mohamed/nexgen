@@ -8,7 +8,7 @@ import { FaRegComment } from "react-icons/fa6";
 import { AiFillDelete } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import FocusedPostCard from "./FocusedPostCard";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { useAuth } from "../auth-provider";
 import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";

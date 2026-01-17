@@ -1,10 +1,12 @@
+import { use } from "react";
 import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { unstable_setRequestLocale } from "next-intl/server";
 
-const BannedPage = ({ params }: { params: { locale: string } }) => {
-  unstable_setRequestLocale(params.locale);
+
+const BannedPage = (props: { params: Promise<{ locale: string }> }) => {
+  const params = use(props.params);
+  
   const text = useTranslations("common");
   return (
     <main>

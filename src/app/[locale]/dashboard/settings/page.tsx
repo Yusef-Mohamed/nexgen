@@ -1,12 +1,18 @@
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import Main from "./components/Main";
 
-const ProfilePage = ({
-  params: { locale },
-}: {
-  params: { locale: string };
-}) => {
-  unstable_setRequestLocale(locale);
+const ProfilePage = async (
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+) => {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
+  
   return <Main />;
 };
 

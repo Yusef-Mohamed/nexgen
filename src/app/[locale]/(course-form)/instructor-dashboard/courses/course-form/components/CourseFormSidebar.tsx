@@ -5,7 +5,7 @@ import { useCourseFormContext } from "./context/CourseFormContext";
 import FormSidebar, {
   FormSidebarConfig,
 } from "../../../components/shared/FormSidebar";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 
 interface CourseFormSidebarProps {
   className?: string;

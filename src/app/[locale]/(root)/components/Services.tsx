@@ -7,7 +7,7 @@ import GridSection from "@/components/GridSection";
 
 const Services: React.FC<{ viewAll?: boolean }> = async ({ viewAll }) => {
   const text = await getTranslations("services");
-  const axiosInstance = createServerAxiosInstance();
+  const axiosInstance = await createServerAxiosInstance();
   const packagesRes = await axiosInstance.get(
     `/packages${viewAll ? "" : "?limit=3"}`
   );

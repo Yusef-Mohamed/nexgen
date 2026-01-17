@@ -1,7 +1,7 @@
 import { getMetadataBlogPage } from "@/getMetaData";
 import { Metadata } from "next";
 
-import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
+import { getTranslations} from "next-intl/server";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { IBlog } from "@/types";
 import BlogCard, {
@@ -12,12 +12,13 @@ import StayUpToDate from "./components/StayUpToDate";
 import { ShareButtons } from "@/components/cards/BlogsShareButtons";
 import { notFound } from "next/navigation";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: string; blogId: string };
-}): Promise<Metadata> {
-  const axiosInstance = createServerAxiosInstance();
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string; blogId: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
+  const axiosInstance = await createServerAxiosInstance();
   const blogRes = await axiosInstance.get("/articals/" + params.blogId);
   const blogData = blogRes.data.data as IBlog;
   return getMetadataBlogPage({
@@ -26,15 +27,16 @@ export async function generateMetadata({
   });
 }
 
-const BlogsPage = async ({
-  params,
-}: {
-  params: { locale: string; blogId: string };
-}) => {
-  unstable_setRequestLocale(params.locale);
+const BlogsPage = async (
+  props: {
+    params: Promise<{ locale: string; blogId: string }>;
+  }
+) => {
+  const params = await props.params;
+  
   try {
     const text = await getTranslations("blogs");
-    const axiosInstance = createServerAxiosInstance();
+    const axiosInstance = await createServerAxiosInstance();
     const blogRes = await axiosInstance.get("/articals/" + params.blogId);
     const otherBlogsRes = await axiosInstance.get("/articals?limit=3");
     const blogData = blogRes.data.data as IBlog;

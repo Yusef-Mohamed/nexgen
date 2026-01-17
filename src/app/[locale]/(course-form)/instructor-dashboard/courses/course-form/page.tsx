@@ -1,4 +1,4 @@
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import AddCourseClient from "./components/AddCourseClient";
 import { Metadata } from "next";
 import {
@@ -6,13 +6,14 @@ import {
   getMetadataInstructorEditCoursePage,
 } from "@/getMetaData";
 
-export async function generateMetadata({
-  params,
-  searchParams,
-}: {
-  params: { locale: string };
-  searchParams: { courseId?: string; mode?: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+    searchParams: Promise<{ courseId?: string; mode?: string }>;
+  }
+): Promise<Metadata> {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   // Check if we're in edit mode (has courseId or mode is edit)
   const isEditMode = searchParams.courseId && searchParams.mode !== "create";
 
@@ -23,8 +24,9 @@ export async function generateMetadata({
   }
 }
 
-const AddCoursePage = async ({ params }: { params: { locale: string } }) => {
-  unstable_setRequestLocale(params.locale);
+const AddCoursePage = async (props: { params: Promise<{ locale: string }> }) => {
+  const params = await props.params;
+  
   return <AddCourseClient />;
 };
 

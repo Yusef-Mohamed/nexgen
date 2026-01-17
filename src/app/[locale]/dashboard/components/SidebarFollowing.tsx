@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/components/auth-provider";
 import UserAvatar from "@/components/UserAvatar";
-import { Link, usePathname } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import FollowBtn from "../community/profile/[userId]/components/FollowBtn";

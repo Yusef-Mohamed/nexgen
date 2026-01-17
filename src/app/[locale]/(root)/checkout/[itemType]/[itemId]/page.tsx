@@ -1,4 +1,4 @@
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import MainComponent from "./component/MainComponent";
 import { ICourse, ICoursePackage, IPackage } from "@/types";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
@@ -33,16 +33,17 @@ const getThisItem = async (
   }
 };
 export type ItemType = "course" | "learning-path" | "service";
-const CheckoutPage = async ({
-  params,
-}: {
-  params: {
-    locale: string;
-    itemType: ItemType;
-    itemId: string;
-  };
-}) => {
-  unstable_setRequestLocale(params.locale);
+const CheckoutPage = async (
+  props: {
+    params: Promise<{
+      locale: string;
+      itemType: ItemType;
+      itemId: string;
+    }>;
+  }
+) => {
+  const params = await props.params;
+  
   const thisItem = (await getThisItem(params.itemType, params.itemId)) as
     | ICourse
     | ICoursePackage

@@ -7,7 +7,7 @@ import GridSection from "@/components/GridSection";
 
 const LearningPaths: React.FC<{ viewAll?: boolean }> = async ({ viewAll }) => {
   const text = await getTranslations("learningPaths");
-  const axiosInstance = createServerAxiosInstance();
+  const axiosInstance = await createServerAxiosInstance();
   const coursePackagesRes = await axiosInstance.get(
     `/coursePackages${viewAll ? "" : "?limit=3"}`
   );

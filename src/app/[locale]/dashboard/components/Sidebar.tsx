@@ -14,7 +14,7 @@ import { RiDiscountPercentLine, RiTeamFill } from "react-icons/ri";
 import { useAuth } from "@/components/auth-provider";
 import { reqAuthToReview } from "@/constants";
 import Logo from "@/components/logo";
-import { usePathname } from "@/i18n/routing";
+import { usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 
 type SidebarLinkType = {

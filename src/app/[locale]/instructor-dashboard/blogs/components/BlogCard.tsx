@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { GiSandsOfTime } from "react-icons/gi";
 import { CiCalendarDate } from "react-icons/ci";
 import { FaRegUser } from "react-icons/fa";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import UserAvatar from "@/components/UserAvatar";
 import { cn } from "@/lib/utils";
 import { ShareButtons } from "@/components/cards/BlogsShareButtons";

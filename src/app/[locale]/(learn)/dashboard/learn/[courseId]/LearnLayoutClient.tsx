@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "@/i18n/routing";
+import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import CourseSidebar from "./components/CourseSidebar";
 import Logo from "@/components/logo";

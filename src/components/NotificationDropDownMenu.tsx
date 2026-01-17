@@ -11,7 +11,7 @@ import NotificationCard, {
 import { useEffect, useRef, useState } from "react";
 import { useNotificationStore } from "@/stores/NotificationStore";
 import { useAuth } from "./auth-provider";
-import { useRouter } from "@/i18n/routing";
+import { useRouter } from "@/i18n/navigation";
 import { Button } from "./ui/button";
 import { NotificationIcon } from "./icons";
 const NotificationDropDownMenu = () => {

@@ -1,13 +1,14 @@
-import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import AddLearningPathClient from "./components/AddLearningPathClient";
 import { Metadata } from "next";
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  params: { locale: string };
-  searchParams: { learningPathId?: string; mode?: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+    searchParams: Promise<{ learningPathId?: string; mode?: string }>;
+  }
+): Promise<Metadata> {
+  const searchParams = await props.searchParams;
   const t = await getTranslations("learningPathForm");
 
   // Check if we're in edit mode (has learningPathId or mode is edit)
@@ -22,12 +23,13 @@ export async function generateMetadata({
   };
 }
 
-const AddLearningPathPage = async ({
-  params,
-}: {
-  params: { locale: string };
-}) => {
-  unstable_setRequestLocale(params.locale);
+const AddLearningPathPage = async (
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+) => {
+  const params = await props.params;
+  
 
   return <AddLearningPathClient />;
 };

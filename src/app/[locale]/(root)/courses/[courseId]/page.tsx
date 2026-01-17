@@ -1,7 +1,7 @@
 import { getMetadataCoursePage } from "@/getMetaData";
 import { Metadata } from "next";
 
-import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
+import { getTranslations} from "next-intl/server";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { ICourse } from "@/types";
 import { notFound } from "next/navigation";
@@ -14,19 +14,20 @@ import { PiExam } from "react-icons/pi";
 import { CiMobile2 } from "react-icons/ci";
 import { GoInfinity } from "react-icons/go";
 import { GrCertificate } from "react-icons/gr";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import PopularCourses from "../../components/PopularCourses";
 import ReviewsGrid from "@/components/ReviewsGrid";
 import CourseContent from "./components/CourseContent";
 import BuyCourse from "./components/BuyCourse";
 import { cn, getDynamicString } from "@/lib/utils";
 import MobileAppHero from "../../components/MobileAppHero";
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: string; courseId: string };
-}): Promise<Metadata> {
-  const axiosInstance = createServerAxiosInstance();
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string; courseId: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
+  const axiosInstance = await createServerAxiosInstance();
   const courseRes = await axiosInstance.get("/courses/" + params.courseId);
   const courseData = courseRes.data.data as ICourse;
 
@@ -39,15 +40,16 @@ export async function generateMetadata({
   });
 }
 
-const CoursesPage = async ({
-  params,
-}: {
-  params: { locale: string; courseId: string };
-}) => {
-  unstable_setRequestLocale(params.locale);
+const CoursesPage = async (
+  props: {
+    params: Promise<{ locale: string; courseId: string }>;
+  }
+) => {
+  const params = await props.params;
+  
   try {
     const text = await getTranslations("coursePage");
-    const axiosInstance = createServerAxiosInstance();
+    const axiosInstance = await createServerAxiosInstance();
     const courseRes = await axiosInstance.get("/courses/" + params.courseId);
     const courseData = courseRes.data.data as ICourse;
     return (

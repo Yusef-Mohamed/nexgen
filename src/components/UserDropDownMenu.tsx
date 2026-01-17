@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { useState } from "react";
 import { useAuth } from "./auth-provider";
 

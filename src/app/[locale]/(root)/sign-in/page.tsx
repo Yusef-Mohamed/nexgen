@@ -1,21 +1,29 @@
+import { use } from "react";
 import AuthPage from "@/components/AuthPage";
 import SignInForm from "@/components/Forms/SignInForm";
 import { getMetadataSignInPage } from "@/getMetaData";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { Metadata } from "next";
 import { useTranslations } from "next-intl";
-import { unstable_setRequestLocale } from "next-intl/server";
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: string };
-}): Promise<Metadata> {
+
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   return getMetadataSignInPage({
     params,
   });
 }
-const SignInPage = ({ params: { locale } }: { params: { locale: string } }) => {
-  unstable_setRequestLocale(locale);
+const SignInPage = (props: { params: Promise<{ locale: string }> }) => {
+  const params = use(props.params);
+
+  const {
+    locale
+  } = params;
+
+  
 
   const t = useTranslations("SignIn");
   return (

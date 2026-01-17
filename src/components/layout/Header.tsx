@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import Logo from "../logo";
 import ThemeToggler from "../ThemeToggler";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import MobileHeader from "./MobileHeader";
 import UserHeader from "./UserHeader";
 import { useAuth } from "../auth-provider";

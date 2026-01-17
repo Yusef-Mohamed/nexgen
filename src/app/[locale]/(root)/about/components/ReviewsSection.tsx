@@ -5,7 +5,7 @@ import { getTranslations } from "next-intl/server";
 
 const ReviewsSection = async () => {
   const text = await getTranslations("reviewsSectionAboutPage");
-  const axiosInstance = createServerAxiosInstance();
+  const axiosInstance = await createServerAxiosInstance();
   const reviewsRes = await axiosInstance.get("/systemReviews?limit=3");
   const reviewsData = reviewsRes.data.data as IReview[];
   return (

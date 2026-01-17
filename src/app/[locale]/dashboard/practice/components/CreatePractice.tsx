@@ -21,7 +21,7 @@ import { FaImage } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { AxiosError } from "axios";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "@/i18n/routing";
+import { useRouter } from "@/i18n/navigation";
 import { useCourseContextSafe } from "@/app/[locale]/(learn)/dashboard/learn/[courseId]/context/CourseContext";
 import { unlockLessonsSequentially } from "@/app/[locale]/(learn)/dashboard/learn/[courseId]/components/unlockLessons";
 import { useFilterPackages } from "@/hooks/useFilterPackages";

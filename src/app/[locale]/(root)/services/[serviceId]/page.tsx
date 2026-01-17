@@ -1,6 +1,6 @@
 import { getMetadataServicePage } from "@/getMetaData";
 import { Metadata } from "next";
-import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
+import { getTranslations} from "next-intl/server";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { IPackage } from "@/types";
 import { notFound } from "next/navigation";
@@ -10,12 +10,13 @@ import PopularServices from "../../components/PopularServices";
 import ServiceHeading from "./components/ServiceHeading";
 import ServiceCard from "./components/ServiceCard";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: string; serviceId: string };
-}): Promise<Metadata> {
-  const axiosInstance = createServerAxiosInstance();
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string; serviceId: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
+  const axiosInstance = await createServerAxiosInstance();
   const serviceRes = await axiosInstance.get("/packages/" + params.serviceId);
   const serviceData = serviceRes.data.data as IPackage;
 
@@ -28,15 +29,16 @@ export async function generateMetadata({
   });
 }
 
-const ServicePage = async ({
-  params,
-}: {
-  params: { locale: string; serviceId: string };
-}) => {
-  unstable_setRequestLocale(params.locale);
+const ServicePage = async (
+  props: {
+    params: Promise<{ locale: string; serviceId: string }>;
+  }
+) => {
+  const params = await props.params;
+  
   try {
     const text = await getTranslations("services");
-    const axiosInstance = createServerAxiosInstance();
+    const axiosInstance = await createServerAxiosInstance();
     const serviceRes = await axiosInstance.get("/packages/" + params.serviceId);
     const serviceData = serviceRes.data.data as IPackage;
     return (

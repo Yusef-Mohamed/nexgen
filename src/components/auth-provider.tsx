@@ -8,7 +8,7 @@ import {
   useEffect,
 } from "react";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { IUser } from "@/types";
 import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";

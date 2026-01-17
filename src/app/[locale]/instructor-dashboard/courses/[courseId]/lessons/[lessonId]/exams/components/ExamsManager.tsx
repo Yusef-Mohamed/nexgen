@@ -12,7 +12,7 @@ import ExamsDisplay from "./ExamsDisplay";
 import { useAuth } from "@/components/auth-provider";
 import { axiosInstance } from "@/app/lib/utils";
 import { AxiosError } from "axios";
-import { usePathname, useRouter } from "@/i18n/routing";
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 interface ExamsManagerProps {
   type: "course" | "lesson" | "placement";

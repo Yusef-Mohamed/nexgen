@@ -13,7 +13,7 @@ const AuthPage: React.FC<AuthPageProps> = async ({
   heading,
   description,
 }) => {
-  const axiosInstance = createServerAxiosInstance();
+  const axiosInstance = await createServerAxiosInstance();
   const reviewsRes = await axiosInstance.get("/systemReviews?limit=5");
   const reviewsData = reviewsRes.data.data as IReview[];
   return (

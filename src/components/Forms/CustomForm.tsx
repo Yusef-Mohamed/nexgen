@@ -7,7 +7,7 @@ import { Form } from "../ui/form";
 import { FieldValues, Path } from "react-hook-form";
 import { Checkbox } from "../ui/checkbox";
 import { useLocale } from "next-intl";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { PhoneInput } from "../ui/phone-input";
 import { CountryInput } from "../ui/country-input";
 

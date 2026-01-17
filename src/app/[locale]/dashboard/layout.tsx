@@ -1,14 +1,23 @@
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import DashboardLayoutClient from "./DashboardLayoutClient";
 
-export default function RootLayout({
-  children,
-  params: { locale },
-}: Readonly<{
-  children: React.ReactNode;
-  params: { locale: string };
-}>) {
-  unstable_setRequestLocale(locale);
+export default async function RootLayout(
+  props: Readonly<{
+    children: React.ReactNode;
+    params: Promise<{ locale: string }>;
+  }>
+) {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
+  const {
+    children
+  } = props;
+
+  
 
   return <DashboardLayoutClient>{children}</DashboardLayoutClient>;
 }

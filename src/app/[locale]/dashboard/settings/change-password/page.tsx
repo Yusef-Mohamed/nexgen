@@ -1,12 +1,18 @@
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import ChangePassword from "../components/ChangePassowrd";
 
-const ChangePasswordPage = ({
-  params: { locale },
-}: {
-  params: { locale: string };
-}) => {
-  unstable_setRequestLocale(locale);
+const ChangePasswordPage = async (
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+) => {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
+  
   return <ChangePassword />;
 };
 

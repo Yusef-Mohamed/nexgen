@@ -1,20 +1,22 @@
 import { Metadata } from "next";
 import { getMetadataContactPage } from "@/getMetaData";
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import ContactForm from "./components/ContactForm";
 import ContactCols from "./components/ContactCols";
-export function generateMetadata({
-  params,
-}: {
-  params: { locale: string };
-}): Metadata {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   return getMetadataContactPage({
     params,
   });
 }
 
-const ContactPage = ({ params }: { params: { locale: string } }) => {
-  unstable_setRequestLocale(params.locale);
+const ContactPage = async (props: { params: Promise<{ locale: string }> }) => {
+  const params = await props.params;
+  
   return (
     <main>
       <ContactForm />

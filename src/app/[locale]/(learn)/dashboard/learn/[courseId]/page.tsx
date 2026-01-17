@@ -1,6 +1,6 @@
 import { getMetadataCoursePage } from "@/getMetaData";
 import { Metadata } from "next";
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { ICourse } from "@/types";
 import { notFound } from "next/navigation";
@@ -8,12 +8,13 @@ import LearnLayoutClient from "./LearnLayoutClient";
 import { CourseProvider } from "./context/CourseContext";
 import { getDynamicString } from "@/lib/utils";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: string; courseId: string };
-}): Promise<Metadata> {
-  const axiosInstance = createServerAxiosInstance();
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string; courseId: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
+  const axiosInstance = await createServerAxiosInstance();
   const courseRes = await axiosInstance.get("/courses/" + params.courseId);
   const courseData = courseRes.data.data as ICourse;
   return getMetadataCoursePage({
@@ -24,12 +25,13 @@ export async function generateMetadata({
     },
   });
 }
-const CoursesPage = async ({
-  params,
-}: {
-  params: { locale: string; courseId: string };
-}) => {
-  unstable_setRequestLocale(params.locale);
+const CoursesPage = async (
+  props: {
+    params: Promise<{ locale: string; courseId: string }>;
+  }
+) => {
+  const params = await props.params;
+  
   try {
     return (
       <CourseProvider courseId={params.courseId}>

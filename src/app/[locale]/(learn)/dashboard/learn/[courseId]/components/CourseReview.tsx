@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { useCourseReviewStore } from "@/stores/CourseReview";
 import { useAuth } from "@/components/auth-provider";
-import { useRouter } from "@/i18n/routing";
+import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";

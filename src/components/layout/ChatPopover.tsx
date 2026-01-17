@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { ChatIcon } from "@/components/icons";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
-import { useRouter } from "@/i18n/routing";
+import { useRouter } from "@/i18n/navigation";
 
 export function ChatPopover() {
   const {

@@ -10,7 +10,7 @@ import Step3Pricing from "./steps/Step3Pricing";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useRouter, usePathname } from "@/i18n/routing";
+import { useRouter, usePathname } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 
 const commonFormStyles =

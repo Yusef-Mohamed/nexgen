@@ -1,12 +1,18 @@
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import TeamManagement from "../components/TeamManagement";
 
-const MyTeamPage = async ({
-  params: { locale },
-}: {
-  params: { locale: string };
-}) => {
-  unstable_setRequestLocale(locale);
+const MyTeamPage = async (
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+) => {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
+  
   return (
     <main
       style={{

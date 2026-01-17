@@ -14,7 +14,7 @@ interface TextWithEmojiBoxProps {
   setMedia?:
     | React.Dispatch<React.SetStateAction<File | null>>
     | React.Dispatch<React.SetStateAction<File[] | null>>;
-  inputRef: React.RefObject<HTMLTextAreaElement>;
+  inputRef: React.RefObject<HTMLTextAreaElement | null>;
   className?: string;
   placeholder?: string;
   multiMedia?: boolean;

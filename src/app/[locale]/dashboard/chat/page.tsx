@@ -1,22 +1,34 @@
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import { ChatLayout } from "./components/ChatLayout";
 import { Metadata } from "next";
 import { getMetadataChatPage } from "@/getMetaData";
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   return getMetadataChatPage({ params });
 }
-const ChatPage = async ({
-  params: { locale },
-  searchParams: { selectedChat },
-}: {
-  params: { locale: string };
-  searchParams: { selectedChat?: string };
-}) => {
-  unstable_setRequestLocale(locale);
+const ChatPage = async (
+  props: {
+    params: Promise<{ locale: string }>;
+    searchParams: Promise<{ selectedChat?: string }>;
+  }
+) => {
+  const searchParams = await props.searchParams;
+
+  const {
+    selectedChat
+  } = searchParams;
+
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
+  
 
   return (
     <main

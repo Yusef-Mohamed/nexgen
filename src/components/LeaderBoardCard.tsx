@@ -4,7 +4,7 @@ import { FaMedal } from "react-icons/fa";
 import Image from "next/image";
 import UserAvatar from "./UserAvatar";
 import { useLocale } from "next-intl";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 
 const LeaderBoardCard = ({
   users,

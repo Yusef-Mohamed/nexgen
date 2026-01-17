@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/routing";
+import { useRouter } from "@/i18n/navigation";
 import * as z from "zod";
 import { axiosInstance } from "@/app/lib/utils";
 import CustomForm from "./CustomForm";

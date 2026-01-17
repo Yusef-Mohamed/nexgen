@@ -1,6 +1,6 @@
 // import { Metadata } from "next";
 // import { getMetadataPrivacyPolicy } from "@/getMetaData";
-import { unstable_setRequestLocale } from "next-intl/server";
+
 // export function generateMetadata({
 //   params,
 // }: {
@@ -11,8 +11,8 @@ import { unstable_setRequestLocale } from "next-intl/server";
 //   });
 // }
 
-const PrivacyPolicy = ({ params }: { params: { locale: string } }) => {
-  unstable_setRequestLocale(params.locale);
+const PrivacyPolicy = async (props: { params: Promise<{ locale: string }> }) => {
+  const params = await props.params;
 
   return (
     <main>

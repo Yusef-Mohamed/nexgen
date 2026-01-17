@@ -8,7 +8,7 @@ import { useState } from "react";
 import Logo from "@/components/logo";
 import { useTranslations } from "next-intl";
 import SearchInput from "@/components/SearchInput";
-import { useRouter } from "@/i18n/routing";
+import { useRouter } from "@/i18n/navigation";
 
 const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
   children,

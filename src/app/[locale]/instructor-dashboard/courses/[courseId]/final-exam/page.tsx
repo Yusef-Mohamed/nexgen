@@ -1,24 +1,27 @@
+import { use } from "react";
 import { ExamsManager } from "@/app/[locale]/instructor-dashboard/courses/[courseId]/lessons/[lessonId]/exams/components/ExamsManager";
 import { useTranslations } from "next-intl";
 import { Metadata } from "next";
 import { getMetadataInstructorFinalExamPage } from "@/getMetaData";
 
 interface FinalExamPageProps {
-  params: {
+  params: Promise<{
     courseId: string;
     locale: string;
-  };
+  }>;
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: string; courseId: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string; courseId: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   return getMetadataInstructorFinalExamPage({ params });
 }
 
-export default function FinalExamPage({ params }: FinalExamPageProps) {
+export default function FinalExamPage(props: FinalExamPageProps) {
+  const params = use(props.params);
   const text = useTranslations("exams");
 
   return (

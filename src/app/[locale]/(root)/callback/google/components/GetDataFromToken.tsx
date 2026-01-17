@@ -2,7 +2,7 @@
 
 import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
-import { useRouter } from "@/i18n/routing";
+import { useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";

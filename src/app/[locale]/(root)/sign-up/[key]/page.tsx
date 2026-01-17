@@ -1,25 +1,34 @@
+import { use } from "react";
 import { useTranslations } from "next-intl";
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import AuthPage from "@/components/AuthPage";
 import { getMetadataSignUpPage } from "@/getMetaData";
 import { Metadata } from "next";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import SignUpForm from "@/components/Forms/SignUpForm";
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   return getMetadataSignUpPage({
     params,
   });
 }
-const SignUpPage = ({
-  params: { locale, key },
-}: {
-  params: { locale: string; key: string };
-}) => {
-  unstable_setRequestLocale(locale);
+const SignUpPage = (
+  props: {
+    params: Promise<{ locale: string; key: string }>;
+  }
+) => {
+  const params = use(props.params);
+
+  const {
+    locale,
+    key
+  } = params;
+
+  
 
   const t = useTranslations("SignUp");
   return (

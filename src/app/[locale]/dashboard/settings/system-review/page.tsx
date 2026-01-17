@@ -1,12 +1,18 @@
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import SystemReview from "../components/SystemReview";
 
-const SystemReviewPage = ({
-  params: { locale },
-}: {
-  params: { locale: string };
-}) => {
-  unstable_setRequestLocale(locale);
+const SystemReviewPage = async (
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+) => {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
+  
   return <SystemReview />;
 };
 

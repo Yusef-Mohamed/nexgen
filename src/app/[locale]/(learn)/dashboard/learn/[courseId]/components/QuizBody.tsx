@@ -124,9 +124,9 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
                     {text("receiveGrade")}
                   </span>
                 </div>
-                <p className="text-lg font-medium">
-                  {text("toPassOrHigher", { score: quiz?.passingScore })}
-                </p>
+                  <p className="text-lg font-medium">
+                    {text("toPassOrHigher", { score: quiz?.passingScore ?? 0 })}
+                  </p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-center">

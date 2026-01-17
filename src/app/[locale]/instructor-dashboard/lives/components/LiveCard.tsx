@@ -60,7 +60,7 @@ const LiveCard: React.FC<LiveCardProps> = ({ live, onDelete, onEdit }) => {
           })}
         </div>
         <div className="flex items-center justify-between py-2 mt-1 mb-3">
-          <div className="font-semibold">{live.title}</div>
+          <div className="font-semibold">{getDynamicString(live.title)}</div>
           <Badge variant={statusVariant} className="text-xs">
             {statusText}
           </Badge>

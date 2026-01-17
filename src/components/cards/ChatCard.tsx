@@ -1,7 +1,7 @@
 import { IChat } from "@/types";
 import UserAvatar from "@/components/UserAvatar";
 import { cn } from "@/lib/utils";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { useAuth } from "../auth-provider";
 interface ChatCardProps {
   chat: IChat;

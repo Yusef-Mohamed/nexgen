@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { FilterTabs, FilterOption } from "@/components/filters/FilterTabs";
 import { getDynamicContent, ContentType } from "@/lib/dynamicContent";
 import UnifiedCard from "@/components/cards/UnifiedCard";

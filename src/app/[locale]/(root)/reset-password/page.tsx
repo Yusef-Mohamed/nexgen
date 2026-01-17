@@ -1,20 +1,28 @@
+import { use } from "react";
 import { useTranslations } from "next-intl";
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import ResetPassword from "@/components/Forms/ResetPassword";
 import AuthPage from "@/components/AuthPage";
 import { Metadata } from "next";
 import { getMetadataResetPasswordPage } from "@/getMetaData";
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   return getMetadataResetPasswordPage({
     params,
   });
 }
-const SignInPage = ({ params: { locale } }: { params: { locale: string } }) => {
-  unstable_setRequestLocale(locale);
+const SignInPage = (props: { params: Promise<{ locale: string }> }) => {
+  const params = use(props.params);
+
+  const {
+    locale
+  } = params;
+
+  
 
   const t = useTranslations("ResetPassword");
   return (

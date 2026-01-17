@@ -4,7 +4,7 @@ import {
 } from "@/app/lib/serverUtils";
 import { IUser } from "@/types";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import UserAvatar from "@/components/UserAvatar";
 import Image from "next/image";
 import FollowBtn from "@/app/[locale]/dashboard/community/profile/[userId]/components/FollowBtn";
@@ -13,9 +13,9 @@ import CommunitySidebar from "@/app/[locale]/dashboard/components/CommunitySideb
 
 const getThisUser = async (userId: string) => {
   try {
-    const axiosInstance = createServerAxiosInstance();
+    const axiosInstance = await createServerAxiosInstance();
     const token = getServerCookie("token");
-    const response = await axiosInstance(`/users/${userId}`, {
+    const response = await axiosInstance.get(`/users/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

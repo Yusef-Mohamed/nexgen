@@ -113,7 +113,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
               key={index}
             >
               {item.icon}
-              {item.params ? text(item.text, item.params) : text(item.text)}
+              {item.params ? text(item.text, item.params as any) : text(item.text)}
             </li>
           ))}
         </ul>

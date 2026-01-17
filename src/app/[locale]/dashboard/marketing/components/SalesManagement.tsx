@@ -20,7 +20,7 @@ import { useFilterCoursePackages } from "@/hooks/useFilterCoursePackages";
 import { axiosInstance } from "@/app/lib/utils";
 import { RiTeamFill } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { IUser } from "@/types";
 import {
   Select,

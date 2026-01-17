@@ -33,7 +33,7 @@ const CreatePost = ({
   const { user, token } = useAuth();
   const text = useTranslations("community");
   const inputs = useTranslations("Forms");
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Instructor-specific states
   const isInstructor = user?.isInstructor || user?.role === "instructor";

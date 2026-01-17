@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Edit, FileText, GraduationCap, MoreVertical } from "lucide-react";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { ICourse } from "@/types";
 import { getDynamicString } from "@/lib/utils";
 

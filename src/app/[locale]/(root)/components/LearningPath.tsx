@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { ICategory, ICoursePackage } from "@/types";
 import { useTranslations } from "next-intl";
 import React from "react";

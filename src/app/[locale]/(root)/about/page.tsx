@@ -6,21 +6,23 @@ import PartnersSection from "./components/PartnersSection";
 import OurValues from "./components/OurValues";
 import ReviewsSection from "./components/ReviewsSection";
 import { PromoBanner2 } from "../components/PromoBanner";
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import MobileAppHero from "../components/MobileAppHero";
 
-export function generateMetadata({
-  params,
-}: {
-  params: { locale: string };
-}): Metadata {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   return getMetadataAboutPage({
     params,
   });
 }
 
-const AboutPage = ({ params }: { params: { locale: string } }) => {
-  unstable_setRequestLocale(params.locale);
+const AboutPage = async (props: { params: Promise<{ locale: string }> }) => {
+  const params = await props.params;
+  
   return (
     <main>
       <HeroSection />

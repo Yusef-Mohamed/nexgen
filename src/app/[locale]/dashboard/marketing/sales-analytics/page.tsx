@@ -1,22 +1,29 @@
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import { Metadata } from "next";
 import { getMetadataDashboardPage } from "@/getMetaData";
 import SalesManagement from "../components/SalesManagement";
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   return getMetadataDashboardPage({
     params,
   });
 }
-const Dashboard = async ({
-  params: { locale },
-}: {
-  params: { locale: string };
-}) => {
-  unstable_setRequestLocale(locale);
+const Dashboard = async (
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+) => {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
+  
   return (
     <main
       style={{

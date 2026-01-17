@@ -58,7 +58,7 @@ const LiveCard: React.FC<LiveCardProps> = ({ live }) => {
             </h4>
           </div>
         </div>
-        <div className="py-2 mt-1 mb-3 font-semibold">{live.title}</div>
+        <div className="py-2 mt-1 mb-3 font-semibold">{getDynamicString(live.title)}</div>
         <div className="space-y-2">
           <div className="flex items-center gap-2 font-semibold text-text-3">
             <FaRegCalendarAlt />

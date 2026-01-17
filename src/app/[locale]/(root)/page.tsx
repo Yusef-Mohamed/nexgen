@@ -7,23 +7,25 @@ import BlogSection from "./components/BlogSection";
 import FAQ from "./components/FAQ";
 import { Metadata } from "next";
 import { getMetadataLandingPage } from "@/getMetaData";
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import OurLearningPaths from "./components/OurLearningPaths";
 import OurCourses from "./components/OurCourses";
 import OurServices from "./components/OurServices";
 import MobileAppHero from "./components/MobileAppHero";
-export function generateMetadata({
-  params,
-}: {
-  params: { locale: string };
-}): Metadata {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   return getMetadataLandingPage({
     params,
   });
 }
 
-const LandingPage = ({ params }: { params: { locale: string } }) => {
-  unstable_setRequestLocale(params.locale);
+const LandingPage = async (props: { params: Promise<{ locale: string }> }) => {
+  const params = await props.params;
+  
 
   return (
     <main className="max-w-full overflow-hidden">

@@ -40,7 +40,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { cn, getDynamicString, getStringObject } from "@/lib/utils";
 import { AxiosError } from "axios";
 

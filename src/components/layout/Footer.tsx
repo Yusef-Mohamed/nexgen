@@ -3,7 +3,7 @@ import React from "react";
 import Logo from "../logo";
 import { FaFacebookF, FaTelegramPlane, FaTiktok } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { FaInstagram } from "react-icons/fa";
 const aboutLinks = [
   {

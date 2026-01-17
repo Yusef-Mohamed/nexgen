@@ -18,8 +18,8 @@ import LessonListCard from "./LessonListCard";
 import SectionItem from "./SectionItem";
 import DeleteConfirmationDialogs from "./DeleteConfirmationDialogs";
 import { axiosInstance } from "@/app/lib/utils";
-import { useRouter } from "@/i18n/routing";
-import { Link } from "@/i18n/routing";
+import { useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 
 const CourseDetailClient = () => {
   const text = useTranslations("courses");

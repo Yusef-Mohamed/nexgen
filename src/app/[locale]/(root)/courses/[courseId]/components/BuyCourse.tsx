@@ -1,12 +1,12 @@
 "use client";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { useMyCoursesStore } from "@/stores/MyCoursesStore";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { useRouter } from "@/i18n/routing";
+import { useRouter } from "@/i18n/navigation";
 import { axiosInstance } from "@/app/lib/utils";
 
 const BuyCourse = ({ id, price }: { id: string; price: number }) => {

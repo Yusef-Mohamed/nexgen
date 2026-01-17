@@ -22,7 +22,7 @@ import {
   HelpCircle,
   Settings,
 } from "lucide-react";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { ILesson } from "@/types";
 import { DropTargetIndicator } from "./DropTargetIndicator";
 import AssessmentDialog from "./AssessmentDialog/component";

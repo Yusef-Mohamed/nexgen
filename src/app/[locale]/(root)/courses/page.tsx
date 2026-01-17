@@ -1,6 +1,6 @@
 import { getMetadataCoursesPage } from "@/getMetaData";
 import { Metadata } from "next";
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import { getTranslations } from "next-intl/server";
 import Features from "../components/Features";
 import FAQ from "../components/FAQ";
@@ -8,18 +8,20 @@ import CoursesFilterContent from "../components/CoursesFilterContent";
 import Image from "next/image";
 import MobileAppHero from "../components/MobileAppHero";
 
-export function generateMetadata({
-  params,
-}: {
-  params: { locale: string };
-}): Metadata {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   return getMetadataCoursesPage({
     params,
   });
 }
 
-const CoursesPage = async ({ params }: { params: { locale: string } }) => {
-  unstable_setRequestLocale(params.locale);
+const CoursesPage = async (props: { params: Promise<{ locale: string }> }) => {
+  const params = await props.params;
+  
   const text = await getTranslations("coursesPage");
 
   return (

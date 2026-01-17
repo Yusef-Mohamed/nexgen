@@ -1,5 +1,6 @@
+import { use } from "react";
 import { useTranslations } from "next-intl";
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import AuthPage from "@/components/AuthPage";
 import { getMetadataResetCodePage } from "@/getMetaData";
 import { Metadata } from "next";
@@ -8,20 +9,27 @@ import { cookies } from "next/headers";
 import { IUser } from "@/types";
 import Resend from "./components/Resend";
 import { DropdownMenuLogout } from "@/components/SimpleClientComponents";
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: string };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
   return getMetadataResetCodePage({
     params,
   });
 }
-const ResetCode = ({ params: { locale } }: { params: { locale: string } }) => {
-  unstable_setRequestLocale(locale);
+const ResetCode = async (props: { params: Promise<{ locale: string }> }) => {
+  const params = await props.params;
+
+  const {
+    locale
+  } = params;
+
+  
   const t = useTranslations("ResetCode");
-  const cookie = cookies();
-  const user = JSON.parse(cookie.get("user")?.value || "{}") as IUser;
+  const cookieStore = await cookies();
+  const user = JSON.parse(cookieStore.get("user")?.value || "{}") as IUser;
   return (
     <AuthPage
       heading={t("heading")}

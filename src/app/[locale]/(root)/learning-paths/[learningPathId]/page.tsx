@@ -1,7 +1,7 @@
 import { getMetadataLearningPathPage } from "@/getMetaData";
 import { Metadata } from "next";
 
-import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
+import { getTranslations} from "next-intl/server";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { ICoursePackage } from "@/types";
 import { notFound } from "next/navigation";
@@ -20,12 +20,13 @@ import PathContent from "./components/PathContent";
 import { getDynamicString } from "@/lib/utils";
 import MobileAppHero from "../../components/MobileAppHero";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { locale: string; learningPathId: string };
-}): Promise<Metadata> {
-  const axiosInstance = createServerAxiosInstance();
+export async function generateMetadata(
+  props: {
+    params: Promise<{ locale: string; learningPathId: string }>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
+  const axiosInstance = await createServerAxiosInstance();
   const learningPathRes = await axiosInstance.get(
     "/coursePackages/" + params.learningPathId
   );
@@ -40,14 +41,15 @@ export async function generateMetadata({
   });
 }
 
-const LearningPathPage = async ({
-  params,
-}: {
-  params: { locale: string; learningPathId: string };
-}) => {
-  unstable_setRequestLocale(params.locale);
+const LearningPathPage = async (
+  props: {
+    params: Promise<{ locale: string; learningPathId: string }>;
+  }
+) => {
+  const params = await props.params;
+  
   try {
-    const axiosInstance = createServerAxiosInstance();
+    const axiosInstance = await createServerAxiosInstance();
     const learningPathRes = await axiosInstance.get(
       "/coursePackages/" + params.learningPathId
     );

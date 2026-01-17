@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { FaReply, FaStar } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import { useAuth } from "../auth-provider";
-import { useRouter } from "@/i18n/routing";
+import { useRouter } from "@/i18n/navigation";
 import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 

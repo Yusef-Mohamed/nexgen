@@ -8,7 +8,7 @@ import { IBlog, BlogStatus } from "@/types";
 import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import BlogCard from "./BlogCard";
 import SearchWithStatusFilter, {
   StatusOption,

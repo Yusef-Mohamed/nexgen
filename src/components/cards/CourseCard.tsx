@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import { FaStar, FaRegClock } from "react-icons/fa";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { LevelsIcons } from "../icons";
 import { cn, getDynamicString } from "@/lib/utils";

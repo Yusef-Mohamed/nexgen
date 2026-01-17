@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { useAuth } from "@/components/auth-provider";
 import { ArrowLeft, Plus } from "lucide-react";
-import { Link, useRouter } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/navigation";
 import { cn, getStringObject } from "@/lib/utils";
 import dynamic from "next/dynamic";
 import ImageUploadField from "@/components/form/ImageUploadField";

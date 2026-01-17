@@ -22,7 +22,7 @@ import { DatePickerWithRange } from "@/components/DatePickerWithRange";
 import UserAvatar from "@/components/UserAvatar";
 import OrdersDialog from "./OrdersDialog";
 import { format } from "date-fns";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import * as XLSX from "xlsx";
 import { getDynamicString } from "@/lib/utils";

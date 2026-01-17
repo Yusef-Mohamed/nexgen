@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { AxiosError } from "axios";
-import { useRouter, usePathname } from "@/i18n/routing";
+import { useRouter, usePathname } from "@/i18n/navigation";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 import { getStringObject } from "@/lib/utils";

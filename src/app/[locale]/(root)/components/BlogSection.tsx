@@ -5,11 +5,11 @@ import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { IBlog } from "@/types";
 import GridSection from "@/components/GridSection";
 import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 
 const BlogSection: React.FC = async () => {
   const text = await getTranslations("blogs");
-  const axiosInstance = createServerAxiosInstance();
+  const axiosInstance = await createServerAxiosInstance();
 
   try {
     const blogsRes = await axiosInstance.get("/articals?limit=3");
@@ -31,7 +31,7 @@ const BlogSection: React.FC = async () => {
 };
 export const BlogSection2: React.FC = async () => {
   const text = await getTranslations("blogs");
-  const axiosInstance = createServerAxiosInstance();
+  const axiosInstance = await createServerAxiosInstance();
 
   try {
     const blogsRes = await axiosInstance.get("/articals?limit=2");

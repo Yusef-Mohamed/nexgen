@@ -1,6 +1,6 @@
 "use client";
 import { useAuth } from "@/components/auth-provider";
-import { Link, usePathname } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { BsChatLeftDots } from "react-icons/bs";

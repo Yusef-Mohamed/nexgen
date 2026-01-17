@@ -11,7 +11,7 @@ import OneSidedContainer from "@/components/OneSidedContainer";
 import SearchInput from "@/components/SearchInput";
 import { useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/app/lib/utils";
-import { usePathname, useRouter } from "@/i18n/routing";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { getDynamicString } from "@/lib/utils";
 
 interface OurLearningPathsProps {

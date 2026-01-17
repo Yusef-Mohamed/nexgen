@@ -7,7 +7,7 @@ import { IoClose } from "react-icons/io5";
 import LanguageSelector from "../LanguageSelector";
 import ThemeToggler from "../ThemeToggler";
 import { Button } from "../ui/button";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useAuth } from "../auth-provider";
 const MobileHeader = ({

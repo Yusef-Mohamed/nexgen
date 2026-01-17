@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { ICourse, ILesson } from "@/types";
 import { FiPlayCircle } from "react-icons/fi";
 import { ChevronRight } from "lucide-react";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { axiosInstance } from "@/app/lib/utils";
 import { getDynamicString } from "@/lib/utils";
 

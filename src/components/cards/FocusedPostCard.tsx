@@ -9,7 +9,7 @@ import TextWithEmojiBox from "../TextWithEmojiBox";
 import { toast } from "react-toastify";
 import ImageWithZoom from "../ImageWithZoom";
 import { axiosInstance } from "@/app/lib/utils";
-import { Link, usePathname } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/navigation";
 import { useAuth } from "../auth-provider";
 import { MdClose } from "react-icons/md";
 import { Button } from "../ui/button";

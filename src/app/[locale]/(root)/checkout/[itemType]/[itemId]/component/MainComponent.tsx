@@ -9,7 +9,7 @@ import { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { ItemType } from "../page";
 import { Input } from "@/components/ui/input";
-import { Link, useRouter } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/navigation";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import {
@@ -276,7 +276,8 @@ const MainComponent = ({
           <div className="flex justify-between ">
             <div>
               <h5>{getDynamicString(thisItem?.title)}</h5>
-              <span className="text-sm text-text-3">{text(itemType)}</span>
+              <span className="text-sm text-text-3">{itemType && text(itemType as any)}</span>
+
             </div>
             <div className="flex items-start gap-1 font-medium whitespace-nowrap">
               {thisItem?.priceAfterDiscount ? (

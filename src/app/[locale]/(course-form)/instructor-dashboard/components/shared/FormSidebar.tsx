@@ -1,13 +1,13 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useRouter, usePathname } from "@/i18n/routing";
+import { useRouter, usePathname } from "@/i18n/navigation";
 import { ArrowLeft, Check } from "lucide-react";
 import Logo from "@/components/logo";
-import { Link } from "@/i18n/routing";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams } from "next/navigation";
 import React from "react";
+import { Link } from "@/i18n/navigation";
 
 export interface StepConfig {
   id: string;

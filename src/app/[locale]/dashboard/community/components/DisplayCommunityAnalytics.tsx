@@ -9,7 +9,7 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useTranslations } from "next-intl";
 import CreatePost from "./CreatePost";
 import { useAuth } from "@/components/auth-provider";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 const DisplayCommunityAnalytics = () => {
   const { token, user } = useAuth();
   const text = useTranslations("dashboard");

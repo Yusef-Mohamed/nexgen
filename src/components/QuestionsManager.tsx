@@ -33,8 +33,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "react-toastify";
 import { IExam, IQuestion } from "@/types";
-import { axiosInstance } from "@/app/lib/utils";
+import { axiosInstance,  } from "@/app/lib/utils";
 import { Plus, Edit, Trash2, Loader2, FileText, X } from "lucide-react";
+import { getDynamicString } from "@/lib/utils";
 
 interface QuestionsManagerProps {
   exam: IExam;
@@ -98,7 +99,7 @@ export const QuestionsManager = ({
   const handleEditQuestion = (question: IQuestion) => {
     setEditingQuestion(question);
     setFormData({
-      question: question.question,
+      question: getDynamicString(question.question),
       questionImage: null,
       grade: question.grade || 1,
       optionsType: question.options.some((opt: string) => opt.includes("http"))
@@ -382,7 +383,7 @@ const QuestionCard = ({
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Badge variant="primary">
+            <Badge >
               {text("question_number", { number: index + 1 })}
             </Badge>
             <Badge variant="outline">
@@ -405,7 +406,7 @@ const QuestionCard = ({
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        <p className="text-sm">{question.question}</p>
+        <p className="text-sm">{getDynamicString(question.question)}</p>
 
         {question.questionImage && (
           <img

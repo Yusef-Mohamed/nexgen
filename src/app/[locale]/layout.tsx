@@ -2,21 +2,19 @@ import type { Metadata } from "next";
 import { Alexandria } from "next/font/google";
 import "./globals.css";
 import { NextIntlClientProvider, useMessages } from "next-intl";
-import { unstable_setRequestLocale } from "next-intl/server";
+
 import "react-toastify/dist/ReactToastify.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Script from "next/script";
 import { FaTelegramPlane } from "react-icons/fa";
 import ToastProvider from "@/components/ToastProvider";
-import dynamic from "next/dynamic";
 import { AuthProvider } from "@/components/auth-provider";
 import { GoogleTagManager } from "@next/third-parties/google";
 import QueryProvider from "@/components/QueryProvider";
 import ProgressBarProvider from "@/components/progress-bar";
-const SocketWrapper = dynamic(() => import("@/components/SocketWrapper"), {
-  ssr: false,
-});
+
 import * as Sentry from "@sentry/nextjs";
+import SocketWrapper from "@/components/SocketWrapper";
 
 const alexandria = Alexandria({
   subsets: ["latin"],
@@ -25,9 +23,10 @@ const alexandria = Alexandria({
 export async function generateMetadata({
   params,
 }: {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  if (params.locale === "en") {
+  const {locale} = await params;
+  if (locale === "en") {
     return {
       title: "Nexgen Academy",
       description:
@@ -76,15 +75,14 @@ const locales = ["en", "ar"];
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
-export default function RootLayout({
+export default async function RootLayout({
   children,
-  params: { locale },
+  params,
 }: Readonly<{
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }>) {
-  unstable_setRequestLocale(locale);
-  const messages = useMessages();
+  const {locale} = await params;  
 
   return (
     <html
@@ -171,7 +169,7 @@ nsertBefore(n,e)};
           enableSystem
           disableTransitionOnChange
         >
-          <NextIntlClientProvider messages={messages}>
+          <NextIntlClientProvider >
             <QueryProvider>
               <AuthProvider>
                 <SocketWrapper>

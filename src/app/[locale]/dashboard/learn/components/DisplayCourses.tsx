@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/routing";
+import { Link } from "@/i18n/navigation";
 import { useMyCoursesStore } from "@/stores/MyCoursesStore";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";

@@ -10,7 +10,7 @@ import { axiosInstance } from "@/app/lib/utils";
 import CategoryFilter from "./CategoryFilter";
 import SearchInput from "@/components/SearchInput";
 import { useSearchParams } from "next/navigation";
-import { usePathname, useRouter } from "@/i18n/routing";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { getDynamicString } from "@/lib/utils";
 
 interface OurServicesProps {

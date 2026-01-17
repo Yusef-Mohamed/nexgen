@@ -2,7 +2,7 @@
 
 import { cn, getDynamicString } from "@/lib/utils";
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/routing";
+import { useRouter } from "@/i18n/navigation";
 import { useState } from "react";
 import { ChevronDown, ChevronUp, PlayCircle, ArrowLeft } from "lucide-react";
 import { FaBook } from "react-icons/fa";

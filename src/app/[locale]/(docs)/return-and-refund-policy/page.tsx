@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 // import { Metadata } from "next";
 // import { getMetadataReturnAndRefund } from "@/getMetaData";
-import { unstable_setRequestLocale } from "next-intl/server";
+
 // export function generateMetadata({
 //   params,
 // }: {
@@ -12,8 +12,9 @@ import { unstable_setRequestLocale } from "next-intl/server";
 //   });
 // }
 
-const ReturnAndRefund = ({ params }: { params: { locale: string } }) => {
-  unstable_setRequestLocale(params.locale);
+const ReturnAndRefund = async (props: { params: Promise<{ locale: string }> }) => {
+  const params = await props.params;
+  
 
   return (
     <main>
