@@ -52,9 +52,8 @@ const Main = () => {
     const urlLower = url?.toLowerCase();
     return imageExtensions.some((ext) => urlLower.includes(ext));
   };
-  console.log(sections);
   return (
-    <main className="flex flex-col px-2 py-6 lg:px-6 sm:px-4 bg-dash-ground">
+    <main className="flex flex-col px-2 py-6 lg:px-6 sm:px-4 bg-background">
       <div className="cardShadow container bg-clear-ground rounded-xl lg:p-12 md:p-8 p-6">
         {selectedLesson && selectedDisplay === "lesson" && (
           <LessonBody lessonId={selectedLesson} lesson={currentLesson} />

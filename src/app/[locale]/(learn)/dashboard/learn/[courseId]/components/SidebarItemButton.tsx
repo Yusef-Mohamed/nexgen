@@ -1,58 +1,122 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Lock } from "lucide-react";
+import { Lock, ChevronUp, ChevronDown } from "lucide-react";
 import { MdOutlineErrorOutline } from "react-icons/md";
 import { type ComponentType } from "react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface SidebarItemButtonProps {
   title: string;
   subtitle?: string;
-  Icon: ComponentType<{ className?: string }>;
+  icon: string;
   isFocused: boolean;
   isDone?: boolean;
   disabled?: boolean;
   onClick: () => void;
+  badge?: string;
+  variant?: "primary" | "none" | "primary-outline";
+  isExpanded?: boolean;
+  onToggle?: (e: React.MouseEvent) => void;
 }
 
 const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
   title,
   subtitle,
-  Icon,
+  icon,
   isFocused,
   isDone,
   disabled = false,
   onClick,
+  badge,
+  variant = "none",
+  isExpanded,
+  onToggle,
 }) => {
+  const isPrimary = variant === "primary";
+  const isOutline = variant === "primary-outline";
+
   return (
     <Button
       onClick={onClick}
       disabled={disabled}
-      variant={isFocused ? "default" : "ghost"}
-      className="w-full flex items-center !h-auto justify-between gap-2 py-3 px-3 rounded-lg text-start"
+      variant={isPrimary ? "default" : "none"}
+      className={cn(
+        "w-full flex items-center !h-auto justify-between gap-2 py-4 px-4 rounded-2xl text-start transition-all duration-300 cursor-pointer",
+        {
+          "hover:bg-primary/10": variant !== "primary",
+          "border border-primary bg-primary/5": isOutline,
+        }
+      )}
     >
-      <div className="flex items-center gap-5 flex-1 min-w-0">
-        <Icon className="w-10 h-10 flex-shrink-0" />
-        <div className="w-full flex-1 overflow-hidden">
-          <h5 className="overflow-hidden line-clamp-1 font-medium whitespace-break-spaces">
-            {title}
-          </h5>
+      <div className="flex items-center gap-4 flex-1 min-w-0">
+        <Image width={40} height={40} alt="section" src={icon} />
+
+        <div className="w-full flex-1 overflow-hidden space-y-1">
+          <div className="flex items-center gap-2">
+            {badge && (
+              <span
+                className={cn(
+                  "px-2 py-0.5 text-xs font-bold rounded-md flex-shrink-0",
+                  isPrimary ? "bg-white/20 text-white" : "bg-primary/10 text-primary"
+                )}
+              >
+                {badge}
+              </span>
+            )}
+            <h5
+              className={cn(
+                "overflow-hidden line-clamp-1 font-bold text-base whitespace-break-spaces",
+                isPrimary ? "text-white" : "text-gray-900"
+              )}
+            >
+              {title}
+            </h5>
+          </div>
           <span
             className={cn(
-              "text-sm text-muted-foreground line-clamp-1 whitespace-break-spaces",
-              isFocused && "text-primary-foreground/80"
+              "text-sm line-clamp-1 whitespace-break-spaces font-medium",
+              isPrimary ? "text-white/80" : "text-gray-500"
             )}
           >
             {subtitle}
           </span>
         </div>
       </div>
-      {disabled ? (
-        <Lock className="w-4 h-4 flex-shrink-0" />
-      ) : isDone === false ? (
-        <MdOutlineErrorOutline className="w-5 h-5 text-destructive flex-shrink-0" />
-      ) : null}
+
+      <div className="flex items-center gap-2">
+        {disabled ? (
+          <Lock
+            className={cn(
+              "w-4 h-4 flex-shrink-0",
+              isPrimary ? "text-white/60" : "text-gray-400"
+            )}
+          />
+        ) : isDone === false ? (
+          <MdOutlineErrorOutline className="w-5 h-5 text-destructive flex-shrink-0" />
+        ) : null}
+
+        {onToggle && (
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle(e);
+            }}
+            className="p-1 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
+          >
+            {isExpanded ? (
+              <ChevronUp
+                className={cn("w-5 h-5", isPrimary ? "text-white" : "text-gray-400")}
+              />
+            ) : (
+              <ChevronDown
+                className={cn("w-5 h-5", isPrimary ? "text-white" : "text-gray-400")}
+              />
+            )}
+          </div>
+        )}
+      </div>
     </Button>
   );
 };

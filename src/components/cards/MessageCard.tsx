@@ -122,20 +122,33 @@ const MessageCard: React.FC<MessageCardProps> = ({
           >
             <div
               className={cn(
-                "px-4 py-3 rounded-[2rem]  flex-1 group relative max-w-md",
+                "px-4 py-2 rounded-[1.25rem] min-w-20 flex-1 group relative max-w-md",
                 {
                   "bg-primary text-white": isMine,
-                  "bg-muted": !isMine,
+                  "bg-primary/5 border border-primary/20": !isMine,
                 }
               )}
             >
+              {isMine&&
+              <div className={cn("absolute top-0  ",{
+                "end-0":isMine,
+              })}
+              style={{
+                border:"15px solid",
+                borderColor:"hsl(var(--primary)) transparent transparent transparent"
+              }}
+              ></div>
+            }
               {message.repliedTo && (
                 <div
-                  className={cn(" p-1 rounded mb-2", {
+                  className={cn(" px-4 py-2 rounded-lg mb-2", {
                     "bg-muted text-text-2": isMine,
-                    "bg-primary text-white": !isMine,
+                    "bg-primary/10 border border-primary/20  ": !isMine,
                   })}
                 >
+                  <p className="text-primary text-sm mb-1">
+                    {message.repliedTo.sender.name}
+                  </p>
                   <p className="text-xs">
                     {renderMessageText(message.repliedTo.text)}
                   </p>

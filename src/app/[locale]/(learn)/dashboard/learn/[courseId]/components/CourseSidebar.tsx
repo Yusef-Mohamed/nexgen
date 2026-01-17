@@ -3,7 +3,7 @@
 import { cn, getDynamicString } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp, PlayCircle, ArrowLeft } from "lucide-react";
 import { FaBook } from "react-icons/fa";
 import { MdOutlineAssignment } from "react-icons/md";
@@ -16,6 +16,7 @@ import useCustomSearchParams from "@/hooks/useSearchParams";
 import { useCourseContext } from "../context/CourseContext";
 import CourseSidebarSkeleton from "./CourseSidebarSkeleton";
 import { ILesson } from "@/types";
+import Image from "next/image";
 
 interface CourseSidebarProps {
   className?: string;
@@ -37,12 +38,59 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
   const selectedLesson = searchParams.get("lesson");
   const selectedDisplay = searchParams.get("display");
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
-  console.log(sections);
+  const [expandedLessons, setExpandedLessons] = useState<string[]>([]);
+
+  // Auto-expand based on active lesson/display
+  useEffect(() => {
+    if (!sections || sections.length === 0) return;
+
+    if (selectedLesson) {
+      sections.forEach((section) => {
+        const hasLesson = section.lessons.some((l) => l._id === selectedLesson);
+        if (hasLesson) {
+          // Open the section
+          setExpandedSections((prev) =>
+            prev.includes(section.section) ? prev : [...prev, section.section]
+          );
+
+          // Open the lesson if it has sub-items (quiz/practice)
+          if (selectedDisplay === "quiz" || selectedDisplay === "practice") {
+            setExpandedLessons((prev) =>
+              prev.includes(selectedLesson) ? prev : [...prev, selectedLesson]
+            );
+          }
+        }
+      });
+    } else if (selectedDisplay === "final_exam") {
+      // Open the last section
+      const lastSection = sections[sections.length - 1];
+      if (lastSection) {
+        setExpandedSections((prev) =>
+          prev.includes(lastSection.section) ? prev : [...prev, lastSection.section]
+        );
+      }
+    }
+  }, [sections, selectedLesson, selectedDisplay]);
+
   const toggleSection = (sectionName: string) => {
     setExpandedSections((prev) =>
       prev.includes(sectionName)
         ? prev.filter((s) => s !== sectionName)
         : [...prev, sectionName]
+    );
+  };
+
+  const toggleLesson = (lessonId: string) => {
+    setExpandedLessons((prev) =>
+      prev.includes(lessonId)
+        ? prev.filter((id) => id !== lessonId)
+        : [...prev, lessonId]
+    );
+  };
+
+  const openSection = (sectionName: string) => {
+    setExpandedSections((prev) =>
+      prev.includes(sectionName) ? prev : [...prev, sectionName]
     );
   };
 
@@ -119,7 +167,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
   return (
     <aside
       className={cn(
-        "py-4 pt-0 flex flex-col bg-clear-ground h-screen overflow-auto max-h-screen top-0 sticky transition-all duration-300",
+        "py-4 pt-0 flex flex-col bg-background-2 h-screen overflow-auto max-h-screen top-0 sticky transition-all duration-300",
         collapsed ? "w-16 px-2 pt-4" : "w-[28rem] px-3 sm:px-6",
         className
       )}
@@ -167,64 +215,95 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
             {/* Back to Learning Button */}
             <button
               onClick={() => router.push("/dashboard/learn")}
-              className="flex items-center gap-3 px-4 py-3 mb-4 text-foreground hover:bg-muted rounded-lg transition-colors"
+              className="flex items-center gap-3 px-4 py-3 mb-6 text-foreground hover:bg-white hover:shadow-sm rounded-2xl transition-all cursor-pointer"
             >
-              <div className="flex items-center justify-center size-11 border-foreground rounded-full border">
-                <ArrowLeft className="w-5 h-5" />
+              <div className="flex items-center justify-center size-10 border-gray-200 rounded-full border bg-white shadow-sm">
+                <ArrowLeft className="w-4 h-4 text-gray-600" />
               </div>
-              <span className="font-medium">{text("backToMyLearning")}</span>
+              <span className="font-bold text-gray-700">{text("backToMyLearning")}</span>
             </button>
 
             {/* Course Sections */}
-            <nav>
-              <ul className="space-y-5">
+            <nav className="flex-1 overflow-y-auto pr-1 custom-scrollbar">
+              <ul className="space-y-6">
                 {sections.map((section, sectionIndex) => {
                   const isExpanded = expandedSections.includes(section.section);
 
                   return (
-                    <li key={section.section} className="space-y-4">
+                    <li
+                      key={section.section}
+                      onClick={() => openSection(section.section)}
+                      className={
+                        cn("space-y-4 p-4 border bg-primary/5 border-primary/30 rounded-2xl",{
+                          "cursor-pointer":!isExpanded,
+                        })
+                      }
+                    >
                       {/* Section Header */}
                       <button
-                        onClick={() => toggleSection(section.section)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleSection(section.section);
+                        }}
                         className={cn(
-                          "w-full bg-primary/10 border border-primary/20 flex items-start justify-between p-4 rounded-lg transition-all"
+                          "flex cursor-pointer items-center justify-between w-full "
                         )}
                       >
-                        <div className="flex items-center gap-3 flex-1 min-w-0">
-                          <FaBook className="w-10 h-10 text-primary flex-shrink-0" />
-                          {
-                            <div className="flex-1 min-w-0 text-start">
-                              <div className="font-semibold text-lg truncate">
-                                {section.section}
-                              </div>
-                              <div className="text-sm text-muted-foreground">
-                                {calculateSectionProgress(section.lessons)} |{" "}
-                                {calculateSectionDuration(section.lessons)}
-                              </div>
+                        <div className="flex items-center gap-4 flex-1 min-w-0">
+                          <div>
+                            <Image  width={48} height={48} alt="section" src={"/images/section.png"}/>
+                          </div>
+                          <div className="flex-1 min-w-0 text-start">
+                            <div className="font-bold text-lg truncate">
+                              {section.section}
                             </div>
-                          }
+                            <div className="text-sm font-medium text-text-3">
+                              {calculateSectionProgress(section.lessons)} |{" "}
+                              {calculateSectionDuration(section.lessons)}
+                            </div>
+                          </div>
                         </div>
-                        {isExpanded ? (
-                          <ChevronUp className="w-5 h-5 text-primary flex-shrink-0" />
-                        ) : (
-                          <ChevronDown className="w-5 h-5 text-primary flex-shrink-0" />
-                        )}
+                        <div >
+                          {isExpanded ? (
+                            <ChevronUp className="w-5 h-5" />
+                          ) : (
+                            <ChevronDown className="w-5 h-5" />
+                          )}
+                        </div>
                       </button>
 
                       {/* Lessons List */}
                       {isExpanded && (
-                        <ul className="space-y-1 mt-1">
+                        <ul className="space-y-4 px-1">
                           {section.lessons.map((lesson, lessonIndex) => {
                             const isLastLesson =
                               sectionIndex === sections.length - 1 &&
                               lessonIndex === section.lessons.length - 1;
+                            
+                            const isLessonExpanded = expandedLessons.includes(lesson._id);
+                            let subItemCounter = 1;
+                            const sectionNumber = sectionIndex + 1;
+
+                            const hasSubItems =
+                              lesson.hasQuiz ||
+                              lesson.isRequireAnalytic ||
+                              isLastLesson;
+                            const isAnyActive =
+                              selectedLesson === lesson._id ||
+                              (isLastLesson &&
+                                selectedDisplay === "final_exam");
 
                             return (
-                              <li key={lesson._id} className="space-y-4">
-                                {/* Video Lesson */}
+                              <li
+                                key={lesson._id}
+                                className="space-y-5 bg-background p-3 rounded-2xl"
+                              >
+                                {/* Video Lesson (Main Header) */}
                                 <SidebarItemButton
+                                  variant={isAnyActive || isLessonExpanded ? "primary" : "none"}
+                                  badge={`${sectionNumber}.${subItemCounter++}`}
                                   title={getDynamicString(lesson.title)}
-                                  Icon={PlayCircle}
+                                  icon={"/images/video.png"}
                                   subtitle={`${text("video")} | ${
                                     lesson.lessonDuration
                                   } ${text("minuteAbbr")}`}
@@ -233,95 +312,110 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                     "lesson"
                                   )}
                                   disabled={!lesson.videoUrl}
-                                  onClick={() =>
-                                    handleLessonChange(lesson._id, "lesson")
-                                  }
+                                  onClick={() =>{
+                                    handleLessonChange(lesson._id, "lesson");
+                                    toggleLesson(lesson._id);
+                                  }}
                                   isDone={lesson.lessonWatched}
+                                  onToggle={
+                                    hasSubItems
+                                      ? () => toggleLesson(lesson._id)
+                                      : undefined
+                                  }
+                                  isExpanded={isLessonExpanded}
                                 />
 
-                                {/* Quiz */}
-                                {lesson.hasQuiz && (
-                                  <SidebarItemButton
-                                    title={lesson.quizTitle || "FIXED"}
-                                    subtitle={`${text("quiz")} | ${
-                                      lesson.examQuestionsNumber
-                                    } ${text("questions")}`}
-                                    Icon={PiExam}
-                                    isFocused={isLessonActive(
-                                      lesson._id,
-                                      "quiz"
+                                {/* Sub Items Container */}
+                                {hasSubItems && isLessonExpanded && (
+                                  <div className="space-y-2 pt-1 px-1">
+                                    {/* Quiz */}
+                                    {lesson.hasQuiz && (
+                                      <SidebarItemButton
+                                        badge={`${sectionNumber}.${subItemCounter++}`}
+                                        variant={isLessonActive(lesson._id, "quiz") ? "primary-outline" : "none"}
+                                        title={lesson.quizTitle || text("quiz")}
+                                        subtitle={`${text("quiz")} | ${
+                                          lesson.examQuestionsNumber
+                                        } ${text("questions")}`}
+                                        icon={"/images/exam.png"}
+                                        isFocused={isLessonActive(
+                                          lesson._id,
+                                          "quiz"
+                                        )}
+                                        isDone={lesson.passedExam}
+                                        disabled={!lesson.videoUrl}
+                                        onClick={() =>
+                                          handleLessonChange(
+                                            lesson._id,
+                                            "quiz",
+                                            getDynamicString(lesson.title)
+                                          )
+                                        }
+                                      />
                                     )}
-                                    isDone={lesson.passedExam}
-                                    disabled={!lesson.videoUrl}
-                                    onClick={() =>
-                                      handleLessonChange(
-                                        lesson._id,
-                                        "quiz",
-                                        getDynamicString(lesson.title)
-                                      )
-                                    }
-                                  />
-                                )}
 
-                                {/* Practice (if required) */}
-                                {lesson.isRequireAnalytic && (
-                                  <SidebarItemButton
-                                    title={
-                                      getDynamicString(
-                                        lesson.assignmentTitle
-                                      ) || "FIXED"
-                                    }
-                                    subtitle={`${text("assignment")}`}
-                                    Icon={MdOutlineAssignment}
-                                    isFocused={isLessonActive(
-                                      lesson._id,
-                                      "practice"
+                                    {/* Practice (if required) */}
+                                    {lesson.isRequireAnalytic && (
+                                      <SidebarItemButton
+                                        badge={`${sectionNumber}.${subItemCounter++}`}
+                                        variant={isLessonActive(lesson._id, "practice") ? "primary-outline" : "none"}
+                                        title={
+                                          getDynamicString(
+                                            lesson.assignmentTitle
+                                          ) || text("assignment")
+                                        }
+                                        subtitle={`${text("assignment")}`}
+                                        icon={"/images/practice.png"}
+                                        isFocused={isLessonActive(
+                                          lesson._id,
+                                          "practice"
+                                        )}
+                                        isDone={lesson.passedAnalyticsTask}
+                                        disabled={
+                                          !lesson.videoUrl ||
+                                          (!lesson.passedExam && lesson.hasQuiz)
+                                        }
+                                        onClick={() =>
+                                          handleLessonChange(
+                                            lesson._id,
+                                            "practice",
+                                            getDynamicString(lesson.title)
+                                          )
+                                        }
+                                      />
                                     )}
-                                    isDone={lesson.passedAnalyticsTask}
-                                    disabled={
-                                      !lesson.videoUrl ||
-                                      (!lesson.passedExam && lesson.hasQuiz)
-                                    }
-                                    onClick={() =>
-                                      handleLessonChange(
-                                        lesson._id,
-                                        "practice",
-                                        getDynamicString(lesson.title)
-                                      )
-                                    }
-                                  />
-                                )}
 
-                                {/* Final Exam (only for last lesson) */}
-                                {isLastLesson && (
-                                  <SidebarItemButton
-                                    title={
-                                      getDynamicString(course?.examTitle) ??
-                                      text("final_exam")
-                                    }
-                                    subtitle={`${text("final_exam")} | ${
-                                      course?.examQuestionsNumber
-                                    } ${text("questions")}`}
-                                    Icon={GiGraduateCap}
-                                    isFocused={selectedDisplay === "final_exam"}
-                                    disabled={
-                                      // !lesson.videoUrl || !lesson.passedExam
-                                      !lesson.videoUrl
-                                    }
-                                    onClick={() =>
-                                      handleLessonChange("", "final_exam")
-                                    }
-                                  />
+                                  </div>
                                 )}
                               </li>
                             );
                           })}
                         </ul>
                       )}
+                      
+                      {/* Final Exam (Only in last section expanded content) */}
+                      {isExpanded && sectionIndex === sections.length - 1 && (
+                        <div                                 className="space-y-5 bg-background p-3 rounded-2xl"
+>
+                          <SidebarItemButton
+                            variant={selectedDisplay === "final_exam" ? "primary" : "none"}
+                            title={
+                              getDynamicString(course?.examTitle) ?? text("final_exam")
+                            }
+                            subtitle={`${text("final_exam")} | ${
+                              course?.examQuestionsNumber
+                            } ${text("questions")}`}
+                            icon={"/images/exam.png"}
+                            isFocused={selectedDisplay === "final_exam"}
+                            onClick={() => handleLessonChange("", "final_exam")}
+                          />
+                        </div>
+                      )}
                     </li>
                   );
                 })}
               </ul>
+
             </nav>
           </>
         )}
