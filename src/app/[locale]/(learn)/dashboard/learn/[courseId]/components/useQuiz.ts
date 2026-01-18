@@ -170,7 +170,8 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
         const updatedSections = unlockLessonsSequentially(
           sections,
           id,
-          false // checkForNoQuiz = false for quiz
+          false, // checkForNoQuiz = false for quiz
+          true // skipUnlockNextIfCurrentHasAssignment: do not unlock next if this lesson has an assignment
         );
 
         // Mark passedExam as true for the current lesson

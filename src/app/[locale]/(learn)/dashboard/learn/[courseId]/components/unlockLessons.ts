@@ -15,12 +15,14 @@ interface Section {
  * @param sections - Array of sections with lessons
  * @param currentLessonId - ID of the current lesson
  * @param checkForNoQuiz - If true, only proceed if lesson.hasQuiz === false (for practice)
+ * @param skipUnlockNextIfCurrentHasAssignment - If true and the current lesson has an assignment, only unlock the current lesson and do not unlock the next one (e.g. when quiz is done but assignment must be completed first)
  * @returns Updated sections array with unlocked lessons
  */
 export function unlockLessonsSequentially(
   sections: Section[],
   currentLessonId: string,
-  checkForNoQuiz: boolean = false
+  checkForNoQuiz: boolean = false,
+  skipUnlockNextIfCurrentHasAssignment: boolean = false
 ): Section[] {
   if (!sections || sections.length === 0) {
     return sections;
@@ -72,6 +74,20 @@ export function unlockLessonsSequentially(
   if (currentSection && currentSection.lessons[currentLessonItem.lessonIndex]) {
     currentSection.lessons[currentLessonItem.lessonIndex].videoUrl =
       PLACEHOLDER_VIDEO_URL;
+  }
+
+  // If current lesson has an unfinished assignment/practice, do not unlock the next lesson
+  // - isRequireAnalytic + !passedAnalyticsTask = unfinished practice (analytic task)
+  // - assignmentTitle/assignmentFile + !assignmentDone = unfinished assignment
+  if (skipUnlockNextIfCurrentHasAssignment) {
+    const hasUnfinishedPractice =
+      currentLesson.isRequireAnalytic && !currentLesson.passedAnalyticsTask;
+    const hasUnfinishedAssignment =
+      (currentLesson.assignmentTitle || currentLesson.assignmentFile) &&
+      currentLesson.assignmentDone !== true;
+    if (hasUnfinishedPractice || hasUnfinishedAssignment) {
+      return updatedSections;
+    }
   }
 
   // Iterate through next lessons
