@@ -10,6 +10,12 @@ import { CorrectIcon, InCorrectIcon } from "@/components/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import useQuiz, { QuizType } from "./useQuiz";
 import { toast } from "react-toastify";
+import { useMemo } from "react";
+import { useParams } from "next/navigation";
+import {
+  failedExamMotivationalMessages,
+  motivationalMessages,
+} from "@/data/messages";
 
 interface QuizBodyProps {
   id: string;
@@ -39,6 +45,15 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
     setShowFeedback,
   } = useQuiz({ id, quizType: quizType as QuizType });
 
+  const { locale } = useParams();
+
+  const motivationalMessage = useMemo(() => {
+    if (!submitData.totalScore) return null;
+    const messages = submitData.passed
+      ? motivationalMessages
+      : failedExamMotivationalMessages;
+    return messages[Math.floor(Math.random() * messages.length)];
+  }, [submitData.passed, submitData.totalScore]);
   // Add early return if quiz data is not ready
   if (!quiz && isLoading) {
     return (
@@ -124,9 +139,9 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
                     {text("receiveGrade")}
                   </span>
                 </div>
-                  <p className="text-lg font-medium">
-                    {text("toPassOrHigher", { score: quiz?.passingScore ?? 0 })}
-                  </p>
+                <p className="text-lg font-medium">
+                  {text("toPassOrHigher", { score: quiz?.passingScore ?? 0 })}
+                </p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-center">
@@ -165,28 +180,36 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
               </div>
             ) : submitData.passed ? (
               <>
-                {" "}
                 <div className="flex justify-center py-8">
                   <div className="text-6xl select-none">👍</div>
                 </div>
-                <p className="text-success font-semibold text-center text-xl">
-                  {text("resultSuccessTitle")}
+                <p
+                  className="cardShadowSecondary w-fit mx-auto
+                 p-4 rounded-md font-semibold text-center text-xl"
+                >
+                  {locale === "ar"
+                    ? motivationalMessage?.ar
+                    : motivationalMessage?.en}
                 </p>
                 <p className="mt-3 text-text-3 text-center">
-                  {text("resultSuccessDesc")}
+                  {text("resultSuccessTitle")}
                 </p>
               </>
             ) : (
               <>
-                {" "}
                 <div className="flex justify-center py-8">
                   <div className="text-6xl select-none">📈</div>
                 </div>
-                <p className="text-destructive font-semibold text-center text-xl">
-                  {text("resultFailTitle")}
+                <p
+                  className="cardShadowSecondary w-fit mx-auto
+                 p-4 rounded-md font-semibold text-center text-xl"
+                >
+                  {locale === "ar"
+                    ? motivationalMessage?.ar
+                    : motivationalMessage?.en}
                 </p>
                 <p className="mt-3 text-text-3 text-center">
-                  {text("resultFailDesc")}
+                  {text("resultFailTitle")}
                 </p>
                 <div className="mt-6 flex justify-center">
                   <Button
