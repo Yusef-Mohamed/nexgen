@@ -533,7 +533,16 @@
     "startLearning": "ابدأ التعلم",
     "viewAllReviews": "عرض جميع التقييمات",
     "reviews": "التقييمات",
-    "free": "مجاني"
+    "free": "مجاني",
+    "skillLevel": "مستوى المهارة",
+    "timeToComplete": "الوقت اللازم للإتمام",
+    "earnCertificate": "احصل على الشهادة",
+    "beginner": "مبتدئ",
+    "intermediate": "متوسط",
+    "advanced": "متقدم",
+    "month": "شهر",
+    "months": "أشهر",
+    "accessDuration": "مدة الوصول"
   },
   "learningPathPage": {
     "discounted": "خصم",
@@ -1005,6 +1014,8 @@
       "totalEnrollments": "إجمالي التسجيلات",
       "averageRate": "متوسط السعر",
       "instructorProfits": "أرباح المدرب",
+      "totalProfits": "إجمالي الأرباح",
+      "commissionsProfits": "أرباح العمولات",
       "unitStudent": "طالب",
       "unitRating": "/5",
       "unitCurrency": "$",

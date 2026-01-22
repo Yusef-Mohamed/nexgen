@@ -229,7 +229,10 @@ const MainComponent = ({
             </SelectTrigger>
             <SelectContent>
               {courses.map((course) => (
-                <SelectItem key={course._id} value={`${course._id}`}>
+                <SelectItem
+                  key={course._id}
+                  value={`${course._id}`}
+                >
                   {t("nCourse")} - {getDynamicString(course.title)}
                 </SelectItem>
               ))}
@@ -242,13 +245,19 @@ const MainComponent = ({
                 </SelectItem>
               ))}
               {packages.map((pack) => (
-                <SelectItem key={pack._id} value={`${pack._id}`}>
+                <SelectItem
+                  key={pack._id}
+                  value={`${pack._id}`}
+                >
                   {t("service")} - {getDynamicString(pack.title)}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>{" "}
-          <DatePickerWithRange date={date} setDate={setDate} />
+          <DatePickerWithRange
+            date={date}
+            setDate={setDate}
+          />
         </div>
       </CardHeader>
       <CardContent>
@@ -378,7 +387,10 @@ const OrdersChart = ({
         {chartData.length === 0 ? (
           <p className="py-8 text-center">{t("noOrdersFound")}</p>
         ) : (
-          <ResponsiveContainer width="100%" height={400}>
+          <ResponsiveContainer
+            width="100%"
+            height={400}
+          >
             <AreaChart
               data={chartData}
               margin={{
@@ -423,7 +435,13 @@ const OrdersChart = ({
                 }}
               />
               <defs>
-                <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient
+                  id="colorAmount"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
                   <stop
                     offset="5%"
                     stopColor="hsl(var(--primary))"
@@ -467,7 +485,10 @@ const LoadingState = () => (
         <Skeleton className="mb-4 w-48 h-8" />
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="w-full h-12" />
+            <Skeleton
+              key={i}
+              className="w-full h-12"
+            />
           ))}
         </div>
       </CardContent>
@@ -573,7 +594,10 @@ const MyTeam = () => {
       </CardHeader>
       <CardContent className="p-0">{/*   */}</CardContent>
       <CardFooter className="p-0 mt-6">
-        <Button className="w-full" asChild>
+        <Button
+          className="w-full"
+          asChild
+        >
           <Link href="/dashboard/marketing/my-team">{text("seeAllTeam")}</Link>
         </Button>
       </CardFooter>
@@ -635,10 +659,17 @@ const AffiliateMarketing = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <Button className="mb-2 w-full" variant={"outline"} asChild>
+        <Button
+          className="mb-2 w-full"
+          variant={"outline"}
+          asChild
+        >
           <Link href="/dashboard/marketing/coupons">{text("coupons")}</Link>
         </Button>
-        <Button className="w-full" asChild>
+        <Button
+          className="w-full"
+          asChild
+        >
           <Link href="/dashboard/marketing/my-team#invites">
             {text("invitations")}
           </Link>

@@ -4,7 +4,7 @@ import CommunitySidebar from "@/app/[locale]/dashboard/components/CommunitySideb
 export const CommunityPageComponent = () => {
   return (
     <main className="relative bg-background">
-      <div className="flex z-10 relative flex-col-reverse xl:flex-row">
+      <div className="flex z-10 justify-center relative flex-col-reverse xl:flex-row">
         <CommunityClient />
         <CommunitySidebar />
       </div>

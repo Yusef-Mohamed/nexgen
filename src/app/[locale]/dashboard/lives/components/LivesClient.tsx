@@ -114,8 +114,8 @@ const LivesClient = () => {
 
   if (loading) {
     return (
-      <main className="flex bg-background flex-col-reverse w-full gap-8 p-8 lg:flex-row lg:gap-10 lg:p-10">
-        <div className="flex-1 w-full">
+      <main className="flex bg-background flex-col-reverse justify-center w-full gap-8 p-8 lg:flex-row lg:gap-10 lg:p-10">
+        <div className="flex-1 w-full  max-w-4xl">
           <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
             <Skeleton className="h-6 w-32 mb-6" />
             <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
@@ -145,8 +145,8 @@ const LivesClient = () => {
   }
 
   return (
-    <main className="flex bg-background flex-col-reverse w-full gap-8 p-8 lg:flex-row lg:gap-10 lg:p-10">
-      <div className="flex-1 w-full">
+    <main className="flex bg-background flex-col-reverse justify-center w-full gap-8 p-8 lg:flex-row lg:gap-10 lg:p-10">
+      <div className="flex-1 w-full max-w-4xl">
         {selectedDate ? (
           <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
             <h2 className="mb-4 font-medium md:mb-6">
@@ -157,7 +157,10 @@ const LivesClient = () => {
             {filteredLives.length !== 0 ? (
               <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
                 {filteredLives.map((live) => (
-                  <LiveCard key={live._id} live={live} />
+                  <LiveCard
+                    key={live._id}
+                    live={live}
+                  />
                 ))}
               </div>
             ) : (
@@ -175,7 +178,10 @@ const LivesClient = () => {
               {thisWeek.length !== 0 ? (
                 <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
                   {thisWeek.map((live) => (
-                    <LiveCard key={live._id} live={live} />
+                    <LiveCard
+                      key={live._id}
+                      live={live}
+                    />
                   ))}
                 </div>
               ) : (
@@ -193,7 +199,10 @@ const LivesClient = () => {
               {upcoming.length !== 0 ? (
                 <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
                   {upcoming.map((live) => (
-                    <LiveCard key={live._id} live={live} />
+                    <LiveCard
+                      key={live._id}
+                      live={live}
+                    />
                   ))}
                 </div>
               ) : (

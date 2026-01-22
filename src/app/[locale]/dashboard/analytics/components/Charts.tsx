@@ -71,23 +71,6 @@ const Charts = () => {
   useEffect(() => {
     if (myAccount) setSelectedUserObject(myAccount);
   }, [myAccount, setSelectedUserObject]);
-  const getCourses = async () => {
-    if (selectedUser) {
-      try {
-        const res = await axiosInstance.get(
-          `/courses/myCourses/${selectedUser}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setCourses(res.data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  };
   useEffect(() => {
     if (!myAccount) return;
     const accountId = selectedUserParam || myAccount._id;
@@ -106,8 +89,26 @@ const Charts = () => {
       });
   }, [myAccount, selectedUserParam]);
   useEffect(() => {
-    getCourses();
-  }, [selectedUser]);
+    if (!selectedUser) return;
+
+    const fetchCourses = async () => {
+      try {
+        const res = await axiosInstance.get(
+          `/courses/myCourses/${selectedUser}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setCourses(res.data.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchCourses();
+  }, [selectedUser, token]);
 
   useEffect(() => {
     if (courses.length && selectedCourse === "") {
@@ -153,7 +154,7 @@ const Charts = () => {
   return (
     <>
       <main className="flex w-full px-2 py-6 bg-background lg:px-6 sm:px-4">
-        <div className="grid w-full gap-8 xl:grid-cols-3">
+        <div className="grid w-full gap-8 xl:grid-cols-3 mx-auto">
           <div className="w-full space-y-8 max-lg:order-2 xl:col-span-2 ">
             <CourseProgress />
             <ExamsChart />
@@ -179,7 +180,10 @@ const Charts = () => {
                 <SelectContent>
                   {courses.map((course) => {
                     return (
-                      <SelectItem value={course._id} key={course._id}>
+                      <SelectItem
+                        value={course._id}
+                        key={course._id}
+                      >
                         {getDynamicString(course.title)}
                       </SelectItem>
                     );

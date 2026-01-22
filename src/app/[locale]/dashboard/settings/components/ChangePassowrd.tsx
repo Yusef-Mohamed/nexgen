@@ -141,7 +141,10 @@ const ChangePassword = () => {
           />
         </div>
 
-        <Button className="ms-auto w-fit" isLoading={isLoading}>
+        <Button
+          className="ms-auto w-fit"
+          isLoading={isLoading}
+        >
           {text("changePassword")}
         </Button>
       </div>

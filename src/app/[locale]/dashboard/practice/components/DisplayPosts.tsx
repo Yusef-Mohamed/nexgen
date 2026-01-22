@@ -115,7 +115,7 @@ const DisplayPosts = () => {
     }
   }, [packages]);
   return (
-    <section className="mx-auto space-y-4 w-full max-w-4xl">
+    <section className="mx-auto space-y-4 w-full max-w-6xl">
       {/* Course Filter */}{" "}
       <FilterTabs
         options={filterOptions}
@@ -124,7 +124,10 @@ const DisplayPosts = () => {
       />
       <div className="flex items-center gap-4 p-3 rounded-md cardShadow bg-background">
         <div>
-          <Label htmlFor="course" className="text-sm sr-only">
+          <Label
+            htmlFor="course"
+            className="text-sm sr-only"
+          >
             {inputs("course")}:
           </Label>
           <Select
@@ -141,7 +144,10 @@ const DisplayPosts = () => {
             </SelectTrigger>
             <SelectContent>
               {packages.map((pkg) => (
-                <SelectItem value={pkg.course._id} key={pkg.course._id}>
+                <SelectItem
+                  value={pkg.course._id}
+                  key={pkg.course._id}
+                >
                   {getDynamicString(pkg.course.title)}
                 </SelectItem>
               ))}

@@ -85,7 +85,11 @@ const InvoicesManagement = () => {
   }
   return (
     <div className="space-y-8">
-      <StatsCards marketLog={marketLog} locale={locale} t={t} />
+      <StatsCards
+        marketLog={marketLog}
+        locale={locale}
+        t={t}
+      />
       <MarketingTabs
         marketLog={marketLog}
         t={t}
@@ -121,7 +125,10 @@ const LoadingState = () => (
         <Skeleton className="mb-4 w-48 h-8" />
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="w-full h-12" />
+            <Skeleton
+              key={i}
+              className="w-full h-12"
+            />
           ))}
         </div>
       </CardContent>
@@ -139,24 +146,43 @@ const StatsCards = ({
   locale: string;
 }) => (
   <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-    <StatCard
-      title={t("stats.totalSales")}
-      value={marketLog?.totalSalesMoney || 0}
-      difference={marketLog?.salesMoneyDifference || 0}
-      total={marketLog?.totalSalesMoney || 0}
-    />
-    <StatCard
-      title={t("stats.profit")}
-      value={marketLog?.profits || 0}
-      difference={marketLog?.profitsDifference || 0}
-      total={marketLog?.profits || 0}
-    />
-    <StatCard
-      title={t("stats.withdrawals")}
-      value={marketLog?.withdrawals || 0}
-      difference={0}
-      total={marketLog?.withdrawals || 0}
-    />
+    <div className="lg:col-span-3 grid grid-cols-6 gap-4">
+      <StatCard
+        title={t("stats.totalSales")}
+        value={marketLog?.totalSalesMoney || 0}
+        difference={marketLog?.salesMoneyDifference || 0}
+        total={marketLog?.totalSalesMoney || 0}
+        className="col-span-2"
+      />
+      <StatCard
+        title={t("stats.profit")}
+        value={marketLog?.profits || 0}
+        difference={marketLog?.profitsDifference || 0}
+        total={marketLog?.profits || 0}
+        className="col-span-2"
+      />
+      <StatCard
+        title={t("stats.withdrawals")}
+        value={marketLog?.withdrawals || 0}
+        difference={0}
+        total={marketLog?.withdrawals || 0}
+        className="col-span-2"
+      />{" "}
+      <StatCard
+        title={t("stats.totalProfits")}
+        value={marketLog?.totalProfits || 0}
+        difference={0}
+        total={marketLog?.totalProfits || 0}
+        className="col-span-3"
+      />
+      <StatCard
+        title={t("stats.commissionsProfits")}
+        value={marketLog?.commissionsProfits || 0}
+        difference={0}
+        total={marketLog?.commissionsProfits || 0}
+        className="col-span-3"
+      />
+    </div>
     <BalanceCard
       balance={marketLog?.availableToWithdraw || 0}
       t={t}
@@ -168,15 +194,17 @@ const StatsCards = ({
 const StatCard = ({
   title,
   value,
-  difference,
-  total,
+  // difference,
+  // total,
+  className,
 }: {
   title: string;
   value: number;
   difference: number;
   total: number;
+  className?: string;
 }) => (
-  <Card className="cardShadow bg-background">
+  <Card className={cn("cardShadow bg-background", className)}>
     <CardContent className="p-4">
       <div>
         <p className="text-sm text-muted-foreground">{title}</p>
@@ -184,7 +212,7 @@ const StatCard = ({
           ${value?.toLocaleString()}
         </h3>
       </div>
-      {difference && total ? (
+      {/* {difference && total ? (
         <>
           <TrendBadge
             percentage={Math.abs((difference / total) * 100).toFixed(1)}
@@ -192,7 +220,7 @@ const StatCard = ({
           />
           <RenderFakeChart positive={difference > 0} />
         </>
-      ) : null}
+      ) : null} */}
     </CardContent>
   </Card>
 );
@@ -270,9 +298,15 @@ const BalanceCard = ({
           </div>
         </div>
 
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <Dialog
+          open={isOpen}
+          onOpenChange={setIsOpen}
+        >
           <DialogTrigger asChild>
-            <Button className="mt-4 w-full" variant="outline">
+            <Button
+              className="mt-4 w-full"
+              variant="outline"
+            >
               {t("stats.withdraw")}
             </Button>
           </DialogTrigger>
@@ -627,7 +661,10 @@ const TableWithModal = ({
         {!hideModal && (
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="ghost" className="gap-2 text-text-3">
+              <Button
+                variant="ghost"
+                className="gap-2 text-text-3"
+              >
                 {t("common.showAll")}
                 <ArrowRight
                   className={cn("w-4 h-4", {

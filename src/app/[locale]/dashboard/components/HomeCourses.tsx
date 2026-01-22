@@ -61,7 +61,7 @@ const HomeCourses = () => {
   const newestIncompleteCourse = getNewestIncompleteCourse();
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 mb-6">
       {isGettingCourses ? (
         <>
           <h2>{text("continueYourLearningJourney")}</h2>
@@ -70,7 +70,10 @@ const HomeCourses = () => {
       ) : newestIncompleteCourse ? (
         <>
           <h2>{text("continueYourLearningJourney")}</h2>
-          <LearnCourseCard course={newestIncompleteCourse} minimal={true} />
+          <LearnCourseCard
+            course={newestIncompleteCourse}
+            minimal={true}
+          />
         </>
       ) : null}
     </div>

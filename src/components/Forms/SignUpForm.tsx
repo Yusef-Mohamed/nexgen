@@ -64,6 +64,13 @@ const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
       user,
       token,
     });
+    
+    // Store lastVerificationSent timestamp since backend sends verification email automatically
+    if (typeof window !== "undefined" && user?.email) {
+      const storageKey = `lastVerificationSent-${user.email}`;
+      localStorage.setItem(storageKey, Date.now().toString());
+    }
+    
     updateUser({
       userData: user,
       token,

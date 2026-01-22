@@ -44,8 +44,8 @@ const UserProfileComponent = ({
 
   if (loading) {
     return (
-      <main className="flex xl:flex-row relative flex-col-reverse bg-background">
-        <section className="flex-1 w-full xl:max-w-2xl px-4 py-6 mx-auto space-y-3 sm:px-4 sm:py-6 sm:space-y-6">
+      <main className="flex xl:flex-row relative justify-center flex-col-reverse bg-background">
+        <section className="flex-1 w-full xl:max-w-4xl px-4 py-6  space-y-3 sm:px-4 sm:py-6 sm:space-y-6">
           <div className="overflow-hidden rounded-md bg-clear-ground cardShadow">
             {/* Back link skeleton */}
             <div className="flex items-center w-full gap-2 p-6 px-6 bg-clear-ground">
@@ -84,7 +84,7 @@ const UserProfileComponent = ({
   if (!thisUser) {
     return (
       <main className="flex xl:flex-row relative flex-col-reverse bg-background">
-        <section className="flex-1 w-full xl:max-w-2xl px-4 py-6 mx-auto space-y-3 sm:px-4 sm:py-6 sm:space-y-6">
+        <section className="flex-1 w-full xl:max-w-4xl px-4 py-6  space-y-3 sm:px-4 sm:py-6 sm:space-y-6">
           <div className="overflow-hidden rounded-md bg-clear-ground cardShadow">
             <div className="p-6">User not found</div>
           </div>
@@ -94,8 +94,8 @@ const UserProfileComponent = ({
     );
   }
   return (
-    <main className="flex xl:flex-row relative flex-col-reverse bg-background">
-      <section className="flex-1 w-full xl:max-w-2xl px-4 py-6 mx-auto space-y-3 sm:px-4 sm:py-6 sm:space-y-6">
+    <main className="flex xl:flex-row relative justify-center flex-col-reverse bg-background">
+      <section className="flex-1 w-full xl:max-w-4xl px-4 py-6  space-y-3 sm:px-4 sm:py-6 sm:space-y-6">
         <div className="overflow-hidden rounded-md bg-clear-ground cardShadow">
           <Link
             href={`${

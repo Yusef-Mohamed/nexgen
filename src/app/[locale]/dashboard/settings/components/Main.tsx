@@ -116,7 +116,7 @@ const Main = () => {
 
   return (
     <>
-      <div className="relative w-full overflow-hidden rounded-md aspect-video bg-muted">
+      <div className="relative w-full overflow-hidden rounded-md h-64 bg-muted">
         <button
           onClick={() => coverImageRef.current?.click()}
           disabled={isLoading}
@@ -168,7 +168,10 @@ const Main = () => {
         )}
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="space-y-4"
+        >
           <input
             type="file"
             disabled={isLoading}
@@ -300,7 +303,10 @@ const Main = () => {
               </div>
             )}
 
-            <Button className="ms-auto w-fit" isLoading={isLoading}>
+            <Button
+              className="ms-auto w-fit"
+              isLoading={isLoading}
+            >
               {text("save")}
             </Button>
           </div>

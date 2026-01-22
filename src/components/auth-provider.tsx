@@ -64,21 +64,62 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       if (!user?.email) return;
       if (pathname === "/email-verification") return;
-      await axiosInstance.post(
-        "auth/resendEmailCode",
-        {
-          email: user?.email,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+
+      // Check if we should rate limit the resend request
+      if (typeof window !== "undefined") {
+        const storageKey = `lastVerificationSent-${user.email}`;
+        const lastSent = localStorage.getItem(storageKey);
+        const now = Date.now();
+        const fifteenMinutes = 15 * 60 * 1000; // 900,000 milliseconds
+
+        if (lastSent) {
+          const timeSinceLastSent = now - parseInt(lastSent, 10);
+          if (timeSinceLastSent < fifteenMinutes) {
+            // Less than 15 minutes have passed, skip POST and just redirect
+            router.push("/email-verification");
+            toast.success(text("please_verify_your_email"));
+            return;
+          }
         }
-      );
-      router.push("/email-verification");
-      toast.success(text("please_verify_your_email"));
+
+        // 15+ minutes have passed or no stored value, make POST request
+        await axiosInstance.post(
+          "auth/resendEmailCode",
+          {
+            email: user?.email,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Update localStorage with current timestamp after successful POST
+        localStorage.setItem(storageKey, now.toString());
+        router.push("/email-verification");
+        toast.success(text("please_verify_your_email"));
+      } else {
+        // Fallback if window is not available (shouldn't happen in client component)
+        await axiosInstance.post(
+          "auth/resendEmailCode",
+          {
+            email: user?.email,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        router.push("/email-verification");
+        toast.success(text("please_verify_your_email"));
+      }
     } catch (err) {
       console.log(err);
+      // Always redirect even if POST request fails
+      router.push("/email-verification");
+      toast.success(text("please_verify_your_email"));
     }
   };
   const locale = useLocale();
@@ -141,7 +182,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }
         }
         updateUser({
-          userData: user, token: token || "",
+          userData: user,
+          token: token || "",
         });
         router.refresh();
       } catch (err) {
@@ -163,8 +205,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
     fetchUser();
   }, []);
-
-
 
   const logout = () => {
     router.push("/");

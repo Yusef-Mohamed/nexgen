@@ -20,7 +20,7 @@ const CommunityClient = () => {
   };
 
   return (
-    <section className="flex-1 w-full max-w-4xl mx-auto space-y-6 py-6 sm:py-12 px-4">
+    <section className="flex-1 w-full max-w-4xl space-y-6 py-6 max-lg:!pt-0 sm:py-12 px-4">
       <div className="mb-6">
         <FilterTabs
           options={filterOptions}

@@ -21,11 +21,10 @@ import CourseContent from "./components/CourseContent";
 import BuyCourse from "./components/BuyCourse";
 import { cn, getDynamicString } from "@/lib/utils";
 import MobileAppHero from "../../components/MobileAppHero";
-export async function generateMetadata(
-  props: {
-    params: Promise<{ locale: string; courseId: string }>;
-  }
-): Promise<Metadata> {
+import CourseMetadata from "./components/CourseMetadata";
+export async function generateMetadata(props: {
+  params: Promise<{ locale: string; courseId: string }>;
+}): Promise<Metadata> {
   const params = await props.params;
   const axiosInstance = await createServerAxiosInstance();
   const courseRes = await axiosInstance.get("/courses/" + params.courseId);
@@ -40,18 +39,15 @@ export async function generateMetadata(
   });
 }
 
-const CoursesPage = async (
-  props: {
-    params: Promise<{ locale: string; courseId: string }>;
-  }
-) => {
+const CoursesPage = async (props: {
+  params: Promise<{ locale: string; courseId: string }>;
+}) => {
   const params = await props.params;
   let courseData: ICourse | null = null;
   try {
     const axiosInstance = await createServerAxiosInstance();
     const courseRes = await axiosInstance.get("/courses/" + params.courseId);
     courseData = courseRes.data.data as ICourse;
-
   } catch (e) {
     console.log(e);
     return notFound();
@@ -61,11 +57,15 @@ const CoursesPage = async (
     <main>
       <section className="container flex gap-20 secPadding">
         <div className="flex-1 w-full">
-          <CourseHeading courseData={courseData} className="max-lg:hidden" />
+          <CourseHeading
+            courseData={courseData}
+            className="max-lg:hidden"
+          />
           <CourseCard
             courseData={courseData}
             className="lg:hidden relative overflow-hidden"
           />
+          <CourseMetadata courseData={courseData} />
           {courseData.whoThisCourseFor &&
             courseData.whoThisCourseFor.length > 0 && (
               <div className="my-4 md:my-8">
@@ -82,23 +82,23 @@ const CoursesPage = async (
                 </ul>
               </div>
             )}
-          {courseData.whatWillLearn &&
-            courseData.whatWillLearn.length > 0 && (
-              <div className="my-4 md:my-8">
-                <h3 className="mb-4 md:mb-8">{text("whatYouWillLearn")}</h3>
-                <ul className="grid gap-4 md:grid-cols-2 md:gap-8">
-                  {courseData.whatWillLearn.map((item, index) => (
-                    <li
-                      key={index}
-                      className="flex items-start gap-2 text-sm text-text-2 md:text-base"
-                    >
-                      <p className="flex-1"> {getDynamicString(item)}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          {courseData.coursePrerequisites && (
+          {courseData.whatWillLearn && courseData.whatWillLearn.length > 0 && (
+            <div className="my-4 md:my-8">
+              <h3 className="mb-4 md:mb-8">{text("whatYouWillLearn")}</h3>
+              <ul className="grid gap-4 md:grid-cols-2 md:gap-8">
+                {courseData.whatWillLearn.map((item, index) => (
+                  <li
+                    key={index}
+                    className="flex items-start gap-2 text-sm text-text-2 md:text-base"
+                  >
+                    <p className="flex-1"> {getDynamicString(item)}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {(courseData.coursePrerequisites.length > 0 ||
+            courseData.accessibleCourses.length > 0) && (
             <div className="my-4 md:my-8">
               <h3 className="mb-4 md:mb-8">{text("coursePrerequisites")}</h3>
               <ul className="grid gap-4 md:grid-cols-2 md:gap-8">
@@ -152,6 +152,7 @@ const CoursesPage = async (
     </main>
   );
 };
+
 const CourseHeading: React.FC<{
   courseData: ICourse;
   className?: string;
@@ -250,8 +251,14 @@ const CourseCard: React.FC<{
           </div>
         ) : null}
       </div>
-      <CourseHeading courseData={courseData} className="lg:hidden" />
-      <BuyCourse id={courseData._id} price={courseData.price} />
+      <CourseHeading
+        courseData={courseData}
+        className="lg:hidden"
+      />
+      <BuyCourse
+        id={courseData._id}
+        price={courseData.price}
+      />
       <div>
         <h4 className="mb-4 md:mb-6">{text("thisCourseIncludes")}</h4>
         <ul className="space-y-2 md:space-y-4">

@@ -32,7 +32,7 @@ const DisplayCourses = () => {
     }
   }, [show, courses]);
   return (
-    <section className="space-y-4">
+    <section className="space-y-4 max-w-6xl w-full mx-auto">
       <FilterTabs
         options={[
           { value: "notCompleted", label: text("notCompleted") },
@@ -68,7 +68,10 @@ const DisplayCourses = () => {
         </div>
       ) : (
         toShowCourses.map((course) => (
-          <LearnCourseCard key={course._id} course={course} />
+          <LearnCourseCard
+            key={course._id}
+            course={course}
+          />
         ))
       )}
     </section>

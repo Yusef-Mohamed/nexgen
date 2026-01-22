@@ -158,7 +158,11 @@ const CircleCell = ({
         </div>
         <div className="w-[90px]">
           {!isFetching ? (
-            <HalfCircleProgress color={color} progress={value} size="sm" />
+            <HalfCircleProgress
+              color={color}
+              progress={value}
+              size="sm"
+            />
           ) : (
             <div className="font-semibold w-[90px] aspect-square rounded-full bg-muted animate-pulse" />
           )}

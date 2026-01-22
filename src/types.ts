@@ -335,6 +335,8 @@ export interface IWalletInvoiceItem {
 export interface IMarketLog {
   role: string;
   marketer: IUser;
+  totalProfits: number;
+  commissionsProfits: number;
   availableToWithdraw: number;
   withdrawals: number;
   totalSalesMoney: number;

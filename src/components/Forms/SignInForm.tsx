@@ -39,12 +39,11 @@ const SignInForm = () => {
       userData: user,
       token,
     });
-    if (user.emailVerified === false) {
-      router.refresh();
-      router.push("/email-verification");
-      return;
-    } else router.push(redirect || "/dashboard");
     router.refresh();
+    if (user.emailVerified === false) {
+    } else {
+      router.push(redirect || "/dashboard");
+    }
   };
 
   const fields = [

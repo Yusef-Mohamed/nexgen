@@ -535,7 +535,16 @@
     "thereIsNoReview": "No reviews",
     "startLearning": "Start Learning",
     "viewAllReviews": "View All Reviews",
-    "reviews": "Reviews"
+    "reviews": "Reviews",
+    "skillLevel": "Skill level",
+    "timeToComplete": "Time to complete",
+    "earnCertificate": "Earn Certificate",
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced",
+    "month": "month",
+    "months": "months",
+    "accessDuration": "Access duration"
   },
   "learningPathPage": {
     "discounted": "Discounted",
@@ -1008,6 +1017,8 @@
       "totalEnrollments": "Total Enrollments",
       "averageRate": "Average Rate",
       "instructorProfits": "Instructor Profits",
+      "totalProfits": "Total Profits",
+      "commissionsProfits": "Commissions Profits",
       "unitStudent": "Student",
       "unitRating": "/5",
       "unitCurrency": "$",
