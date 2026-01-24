@@ -7,9 +7,9 @@ import { axiosInstance } from "@/app/lib/utils";
 import { ILive } from "@/types";
 import LiveCard from "@/components/cards/LiveCard";
 import LiveFilters from "./LiveFilters";
-import LivesCalender from "./LivesCalender";
 import useCustomSearchParams from "@/hooks/useSearchParams";
 import { Skeleton } from "@/components/ui/skeleton";
+import LivesCalendar from "@/components/LivesCalendar";
 
 const LiveCardSkeleton = () => (
   <div className="flex flex-col justify-between w-full gap-4 p-4 border rounded-md">
@@ -157,10 +157,7 @@ const LivesClient = () => {
             {filteredLives.length !== 0 ? (
               <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
                 {filteredLives.map((live) => (
-                  <LiveCard
-                    key={live._id}
-                    live={live}
-                  />
+                  <LiveCard key={live._id} live={live} />
                 ))}
               </div>
             ) : (
@@ -178,10 +175,7 @@ const LivesClient = () => {
               {thisWeek.length !== 0 ? (
                 <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
                   {thisWeek.map((live) => (
-                    <LiveCard
-                      key={live._id}
-                      live={live}
-                    />
+                    <LiveCard key={live._id} live={live} />
                   ))}
                 </div>
               ) : (
@@ -199,10 +193,7 @@ const LivesClient = () => {
               {upcoming.length !== 0 ? (
                 <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
                   {upcoming.map((live) => (
-                    <LiveCard
-                      key={live._id}
-                      live={live}
-                    />
+                    <LiveCard key={live._id} live={live} />
                   ))}
                 </div>
               ) : (
@@ -218,7 +209,7 @@ const LivesClient = () => {
       </div>
       <div className="xl:w-[25rem] lg:w-[20rem]">
         <LiveFilters />
-        <LivesCalender lives={lives} />
+        <LivesCalendar lives={lives} />
       </div>
     </main>
   );

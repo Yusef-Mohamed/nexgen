@@ -6,11 +6,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Plus } from "lucide-react";
 import { ILive } from "@/types";
 import InstructorLiveFilters from "./InstructorLiveFilters";
-import InstructorLivesCalendar from "./InstructorLivesCalendar";
 import AddLiveDialog from "./AddLiveDialog";
 import ConfirmationDialog from "@/components/ui/confirmation-dialog";
 import { useLivesManagement } from "../hooks/useLivesManagement";
 import LiveCard from "./LiveCard";
+import LivesCalendar from "@/components/LivesCalendar";
 
 // LiveCard Skeleton Component
 const LiveCardSkeleton = () => (
@@ -243,7 +243,7 @@ const InstructorLivesClient = () => {
               selectedCourse={selectedCourse}
               onCourseChange={setSelectedCourse}
             />
-            <InstructorLivesCalendar
+            <LivesCalendar
               lives={lives}
               selectedDate={selectedDate}
               onDateSelect={setSelectedDate}

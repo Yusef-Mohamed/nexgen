@@ -189,7 +189,6 @@ const AssessmentDialog = ({
               <div className="space-y-2">
                 <FormLabel>{text("validation.assignment_file")}</FormLabel>
                 <FileInput
-                  accept="image/png,image/jpeg,application/pdf,.doc,.docx"
                   multiple={false}
                   onFilesSelected={handleAssignmentFileSelected}
                   description={text("validation.assignment_file_description")}

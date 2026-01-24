@@ -233,7 +233,6 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
               disabled={loading}
               buttonText={fileInputButtonText}
               description={fileInputDescription}
-              className="max-w-md"
             />
           </div>
         </div>

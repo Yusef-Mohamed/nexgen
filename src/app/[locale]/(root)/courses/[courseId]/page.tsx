@@ -22,6 +22,7 @@ import BuyCourse from "./components/BuyCourse";
 import { cn, getDynamicString } from "@/lib/utils";
 import MobileAppHero from "../../components/MobileAppHero";
 import CourseMetadata from "./components/CourseMetadata";
+import ItemImage from "./components/ItemImage";
 export async function generateMetadata(props: {
   params: Promise<{ locale: string; courseId: string }>;
 }): Promise<Metadata> {
@@ -57,10 +58,7 @@ const CoursesPage = async (props: {
     <main>
       <section className="container flex gap-20 secPadding">
         <div className="flex-1 w-full">
-          <CourseHeading
-            courseData={courseData}
-            className="max-lg:hidden"
-          />
+          <CourseHeading courseData={courseData} className="max-lg:hidden" />
           <CourseCard
             courseData={courseData}
             className="lg:hidden relative overflow-hidden"
@@ -175,6 +173,7 @@ const CourseHeading: React.FC<{
     </div>
   );
 };
+
 const CourseCard: React.FC<{
   courseData: ICourse;
   className?: string;
@@ -211,13 +210,12 @@ const CourseCard: React.FC<{
         }}
         className="absolute  max-lg:hidden dark:bg-purple-400 bg-purple-200  opacity-70 bottom-0 right-0 translate-x-1/4 translate-y-1/4 size-20"
       ></div>
-      <Image
-        src={courseData.image}
-        width={1000}
-        height={1000}
-        className="aspect-[41/31] object-cover w-full rounded-2xl"
-        alt={getDynamicString(courseData.title)}
-      />{" "}
+      <ItemImage
+        image={courseData.image}
+        title={courseData.title}
+        promotionVideo={courseData.promotionVideo}
+      />
+
       <div className="flex items-center justify-between my-4 md:my-8">
         <div className="flex items-end gap-1 font-medium whitespace-nowrap">
           {courseData.priceAfterDiscount ? (
@@ -251,14 +249,8 @@ const CourseCard: React.FC<{
           </div>
         ) : null}
       </div>
-      <CourseHeading
-        courseData={courseData}
-        className="lg:hidden"
-      />
-      <BuyCourse
-        id={courseData._id}
-        price={courseData.price}
-      />
+      <CourseHeading courseData={courseData} className="lg:hidden" />
+      <BuyCourse id={courseData._id} price={courseData.price} />
       <div>
         <h4 className="mb-4 md:mb-6">{text("thisCourseIncludes")}</h4>
         <ul className="space-y-2 md:space-y-4">

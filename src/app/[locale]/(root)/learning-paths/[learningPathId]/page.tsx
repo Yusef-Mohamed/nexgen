@@ -1,7 +1,7 @@
 import { getMetadataLearningPathPage } from "@/getMetaData";
 import { Metadata } from "next";
 
-import { getTranslations} from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { ICoursePackage } from "@/types";
 import { notFound } from "next/navigation";
@@ -19,12 +19,11 @@ import PopularLearningPaths from "../../components/PopularLearningPaths";
 import PathContent from "./components/PathContent";
 import { getDynamicString } from "@/lib/utils";
 import MobileAppHero from "../../components/MobileAppHero";
+import ItemImage from "../../courses/[courseId]/components/ItemImage";
 
-export async function generateMetadata(
-  props: {
-    params: Promise<{ locale: string; learningPathId: string }>;
-  }
-): Promise<Metadata> {
+export async function generateMetadata(props: {
+  params: Promise<{ locale: string; learningPathId: string }>;
+}): Promise<Metadata> {
   const params = await props.params;
   const axiosInstance = await createServerAxiosInstance();
   const learningPathRes = await axiosInstance.get(
@@ -41,13 +40,11 @@ export async function generateMetadata(
   });
 }
 
-const LearningPathPage = async (
-  props: {
-    params: Promise<{ locale: string; learningPathId: string }>;
-  }
-) => {
+const LearningPathPage = async (props: {
+  params: Promise<{ locale: string; learningPathId: string }>;
+}) => {
   const params = await props.params;
-  
+
   try {
     const axiosInstance = await createServerAxiosInstance();
     const learningPathRes = await axiosInstance.get(
@@ -226,13 +223,11 @@ const LearningPathCard: React.FC<{
         }}
         className="absolute  max-lg:hidden dark:bg-purple-400 bg-purple-200  opacity-70 bottom-0 right-0 translate-x-1/4 translate-y-1/4 size-20"
       ></div>
-      <Image
-        src={learningPathData.image || "/images/hero.png"}
-        width={1000}
-        height={1000}
-        className="aspect-[41/31] object-cover w-full rounded-2xl"
-        alt={getDynamicString(learningPathData.title)}
-      />{" "}
+      <ItemImage
+        image={learningPathData.image || "/images/hero.png"}
+        title={learningPathData.title}
+        promotionVideo={learningPathData.promotionVideo}
+      />
       <div className="flex items-center justify-between my-4 md:my-8">
         <div className="flex items-end gap-1 font-medium whitespace-nowrap">
           {learningPathData.priceAfterDiscount ? (

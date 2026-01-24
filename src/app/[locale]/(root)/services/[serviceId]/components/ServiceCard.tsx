@@ -9,6 +9,7 @@ import { CiMobile2 } from "react-icons/ci";
 import { FaRegClock } from "react-icons/fa6";
 import ServiceHeading from "./ServiceHeading";
 import BuyService from "./BuyService";
+import ItemImage from "../../../courses/[courseId]/components/ItemImage";
 
 interface ServiceCardProps {
   serviceData: IPackage;
@@ -57,12 +58,10 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         }}
         className="absolute max-lg:hidden dark:bg-purple-400 bg-purple-200 opacity-70 bottom-0 right-0 translate-x-1/4 translate-y-1/4 size-20"
       ></div>
-      <Image
-        src={serviceData.course?.image || "/images/hero.png"}
-        width={1000}
-        height={1000}
-        className="aspect-[41/31] object-cover w-full rounded-2xl"
-        alt={getDynamicString(serviceData.title)}
+      <ItemImage
+        image={serviceData.image || "/images/hero.png"}
+        title={serviceData.title}
+        promotionVideo={serviceData?.promotionVideo}
       />
       <div className="flex items-center justify-between my-4 md:my-8">
         <div className="flex items-end gap-1 font-medium whitespace-nowrap">
@@ -113,7 +112,9 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
               key={index}
             >
               {item.icon}
-              {item.params ? text(item.text, item.params as any) : text(item.text)}
+              {item.params
+                ? text(item.text, item.params as any)
+                : text(item.text)}
             </li>
           ))}
         </ul>

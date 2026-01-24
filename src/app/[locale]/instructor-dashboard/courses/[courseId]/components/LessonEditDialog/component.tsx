@@ -234,7 +234,6 @@ const LessonEditDialog = ({
               <div className="space-y-2">
                 <FormLabel>{text("validation.attachments")}</FormLabel>
                 <FileInput
-                  accept="image/png,image/jpeg,application/pdf"
                   multiple
                   onFilesSelected={handleAttachmentFilesSelected}
                   description={text("validation.attachments")}

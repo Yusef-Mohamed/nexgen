@@ -63,7 +63,13 @@ const AddServiceClient = () => {
   const getCurrentStepFields = () => {
     switch (currentStep) {
       case 0: // Basic Info + Course
-        return ["title.en", "title.ar", "description.en", "description.ar"];
+        return [
+          "title.en",
+          "title.ar",
+          "description.en",
+          "description.ar",
+          "promotionVideo",
+        ];
       case 1: // Highlights
         return ["whatWillLearn", "coursePrerequisites", "whoThisCourseFor"];
       case 2: // Pricing
@@ -87,6 +93,7 @@ const AddServiceClient = () => {
         return {
           title: formData.title,
           description: formData.description,
+          promotionVideo: formData.promotionVideo,
         };
       case 1: // Highlights
         return {

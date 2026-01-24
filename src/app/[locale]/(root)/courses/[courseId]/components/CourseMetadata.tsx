@@ -48,15 +48,15 @@ const CourseMetadata = ({ courseData }: CourseMetadataProps) => {
               src="/images/level.png"
               width={56}
               height={56}
-              alt="Skill Level"
+              alt={text("skillLevel")}
               className="w-8 h-8 md:w-10 md:h-10 object-contain"
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-base md:text-lg text-text-1">
+            <span className="font-bold text-base text-text-1">
               {getSkillLevel()}
             </span>
-            <span className="text-sm md:text-base text-text-2">
+            <span className="text-xs md:text-sm text-text-2">
               {text("skillLevel")}
             </span>
           </div>
@@ -69,15 +69,15 @@ const CourseMetadata = ({ courseData }: CourseMetadataProps) => {
               src="/images/time.png"
               width={56}
               height={56}
-              alt="Lifetime Access"
+              alt={text("lifetimeAccess")}
               className="w-8 h-8 md:w-10 md:h-10 object-contain"
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-base md:text-lg text-text-1">
+            <span className="font-bold text-base text-text-1">
               {text("lifetimeAccess")}
             </span>
-            <span className="text-sm md:text-base text-text-2">
+            <span className="text-xs md:text-sm text-text-2">
               {text("accessDuration")}
             </span>
           </div>
@@ -91,15 +91,15 @@ const CourseMetadata = ({ courseData }: CourseMetadataProps) => {
                 src="/images/certificate.png"
                 width={56}
                 height={56}
-                alt="Certificate"
+                alt={text("certificate")}
                 className="w-8 h-8 md:w-10 md:h-10 object-contain"
               />
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-base md:text-lg text-text-1">
-                Certificate
+              <span className="font-bold text-base text-text-1">
+                {text("certificate")}
               </span>
-              <span className="text-sm md:text-base text-text-2">
+              <span className="text-xs md:text-sm text-text-2">
                 {text("earnCertificate")}
               </span>
             </div>

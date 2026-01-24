@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
@@ -22,6 +23,7 @@ import { ServiceFormData } from "../../hooks/useServiceForm";
 import { cn, getDynamicString } from "@/lib/utils";
 import { ICourse } from "@/types";
 import ImageUploadField from "@/components/form/ImageUploadField";
+import PromotionVideoField from "@/components/form/PromotionVideoField";
 
 interface Step1BasicInfoProps {
   form: UseFormReturn<ServiceFormData>;
@@ -45,6 +47,7 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
   loading = false,
 }) => {
   const text = useTranslations("serviceForm");
+
   return (
     <div className="space-y-6">
       {/* Step Header */}
@@ -194,7 +197,7 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
 
       {/* Service Image */}
       <div className="space-y-4 mt-8">
-        <FormLabel className="text-base font-semibold">
+        <FormLabel className="text-base block font-semibold">
           {text("service_image") || "Service Image"}
         </FormLabel>
         <ImageUploadField
@@ -218,6 +221,14 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
           onFilesSelected={onImageFilesSelected}
         />
       </div>
+
+      {/* Promotion Video */}
+      <PromotionVideoField
+        form={form}
+        name="promotionVideo"
+        commonFormStyles={commonFormStyles}
+        loading={loading}
+      />
     </div>
   );
 };

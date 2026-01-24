@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
@@ -19,10 +19,11 @@ import {
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { cn, getDynamicString } from "@/lib/utils";
-import { X, Play } from "lucide-react";
+import { X } from "lucide-react";
 import { ICategory, ICourse } from "@/types";
 import { CourseFormSchema } from "../../hooks/useCourseForm";
 import ImageUploadField from "@/components/form/ImageUploadField";
+import PromotionVideoField from "@/components/form/PromotionVideoField";
 
 interface Step1BasicInfoAccessibleProps {
   form: UseFormReturn<CourseFormSchema>;
@@ -48,60 +49,6 @@ const Step1BasicInfoAccessible: React.FC<Step1BasicInfoAccessibleProps> = ({
   loading = false,
 }) => {
   const text = useTranslations("courses");
-
-  // Extract YouTube video ID and convert to embed URL
-  const extractYouTubeEmbedUrl = useCallback((input: string): string | null => {
-    if (!input || input.trim() === "") return null;
-
-    let videoId: string | null = null;
-
-    // Check if it's already an embed URL or contains embed URL (for iframe code)
-    const embedMatch = input.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
-    if (embedMatch) {
-      videoId = embedMatch[1];
-    }
-    // Check if it's a watch URL
-    else {
-      const watchMatch = input.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/);
-      if (watchMatch) {
-        videoId = watchMatch[1];
-      }
-      // Check if it's a short URL (youtu.be)
-      else {
-        const shortMatch = input.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
-        if (shortMatch) {
-          videoId = shortMatch[1];
-        }
-      }
-    }
-
-    if (videoId) {
-      return `https://www.youtube.com/embed/${videoId}`;
-    }
-
-    return null;
-  }, []);
-
-  // Watch the promotion video field value
-  const promotionVideoValue = form.watch("promotionVideo");
-  // Check if it's already an embed URL or extract from other formats
-  const embedUrl = promotionVideoValue
-    ? promotionVideoValue.startsWith("https://www.youtube.com/embed/")
-      ? promotionVideoValue
-      : extractYouTubeEmbedUrl(promotionVideoValue)
-    : null;
-
-  const handlePromotionVideoChange = useCallback(
-    (value: string) => {
-      const embedUrl = extractYouTubeEmbedUrl(value);
-      if (embedUrl) {
-        form.setValue("promotionVideo", embedUrl, { shouldValidate: true });
-      } else {
-        form.setValue("promotionVideo", value, { shouldValidate: true });
-      }
-    },
-    [form, extractYouTubeEmbedUrl]
-  );
 
   return (
     <div className="space-y-6">
@@ -380,7 +327,7 @@ const Step1BasicInfoAccessible: React.FC<Step1BasicInfoAccessibleProps> = ({
 
       {/* Course Image - Last Input */}
       <div className="space-y-4 mt-8">
-        <FormLabel className="text-base font-semibold">
+        <FormLabel className="text-base block font-semibold">
           {text("course_image")}
         </FormLabel>
         <ImageUploadField
@@ -400,76 +347,12 @@ const Step1BasicInfoAccessible: React.FC<Step1BasicInfoAccessibleProps> = ({
       </div>
 
       {/* Promotion Video */}
-      <div className="space-y-4 mt-8">
-        <FormLabel className="text-base font-semibold">
-          {text("promotion_video")}
-        </FormLabel>
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Video Preview Placeholder */}
-          <div className="flex-shrink-0 w-full lg:w-[400px] h-[240px] bg-muted rounded-lg border-2 border-dashed border-muted-foreground/30 flex items-center justify-center overflow-hidden">
-            {embedUrl ? (
-              <iframe
-                width="100%"
-                height="100%"
-                src={embedUrl}
-                title="Promotion Video"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-                className="w-full h-full"
-              />
-            ) : (
-              <div className="flex flex-col items-center justify-center text-muted-foreground">
-                <Play className="w-16 h-16 mb-2 opacity-60" />
-              </div>
-            )}
-          </div>
-
-          {/* Video URL Input */}
-          <div className="flex-1 space-y-4">
-            <div className="space-y-2">
-              <p className="text-sm text-foreground">
-                {text("promotion_video_instruction")}
-              </p>
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-foreground">
-                  {text("accepted_formats")}
-                </p>
-                <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                  <li>{text("promotion_video_format_1")}</li>
-                  <li>{text("promotion_video_format_2")}</li>
-                  <li>{text("promotion_video_format_3")}</li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <FormField
-                control={form.control}
-                name="promotionVideo"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        value={field.value || ""}
-                        onChange={(e) => {
-                          handlePromotionVideoChange(e.target.value);
-                        }}
-                        placeholder={text("enter_promotion_video_url")}
-                        className={commonFormStyles}
-                        disabled={loading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+      <PromotionVideoField
+        form={form}
+        name="promotionVideo"
+        commonFormStyles={commonFormStyles}
+        loading={loading}
+      />
     </div>
   );
 };

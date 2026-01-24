@@ -15,23 +15,44 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { arSA, enUS } from "date-fns/locale";
 import { useLocale } from "next-intl";
 import { cn } from "@/lib/utils";
+import useCustomSearchParams from "@/hooks/useSearchParams";
 import { ILive } from "@/types";
 
-const WEEKDAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-
-interface InstructorLivesCalendarProps {
+interface LivesCalendarProps {
   lives: ILive[];
-  selectedDate: string;
-  onDateSelect: (date: string) => void;
+  selectedDate?: string;
+  onDateSelect?: (date: string) => void;
 }
 
-const InstructorLivesCalendar = ({
+const LivesCalendar = ({
   lives,
-  selectedDate,
+  selectedDate: propSelectedDate,
   onDateSelect,
-}: InstructorLivesCalendarProps) => {
+}: LivesCalendarProps) => {
+  const { setSearchParams, getSearchParam } = useCustomSearchParams();
   const locale = useLocale();
   const isArabic = locale === "ar";
+
+  const searchParamDate = getSearchParam("date") || "";
+  const selectedDate =
+    propSelectedDate !== undefined ? propSelectedDate : searchParamDate;
+
+  const handleDateSelect = (date: string) => {
+    if (onDateSelect) {
+      if (selectedDate === date) {
+        onDateSelect("");
+      } else {
+        onDateSelect(date);
+      }
+    } else {
+      if (selectedDate === date) {
+        setSearchParams({ date: "" });
+      } else {
+        setSearchParams({ date: date });
+      }
+    }
+  };
+
   const currentDate = new Date();
   const [selectedMonth, setSelectedMonth] = useState(currentDate);
   const [firstDayOfMonth, setFirstDayOfMonth] = useState(
@@ -50,6 +71,21 @@ const InstructorLivesCalendar = ({
       (live) => format(new Date(live.date), "yyyy-MM-dd") === dateKey
     );
   };
+
+  const localizedWeekdays = useMemo(() => {
+    const days = [];
+    const sunday = new Date(2024, 0, 7); // Jan 7, 2024 is a Sunday
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(sunday);
+      date.setDate(sunday.getDate() + i);
+      days.push(
+        format(date, isArabic ? "EEEE" : "EEE", {
+          locale: isArabic ? arSA : enUS,
+        })
+      );
+    }
+    return days;
+  }, [isArabic]);
 
   return (
     <div dir="ltr" className="w-full cardShadow rounded-xl h-fit">
@@ -75,7 +111,9 @@ const InstructorLivesCalendar = ({
           </button>
           <h2
             className={cn("text-center w-36", {
-              "text-primary font-semibold": selectedMonth === currentDate,
+              "text-primary font-semibold":
+                format(selectedMonth, "yyyy-MM") ===
+                format(currentDate, "yyyy-MM"),
             })}
           >
             {" "}
@@ -98,10 +136,10 @@ const InstructorLivesCalendar = ({
           </button>
         </div>
         <div className="grid grid-cols-7 gap-2">
-          {WEEKDAYS.map((day) => {
+          {localizedWeekdays.map((day) => {
             return (
-              <div key={day} className="font-bold text-center">
-                {day.charAt(0).toUpperCase() + day.slice(1)}
+              <div key={day} className="font-bold text-center rtl:text-xs">
+                {day}
               </div>
             );
           })}
@@ -114,13 +152,7 @@ const InstructorLivesCalendar = ({
             return (
               <div key={index}>
                 <button
-                  onClick={() => {
-                    if (selectedDate === dateKey) {
-                      onDateSelect("");
-                    } else {
-                      onDateSelect(dateKey);
-                    }
-                  }}
+                  onClick={() => handleDateSelect(dateKey)}
                   className={clsx(
                     "rounded-md flex-col transition-all px-1 py-1 w-full flex justify-center items-center text-center border-2",
                     {
@@ -128,37 +160,11 @@ const InstructorLivesCalendar = ({
                       "border-[#FFD700]": selectedDate === dateKey,
                       "border-transparent":
                         !isToday(day) && selectedDate !== dateKey,
+                      "bg-secondary text-white": dayLives.length > 0,
                     }
                   )}
                 >
                   {format(day, "d")}{" "}
-                  {dayLives.length > 0 && (
-                    <div className="bottom-0 flex justify-center gap-1 transform -translate-x-1/2 left-1/2">
-                      {dayLives.map((live, liveIndex) =>
-                        live.package.map((pkg, pkgIndex) => {
-                          const courseColor =
-                            pkg.course.colors?.bgColor || "#000000";
-                          const courseDarkColor =
-                            pkg.course.colors?.bgDarkMode || "#000000";
-                          return (
-                            <div
-                              key={`${liveIndex}-${pkgIndex}`}
-                              className="flex gap-1"
-                            >
-                              <div
-                                className="w-1.5 h-1.5 rounded-full dark:hidden"
-                                style={{ backgroundColor: courseColor }}
-                              />
-                              <div
-                                className="w-1.5 h-1.5 rounded-full dark:block hidden"
-                                style={{ backgroundColor: courseDarkColor }}
-                              />
-                            </div>
-                          );
-                        })
-                      )}
-                    </div>
-                  )}
                 </button>
               </div>
             );
@@ -169,4 +175,4 @@ const InstructorLivesCalendar = ({
   );
 };
 
-export default InstructorLivesCalendar;
+export default LivesCalendar;

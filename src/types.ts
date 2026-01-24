@@ -187,6 +187,7 @@ export interface IPackage {
   course: ICourse;
   _id: string;
   createdAt: string;
+  promotionVideo?: string;
   updatedAt: string;
 }
 export interface ICoursePackage {
@@ -195,6 +196,7 @@ export interface ICoursePackage {
   highlights: DynamicString[];
   whoThisCourseFor: DynamicString[];
   coursePrerequisites: DynamicString[];
+  promotionVideo?: string;
   whatWillLearn: DynamicString[];
   status: "active" | "inActive" | "pending";
   price: number;

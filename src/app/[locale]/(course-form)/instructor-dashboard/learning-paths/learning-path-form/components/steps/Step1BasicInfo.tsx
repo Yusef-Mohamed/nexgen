@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
@@ -20,6 +21,7 @@ import {
 import { LearningPathFormData } from "../../hooks/useLearningPathForm";
 import { cn } from "@/lib/utils";
 import ImageUploadField from "@/components/form/ImageUploadField";
+import PromotionVideoField from "@/components/form/PromotionVideoField";
 
 interface Step1BasicInfoProps {
   form: UseFormReturn<LearningPathFormData>;
@@ -169,7 +171,7 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
 
       {/* Learning Path Image */}
       <div className="space-y-4 mt-8">
-        <FormLabel className="text-base font-semibold">
+        <FormLabel className="text-base block font-semibold">
           {text("learning_path_image") || "Learning Path Image"}
         </FormLabel>
         <ImageUploadField
@@ -194,6 +196,14 @@ const Step1BasicInfo: React.FC<Step1BasicInfoProps> = ({
           onFilesSelected={onImageFilesSelected}
         />
       </div>
+
+      {/* Promotion Video */}
+      <PromotionVideoField
+        form={form}
+        name="promotionVideo"
+        commonFormStyles={commonFormStyles}
+        loading={loading}
+      />
     </div>
   );
 };

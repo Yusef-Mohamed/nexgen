@@ -29,6 +29,7 @@ export interface ServiceFormData {
   price: string;
   priceAfterDiscount?: string;
   subscriptionDurationDays: string;
+  promotionVideo?: string;
 }
 
 // Define the course interface
@@ -164,6 +165,7 @@ export const useServiceForm = () => {
         .refine((val) => !isNaN(parseInt(val)) && parseInt(val) > 0, {
           message: text("subscription_duration_positive_required"),
         }),
+      promotionVideo: z.string().optional(),
     });
   };
 
@@ -179,6 +181,7 @@ export const useServiceForm = () => {
       price: "",
       priceAfterDiscount: "",
       subscriptionDurationDays: "",
+      promotionVideo: "",
     },
   });
 
@@ -243,6 +246,7 @@ export const useServiceForm = () => {
           priceAfterDiscount: service.priceAfterDiscount?.toString() || "",
           subscriptionDurationDays:
             service.subscriptionDurationDays?.toString() || "",
+          promotionVideo: service.promotionVideo || "",
         });
 
         // Set selected course if it exists
@@ -342,7 +346,8 @@ export const useServiceForm = () => {
             stepData.description?.ar !== currentDescription.ar ||
             (selectedCourse?._id || selectedCourse?.id) !==
               (currentService.course?._id || currentService.course?.id) ||
-            imagePreview !== currentService.image
+            imagePreview !== currentService.image ||
+            stepData.promotionVideo !== currentService.promotionVideo
           );
         case 1: // Highlights
           // Compare highlights arrays
@@ -462,6 +467,14 @@ export const useServiceForm = () => {
           if (selectedCourseId && selectedCourseId !== currentCourseId) {
             formData.append("course", selectedCourseId);
           }
+
+          // Only send promotionVideo if it changed
+          if (
+            stepData.promotionVideo !== undefined &&
+            stepData.promotionVideo !== currentService.promotionVideo
+          ) {
+            formData.append("promotionVideo", stepData.promotionVideo);
+          }
         } else {
           // New service - send all fields
           if (stepData.title) {
@@ -474,6 +487,9 @@ export const useServiceForm = () => {
           }
           if (selectedCourse) {
             formData.append("course", selectedCourse._id || selectedCourse.id);
+          }
+          if (stepData.promotionVideo !== undefined) {
+            formData.append("promotionVideo", stepData.promotionVideo);
           }
         }
       } else if (stepNumber === 1) {

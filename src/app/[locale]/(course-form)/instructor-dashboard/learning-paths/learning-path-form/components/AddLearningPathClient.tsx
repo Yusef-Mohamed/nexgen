@@ -70,6 +70,7 @@ const AddLearningPathClient = () => {
           "description.en",
           "description.ar",
           "type",
+          "promotionVideo",
         ];
       case 1: // Content (Courses)
         return []; // No form fields to validate, just selectedCourses state
@@ -103,6 +104,7 @@ const AddLearningPathClient = () => {
           title: formData.title,
           description: formData.description,
           type: formData.type,
+          promotionVideo: formData.promotionVideo,
         };
       case 1: // Content (Courses)
         return {}; // Courses are handled via selectedCourses state

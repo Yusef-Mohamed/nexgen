@@ -78,6 +78,7 @@ const createLearningPathFormSchema = (text: (key: string) => string) => {
         errorMap: () => ({ message: text("type_required") }),
       }
     ),
+    promotionVideo: z.string().optional(),
   });
 };
 
@@ -100,6 +101,7 @@ export interface ILearningPath {
   status?: string;
   slug?: string;
   image?: string;
+  promotionVideo?: string;
 }
 
 // Export the form data type
@@ -121,6 +123,7 @@ export type LearningPathFormData = {
     | "beginnerToIntermediate"
     | "intermediateToAdvanced"
     | "beginnerToAdvanced";
+  promotionVideo?: string;
 };
 
 export const useLearningPathForm = () => {
@@ -185,6 +188,7 @@ export const useLearningPathForm = () => {
       price: "",
       priceAfterDiscount: "",
       type: "beginnerToIntermediate",
+      promotionVideo: "",
     },
   });
 
@@ -288,6 +292,7 @@ export const useLearningPathForm = () => {
           price: learningPath.price?.toString() || "",
           priceAfterDiscount: learningPath.priceAfterDiscount?.toString() || "",
           type: learningPath.type || "beginnerToIntermediate",
+          promotionVideo: learningPath.promotionVideo || "",
         });
 
         // Set selected courses if they exist
@@ -388,7 +393,8 @@ export const useLearningPathForm = () => {
             stepData.description?.en !== currentDescription.en ||
             stepData.description?.ar !== currentDescription.ar ||
             stepData.type !== currentLearningPath.type ||
-            imagePreview !== currentLearningPath.image
+            imagePreview !== currentLearningPath.image ||
+            stepData.promotionVideo !== currentLearningPath.promotionVideo
           );
         case 1: // Content (Courses)
           const currentCourseIds = (currentLearningPath.courses || [])
@@ -532,6 +538,14 @@ export const useLearningPathForm = () => {
           ) {
             formData.append("type", stepData.type);
           }
+
+          // Only send promotionVideo if it changed
+          if (
+            stepData.promotionVideo !== undefined &&
+            stepData.promotionVideo !== currentLearningPath.promotionVideo
+          ) {
+            formData.append("promotionVideo", stepData.promotionVideo);
+          }
         } else {
           // New learning path - send all fields
           if (stepData.title) {
@@ -544,6 +558,9 @@ export const useLearningPathForm = () => {
           }
           if (stepData.type) {
             formData.append("type", stepData.type);
+          }
+          if (stepData.promotionVideo !== undefined) {
+            formData.append("promotionVideo", stepData.promotionVideo);
           }
         }
       } else if (stepNumber === 1) {
