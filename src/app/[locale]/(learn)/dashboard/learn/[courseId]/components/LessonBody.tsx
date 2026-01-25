@@ -7,10 +7,12 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import VideoPlayer from "./VideoPlayer";
 import CreateCourseReview from "./CourseReview";
-import { getDynamicString } from "@/lib/utils";
+import { getDynamicString, isImageFile } from "@/lib/utils";
 import { useCourseContext } from "../context/CourseContext";
 import useCustomSearchParams from "@/hooks/useSearchParams";
 import { toast } from "react-toastify";
+import ImageWithZoom from "@/components/ImageWithZoom";
+import { FaFileDownload } from "react-icons/fa";
 
 const LessonBody = ({
   lessonId,
@@ -214,16 +216,33 @@ const LessonBody = ({
             </p>
             {Array.isArray(lesson?.attachments) &&
               lesson?.attachments?.map((attachment, ind) => (
-                <Button
-                  key={ind}
-                  className="block px-0 w-fit"
-                  asChild
-                  variant={"link"}
-                >
-                  <a href={attachment} target="_blank" rel="noreferrer">
-                    {text("attachment")} {ind + 1}
-                  </a>
-                </Button>
+                <div key={ind} className="mt-4">
+                  {isImageFile(attachment) ? (
+                    <div className="space-y-2">
+                      <div className="relative w-full max-w-2xl rounded-lg overflow-hidden border">
+                        <ImageWithZoom
+                          src={attachment}
+                          alt={`${text("attachment")} ${ind + 1}`}
+                          width={800}
+                          height={600}
+                          className="w-full h-auto object-contain"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <FaFileDownload className="w-5 h-5 text-primary" />
+                      <a
+                        href={attachment}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline font-medium"
+                      >
+                        {text("attachment")} {ind + 1}
+                      </a>
+                    </div>
+                  )}
+                </div>
               ))}
           </div>
         )}

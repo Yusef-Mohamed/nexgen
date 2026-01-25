@@ -77,3 +77,17 @@ export const getStringObject = (string: DynamicString | null | undefined) => {
     en: string.en ?? "",
   };
 };
+export const isImageFile = (url: string | null | undefined) => {
+  if (!url) return false;
+  const imageExtensions = [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".webp",
+    ".svg",
+    ".bmp",
+  ];
+  const urlLower = url.toLowerCase();
+  return imageExtensions.some((ext) => urlLower.includes(ext));
+};

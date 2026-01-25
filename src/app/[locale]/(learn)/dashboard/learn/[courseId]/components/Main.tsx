@@ -9,7 +9,7 @@ import MainSkeleton from "./MainSkeleton";
 import { useLocale, useTranslations } from "next-intl";
 import { FaFileDownload } from "react-icons/fa";
 import ImageWithZoom from "@/components/ImageWithZoom";
-import { getDynamicString } from "@/lib/utils";
+import { getDynamicString, isImageFile } from "@/lib/utils";
 // import CreateCourseReview from "./CourseReview";
 
 const Main = () => {
@@ -37,21 +37,6 @@ const Main = () => {
         .find((lesson) => lesson?._id === selectedLesson)) ||
     undefined;
 
-  // Check if assignment file is an image
-  const isImageFile = (url: string) => {
-    if (!url) return false;
-    const imageExtensions = [
-      ".jpg",
-      ".jpeg",
-      ".png",
-      ".gif",
-      ".webp",
-      ".svg",
-      ".bmp",
-    ];
-    const urlLower = url?.toLowerCase();
-    return imageExtensions.some((ext) => urlLower.includes(ext));
-  };
   return (
     <main className="flex flex-col px-2 py-6 lg:px-6 sm:px-4 bg-background">
       <div className="cardShadow container bg-clear-ground rounded-xl lg:p-12 md:p-8 p-6">
