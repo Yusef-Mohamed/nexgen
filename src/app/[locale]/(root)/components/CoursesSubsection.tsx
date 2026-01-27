@@ -58,15 +58,15 @@ const CoursesSubsection: React.FC<CoursesSubsectionProps> = ({
           }}
           className="w-full"
         >
-          <CarouselContent className="-ms-2 ps-2 md:-ms-4">
+          <CarouselContent className="-ml-4">
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (
-                  <CarouselItem key={index} className="ps-4 py-1 basis-auto">
+                  <CarouselItem
+                    key={index}
+                    className="pl-4 py-1 basis-auto"
+                  >
                     <CourseCardSkeleton
-                      className={cn(
-                        "lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]",
-                        cardClassName
-                      )}
+                      className={cn("lg:w-106 w-88 md:w-92", cardClassName)}
                     />
                   </CarouselItem>
                 ))
@@ -74,14 +74,11 @@ const CoursesSubsection: React.FC<CoursesSubsectionProps> = ({
               ? courses.map((course) => (
                   <CarouselItem
                     key={course._id}
-                    className="ps-4 py-1 basis-auto"
+                    className="pl-4 py-1 basis-auto"
                   >
                     <CourseCard
                       {...course}
-                      className={cn(
-                        "lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]",
-                        cardClassName
-                      )}
+                      className={cn("lg:w-106 w-88 md:w-92", cardClassName)}
                       onCategoryClick={onCategoryClick}
                     />
                   </CarouselItem>
@@ -105,7 +102,10 @@ const CoursesSubsection: React.FC<CoursesSubsectionProps> = ({
         >
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (
-                <div key={index} className={cn("space-y-3", cardClassName)}>
+                <div
+                  key={index}
+                  className={cn("space-y-3", cardClassName)}
+                >
                   <Skeleton className="h-48 w-full rounded-lg" />
                   <div className="space-y-2">
                     <Skeleton className="h-4 w-3/4" />

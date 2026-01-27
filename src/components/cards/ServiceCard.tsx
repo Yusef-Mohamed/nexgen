@@ -37,7 +37,7 @@ const ServiceCard: React.FC<
   return (
     <div
       className={cn(
-        "flex flex-col w-full border hover:border-secondary hover:outline-secondary rounded-[40px] border-transparent outline outline-1  outline-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
+        "flex flex-col w-full border  hover:border-secondary hover:outline-secondary rounded-[40px] border-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
         className
       )}
     >
@@ -91,7 +91,11 @@ const ServiceCard: React.FC<
 
       {/* Button and Price Row */}
       <div className="flex items-center gap-3 w-full">
-        <Button size="lg" className="rounded-full  flex-1" asChild>
+        <Button
+          size="lg"
+          className="rounded-full  flex-1"
+          asChild
+        >
           <Link href={`/services/${_id}`}>{text("startNow")}</Link>
         </Button>
         <div className="flex items-start gap-0.5 justify-end min-w-[103px]">

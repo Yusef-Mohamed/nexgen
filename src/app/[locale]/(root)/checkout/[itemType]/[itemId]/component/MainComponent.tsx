@@ -23,11 +23,11 @@ import { useAuth } from "@/components/auth-provider";
 import { useMyCoursesStore } from "@/stores/MyCoursesStore";
 import { axiosInstance } from "@/app/lib/utils";
 const methods = [
-  {
-    label: "stripe",
-    logos: ["visa.png", "master-card.svg"],
-    value: "stripe",
-  },
+  // {
+  //   label: "stripe",
+  //   logos: ["visa.png", "master-card.svg"],
+  //   value: "stripe",
+  // },
   {
     label: "lahza",
     logos: ["visa.png", "master-card.svg"],
@@ -50,7 +50,7 @@ const MainComponent = ({
   const [selectedMethod, setSelectedMethod] = useState<
     "stripe" | "lahza" | "crypto" | ""
   >("");
-  const [isVerified, setIsVerified] = useState(false);
+  const [isVerified, setIsVerified] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [needPlacementExams, setNeedPlacementExams] = useState(false);
   const [discount, setDiscount] = useState(0);
@@ -99,22 +99,22 @@ const MainComponent = ({
           itemType === "course"
             ? `/orders/plisio/courseCheckout/${thisItem._id}`
             : itemType === "learning-path"
-              ? `/orders/plisio/coursePackageCheckout/${thisItem._id}`
-              : `/orders/plisio/packageCheckout/${thisItem._id}`;
+            ? `/orders/plisio/coursePackageCheckout/${thisItem._id}`
+            : `/orders/plisio/packageCheckout/${thisItem._id}`;
         if (selectedMethod === "lahza") {
           endpoint =
             itemType === "course"
               ? `/orders/lahza/courseCheckout/${thisItem._id}`
               : itemType === "learning-path"
-                ? `/orders/lahza/coursePackageCheckout/${thisItem._id}`
-                : `/orders/lahza/packageCheckout/${thisItem._id}`;
+              ? `/orders/lahza/coursePackageCheckout/${thisItem._id}`
+              : `/orders/lahza/packageCheckout/${thisItem._id}`;
         } else if (selectedMethod === "stripe") {
           endpoint =
             itemType === "course"
               ? `/orders/stripe/courseCheckout/${thisItem._id}`
               : itemType === "learning-path"
-                ? `/orders/stripe/coursePackageCheckout/${thisItem._id}`
-                : `/orders/stripe/packageCheckout/${thisItem._id}`;
+              ? `/orders/stripe/coursePackageCheckout/${thisItem._id}`
+              : `/orders/stripe/packageCheckout/${thisItem._id}`;
         }
         const res = await axiosInstance.put(
           endpoint,
@@ -267,7 +267,10 @@ const MainComponent = ({
             >
               {text("termsOfService")}
             </Link>
-            <Link href={"/privacy-policy"} className="underline text-primary">
+            <Link
+              href={"/privacy-policy"}
+              className="underline text-primary"
+            >
               {text("privacyPolicy")}
             </Link>
           </div>
@@ -276,8 +279,9 @@ const MainComponent = ({
           <div className="flex justify-between ">
             <div>
               <h5>{getDynamicString(thisItem?.title)}</h5>
-              <span className="text-sm text-text-3">{itemType && text(itemType as ItemType)}</span>
-
+              <span className="text-sm text-text-3">
+                {itemType && text(itemType as ItemType)}
+              </span>
             </div>
             <div className="flex items-start gap-1 font-medium whitespace-nowrap">
               {thisItem?.priceAfterDiscount ? (
@@ -293,7 +297,10 @@ const MainComponent = ({
               )}
             </div>
           </div>
-          <form onSubmit={applyCoupon} className="flex items-center gap-3 mt-4">
+          <form
+            onSubmit={applyCoupon}
+            className="flex items-center gap-3 mt-4"
+          >
             <Input
               required
               disabled={isLoading}
@@ -316,9 +323,9 @@ const MainComponent = ({
                 $
                 {thisItem?.priceAfterDiscount
                   ? //@ts-ignore
-                  thisItem?.priceAfterDiscount * (discount / 100)
+                    thisItem?.priceAfterDiscount * (discount / 100)
                   : //@ts-ignore
-                  thisItem?.price * (discount / 100)}
+                    thisItem?.price * (discount / 100)}
               </span>
             </div>
             <div className="flex justify-between mt-1 text-sm">
@@ -328,10 +335,10 @@ const MainComponent = ({
                 {
                   //@ts-ignore
                   thisItem?.priceAfterDiscount -
-                  //@ts-ignore
-                  thisItem?.priceAfterDiscount * (discount / 100) ||
-                  //@ts-ignore
-                  thisItem?.price - thisItem?.price * (discount / 100)
+                    //@ts-ignore
+                    thisItem?.priceAfterDiscount * (discount / 100) ||
+                    //@ts-ignore
+                    thisItem?.price - thisItem?.price * (discount / 100)
                 }
               </span>
             </div>
@@ -369,13 +376,19 @@ const MainComponent = ({
             >
               {text("termsOfService")}
             </Link>
-            <Link href={"/privacy-policy"} className="underline text-primary">
+            <Link
+              href={"/privacy-policy"}
+              className="underline text-primary"
+            >
               {text("privacyPolicy")}
             </Link>
           </div>
         </div>
       </section>
-      <Dialog open={needPlacementExams} onOpenChange={setNeedPlacementExams}>
+      <Dialog
+        open={needPlacementExams}
+        onOpenChange={setNeedPlacementExams}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{text("youCanontBuyThisCourseNow")}</DialogTitle>

@@ -6,7 +6,6 @@ import { NextIntlClientProvider, useMessages } from "next-intl";
 import "react-toastify/dist/ReactToastify.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Script from "next/script";
-import { FaTelegramPlane } from "react-icons/fa";
 import ToastProvider from "@/components/ToastProvider";
 import { AuthProvider } from "@/components/auth-provider";
 import { GoogleTagManager } from "@next/third-parties/google";
@@ -15,6 +14,7 @@ import ProgressBarProvider from "@/components/progress-bar";
 
 import * as Sentry from "@sentry/nextjs";
 import SocketWrapper from "@/components/SocketWrapper";
+import ComingSoon from "@/components/ComingSoon";
 
 const alexandria = Alexandria({
   subsets: ["latin"],
@@ -25,7 +25,7 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const {locale} = await params;
+  const { locale } = await params;
   if (locale === "en") {
     return {
       title: "Nexgen Academy",
@@ -82,7 +82,7 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }>) {
-  const {locale} = await params;  
+  const { locale } = await params;
 
   return (
     <html
@@ -152,35 +152,14 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NextIntlClientProvider >
+          <NextIntlClientProvider>
             <QueryProvider>
               <AuthProvider>
                 <SocketWrapper>
                   <ProgressBarProvider>
                     <ToastProvider />
-                    <div className="min-h-screen w-full">{children}</div>
-                    <div
-                      style={{
-                        pointerEvents: "none",
-                      }}
-                      className="fixed right-0 z-10 flex justify-end w-full px-10 bottom-10"
-                    >
-                      <a
-                        style={{
-                          pointerEvents: "auto",
-                        }}
-                        target="_blank"
-                        href="https://t.me/nexgensupport"
-                        className="relative flex items-center justify-center w-12 h-12 text-3xl text-white rounded-full bg-sky-500"
-                      >
-                        <FaTelegramPlane className="z-10" />
-                        <div
-                          className="absolute w-full h-full rounded-full opacity-50 animate-ping top-0 right-0 bg-sky-500 z-0"
-                          style={{
-                            transformOrigin: "center",
-                          }}
-                        />
-                      </a>
+                    <div className="min-h-screen w-full">
+                      <ComingSoon targetDate="2026-01-28T12:00:00Z" />
                     </div>
                   </ProgressBarProvider>
                 </SocketWrapper>

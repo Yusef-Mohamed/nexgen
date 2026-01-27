@@ -55,15 +55,15 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
           }}
           className="w-full"
         >
-          <CarouselContent className="-ms-2 ps-2 md:-ms-4">
+          <CarouselContent className="-ml-4">
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (
-                  <CarouselItem key={index} className="ps-4 py-1 basis-auto">
+                  <CarouselItem
+                    key={index}
+                    className="pl-4 py-1 basis-auto"
+                  >
                     <LearningPathSkeleton
-                      className={cn(
-                        "lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]",
-                        cardClassName
-                      )}
+                      className={cn("lg:w-106 w-88 md:w-92", cardClassName)}
                     />
                   </CarouselItem>
                 ))
@@ -75,10 +75,7 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
                   >
                     <LearningPath
                       {...learningPath}
-                      className={cn(
-                        "lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]",
-                        cardClassName
-                      )}
+                      className={cn("lg:w-106 w-88 md:w-92", cardClassName)}
                       onCategoryClick={onCategoryClick}
                     />
                   </CarouselItem>
@@ -102,7 +99,10 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
         >
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (
-                <LearningPathSkeleton key={index} className={cardClassName} />
+                <LearningPathSkeleton
+                  key={index}
+                  className={cardClassName}
+                />
               ))
             : learningPaths.length > 0
             ? learningPaths.map((learningPath) => (

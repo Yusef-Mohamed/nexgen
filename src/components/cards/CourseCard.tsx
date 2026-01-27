@@ -52,7 +52,7 @@ const CourseCard: React.FC<
   return (
     <div
       className={cn(
-        "flex flex-col w-full border hover:border-secondary hover:outline-secondary rounded-[40px] border-transparent outline outline-1  outline-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
+        "flex flex-col w-full border  hover:border-secondary hover:outline-secondary rounded-[40px] border-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
         className
       )}
     >

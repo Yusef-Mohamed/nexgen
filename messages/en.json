@@ -1,4 +1,9 @@
 {
+  "badges": {
+    "free": "Free",
+    "sale": "Sale",
+    "new": "New"
+  },
   "common": {
     "please_verify_your_email": "Please verify your email",
     "step": "Step",
@@ -515,6 +520,7 @@
     "services": "Services"
   },
   "coursePage": {
+    "free": "Free",
     "discounted": "Discounted",
     "startNow": "Start Now",
     "thisCourseIncludes": "This course includes:",
@@ -1999,5 +2005,16 @@
     "verified_notice": "This is a verified certificate issued by NexGen Academy.",
     "id": "Certificate ID",
     "share": "Share Certificate"
+  },
+  "comingSoon": {
+    "enhancingYour": "Enhancing Your",
+    "experience": "Experience",
+    "description": "We're currently refining our platform to bring you a brand new design and improved features. The next generation of Nexgen Academy is almost here.",
+    "days": "DAYS",
+    "hours": "HOURS",
+    "minutes": "MINUTES",
+    "seconds": "SECONDS",
+    "stayTuned": "Stay tuned for the unveiling",
+    "footer": "© 2026 NEXGEN ACADEMY · EDUCATION PLATFORM"
   }
 }

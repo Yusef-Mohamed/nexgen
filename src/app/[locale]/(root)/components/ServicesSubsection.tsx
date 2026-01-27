@@ -57,22 +57,25 @@ const ServicesSubsection: React.FC<ServicesSubsectionProps> = ({
           }}
           className="w-full"
         >
-          <CarouselContent className="-ms-2 ps-2 md:-ms-4">
+          <CarouselContent className="-ml-4">
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (
-                  <CarouselItem key={index} className="ps-4 py-1 basis-auto">
-                    <ServiceCardSkeleton className="lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]" />
+                  <CarouselItem
+                    key={index}
+                    className="pl-4 py-1 basis-auto"
+                  >
+                    <ServiceCardSkeleton className="lg:w-106 w-88 md:w-92" />
                   </CarouselItem>
                 ))
               : services.length > 0
               ? services.map((service) => (
                   <CarouselItem
                     key={service._id}
-                    className="ps-4 py-1 basis-auto"
+                    className="pl-4 py-1 basis-auto"
                   >
                     <ServiceCard
                       {...service}
-                      className="lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]"
+                      className="lg:w-106 w-88 md:w-92"
                       onCategoryClick={onCategoryClick}
                     />
                   </CarouselItem>
@@ -98,7 +101,10 @@ const ServicesSubsection: React.FC<ServicesSubsectionProps> = ({
         >
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (
-                <ServiceCardSkeleton key={index} className={cardClassName} />
+                <ServiceCardSkeleton
+                  key={index}
+                  className={cardClassName}
+                />
               ))
             : services.length > 0
             ? services.map((service) => (
