@@ -20,6 +20,7 @@ const ServiceCard: React.FC<
   price,
   priceAfterDiscount,
   _id,
+  slug,
   subscriptionDurationDays,
   course,
   createdAt,
@@ -49,7 +50,10 @@ const ServiceCard: React.FC<
       />
 
       {/* Image */}
-      <div className="relative w-full aspect-[38/29] rounded-[24px] overflow-hidden shrink-0">
+      <Link
+        href={`/services/${slug}`}
+        className="relative w-full aspect-[38/29] rounded-[24px] overflow-hidden shrink-0 block"
+      >
         <Image
           src={imageUrl}
           alt={getDynamicString(title)}
@@ -57,7 +61,7 @@ const ServiceCard: React.FC<
           fill
           className="object-cover"
         />
-      </div>
+      </Link>
 
       {/* Content */}
       <div className="flex-1 flex flex-col gap-3">
@@ -74,9 +78,11 @@ const ServiceCard: React.FC<
         </div>
 
         {/* Title */}
-        <h3 className="text-3xl font-bold text-text-1 leading-tight">
-          {getDynamicString(title)}
-        </h3>
+        <Link href={`/services/${slug}`}>
+          <h3 className="text-3xl font-bold text-text-1 leading-tight hover:text-secondary transition-colors">
+            {getDynamicString(title)}
+          </h3>
+        </Link>
 
         {/* Duration Row */}
         <div className="flex items-center justify-end w-full">
@@ -92,7 +98,7 @@ const ServiceCard: React.FC<
       {/* Button and Price Row */}
       <div className="flex items-center gap-3 w-full">
         <Button size="lg" className="rounded-full  flex-1" asChild>
-          <Link href={`/services/${_id}`}>{text("startNow")}</Link>
+          <Link href={`/services/${slug}`}>{text("startNow")}</Link>
         </Button>
         <div className="flex items-start gap-0.5 justify-end min-w-[103px]">
           <span className="text-2xl font-medium text-foreground">

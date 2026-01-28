@@ -186,6 +186,7 @@ export interface IPackage {
   status: "active" | "inActive" | "pending";
   course: ICourse;
   _id: string;
+  slug: string;
   createdAt: string;
   promotionVideo?: string;
   updatedAt: string;
@@ -207,6 +208,7 @@ export interface ICoursePackage {
     | "intermediateToAdvanced"
     | "beginnerToAdvanced";
   _id: string;
+  slug: string;
   createdAt: string;
   updatedAt: string;
   category: ICategory;
@@ -446,6 +448,7 @@ export interface IBlog {
   content: string;
   description: string;
   _id: string;
+  slug: string;
   createdAt: string;
   updatedAt: string;
   author?: {
@@ -482,6 +485,7 @@ export interface ICourseProgress {
   certificate: {
     file: string;
     _id: string;
+    isTake: boolean;
   };
 }
 export interface ICoupon {

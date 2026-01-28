@@ -61,7 +61,7 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
                   <CarouselItem key={index} className="ps-4 py-1 basis-auto">
                     <LearningPathSkeleton
                       className={cn(
-                        "lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]",
+                        "lg:w-[26.5rem] w-[23rem] md:w-[23rem]",
                         cardClassName
                       )}
                     />
@@ -76,7 +76,7 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
                     <LearningPath
                       {...learningPath}
                       className={cn(
-                        "lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]",
+                        "lg:w-[26.5rem] w-[23rem] md:w-[23rem]",
                         cardClassName
                       )}
                       onCategoryClick={onCategoryClick}

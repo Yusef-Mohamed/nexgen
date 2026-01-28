@@ -68,7 +68,7 @@ const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
             <h5
               className={cn(
                 "overflow-hidden line-clamp-1 font-bold text-base whitespace-break-spaces",
-                isPrimary ? "text-white" : "text-gray-900"
+                isPrimary ? "text-white" : "text-gray-900 dark:text-gray-100"
               )}
             >
               {title}
@@ -77,7 +77,7 @@ const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
           <span
             className={cn(
               "text-sm line-clamp-1 whitespace-break-spaces font-medium",
-              isPrimary ? "text-white/80" : "text-gray-500"
+              isPrimary ? "text-white/80" : "text-gray-500 dark:text-gray-400"
             )}
           >
             {subtitle}
@@ -105,16 +105,16 @@ const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
               <Lock
                 className={cn(
                   "w-4 h-4 shrink-0",
-                  isPrimary ? "text-white/60" : "text-gray-400"
+                  isPrimary ? "text-white/60" : "text-gray-400 dark:text-gray-500"
                 )}
               />
             ) : isExpanded ? (
               <ChevronUp
-                className={cn("w-5 h-5", isPrimary ? "text-white" : "text-gray-400")}
+                className={cn("w-5 h-5", isPrimary ? "text-white" : "text-gray-400 dark:text-gray-500")}
               />
             ) : (
               <ChevronDown
-                className={cn("w-5 h-5", isPrimary ? "text-white" : "text-gray-400")}
+                className={cn("w-5 h-5", isPrimary ? "text-white" : "text-gray-400 dark:text-gray-500")}
               />
             )}
           </div>
@@ -123,7 +123,7 @@ const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
             <Lock
               className={cn(
                 "w-4 h-4 shrink-0",
-                isPrimary ? "text-white/60" : "text-gray-400"
+                isPrimary ? "text-white/60" : "text-gray-400 dark:text-gray-500"
               )}
             />
           )

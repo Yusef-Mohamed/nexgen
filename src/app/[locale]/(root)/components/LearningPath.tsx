@@ -22,6 +22,7 @@ const LearningPath: React.FC<
   price,
   priceAfterDiscount,
   _id,
+  slug,
   type,
   className,
   image,
@@ -71,7 +72,10 @@ const LearningPath: React.FC<
       />
 
       {/* Image */}
-      <div className="relative w-full aspect-[38/29] rounded-[24px] overflow-hidden shrink-0">
+      <Link
+        href={`/learning-paths/${slug}`}
+        className="relative w-full aspect-[38/29] rounded-[24px] overflow-hidden shrink-0 block"
+      >
         <Image
           src={imageUrl}
           alt={getDynamicString(title)}
@@ -79,7 +83,7 @@ const LearningPath: React.FC<
           fill
           className="object-cover"
         />
-      </div>
+      </Link>
 
       {/* Content */}
       <div className="flex-1 flex flex-col gap-3">
@@ -104,9 +108,11 @@ const LearningPath: React.FC<
         </div>
 
         {/* Title */}
-        <h3 className="text-3xl font-bold text-text-1 leading-tight">
-          {getDynamicString(title)}
-        </h3>
+        <Link href={`/learning-paths/${slug}`}>
+          <h3 className="text-3xl font-bold text-text-1 leading-tight hover:text-secondary transition-colors">
+            {getDynamicString(title)}
+          </h3>
+        </Link>
 
         {/* Course Count and Duration Row */}
         <div className="flex items-center justify-between w-full">
@@ -127,7 +133,7 @@ const LearningPath: React.FC<
       {/* Button and Price Row */}
       <div className="flex items-center gap-3 w-full">
         <Button size="lg" className="rounded-full  flex-1" asChild>
-          <Link href={`/learning-paths/${_id}`}>{text("showDetails")}</Link>
+          <Link href={`/learning-paths/${slug}`}>{text("showDetails")}</Link>
         </Button>
         <div className="flex items-start gap-0.5 justify-end min-w-[103px]">
           <span className="text-2xl font-medium text-foreground">

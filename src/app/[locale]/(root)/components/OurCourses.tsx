@@ -112,7 +112,7 @@ const OurCourses: React.FC<OurCoursesProps> = ({
       categoryName: getDynamicString(selectedCategory.title),
     });
   };
-
+  console.log(courses);
   return (
     <section className="py-12 space-y-8">
       <div className="container" ref={containerRef}>

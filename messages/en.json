@@ -1,5 +1,8 @@
 {
   "common": {
+    "switchToLightMode": "Switch to light mode",
+    "switchToDarkMode": "Switch to dark mode",
+    "contactTelegramAria": "Contact us on Telegram",
     "please_verify_your_email": "Please verify your email",
     "step": "Step",
     "of": "of",
@@ -306,7 +309,10 @@
     "telegramSupport": "Telegram Support",
     "contactUs": "Contact Us",
     "contactEmail": "Contact Email",
-    "description": "Licensed by the Palestinian Ministry of Economy under number 565002342 according to the provisions of Law Decision No. 42 of 2021"
+    "description": "Licensed by the Palestinian Ministry of Economy under number 565002342 according to the provisions of Law Decision No. 42 of 2021",
+    "facebookAriaLabel": "Visit our Facebook page",
+    "tiktokAriaLabel": "Visit our TikTok page",
+    "instagramAriaLabel": "Visit our Instagram page"
   },
   "aboutHeroPage": {
     "heading": "Shaping the Next Generation of Learners, Innovators, and Leaders.",

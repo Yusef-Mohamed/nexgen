@@ -10,7 +10,7 @@ import UserAvatar from "../UserAvatar";
 import { cn } from "@/lib/utils";
 import { ShareButtons } from "./BlogsShareButtons";
 const BlogCard: React.FC<IBlog & { inDashboard?: boolean }> = ({
-  _id,
+  slug,
   title,
   imageCover,
   createdAt,
@@ -23,7 +23,7 @@ const BlogCard: React.FC<IBlog & { inDashboard?: boolean }> = ({
   return (
     <article className="flex flex-col w-full h-full ">
       <Link
-        href={`${inDashboard ? "/dashboard/blogs" : "/blogs"}/${_id}`}
+        href={`${inDashboard ? "/dashboard/blogs" : "/blogs"}/${slug}`}
         className="w-full shadow-md rounded-2xl shadow-primary/20"
       >
         <Image
@@ -35,7 +35,7 @@ const BlogCard: React.FC<IBlog & { inDashboard?: boolean }> = ({
         />
       </Link>
       <div className="flex flex-col justify-between flex-grow px-3 mt-5 sm:px-4 sm:mt-6">
-        <Link href={`/blogs/${_id}`} className="w-full">
+        <Link href={`/blogs/${slug}`} className="w-full">
           <h3 className="h5">{title}</h3>
         </Link>
         <div className="flex flex-row items-center justify-start w-full gap-4 mt-3 text-sm sm:text-base sm:gap-6 sm:mt-4 text-text-2">
@@ -74,7 +74,7 @@ interface BlogCardProps extends IBlog {
 }
 
 export const BlogCard2: React.FC<BlogCardProps> = ({
-  _id,
+  slug,
   title,
   imageCover,
   createdAt,
@@ -92,7 +92,7 @@ export const BlogCard2: React.FC<BlogCardProps> = ({
       })}
     >
       <Link
-        href={`${inDashboard ? "/dashboard/blogs" : "/blogs"}/${_id}`}
+        href={`${inDashboard ? "/dashboard/blogs" : "/blogs"}/${slug}`}
         className={cn("w-full shadow-md rounded-2xl shadow-primary/20", {
           "md:basis-1/2": isRow,
         })}
@@ -113,7 +113,7 @@ export const BlogCard2: React.FC<BlogCardProps> = ({
           }
         )}
       >
-        <Link href={`/blogs/${_id}`} className="w-full">
+        <Link href={`/blogs/${slug}`} className="w-full">
           <h3 className="h5">{title}</h3>
         </Link>
         <p className="mt-1 text-text-2 sm:mt-2">{description}</p>
@@ -124,7 +124,7 @@ export const BlogCard2: React.FC<BlogCardProps> = ({
         />
         {isMain && (
           <ShareButtons
-            id={_id}
+            id={slug}
             className="flex items-center gap-4 mt-4 sm:mt-6"
           />
         )}

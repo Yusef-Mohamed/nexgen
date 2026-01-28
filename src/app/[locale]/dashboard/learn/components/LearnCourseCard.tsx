@@ -18,8 +18,6 @@ export const LearnCourseCard = ({
 }: LearnCourseCardProps) => {
   const text = useTranslations("learn");
   const locale = useLocale();
-  console.log(course);
-
   return (
     <div className="relative flex items-stretch gap-4 p-3 md:p-6 md:gap-10 max-md:flex-col cardShadow rounded-xl bg-clear-ground">
       <Link href={`/dashboard/learn/${course._id}`}>
@@ -95,35 +93,37 @@ export const LearnCourseCard = ({
         </div>
         {!minimal && (
           <div className="md:border-s border-primary/20 md:px-10 flex">
-            {course.courseProgress?.certificate ? (
+            {course.courseProgress?.certificate &&
+            course.courseProgress?.certificate.file ? (
               <a
                 className="max-md:hidden w-auto aspect-[126/90] max-md:w-full md:h-36 overflow-hidden rounded-xl"
                 href={course.courseProgress.certificate.file}
                 target="_blank"
                 rel="noreferrer"
               >
-                {!course.courseProgress.certificate.file?.endsWith(".pdf") && (
-                  <Image
-                    loading="lazy"
-                    src={course.courseProgress.certificate.file}
-                    alt={getDynamicString(course.title)}
-                    width={600}
-                    height={600}
-                    className="object-cover w-full h-full"
-                  />
-                )}
+                {course.courseProgress.certificate.file &&
+                  !course.courseProgress.certificate.file?.endsWith(".pdf") && (
+                    <Image
+                      loading="lazy"
+                      src={course.courseProgress.certificate.file}
+                      alt={getDynamicString(course.title)}
+                      width={600}
+                      height={600}
+                      className="object-cover w-full h-full"
+                    />
+                  )}
               </a>
             ) : course.lastLesson ? (
               <Link
                 href={`/dashboard/learn/${course._id}?display=lesson&lesson=${course.lastLesson._id}`}
-                className="flex items-center self-center group gap-3"
+                className="flex items-center self-center group gap-3 aspect-[126/90] md:h-36"
               >
                 <PlayIcon />
                 <div className="flex flex-col">
-                  <h3 className="font-medium text-primary group-hover:underline">
+                  <h3 className="font-medium text-primary group-hover:underline line-clamp-2">
                     {getDynamicString(course.lastLesson.title)}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground line-clamp-1">
                     {getDynamicString(course.lastLesson.section.title)} |{" "}
                     {course.lastLesson.lessonDuration} {text("min")}
                   </p>

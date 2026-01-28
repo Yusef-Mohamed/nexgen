@@ -38,16 +38,19 @@ const socialLinks = [
     name: "facebook",
     link: "https://www.facebook.com/profile.php?id=61566778123491",
     icon: <FaFacebookF />,
+    ariaLabelKey: "facebookAriaLabel",
   },
   {
     name: "tiktok",
     link: "https://www.tiktok.com/@nexgen.academy0",
     icon: <FaTiktok />,
+    ariaLabelKey: "tiktokAriaLabel",
   },
   {
     name: "instagram",
     link: "https://www.instagram.com/Nex.genacademy",
     icon: <FaInstagram />,
+    ariaLabelKey: "instagramAriaLabel",
   },
 ];
 const Footer = ({}: { clear?: boolean }) => {
@@ -120,6 +123,9 @@ const Footer = ({}: { clear?: boolean }) => {
                   key={index}
                   href={platform.link}
                   className="flex items-center justify-center w-10 h-10 text-xl rounded-full sm:w-12 sm:h-12 sm:text-2xl text-text-1 bg-primary/10"
+                  aria-label={text(platform.ariaLabelKey)}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {platform.icon}
                 </a>

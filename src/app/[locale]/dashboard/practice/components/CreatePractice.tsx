@@ -53,6 +53,7 @@ const CreatePractice = ({
 
   const handelCreatePractice = async () => {
     setIsLoading(true);
+
     try {
       if (!content.trim()) {
         toast.error(text("contentIsRequired"));
@@ -77,7 +78,8 @@ const CreatePractice = ({
         formData.append("media", file);
       });
       if (lessonId) formData.append("lesson", lessonId);
-      if (selectedCourse) formData.append("course", selectedCourse);
+      if (courseId || selectedCourse)
+        formData.append("course", courseId || selectedCourse);
       formData.append("content", content);
 
       await axiosInstance.post("/analytics", formData, {
@@ -109,17 +111,12 @@ const CreatePractice = ({
           }));
 
           // Only unlock next lessons if lesson has no quiz
-          if (!currentLesson.hasQuiz) {
-            const unlockedSections = unlockLessonsSequentially(
-              updatedSections,
-              lessonId,
-              true // checkForNoQuiz = true for practice
-            );
-            courseContext.updateSections(unlockedSections);
-          } else {
-            // Just update the passedAnalyticsTask without unlocking
-            courseContext.updateSections(updatedSections);
-          }
+          const unlockedSections = unlockLessonsSequentially(
+            updatedSections,
+            lessonId,
+            true // checkForNoQuiz = true for practice
+          );
+          courseContext.updateSections(unlockedSections);
         }
       }
 
@@ -172,7 +169,10 @@ const CreatePractice = ({
       {!courseId && (
         <div className="pb-3 flex gap-4 flex-wrap">
           <div>
-            <Label htmlFor="course" className="text-sm sr-only">
+            <Label
+              htmlFor="course"
+              className="text-sm sr-only"
+            >
               {inputs("course")}:
             </Label>
             <Select
@@ -189,7 +189,10 @@ const CreatePractice = ({
               </SelectTrigger>
               <SelectContent>
                 {packages.map((pkg) => (
-                  <SelectItem value={pkg.course._id} key={pkg.course._id}>
+                  <SelectItem
+                    value={pkg.course._id}
+                    key={pkg.course._id}
+                  >
                     {getDynamicString(pkg.course.title)}
                   </SelectItem>
                 ))}
@@ -199,7 +202,10 @@ const CreatePractice = ({
         </div>
       )}
       <div className="flex gap-2 justify-between items-start">
-        <UserAvatar user={user || undefined} size="md" />
+        <UserAvatar
+          user={user || undefined}
+          size="md"
+        />
         <TextWithEmojiBox
           text={content}
           setText={setContent}
@@ -271,7 +277,10 @@ const CreatePractice = ({
                       stroke="#D0D5DD"
                       strokeWidth="1.5"
                     />
-                    <mask id="path-2-inside-1_2151_28361" fill="white">
+                    <mask
+                      id="path-2-inside-1_2151_28361"
+                      fill="white"
+                    >
                       <path d="M25 1.9668H33.5V10.4668H26C25.4477 10.4668 25 10.0191 25 9.4668V1.9668Z" />
                     </mask>
                     <path
@@ -323,7 +332,11 @@ const CreatePractice = ({
           </li>
         ))}
       </ul>
-      <Button onClick={handelCreatePractice} isLoading={isLoading} size={"lg"}>
+      <Button
+        onClick={handelCreatePractice}
+        isLoading={isLoading}
+        size={"lg"}
+      >
         {text("submit")}
       </Button>
     </div>

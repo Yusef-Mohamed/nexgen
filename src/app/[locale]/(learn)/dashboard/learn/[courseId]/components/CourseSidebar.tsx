@@ -62,7 +62,9 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
       const lastSection = sections[sections.length - 1];
       if (lastSection) {
         setExpandedSections((prev) =>
-          prev.includes(lastSection.section) ? prev : [...prev, lastSection.section]
+          prev.includes(lastSection.section)
+            ? prev
+            : [...prev, lastSection.section]
         );
       }
     }
@@ -97,9 +99,9 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
   ) => {
     try {
       const params: { lesson?: string; display: string; lessonTitle?: string } =
-      {
-        display,
-      };
+        {
+          display,
+        };
 
       if (lessonId) {
         params.lesson = lessonId;
@@ -152,14 +154,16 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
   };
   if (isLoading) {
     return (
-      <CourseSidebarSkeleton className={className} collapsed={collapsed} />
+      <CourseSidebarSkeleton
+        className={className}
+        collapsed={collapsed}
+      />
     );
   }
 
   if (!course || !sections) {
     return null;
   }
-  console.log(sections);
   return (
     <aside
       className={cn(
@@ -171,7 +175,10 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
       <div className="flex flex-col h-full">
         {/* Header with Logo and Collapsible Button */}
         <div className="flex justify-between h-[76px] items-center flex-wrap mb-4 gap-4">
-          <Logo size="sm" isIconic={collapsed} />
+          <Logo
+            size="sm"
+            isIconic={collapsed}
+          />
 
           {isCollapsable && (
             <button
@@ -211,12 +218,14 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
             {/* Back to Learning Button */}
             <button
               onClick={() => router.push("/dashboard/learn")}
-              className="flex items-center gap-3 px-4 py-3 mb-6 text-foreground hover:bg-white hover:shadow-sm rounded-2xl transition-all cursor-pointer"
+              className="flex items-center gap-3 px-4 py-3 mb-6 text-foreground hover:bg-white dark:hover:bg-gray-800 hover:shadow-sm rounded-2xl transition-all cursor-pointer"
             >
-              <div className="flex items-center justify-center size-10 border-gray-200 rounded-full border bg-white shadow-sm">
-                <ArrowLeft className="w-4 h-4 text-gray-600" />
+              <div className="flex items-center justify-center size-10 border-gray-200 dark:border-gray-700 rounded-full border bg-white dark:bg-gray-800 shadow-sm">
+                <ArrowLeft className="w-4 h-4 text-gray-600 dark:text-gray-400" />
               </div>
-              <span className="font-bold text-gray-700">{text("backToMyLearning")}</span>
+              <span className="font-bold text-gray-700 dark:text-gray-300">
+                {text("backToMyLearning")}
+              </span>
             </button>
 
             {/* Course Sections */}
@@ -229,11 +238,12 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                     <li
                       key={section.section}
                       onClick={() => openSection(section.section)}
-                      className={
-                        cn("space-y-4 p-4 border bg-primary/5 border-primary/30 rounded-2xl", {
+                      className={cn(
+                        "space-y-4 p-4 border bg-primary/5 border-primary/30 rounded-2xl",
+                        {
                           "cursor-pointer": !isExpanded,
-                        })
-                      }
+                        }
+                      )}
                     >
                       {/* Section Header */}
                       <button
@@ -247,7 +257,12 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                       >
                         <div className="flex items-center gap-4 flex-1 min-w-0">
                           <div>
-                            <Image width={48} height={48} alt="section" src={"/images/section.png"} />
+                            <Image
+                              width={48}
+                              height={48}
+                              alt="section"
+                              src={"/images/section.png"}
+                            />
                           </div>
                           <div className="flex-1 min-w-0 text-start">
                             <div className="font-bold text-lg truncate">
@@ -259,7 +274,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                             </div>
                           </div>
                         </div>
-                        <div >
+                        <div>
                           {isExpanded ? (
                             <ChevronUp className="w-5 h-5" />
                           ) : (
@@ -276,7 +291,9 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                               sectionIndex === sections.length - 1 &&
                               lessonIndex === section.lessons.length - 1;
 
-                            const isLessonExpanded = expandedLessons.includes(lesson._id);
+                            const isLessonExpanded = expandedLessons.includes(
+                              lesson._id
+                            );
                             let subItemCounter = 1;
                             const sectionNumber = sectionIndex + 1;
 
@@ -296,12 +313,17 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                               >
                                 {/* Video Lesson (Main Header) */}
                                 <SidebarItemButton
-                                  variant={isAnyActive || isLessonExpanded ? "primary" : "none"}
+                                  variant={
+                                    isAnyActive || isLessonExpanded
+                                      ? "primary"
+                                      : "none"
+                                  }
                                   badge={`${sectionNumber}.${subItemCounter++}`}
                                   title={getDynamicString(lesson.title)}
                                   icon={"/images/video.png"}
-                                  subtitle={`${text("video")} | ${lesson.lessonDuration
-                                    } ${text("minuteAbbr")}`}
+                                  subtitle={`${text("video")} | ${
+                                    lesson.lessonDuration
+                                  } ${text("minuteAbbr")}`}
                                   isFocused={isLessonActive(
                                     lesson._id,
                                     "lesson"
@@ -327,10 +349,15 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                     {lesson.hasQuiz && (
                                       <SidebarItemButton
                                         badge={`${sectionNumber}.${subItemCounter++}`}
-                                        variant={isLessonActive(lesson._id, "quiz") ? "primary-outline" : "none"}
+                                        variant={
+                                          isLessonActive(lesson._id, "quiz")
+                                            ? "primary-outline"
+                                            : "none"
+                                        }
                                         title={lesson.quizTitle || text("quiz")}
-                                        subtitle={`${text("quiz")} | ${lesson.examQuestionsNumber
-                                          } ${text("questions")}`}
+                                        subtitle={`${text("quiz")} | ${
+                                          lesson.examQuestionsNumber
+                                        } ${text("questions")}`}
                                         icon={"/images/exam.png"}
                                         isFocused={isLessonActive(
                                           lesson._id,
@@ -352,7 +379,11 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                     {lesson.isRequireAnalytic && (
                                       <SidebarItemButton
                                         badge={`${sectionNumber}.${subItemCounter++}`}
-                                        variant={isLessonActive(lesson._id, "practice") ? "primary-outline" : "none"}
+                                        variant={
+                                          isLessonActive(lesson._id, "practice")
+                                            ? "primary-outline"
+                                            : "none"
+                                        }
                                         title={
                                           getDynamicString(
                                             lesson.assignmentTitle
@@ -378,7 +409,6 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                         }
                                       />
                                     )}
-
                                   </div>
                                 )}
                               </li>
@@ -389,15 +419,20 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
 
                       {/* Final Exam (Only in last section expanded content) */}
                       {isExpanded && sectionIndex === sections.length - 1 && (
-                        <div className="space-y-5 bg-background p-3 rounded-2xl"
-                        >
+                        <div className="space-y-5 bg-background p-3 rounded-2xl">
                           <SidebarItemButton
-                            variant={selectedDisplay === "final_exam" ? "primary" : "none"}
-                            title={
-                              getDynamicString(course?.examTitle) ?? text("final_exam")
+                            variant={
+                              selectedDisplay === "final_exam"
+                                ? "primary"
+                                : "none"
                             }
-                            subtitle={`${text("final_exam")} | ${course?.examQuestionsNumber
-                              } ${text("questions")}`}
+                            title={
+                              getDynamicString(course?.examTitle) ??
+                              text("final_exam")
+                            }
+                            subtitle={`${text("final_exam")} | ${
+                              course?.examQuestionsNumber
+                            } ${text("questions")}`}
                             icon={"/images/exam.png"}
                             isFocused={selectedDisplay === "final_exam"}
                             onClick={() => handleLessonChange("", "final_exam")}
@@ -408,7 +443,6 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                   );
                 })}
               </ul>
-
             </nav>
           </>
         )}

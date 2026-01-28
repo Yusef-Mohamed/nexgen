@@ -25,7 +25,7 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const {locale} = await params;
+  const { locale } = await params;
   if (locale === "en") {
     return {
       title: "Nexgen Academy",
@@ -71,6 +71,8 @@ export async function generateMetadata({
   }
 }
 
+import { getTranslations } from "next-intl/server";
+
 const locales = ["en", "ar"];
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -82,7 +84,8 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }>) {
-  const {locale} = await params;  
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "common" });
 
   return (
     <html
@@ -93,10 +96,6 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimum-scale=1.0"
-        />
         <Script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-CQS7J6MTDF"
@@ -152,7 +151,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NextIntlClientProvider >
+          <NextIntlClientProvider>
             <QueryProvider>
               <AuthProvider>
                 <SocketWrapper>
@@ -172,6 +171,7 @@ export default async function RootLayout({
                         target="_blank"
                         href="https://t.me/nexgensupport"
                         className="relative flex items-center justify-center w-12 h-12 text-3xl text-white rounded-full bg-sky-500"
+                        aria-label={t("contactTelegramAria")}
                       >
                         <FaTelegramPlane className="z-10" />
                         <div

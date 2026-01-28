@@ -26,7 +26,7 @@ declare global {
   }
 }
 
-const VideoPlayer = ({ otp, playbackInfo, onVideoEnd }: VideoPlayerProps) => {
+const VideoPlayer = ({ otp, playbackInfo }: VideoPlayerProps) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   // Using a ref to track completion status across different events
   const isMarkedDone = useRef(false);
@@ -35,9 +35,9 @@ const VideoPlayer = ({ otp, playbackInfo, onVideoEnd }: VideoPlayerProps) => {
   const handleVideoComplete = useCallback(() => {
     if (!isMarkedDone.current) {
       isMarkedDone.current = true;
-      if (onVideoEnd) onVideoEnd();
+      // if (onVideoEnd) onVideoEnd();
     }
-  }, [onVideoEnd]);
+  }, []);
 
   useEffect(() => {
     // 1. Load the VdoCipher API script

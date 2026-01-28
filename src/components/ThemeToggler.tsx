@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 import { FaSun } from "react-icons/fa";
 import { IoMoon } from "react-icons/io5";
 
@@ -9,6 +10,7 @@ const ThemeToggler: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
   ...props
 }) => {
   const { setTheme } = useTheme();
+  const t = useTranslations("common");
 
   return (
     <>
@@ -20,6 +22,7 @@ const ThemeToggler: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
           "dark:flex items-center justify-center rounded-full h-[2.5rem] w-[2.5rem] border hidden",
           className
         )}
+        aria-label={t("switchToLightMode")}
         {...props}
       >
         <FaSun />{" "}
@@ -33,6 +36,7 @@ const ThemeToggler: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({
         onClick={() => {
           setTheme("dark");
         }}
+        aria-label={t("switchToDarkMode")}
       >
         <IoMoon />{" "}
       </button>

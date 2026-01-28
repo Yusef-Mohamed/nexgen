@@ -58,10 +58,6 @@ export function unlockLessonsSequentially(
 
   const currentLessonItem = sortedLessons[currentLessonIndex];
   const currentLesson = currentLessonItem.lesson;
-  if (checkForNoQuiz && currentLesson.hasQuiz) {
-    return sections;
-  }
-  // For practice: check if lesson has no quiz
 
   // Create a deep copy of sections to avoid mutating original
   const updatedSections = sections.map((section) => ({
@@ -69,11 +65,16 @@ export function unlockLessonsSequentially(
     lessons: section.lessons.map((lesson) => ({ ...lesson })),
   }));
 
-  // Unlock current lesson
+  // Always unlock current lesson
   const currentSection = updatedSections[currentLessonItem.sectionIndex];
   if (currentSection && currentSection.lessons[currentLessonItem.lessonIndex]) {
     currentSection.lessons[currentLessonItem.lessonIndex].videoUrl =
       PLACEHOLDER_VIDEO_URL;
+  }
+
+  // For practice (checkForNoQuiz): do not unlock *next* lessons if current has a quiz
+  if (checkForNoQuiz && currentLesson.hasQuiz && !currentLesson.passedExam) {
+    return updatedSections;
   }
 
   // If current lesson has an unfinished assignment/practice, do not unlock the next lesson

@@ -1,5 +1,11 @@
 "use client";
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
@@ -21,12 +27,12 @@ const SuccessStories: React.FC = () => {
           {text("description")}
         </p>
 
-        <Button size={"lg"} className="block mx-auto w-full">
+        <Button size={"lg"} asChild className="block mx-auto w-full">
           <Link href={"/sign-up"}>{text("startYourJourney")}</Link>
         </Button>
       </div>
       <Dialog>
-        <DialogTrigger asChild>
+        <DialogTrigger aria-hidden="true" asChild>
           <div className="  aspect-75/45 relative overflow-hidden rounded-3xl cursor-pointer">
             <Image
               loading="lazy"

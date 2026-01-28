@@ -52,7 +52,13 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
     const messages = submitData.passed
       ? motivationalMessages
       : failedExamMotivationalMessages;
-    return messages[Math.floor(Math.random() * messages.length)];
+    const seed = `${submitData.passed}-${submitData.totalScore}`;
+    const hash = [...seed].reduce(
+      (acc, c) => (Math.imul(31, acc) + c.charCodeAt(0)) | 0,
+      0
+    );
+    const index = Math.abs(hash) % messages.length;
+    return messages[index];
   }, [submitData.passed, submitData.totalScore]);
   // Add early return if quiz data is not ready
   if (!quiz && isLoading) {

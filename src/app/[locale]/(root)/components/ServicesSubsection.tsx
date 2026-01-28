@@ -61,7 +61,7 @@ const ServicesSubsection: React.FC<ServicesSubsectionProps> = ({
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (
                   <CarouselItem key={index} className="ps-4 py-1 basis-auto">
-                    <ServiceCardSkeleton className="lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]" />
+                    <ServiceCardSkeleton className="lg:w-[26.5rem] w-[23rem] md:w-[23rem]" />
                   </CarouselItem>
                 ))
               : services.length > 0
@@ -72,7 +72,7 @@ const ServicesSubsection: React.FC<ServicesSubsectionProps> = ({
                   >
                     <ServiceCard
                       {...service}
-                      className="lg:w-[26.5rem] w-[17rem] sm:w-[20rem] md:w-[23rem]"
+                      className="lg:w-[26.5rem] w-[23rem] md:w-[23rem]"
                       onCategoryClick={onCategoryClick}
                     />
                   </CarouselItem>
