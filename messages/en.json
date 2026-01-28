@@ -37,6 +37,11 @@
       "success_stories_description": "Watch our learners' success stories."
     }
   },
+  "badges": {
+    "new": "New",
+    "sale": "Sale",
+    "free": "Free"
+  },
   "header": {
     "home": "Home",
     "about": "About Us",
@@ -164,9 +169,6 @@
     "saving": "Saving...",
     "update": "Update",
     "create": "Create",
-    "learning_path_created_successfully": "Learning path created successfully",
-    "learning_path_updated_successfully": "Learning path updated successfully",
-    "error_creating_learning_path": "Error creating learning path",
     "title_en_required": "English title is required",
     "title_ar_required": "Arabic title is required",
     "description_en_min_length": "English description must be at least 20 characters",

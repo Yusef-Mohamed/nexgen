@@ -37,6 +37,11 @@
       "success_stories_description": "شاهد قصص نجاح طلابنا."
     }
   },
+  "badges": {
+    "new": "جديد",
+    "sale": "خصم",
+    "free": "مجاني"
+  },
   "header": {
     "home": "الرئيسية",
     "about": "من نحن",
@@ -161,9 +166,6 @@
     "saving": "جاري الحفظ...",
     "update": "تحديث",
     "create": "إنشاء",
-    "learning_path_created_successfully": "تم إنشاء مسار التعلم بنجاح",
-    "learning_path_updated_successfully": "تم تحديث مسار التعلم بنجاح",
-    "error_creating_learning_path": "خطأ في إنشاء مسار التعلم",
     "title_en_required": "العنوان بالإنجليزية مطلوب",
     "title_ar_required": "العنوان بالعربية مطلوب",
     "description_en_min_length": "الوصف بالإنجليزية يجب أن يكون على الأقل 20 حرف",
