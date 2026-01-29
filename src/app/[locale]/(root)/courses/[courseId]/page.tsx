@@ -58,7 +58,10 @@ const CoursesPage = async (props: {
     <main>
       <section className="container flex gap-20 secPadding">
         <div className="flex-1 w-full">
-          <CourseHeading courseData={courseData} className="max-lg:hidden" />
+          <CourseHeading
+            courseData={courseData}
+            className="max-lg:hidden"
+          />
           <CourseCard
             courseData={courseData}
             className="lg:hidden relative overflow-hidden"
@@ -131,7 +134,7 @@ const CoursesPage = async (props: {
             </div>
           )}
 
-          <CourseContent />
+          <CourseContent courseId={courseData._id} />
         </div>
         <div className="max-w-[29rem] hidden  relative overflow-hidden h-fit lg:block rounded-3xl  basis-[40%] bg-clear-ground cardShadow p-6">
           <CourseCard courseData={courseData} />
@@ -249,8 +252,14 @@ const CourseCard: React.FC<{
           </div>
         ) : null}
       </div>
-      <CourseHeading courseData={courseData} className="lg:hidden" />
-      <BuyCourse id={courseData._id} price={courseData.price} />
+      <CourseHeading
+        courseData={courseData}
+        className="lg:hidden"
+      />
+      <BuyCourse
+        id={courseData._id}
+        price={courseData.price}
+      />
       <div>
         <h4 className="mb-4 md:mb-6">{text("thisCourseIncludes")}</h4>
         <ul className="space-y-2 md:space-y-4">

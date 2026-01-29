@@ -30,7 +30,7 @@ async function getSections(courseId: string): Promise<
     return [];
   }
 }
-const FAQ: React.FC = () => {
+const FAQ = ({ courseId }: { courseId: string }) => {
   const text = useTranslations("coursePage");
   const [count, setCount] = useState(10);
   const [sections, setSections] = useState<
@@ -40,7 +40,6 @@ const FAQ: React.FC = () => {
     }[]
   >([]);
   const [loading, setLoading] = useState(true);
-  const { courseId } = useParams();
   const locale = useLocale();
   useEffect(() => {
     setLoading(true);
@@ -52,7 +51,11 @@ const FAQ: React.FC = () => {
   return (
     <div className="my-4 md:my-8">
       <h3 className="mb-4 md:mb-8">{text("courseContent")}</h3>
-      <Accordion type="single" collapsible className="flex-1 w-full">
+      <Accordion
+        type="single"
+        collapsible
+        className="flex-1 w-full"
+      >
         {sections.map((section, index) => (
           <AccordionItem
             key={index}
