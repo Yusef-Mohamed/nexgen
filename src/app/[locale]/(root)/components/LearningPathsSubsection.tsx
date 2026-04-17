@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/carousel";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-
+import { CAROUSEL_CLASSES } from "@/constants";
 interface LearningPathsSubsectionProps {
   gridClassName?: string;
   learningPaths: ICoursePackage[];
@@ -51,19 +51,18 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
         <Carousel
           opts={{
             align: "start",
-            loop: true,
           }}
           className="w-full"
         >
-          <CarouselContent className="-ms-2 ps-2 md:-ms-4">
+          <CarouselContent className={CAROUSEL_CLASSES.content}>
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (
-                  <CarouselItem key={index} className="ps-4 py-1 basis-auto">
+                  <CarouselItem
+                    key={index}
+                    className={CAROUSEL_CLASSES.item}
+                  >
                     <LearningPathSkeleton
-                      className={cn(
-                        "lg:w-[26.5rem] w-[23rem] md:w-[23rem]",
-                        cardClassName
-                      )}
+                      className={cn(CAROUSEL_CLASSES.card, cardClassName)}
                     />
                   </CarouselItem>
                 ))
@@ -71,14 +70,11 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
               ? learningPaths.map((learningPath) => (
                   <CarouselItem
                     key={learningPath._id}
-                    className="ps-4 py-1 basis-auto "
+                    className={CAROUSEL_CLASSES.item}
                   >
                     <LearningPath
                       {...learningPath}
-                      className={cn(
-                        "lg:w-[26.5rem] w-[23rem] md:w-[23rem]",
-                        cardClassName
-                      )}
+                      className={cn(CAROUSEL_CLASSES.card, cardClassName)}
                       onCategoryClick={onCategoryClick}
                     />
                   </CarouselItem>
@@ -102,7 +98,10 @@ const LearningPathsSubsection: React.FC<LearningPathsSubsectionProps> = ({
         >
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (
-                <LearningPathSkeleton key={index} className={cardClassName} />
+                <LearningPathSkeleton
+                  key={index}
+                  className={cardClassName}
+                />
               ))
             : learningPaths.length > 0
             ? learningPaths.map((learningPath) => (

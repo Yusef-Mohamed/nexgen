@@ -8,11 +8,9 @@ import { IBlog } from "@/types";
 import { BlogCard2 } from "@/components/cards/BlogCard";
 import DonotOnlyLearnSuccess from "./components/DonotOnlyLearnSuccess";
 
-export async function generateMetadata(
-  props: {
-    params: Promise<{ locale: string }>;
-  }
-): Promise<Metadata> {
+export async function generateMetadata(props: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
   const params = await props.params;
   return getMetadataBlogsPage({
     params,
@@ -21,9 +19,11 @@ export async function generateMetadata(
 
 const BlogsPage = async (props: { params: Promise<{ locale: string }> }) => {
   const params = await props.params;
-  
+
   const text = await getTranslations("blogs");
-  const axiosInstance = await createServerAxiosInstance();
+  const axiosInstance = await createServerAxiosInstance({
+    overRideLocale: params.locale,
+  });
   const blogsRes = await axiosInstance.get("/articals");
   const blogsData = blogsRes.data.data as IBlog[];
   return (

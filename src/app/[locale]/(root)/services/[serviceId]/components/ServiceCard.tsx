@@ -65,7 +65,8 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       />
       <div className="flex items-center justify-between my-4 md:my-8">
         <div className="flex items-end gap-1 font-medium whitespace-nowrap">
-          {serviceData.priceAfterDiscount ? (
+          {serviceData.priceAfterDiscount &&
+          serviceData.priceAfterDiscount !== serviceData.price ? (
             <>
               <div className="h2">${serviceData.priceAfterDiscount}</div>
               <del className="h3 text-text-3">${serviceData.price}</del>
@@ -101,8 +102,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           </div>
         ) : null}
       </div>
-      <ServiceHeading serviceData={serviceData} className="lg:hidden" />
-      <BuyService id={serviceData._id} price={serviceData.price.toString()} />
+      <ServiceHeading
+        serviceData={serviceData}
+        className="lg:hidden"
+      />
+      <BuyService
+        id={serviceData._id}
+        price={serviceData.price.toString()}
+      />
       <div className="mt-6">
         <h4 className="mb-4 md:mb-6">{text("thisServiceIncludes")}</h4>
         <ul className="space-y-2 md:space-y-4">

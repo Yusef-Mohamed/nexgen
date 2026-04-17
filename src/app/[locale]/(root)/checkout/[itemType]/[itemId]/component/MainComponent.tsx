@@ -58,17 +58,9 @@ const MainComponent = ({
   const { token, user } = useAuth();
   const { getCourses } = useMyCoursesStore();
   const router = useRouter();
-  const handelPayment = async () => {
+  const handelPayment = async (force = false) => {
     if (!token) {
       toast.error(text("loginFirst"));
-      return;
-    }
-    if (!isVerified) {
-      toast.error(text("verifyRecaptcha"));
-      return;
-    }
-    if (!selectedMethod) {
-      toast.error(text("selectPaymentMethod"));
       return;
     }
     if (!thisItem) {
@@ -84,17 +76,25 @@ const MainComponent = ({
       ) {
         await axiosInstance.put(
           `/orders/createUnPaidOrder/${thisItem._id}`,
-          {},
+          force ? { force: true } : {},
           {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         getCourses(token, user?._id || "", true);
         router.push(`/courses/${thisItem._id}`);
       } else {
+        if (!isVerified) {
+          toast.error(text("verifyRecaptcha"));
+          return;
+        }
+        if (!selectedMethod) {
+          toast.error(text("selectPaymentMethod"));
+          return;
+        }
         let endpoint =
           itemType === "course"
             ? `/orders/plisio/courseCheckout/${thisItem._id}`
@@ -116,21 +116,38 @@ const MainComponent = ({
                 ? `/orders/stripe/coursePackageCheckout/${thisItem._id}`
                 : `/orders/stripe/packageCheckout/${thisItem._id}`;
         }
-        const res = await axiosInstance.put(
+        const res = await axiosInstance.put<{
+          redirectUrl?: string;
+          session?: { url?: string | null };
+        }>(
           endpoint,
-          { paymentMethod: selectedMethod, couponName: selectedCoupon },
+          {
+            paymentMethod: selectedMethod,
+            couponName: selectedCoupon,
+            ...(force ? { force: true } : {}),
+          },
           {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
-        window.location.href = res.data.redirectUrl;
+        const checkoutUrl =
+          res.data.session?.url ?? res.data.redirectUrl ?? undefined;
+        if (checkoutUrl) {
+          window.location.href = checkoutUrl;
+        } else {
+          toast.error(text("paymentError"));
+        }
       }
     } catch (err) {
       const typedError = err as AxiosError<{ error?: string }>;
-      if (typedError.response?.status === 403 && itemType === "course") {
+      if (
+        typedError.response?.status === 403 &&
+        itemType === "course" &&
+        !force
+      ) {
         setNeedPlacementExams(true);
       } else {
         if (typedError.response?.data.error)
@@ -153,7 +170,7 @@ const MainComponent = ({
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       const couponObj = res.data.coupon;
       if (couponObj.usedTimes < couponObj.maxUsageTimes) {
@@ -189,7 +206,7 @@ const MainComponent = ({
                 key={method.value}
                 onClick={() =>
                   setSelectedMethod(
-                    method.value as "stripe" | "lahza" | "crypto"
+                    method.value as "stripe" | "lahza" | "crypto",
                   )
                 }
                 className={cn(
@@ -199,7 +216,7 @@ const MainComponent = ({
                       selectedMethod === method.value,
                     "rounded-t-sm": ind === 0,
                     "rounded-b-sm": ind === methods.length - 1,
-                  }
+                  },
                 )}
               >
                 <div className="flex items-center gap-2">
@@ -209,7 +226,7 @@ const MainComponent = ({
                       {
                         "bg-primary": selectedMethod === method.value,
                         "bg-muted": selectedMethod !== method.value,
-                      }
+                      },
                     )}
                   >
                     <div className="flex items-center justify-center w-2 h-2 rounded-full bg-muted" />
@@ -249,7 +266,7 @@ const MainComponent = ({
               disabled={!isVerified || !selectedMethod || isLoading}
               className="w-full mt-3"
               size={"lg"}
-              onClick={handelPayment}
+              onClick={() => handelPayment()}
             >
               {text("pay")}
             </Button>
@@ -276,8 +293,9 @@ const MainComponent = ({
           <div className="flex justify-between ">
             <div>
               <h5>{getDynamicString(thisItem?.title)}</h5>
-              <span className="text-sm text-text-3">{itemType && text(itemType as ItemType)}</span>
-
+              <span className="text-sm text-text-3">
+                {itemType && text(itemType as ItemType)}
+              </span>
             </div>
             <div className="flex items-start gap-1 font-medium whitespace-nowrap">
               {thisItem?.priceAfterDiscount ? (
@@ -316,9 +334,9 @@ const MainComponent = ({
                 $
                 {thisItem?.priceAfterDiscount
                   ? //@ts-ignore
-                  thisItem?.priceAfterDiscount * (discount / 100)
+                    thisItem?.priceAfterDiscount * (discount / 100)
                   : //@ts-ignore
-                  thisItem?.price * (discount / 100)}
+                    thisItem?.price * (discount / 100)}
               </span>
             </div>
             <div className="flex justify-between mt-1 text-sm">
@@ -328,10 +346,10 @@ const MainComponent = ({
                 {
                   //@ts-ignore
                   thisItem?.priceAfterDiscount -
-                  //@ts-ignore
-                  thisItem?.priceAfterDiscount * (discount / 100) ||
-                  //@ts-ignore
-                  thisItem?.price - thisItem?.price * (discount / 100)
+                    //@ts-ignore
+                    thisItem?.priceAfterDiscount * (discount / 100) ||
+                    //@ts-ignore
+                    thisItem?.price - thisItem?.price * (discount / 100)
                 }
               </span>
             </div>
@@ -351,7 +369,7 @@ const MainComponent = ({
               disabled={!isVerified || !selectedMethod || isLoading}
               className="w-full mt-3"
               size={"lg"}
-              onClick={handelPayment}
+              onClick={() => handelPayment()}
             >
               {text("pay")}
             </Button>
@@ -396,11 +414,24 @@ const MainComponent = ({
               </li>
             ))}
           </ul>
-          <Button asChild>
-            <Link href={`/courses/${thisItem?._id}/placement-exam`}>
-              {text("startPlacementTest")}
-            </Link>
-          </Button>
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end">
+            <Button asChild className="flex-1">
+              <Link href={`/courses/${thisItem?._id}/placement-exam`}>
+                {text("startPlacementTest")}
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              disabled={isLoading}
+              className="flex-1"
+              onClick={() => {
+                setNeedPlacementExams(false);
+                handelPayment(true);
+              }}
+            >
+              {text("skipPlacementTest")}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </>

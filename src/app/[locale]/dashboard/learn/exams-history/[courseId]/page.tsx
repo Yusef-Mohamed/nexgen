@@ -6,13 +6,13 @@ import { ICourse } from "@/types";
 import { getDynamicString } from "@/lib/utils";
 import ExamsHistoryClient from "./components/ExamsHistoryClient";
 
-export async function generateMetadata(
-  props: {
-    params: Promise<{ locale: string; courseId: string }>;
-  }
-): Promise<Metadata> {
+export async function generateMetadata(props: {
+  params: Promise<{ locale: string; courseId: string }>;
+}): Promise<Metadata> {
   const params = await props.params;
-  const axiosInstance = await createServerAxiosInstance();
+  const axiosInstance = await createServerAxiosInstance({
+    overRideLocale: params.locale,
+  });
   const courseRes = await axiosInstance.get("/courses/" + params.courseId);
   const courseData = courseRes.data.data as ICourse;
   return getMetadataCoursePage({
@@ -24,13 +24,11 @@ export async function generateMetadata(
   });
 }
 
-const CoursesPage = async (
-  props: {
-    params: Promise<{ locale: string; courseId: string }>;
-  }
-) => {
+const CoursesPage = async (props: {
+  params: Promise<{ locale: string; courseId: string }>;
+}) => {
   const params = await props.params;
-  
+
   return <ExamsHistoryClient courseId={params.courseId} />;
 };
 

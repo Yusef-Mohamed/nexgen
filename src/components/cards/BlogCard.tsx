@@ -7,7 +7,7 @@ import { CiCalendarDate } from "react-icons/ci";
 import { FaRegUser } from "react-icons/fa";
 import { Link } from "@/i18n/navigation";
 import UserAvatar from "../UserAvatar";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import { ShareButtons } from "./BlogsShareButtons";
 const BlogCard: React.FC<IBlog & { inDashboard?: boolean }> = ({
   slug,
@@ -28,15 +28,18 @@ const BlogCard: React.FC<IBlog & { inDashboard?: boolean }> = ({
       >
         <Image
           src={imageCover}
-          alt={title}
+          alt={getDynamicString(title)}
           width={430}
           height={240}
           className="object-cover w-full rounded-2xl aspect-[1.79]"
         />
       </Link>
       <div className="flex flex-col justify-between flex-grow px-3 mt-5 sm:px-4 sm:mt-6">
-        <Link href={`/blogs/${slug}`} className="w-full">
-          <h3 className="h5">{title}</h3>
+        <Link
+          href={`/blogs/${slug}`}
+          className="w-full"
+        >
+          <h3 className="h5">{getDynamicString(title)}</h3>
         </Link>
         <div className="flex flex-row items-center justify-start w-full gap-4 mt-3 text-sm sm:text-base sm:gap-6 sm:mt-4 text-text-2">
           <div className="flex items-center gap-2 sm:gap-3 ">
@@ -99,7 +102,7 @@ export const BlogCard2: React.FC<BlogCardProps> = ({
       >
         <Image
           src={imageCover}
-          alt={title}
+          alt={getDynamicString(title)}
           width={430}
           height={240}
           className="object-cover w-full rounded-2xl aspect-[1.79]"
@@ -113,10 +116,15 @@ export const BlogCard2: React.FC<BlogCardProps> = ({
           }
         )}
       >
-        <Link href={`/blogs/${slug}`} className="w-full">
-          <h3 className="h5">{title}</h3>
+        <Link
+          href={`/blogs/${slug}`}
+          className="w-full"
+        >
+          <h3 className="h5">{getDynamicString(title)}</h3>
         </Link>
-        <p className="mt-1 text-text-2 sm:mt-2">{description}</p>
+        <p className="mt-1 text-text-2 sm:mt-2">
+          {getDynamicString(description)}
+        </p>
         <BlogUserComponent
           author={author}
           readTime={readTime}

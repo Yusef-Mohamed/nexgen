@@ -19,27 +19,21 @@ interface OurServicesProps {
   onCategoryClick?: (category: ICategory) => void;
 }
 
-// Function to fetch services by category
+// Function to fetch services by category (server-side filter)
 const fetchServicesByCategory = async (
   categoryId?: string,
   searchKeyword?: string
 ): Promise<IPackage[]> => {
-  let url = "/packages?limit=50";
+  const params = new URLSearchParams();
+  params.set("limit", "50");
+  if (categoryId) {
+    params.set("category", categoryId);
+  }
   if (searchKeyword) {
-    url += `&keyword=${encodeURIComponent(searchKeyword)}`;
+    params.set("keyword", searchKeyword);
   }
-
-  const response = await axiosInstance.get(url);
-  const allServices: IPackage[] = response.data.data;
-
-  if (!categoryId) {
-    return allServices;
-  }
-
-  // Filter services where the course belongs to the selected category
-  return allServices.filter(
-    (service) => service.course.category._id === categoryId
-  );
+  const response = await axiosInstance.get(`/packages?${params.toString()}`);
+  return response.data.data as IPackage[];
 };
 
 // Function to fetch popular services
@@ -117,7 +111,10 @@ const OurServices: React.FC<OurServicesProps> = ({
 
   return (
     <section className="py-12 space-y-8">
-      <div className="container" ref={containerRef}>
+      <div
+        className="container"
+        ref={containerRef}
+      >
         <h2 className="h2 !font-bold mb-6">{text("heading")}</h2>
 
         {/* Search Bar */}

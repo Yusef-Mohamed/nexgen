@@ -1,4 +1,3 @@
-
 import MainComponent from "./component/MainComponent";
 import { ICourse, ICoursePackage, IPackage } from "@/types";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
@@ -13,10 +12,13 @@ import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 // }
 const getThisItem = async (
   itemType: "course" | "learning-path" | "service",
-  itemId: string
+  itemId: string,
+  locale: string,
 ) => {
   try {
-    const axiosInstance = await createServerAxiosInstance();
+    const axiosInstance = await createServerAxiosInstance({
+      overRideLocale: locale,
+    });
     if (itemType === "course") {
       const res = await axiosInstance.get(`/courses/${itemId}`);
       return res.data.data;
@@ -33,22 +35,20 @@ const getThisItem = async (
   }
 };
 export type ItemType = "course" | "learning-path" | "service";
-const CheckoutPage = async (
-  props: {
-    params: Promise<{
-      locale: string;
-      itemType: ItemType;
-      itemId: string;
-    }>;
-  }
-) => {
+const CheckoutPage = async (props: {
+  params: Promise<{
+    locale: string;
+    itemType: ItemType;
+    itemId: string;
+  }>;
+}) => {
   const params = await props.params;
-  
-  const thisItem = (await getThisItem(params.itemType, params.itemId)) as
-    | ICourse
-    | ICoursePackage
-    | IPackage
-    | null;
+
+  const thisItem = (await getThisItem(
+    params.itemType,
+    params.itemId,
+    params.locale,
+  )) as ICourse | ICoursePackage | IPackage | null;
   return (
     <main>
       <MainComponent thisItem={thisItem} itemType={params.itemType} />

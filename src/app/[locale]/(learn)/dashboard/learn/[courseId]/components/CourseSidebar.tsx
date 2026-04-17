@@ -46,13 +46,13 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
         if (hasLesson) {
           // Open the section
           setExpandedSections((prev) =>
-            prev.includes(section.section) ? prev : [...prev, section.section]
+            prev.includes(section.section) ? prev : [...prev, section.section],
           );
 
           // Open the lesson if it has sub-items (quiz/practice)
           if (selectedDisplay === "quiz" || selectedDisplay === "practice") {
             setExpandedLessons((prev) =>
-              prev.includes(selectedLesson) ? prev : [...prev, selectedLesson]
+              prev.includes(selectedLesson) ? prev : [...prev, selectedLesson],
             );
           }
         }
@@ -64,7 +64,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
         setExpandedSections((prev) =>
           prev.includes(lastSection.section)
             ? prev
-            : [...prev, lastSection.section]
+            : [...prev, lastSection.section],
         );
       }
     }
@@ -74,7 +74,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
     setExpandedSections((prev) =>
       prev.includes(sectionName)
         ? prev.filter((s) => s !== sectionName)
-        : [...prev, sectionName]
+        : [...prev, sectionName],
     );
   };
 
@@ -82,20 +82,20 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
     setExpandedLessons((prev) =>
       prev.includes(lessonId)
         ? prev.filter((id) => id !== lessonId)
-        : [...prev, lessonId]
+        : [...prev, lessonId],
     );
   };
 
   const openSection = (sectionName: string) => {
     setExpandedSections((prev) =>
-      prev.includes(sectionName) ? prev : [...prev, sectionName]
+      prev.includes(sectionName) ? prev : [...prev, sectionName],
     );
   };
 
   const handleLessonChange = (
     lessonId: string,
     display: string,
-    title?: string
+    title?: string,
   ) => {
     try {
       const params: { lesson?: string; display: string; lessonTitle?: string } =
@@ -148,16 +148,13 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
   const calculateSectionDuration = (lessons: ILesson[]) => {
     const totalMinutes = lessons.reduce(
       (sum, lesson) => sum + (lesson.lessonDuration || 0),
-      0
+      0,
     );
     return `${totalMinutes} min`;
   };
   if (isLoading) {
     return (
-      <CourseSidebarSkeleton
-        className={className}
-        collapsed={collapsed}
-      />
+      <CourseSidebarSkeleton className={className} collapsed={collapsed} />
     );
   }
 
@@ -167,18 +164,15 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
   return (
     <aside
       className={cn(
-        "py-4 pt-0 flex flex-col bg-background-2 h-screen overflow-auto max-h-screen top-0 sticky transition-all duration-300",
+        "py-4 pt-0 flex flex-col bg-background-2 overflow-auto max-h-screen top-0 sticky transition-all duration-300",
         collapsed ? "w-16 px-2 pt-4" : "w-[28rem] px-3 sm:px-6",
-        className
+        className,
       )}
     >
       <div className="flex flex-col h-full">
         {/* Header with Logo and Collapsible Button */}
         <div className="flex justify-between h-[76px] items-center flex-wrap mb-4 gap-4">
-          <Logo
-            size="sm"
-            isIconic={collapsed}
-          />
+          <Logo size="sm" isIconic={collapsed} />
 
           {isCollapsable && (
             <button
@@ -242,7 +236,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                         "space-y-4 p-4 border bg-primary/5 border-primary/30 rounded-2xl",
                         {
                           "cursor-pointer": !isExpanded,
-                        }
+                        },
                       )}
                     >
                       {/* Section Header */}
@@ -252,7 +246,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                           toggleSection(section.section);
                         }}
                         className={cn(
-                          "flex cursor-pointer items-center justify-between w-full "
+                          "flex cursor-pointer items-center justify-between w-full ",
                         )}
                       >
                         <div className="flex items-center gap-4 flex-1 min-w-0">
@@ -292,7 +286,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                               lessonIndex === section.lessons.length - 1;
 
                             const isLessonExpanded = expandedLessons.includes(
-                              lesson._id
+                              lesson._id,
                             );
                             let subItemCounter = 1;
                             const sectionNumber = sectionIndex + 1;
@@ -326,7 +320,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                   } ${text("minuteAbbr")}`}
                                   isFocused={isLessonActive(
                                     lesson._id,
-                                    "lesson"
+                                    "lesson",
                                   )}
                                   disabled={!lesson.videoUrl}
                                   onClick={() => {
@@ -361,7 +355,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                         icon={"/images/exam.png"}
                                         isFocused={isLessonActive(
                                           lesson._id,
-                                          "quiz"
+                                          "quiz",
                                         )}
                                         isDone={lesson.passedExam}
                                         disabled={!lesson.videoUrl}
@@ -369,7 +363,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                           handleLessonChange(
                                             lesson._id,
                                             "quiz",
-                                            getDynamicString(lesson.title)
+                                            getDynamicString(lesson.title),
                                           )
                                         }
                                       />
@@ -386,14 +380,14 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                         }
                                         title={
                                           getDynamicString(
-                                            lesson.assignmentTitle
+                                            lesson.assignmentTitle,
                                           ) || text("assignment")
                                         }
                                         subtitle={`${text("assignment")}`}
                                         icon={"/images/practice.png"}
                                         isFocused={isLessonActive(
                                           lesson._id,
-                                          "practice"
+                                          "practice",
                                         )}
                                         isDone={lesson.passedAnalyticsTask}
                                         disabled={
@@ -404,7 +398,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                           handleLessonChange(
                                             lesson._id,
                                             "practice",
-                                            getDynamicString(lesson.title)
+                                            getDynamicString(lesson.title),
                                           )
                                         }
                                       />

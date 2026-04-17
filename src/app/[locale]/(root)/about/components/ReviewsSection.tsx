@@ -1,11 +1,14 @@
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import ReviewsGrid from "@/components/ReviewsGrid";
 import { IReview } from "@/types";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 const ReviewsSection = async () => {
   const text = await getTranslations("reviewsSectionAboutPage");
-  const axiosInstance = await createServerAxiosInstance();
+  const locale = await getLocale();
+  const axiosInstance = await createServerAxiosInstance({
+    overRideLocale: locale,
+  });
   const reviewsRes = await axiosInstance.get("/systemReviews?limit=3");
   const reviewsData = reviewsRes.data.data as IReview[];
   return (

@@ -49,7 +49,7 @@ const AnalyticCard = ({
   const text = useTranslations("practice");
   const { user } = useAuth();
   const [marketerComment, setMarketerComment] = useState(
-    analytic?.marketerComment || ""
+    analytic?.marketerComment || "",
   );
   const [isPassed, setIsPassed] = useState(analytic?.isPassed || false);
   const [isOpen, setIsOpen] = useState(false);
@@ -69,12 +69,14 @@ const AnalyticCard = ({
       const res = await axiosInstance.put(
         `/analytics/${analytic._id}`,
         { marketerComment, isPassed, isSeen: true },
-        { headers: { Authorization: `Bearer ${getCookie("token")}` } }
+        { headers: { Authorization: `Bearer ${getCookie("token")}` } },
       );
 
       if (setAnalytics) {
         setAnalytics((prev) =>
-          prev.map((item) => (item._id === analytic._id ? res.data.data : item))
+          prev.map((item) =>
+            item._id === analytic._id ? res.data.data : item,
+          ),
         );
       }
       setIsEditing(false);
@@ -96,7 +98,7 @@ const AnalyticCard = ({
       });
       if (setAnalytics) {
         setAnalytics((prev) =>
-          prev.filter((item) => item._id !== analytic._id)
+          prev.filter((item) => item._id !== analytic._id),
         );
       }
       setIsDeleting(false);
@@ -215,7 +217,7 @@ const AnalyticCard = ({
                   {
                     "text-destructive border-destructive": !analytic.isPassed,
                     "text-primary border-primary": analytic.isPassed,
-                  }
+                  },
                 )}
               >
                 {analytic.isPassed ? <FaCheck /> : <IoMdClose />}
@@ -290,7 +292,7 @@ const AnalyticCard = ({
                     onClick={() => {
                       const images = analytic.media!.filter((m) => !isPDF(m));
                       setSelectedImageIndex((prev) =>
-                        prev === 0 ? images.length - 1 : prev - 1
+                        prev === 0 ? images.length - 1 : prev - 1,
                       );
                     }}
                     className="flex justify-center items-center w-8 h-8 rounded-full bg-background/80"
@@ -301,7 +303,7 @@ const AnalyticCard = ({
                     onClick={() => {
                       const images = analytic.media!.filter((m) => !isPDF(m));
                       setSelectedImageIndex((prev) =>
-                        prev === images.length - 1 ? 0 : prev + 1
+                        prev === images.length - 1 ? 0 : prev + 1,
                       );
                     }}
                     className="flex justify-center items-center w-8 h-8 rounded-full bg-background/80"

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/carousel";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import { CAROUSEL_CLASSES } from "@/constants";
 
 interface ServicesSubsectionProps {
   gridClassName?: string;
@@ -53,26 +54,28 @@ const ServicesSubsection: React.FC<ServicesSubsectionProps> = ({
         <Carousel
           opts={{
             align: "start",
-            loop: true,
           }}
           className="w-full"
         >
-          <CarouselContent className="-ms-2 ps-2 md:-ms-4">
+          <CarouselContent className={CAROUSEL_CLASSES.content}>
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (
-                  <CarouselItem key={index} className="ps-4 py-1 basis-auto">
-                    <ServiceCardSkeleton className="lg:w-[26.5rem] w-[23rem] md:w-[23rem]" />
+                  <CarouselItem
+                    key={index}
+                    className={CAROUSEL_CLASSES.item}
+                  >
+                    <ServiceCardSkeleton className={CAROUSEL_CLASSES.card} />
                   </CarouselItem>
                 ))
               : services.length > 0
               ? services.map((service) => (
                   <CarouselItem
                     key={service._id}
-                    className="ps-4 py-1 basis-auto"
+                    className={CAROUSEL_CLASSES.item}
                   >
                     <ServiceCard
                       {...service}
-                      className="lg:w-[26.5rem] w-[23rem] md:w-[23rem]"
+                      className={CAROUSEL_CLASSES.card}
                       onCategoryClick={onCategoryClick}
                     />
                   </CarouselItem>
@@ -98,7 +101,10 @@ const ServicesSubsection: React.FC<ServicesSubsectionProps> = ({
         >
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (
-                <ServiceCardSkeleton key={index} className={cardClassName} />
+                <ServiceCardSkeleton
+                  key={index}
+                  className={cardClassName}
+                />
               ))
             : services.length > 0
             ? services.map((service) => (

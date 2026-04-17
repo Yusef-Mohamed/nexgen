@@ -27,7 +27,9 @@ export async function generateMetadata(props: {
   params: Promise<{ locale: string; courseId: string }>;
 }): Promise<Metadata> {
   const params = await props.params;
-  const axiosInstance = await createServerAxiosInstance();
+  const axiosInstance = await createServerAxiosInstance({
+    overRideLocale: params.locale,
+  });
   const courseRes = await axiosInstance.get("/courses/" + params.courseId);
   const courseData = courseRes.data.data as ICourse;
 
@@ -44,9 +46,12 @@ const CoursesPage = async (props: {
   params: Promise<{ locale: string; courseId: string }>;
 }) => {
   const params = await props.params;
+
   let courseData: ICourse | null = null;
   try {
-    const axiosInstance = await createServerAxiosInstance();
+    const axiosInstance = await createServerAxiosInstance({
+      overRideLocale: params.locale,
+    });
     const courseRes = await axiosInstance.get("/courses/" + params.courseId);
     courseData = courseRes.data.data as ICourse;
   } catch (e) {
@@ -162,14 +167,15 @@ const CourseHeading: React.FC<{
         ratingsAverage={courseData.ratingsAverage}
         ratingsQuantity={courseData.ratingsQuantity}
       />
-      <p
+      <div
         style={{
           fontWeight: 400,
         }}
-        className="my-4 text-text-2 h3 md:my-8"
-      >
-        {getDynamicString(courseData.description)}
-      </p>
+        className="my-4 text-text-2 md:my-8 prose prose-sm md:prose-base max-w-none prose-headings:font-semibold prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5"
+        dangerouslySetInnerHTML={{
+          __html: getDynamicString(courseData.description) ?? "",
+        }}
+      />
     </div>
   );
 };
@@ -218,7 +224,8 @@ const CourseCard: React.FC<{
 
       <div className="flex items-center justify-between my-4 md:my-8">
         <div className="flex items-end gap-1 font-medium whitespace-nowrap">
-          {courseData.priceAfterDiscount ? (
+          {courseData.priceAfterDiscount &&
+          courseData.priceAfterDiscount !== courseData.price ? (
             <>
               <div className="h2">${courseData.priceAfterDiscount}</div>
               <del className="h3 text-text-3">${courseData.price}</del>

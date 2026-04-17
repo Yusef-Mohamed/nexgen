@@ -45,7 +45,7 @@ const CourseFormLayoutClient: React.FC<CourseFormLayoutClientProps> = ({
                     </button>
                   </SheetTrigger>
                   <SheetContent className="p-0">
-                    <CourseFormSidebar className="w-full" />
+                    <CourseFormSidebar className="w-full h-full" />
                   </SheetContent>
                 </Sheet>
                 <UserHeader />

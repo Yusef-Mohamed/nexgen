@@ -33,7 +33,7 @@ const fetchCoursesByCategory = async (
     if (searchKeyword) {
       params += `&keyword=${encodeURIComponent(searchKeyword)}`;
     }
-
+    console.log(`/courses${params}`);
     const response = await axiosInstance.get(`/courses${params}`);
     return response.data.data as ICourse[];
   } catch (error) {
@@ -112,10 +112,12 @@ const OurCourses: React.FC<OurCoursesProps> = ({
       categoryName: getDynamicString(selectedCategory.title),
     });
   };
-  console.log(courses);
   return (
     <section className="py-12 space-y-8">
-      <div className="container" ref={containerRef}>
+      <div
+        className="container"
+        ref={containerRef}
+      >
         <h2 className="h2 !font-bold mb-6">{text("ourPopularCourses")}</h2>
 
         {/* Search Bar */}

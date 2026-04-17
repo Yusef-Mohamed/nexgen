@@ -62,7 +62,7 @@ export interface UseDashboardFiltersReturn {
   setActiveFilter: (filter: FilterType) => void;
   handleFilterChange: (
     key: keyof FilterState,
-    value: string | PriceRange
+    value: string | PriceRange,
   ) => void;
   removeFilter: (filterType: string) => void;
   clearAllFilters: () => void;
@@ -82,7 +82,7 @@ const fetchCategories = async (): Promise<ICategory[]> => {
 };
 
 const fetchInstructors = async (): Promise<Instructor[]> => {
-  const response = await axiosInstance("/users/instructors");
+  const response = await axiosInstance("/users/instructors/withActiveCourses");
   return response.data.data as Instructor[];
 };
 
@@ -173,7 +173,7 @@ const fetchCoursePackages = async (filters: {
 };
 
 export const useDashboardFilters = (
-  token: string | null
+  token: string | null,
 ): UseDashboardFiltersReturn => {
   const searchParams = useSearchParams();
 
@@ -291,7 +291,7 @@ export const useDashboardFilters = (
         [key]: value,
       }));
     },
-    []
+    [],
   );
 
   // Remove individual filter
@@ -302,14 +302,14 @@ export const useDashboardFilters = (
         filterType === "priceRange"
           ? [0, 1000]
           : filterType === "level"
-          ? "all"
-          : filterType === "duration"
-          ? "all"
-          : filterType === "category"
-          ? "all"
-          : filterType === "instructor"
-          ? "all"
-          : "",
+            ? "all"
+            : filterType === "duration"
+              ? "all"
+              : filterType === "category"
+                ? "all"
+                : filterType === "instructor"
+                  ? "all"
+                  : "",
     }));
   }, []);
 
@@ -325,7 +325,9 @@ export const useDashboardFilters = (
 
   // Filtered instructors based on search term
   const filteredInstructors = instructors.filter((instructor) =>
-    instructor.name?.toLowerCase().includes(instructorSearchTerm?.toLowerCase())
+    instructor.name
+      ?.toLowerCase()
+      .includes(instructorSearchTerm?.toLowerCase()),
   );
 
   return {

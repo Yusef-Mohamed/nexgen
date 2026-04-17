@@ -10,12 +10,14 @@ export const getServerCookie = async (key: string, isObject?: boolean) => {
   }
   return cookie;
 };
-export const createServerAxiosInstance = async () => {
-  const locale = await getServerCookie("NEXT_LOCALE");
+export const createServerAxiosInstance = async ({
+  overRideLocale,
+}: { overRideLocale?: string } = {}) => {
+  const locale = overRideLocale || (await getServerCookie("NEXT_LOCALE"));
   const instance = axios.create({
     baseURL: API_URL,
     headers: {
-        "Accept-Language": locale,
+      "Accept-Language": locale,
     },
   });
 
@@ -28,7 +30,7 @@ export const createServerAxiosInstance = async () => {
         redirect(`/${locale}/dashboard/settings/identity-verification`);
       }
       return Promise.reject(error);
-    }
+    },
   );
 
   return instance;

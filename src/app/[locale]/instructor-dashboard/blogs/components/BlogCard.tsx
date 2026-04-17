@@ -8,7 +8,7 @@ import { CiCalendarDate } from "react-icons/ci";
 import { FaRegUser } from "react-icons/fa";
 import { Link } from "@/i18n/navigation";
 import UserAvatar from "@/components/UserAvatar";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import { ShareButtons } from "@/components/cards/BlogsShareButtons";
 import { Button } from "@/components/ui/button";
 import { Trash2, Edit } from "lucide-react";
@@ -61,18 +61,26 @@ const BlogCard: React.FC<BlogCardProps> = ({
 
   return (
     <div className="flex flex-col h-full border rounded-lg p-4">
-      <Link href={`/blogs/${_id}`} className="w-full">
+      <Link
+        href={`/blogs/${_id}`}
+        className="w-full"
+      >
         <Image
           src={imageCover}
-          alt={title}
+          alt={getDynamicString(title)}
           width={430}
           height={240}
           className="object-cover w-full rounded-lg aspect-[1.79]"
         />
       </Link>
       <div className="flex flex-col justify-between flex-grow px-0 mt-4">
-        <Link href={`/blogs/${_id}`} className="w-full">
-          <h3 className="font-semibold text-lg mb-2 line-clamp-2">{title}</h3>
+        <Link
+          href={`/blogs/${_id}`}
+          className="w-full"
+        >
+          <h3 className="font-semibold text-lg mb-2 line-clamp-2">
+            {getDynamicString(title)}
+          </h3>
         </Link>
         <div className="flex flex-row items-center justify-start w-full gap-4 text-sm text-text-2">
           <div className="flex items-center gap-2">
@@ -102,7 +110,10 @@ const BlogCard: React.FC<BlogCardProps> = ({
         {showActions && (
           <div className="flex gap-2 mt-4">
             {editLink && (
-              <Link href={editLink} className="flex-1">
+              <Link
+                href={editLink}
+                className="flex-1"
+              >
                 <Button
                   variant="outline"
                   className="w-full flex items-center gap-2"
@@ -127,7 +138,10 @@ const BlogCard: React.FC<BlogCardProps> = ({
       </div>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+      <Dialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{text("confirmDelete")}</DialogTitle>
@@ -136,10 +150,16 @@ const BlogCard: React.FC<BlogCardProps> = ({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={handleCancelDelete}>
+            <Button
+              variant="outline"
+              onClick={handleCancelDelete}
+            >
               {text("cancel")}
             </Button>
-            <Button variant="destructive" onClick={handleConfirmDelete}>
+            <Button
+              variant="destructive"
+              onClick={handleConfirmDelete}
+            >
               {text("delete")}
             </Button>
           </DialogFooter>
@@ -179,7 +199,7 @@ export const BlogCard2: React.FC<BlogCard2Props> = ({
       >
         <Image
           src={imageCover}
-          alt={title}
+          alt={getDynamicString(title)}
           width={430}
           height={240}
           className="object-cover w-full rounded-2xl aspect-[1.79]"
@@ -193,10 +213,15 @@ export const BlogCard2: React.FC<BlogCard2Props> = ({
           }
         )}
       >
-        <Link href={`/blogs/${_id}`} className="w-full">
-          <h3 className="h5">{title}</h3>
+        <Link
+          href={`/blogs/${_id}`}
+          className="w-full"
+        >
+          <h3 className="h5">{getDynamicString(title)}</h3>
         </Link>
-        <p className="mt-1 text-text-2 sm:mt-2">{description}</p>
+        <p className="mt-1 text-text-2 sm:mt-2">
+          {getDynamicString(description)}
+        </p>
         <BlogUserComponent
           author={author}
           readTime={readTime}

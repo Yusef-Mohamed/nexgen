@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
 import * as z from "zod";
 import GoogleAuthBtn from "../GoogleAuthBtn";
 import { axiosInstance } from "@/app/lib/utils";
@@ -14,7 +13,6 @@ import { useLocale } from "next-intl";
 const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
   const t = useTranslations("SignUp");
   const inputs = useTranslations("Forms");
-  const router = useRouter();
   const locale = useLocale();
   const formSchema = z
     .object({
@@ -75,8 +73,6 @@ const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
       userData: user,
       token,
     });
-    router.push("/email-verification");
-    router.refresh();
   };
 
   const fields = [

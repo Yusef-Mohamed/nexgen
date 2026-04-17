@@ -1,4 +1,24 @@
 {
+  "comingSoon": {
+    "enhancingYour": "نعمل على تحسين",
+    "experience": "تجربتكم",
+    "description": "نحن حالياً في مرحلة تطوير منصتنا لنقدم لكم تصميماً جديداً وميزات متطورة. الجيل القادم من أكاديمية نيكسجين سيتوفر قريباً.",
+    "days": "أيام",
+    "hours": "ساعات",
+    "minutes": "دقائق",
+    "seconds": "ثواني",
+    "stayTuned": "ابقوا على اطلاع للكشف عن المنصة",
+    "footer": "© ٢٠٢٦ أكاديمية نيكسجين · منصة تعليمية"
+  },
+  "serviceUpdate": {
+    "title": "تحديث الخدمة",
+    "description": "نواجه حاليًا انقطاعًا غير متوقع في الخدمة نتيجة لمشكلات في البنية التحتية على مستوى المنطقة تؤثر على مقدمي خدمات السحابة (AWS الشرق الأوسط). يعمل فريقنا التقني بشكل عاجل لاستعادة الخدمة والانتقال إلى مناطق بديلة. نعتذر عن أي إزعاج ونقدّر صبركم.",
+    "lastUpdatedPrefix": "آخر تحديث:",
+    "contactSupport": "تواصل مع الدعم",
+    "subText": "إذا كنت بحاجة إلى مساعدة عاجلة، فريق الدعم لدينا جاهز للمساعدة.",
+    "stayTuned": "متابعة معنا لعودة الخدمة",
+    "footer": "© ٢٠٢٦ أكاديمية نيكسجين · منصة تعليمية"
+  },
   "common": {
     "switchToLightMode": "التبديل إلى الوضع الفاتح",
     "switchToDarkMode": "التبديل إلى الوضع الداكن",
@@ -565,6 +585,8 @@
     "certificatesOfCompletion": "شهادات إتمام",
     "lifetimeAccess": "الوصول مدى الحياة",
     "whatYouWillLearn": "ما ستتعلمه",
+    "whoThisLearningPathFor": "لمن هذا المسار التعليمي",
+    "learningPathPrerequisites": "متطلبات المسار التعليمي",
     "requirements": "المتطلبات",
     "noExperienceRequired": "لا حاجة لخبرة سابقة",
     "studentsReviews": "تقييمات الطلاب",
@@ -590,6 +612,8 @@
     "thisServiceIncludes": "تتضمن هذه الخدمة:",
     "nHourOfVideos": "{n} ساعة من الفيديوهات",
     "whatYouWillLearn": "ما ستتعلمه",
+    "whoThisServiceFor": "لمن هذه الخدمة",
+    "servicePrerequisites": "متطلبات الخدمة",
     "subscriptionDuration": "اشتراك لمدة {days} يوم",
     "accessOnMobile": "الوصول عبر الهاتف المحمول",
     "subscriptionAccess": "الوصول خلال فترة الاشتراك",
@@ -812,6 +836,7 @@
     "youCanontBuyThisCourseNow": "لا يمكنك شراء هذه الدورة الآن",
     "youShouldTakeThoseCoursesFirstOrTakePlacementTest": "يجب عليك أخذ هذه الدورات أولاً أو أداء اختبار التحديد",
     "startPlacementTest": "ابدأ اختبار التحديد",
+    "skipPlacementTest": "تخطي ومتابعة الشراء",
     "couponAppliedSuccessfully": "تم تطبيق الكوبون بنجاح",
     "couponExceeded": "الكوبون تجاوز الحد",
     "invalidCoupon": "كوبون غير صالح",

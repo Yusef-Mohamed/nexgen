@@ -26,10 +26,7 @@ const LearningPathFormSidebar: React.FC<LearningPathFormSidebarProps> = ({
   const config: FormSidebarConfig = {
     backButton: {
       text: text("back") || "Back",
-      href: (isEditMode, itemId) =>
-        isEditMode && itemId
-          ? `/instructor-dashboard/courses/${itemId}?type=learning-path`
-          : "/instructor-dashboard/courses?type=learning-path",
+      href: () => "/instructor-dashboard/courses?type=learning-path",
     },
     categories: [
       {

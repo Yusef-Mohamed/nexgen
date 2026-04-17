@@ -5,7 +5,11 @@ export const API_URL = "https://api.nexgen-academy.com/api/v1";
 // export const API_URL = "https://pre.nexgen-academy.com/api/v1";
 // export const API_URL = "http://localhost:8000/api/v1";
 export const SOCKET_URL = "https://api.nexgen-academy.com";
-
+export const CAROUSEL_CLASSES = {
+  content: "-ml-2 pl-1 md:-ml-4",
+  item: "md:pl-4 pl-2 py-1 basis-auto",
+  card: "lg:w-[26.5rem] w-[20rem] md:w-[23rem]",
+};
 export const mainLinks = [
   { href: "/", label: "home" },
   { href: "/about", label: "about" },

@@ -13,6 +13,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import { CAROUSEL_CLASSES } from "@/constants";
 
 interface CoursesSubsectionProps {
   gridClassName?: string;
@@ -50,23 +51,22 @@ const CoursesSubsection: React.FC<CoursesSubsectionProps> = ({
   if (theme === "carousel") {
     return (
       <div className="relative">
-        {title && <h2 className="mb-6 capitalize font-semibold">{title}</h2>}
+        {title && <h2 className="mb-6 capitalize">{title}</h2>}
         <Carousel
           opts={{
             align: "start",
-            loop: true,
           }}
           className="w-full"
         >
-          <CarouselContent className="-ms-2 ps-2 md:-ms-4">
+          <CarouselContent className={CAROUSEL_CLASSES.content}>
             {loading
               ? Array.from({ length: 8 }).map((_, index) => (
-                  <CarouselItem key={index} className="ps-4 py-1 basis-auto">
+                  <CarouselItem
+                    key={index}
+                    className={CAROUSEL_CLASSES.item}
+                  >
                     <CourseCardSkeleton
-                      className={cn(
-                        "lg:w-[26.5rem] w-[23rem] md:w-[23rem]",
-                        cardClassName
-                      )}
+                      className={cn(CAROUSEL_CLASSES.card, cardClassName)}
                     />
                   </CarouselItem>
                 ))
@@ -74,14 +74,11 @@ const CoursesSubsection: React.FC<CoursesSubsectionProps> = ({
               ? courses.map((course) => (
                   <CarouselItem
                     key={course._id}
-                    className="ps-4 py-1 basis-auto"
+                    className={CAROUSEL_CLASSES.item}
                   >
                     <CourseCard
                       {...course}
-                      className={cn(
-                        "lg:w-[26.5rem] w-[23rem] md:w-[23rem]",
-                        cardClassName
-                      )}
+                      className={cn(CAROUSEL_CLASSES.card, cardClassName)}
                       onCategoryClick={onCategoryClick}
                     />
                   </CarouselItem>
@@ -105,7 +102,10 @@ const CoursesSubsection: React.FC<CoursesSubsectionProps> = ({
         >
           {loading
             ? Array.from({ length: 8 }).map((_, index) => (
-                <div key={index} className={cn("space-y-3", cardClassName)}>
+                <div
+                  key={index}
+                  className={cn("space-y-3", cardClassName)}
+                >
                   <Skeleton className="h-48 w-full rounded-lg" />
                   <div className="space-y-2">
                     <Skeleton className="h-4 w-3/4" />

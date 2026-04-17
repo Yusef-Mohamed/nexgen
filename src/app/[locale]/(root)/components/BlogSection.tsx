@@ -1,6 +1,6 @@
 import React from "react";
 import BlogCard, { BlogCard2 } from "../../../../components/cards/BlogCard";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { IBlog } from "@/types";
 import GridSection from "@/components/GridSection";
@@ -9,7 +9,10 @@ import { Link } from "@/i18n/navigation";
 
 const BlogSection: React.FC = async () => {
   const text = await getTranslations("blogs");
-  const axiosInstance = await createServerAxiosInstance();
+  const locale = await getLocale();
+  const axiosInstance = await createServerAxiosInstance({
+    overRideLocale: locale,
+  });
 
   try {
     const blogsRes = await axiosInstance.get("/articals?limit=3");
@@ -31,7 +34,10 @@ const BlogSection: React.FC = async () => {
 };
 export const BlogSection2: React.FC = async () => {
   const text = await getTranslations("blogs");
-  const axiosInstance = await createServerAxiosInstance();
+  const locale = await getLocale();
+  const axiosInstance = await createServerAxiosInstance({
+    overRideLocale: locale,
+  });
 
   try {
     const blogsRes = await axiosInstance.get("/articals?limit=2");

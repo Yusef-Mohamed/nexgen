@@ -45,7 +45,7 @@ const ServiceFormLayoutClient: React.FC<ServiceFormLayoutClientProps> = ({
                     </button>
                   </SheetTrigger>
                   <SheetContent className="p-0">
-                    <ServiceFormSidebar className="w-full" />
+                    <ServiceFormSidebar className="w-full h-full" />
                   </SheetContent>
                 </Sheet>
                 <UserHeader />

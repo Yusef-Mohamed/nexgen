@@ -8,7 +8,7 @@ import { AxiosError } from "axios";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { useCourseContext } from "../context/CourseContext";
+import { useCourseContextSafe } from "../context/CourseContext";
 import useCustomSearchParams from "@/hooks/useSearchParams";
 import { unlockLessonsSequentially } from "./unlockLessons";
 
@@ -58,7 +58,9 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
   const router = useRouter();
   const text = useTranslations("learn");
   const { token } = useAuth();
-  const { sections, updateSections } = useCourseContext();
+  const courseContext = useCourseContextSafe();
+  const sections = courseContext?.sections;
+  const updateSections = courseContext?.updateSections;
   const { setSearchParams } = useCustomSearchParams();
 
   const endpoint: "lesson" | "course" | "placement" = useMemo(() => {
@@ -166,7 +168,13 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
       }
 
       // Unlock lessons if quiz was passed successfully and it's a lesson quiz
-      if (result.passed && quizType === "lesson" && sections && id) {
+      if (
+        result.passed &&
+        quizType === "lesson" &&
+        sections &&
+        updateSections &&
+        id
+      ) {
         const updatedSections = unlockLessonsSequentially(
           sections,
           id,

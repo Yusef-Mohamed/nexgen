@@ -1,5 +1,6 @@
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { IReview } from "@/types";
+import { getLocale } from "next-intl/server";
 import Image from "next/image";
 import React from "react";
 import AuthReviewSlider from "./AuthReviewsSlider";
@@ -13,7 +14,10 @@ const AuthPage: React.FC<AuthPageProps> = async ({
   heading,
   description,
 }) => {
-  const axiosInstance = await createServerAxiosInstance();
+  const locale = await getLocale();
+  const axiosInstance = await createServerAxiosInstance({
+    overRideLocale: locale,
+  });
   const reviewsRes = await axiosInstance.get("/systemReviews?limit=5");
   const reviewsData = reviewsRes.data.data as IReview[];
   return (

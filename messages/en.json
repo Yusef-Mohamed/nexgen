@@ -1,4 +1,24 @@
 {
+  "comingSoon": {
+    "enhancingYour": "Enhancing Your",
+    "experience": "Experience",
+    "description": "We're currently refining our platform to bring you a brand new design and improved features. The next generation of Nexgen Academy is almost here.",
+    "days": "DAYS",
+    "hours": "HOURS",
+    "minutes": "MINUTES",
+    "seconds": "SECONDS",
+    "stayTuned": "Stay tuned for the unveiling",
+    "footer": "© 2026 NEXGEN ACADEMY · EDUCATION PLATFORM"
+  },
+  "serviceUpdate": {
+    "title": "Service Update",
+    "description": "We are currently experiencing an unexpected service disruption due to regional infrastructure issues affecting our cloud providers (AWS Middle East). Our technical team is working urgently to restore services and migrate to alternative regions. We apologize for this inconvenience and appreciate your patience.",
+    "lastUpdatedPrefix": "Last updated:",
+    "contactSupport": "Contact Support",
+    "subText": "If you need urgent assistance, our support team is ready to help.",
+    "stayTuned": "We are working to restore service",
+    "footer": "© 2026 NEXGEN ACADEMY · EDUCATION PLATFORM"
+  },
   "common": {
     "switchToLightMode": "Switch to light mode",
     "switchToDarkMode": "Switch to dark mode",
@@ -523,6 +543,7 @@
     "services": "Services"
   },
   "coursePage": {
+    "free": "Free",
     "discounted": "Discounted",
     "startNow": "Start Now",
     "thisCourseIncludes": "This course includes:",
@@ -567,6 +588,8 @@
     "certificatesOfCompletion": "Certificates of completion",
     "lifetimeAccess": "Lifetime access",
     "whatYouWillLearn": "What you will learn",
+    "whoThisLearningPathFor": "Who this learning path is for",
+    "learningPathPrerequisites": "Learning Path Prerequisites",
     "requirements": "Requirements",
     "noExperienceRequired": "No prior experience required",
     "studentsReviews": "Student Reviews",
@@ -592,6 +615,8 @@
     "thisServiceIncludes": "This service includes:",
     "nHourOfVideos": "{n} hours of videos",
     "whatYouWillLearn": "What you will learn",
+    "whoThisServiceFor": "Who this service is for",
+    "servicePrerequisites": "Service Prerequisites",
     "subscriptionDuration": "{days} days subscription",
     "accessOnMobile": "Mobile access",
     "subscriptionAccess": "Access during subscription period",
@@ -815,6 +840,7 @@
     "youCanontBuyThisCourseNow": "You cannot buy this course now",
     "youShouldTakeThoseCoursesFirstOrTakePlacementTest": "You should take these courses first or take a placement test",
     "startPlacementTest": "Start Placement Test",
+    "skipPlacementTest": "Skip and continue anyway",
     "couponAppliedSuccessfully": "Coupon applied successfully",
     "couponExceeded": "Coupon exceeded",
     "invalidCoupon": "Invalid coupon",

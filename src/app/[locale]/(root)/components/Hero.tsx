@@ -10,8 +10,8 @@ const Hero: React.FC = () => {
   const text = useTranslations("hero");
   const locale = useLocale();
   return (
-    <section className="pt-8 max-xl:px-4">
-      <div className="container px-4 sm:px-8 relative overflow-hidden md:px-16 lg:px-20 py-10 sm:pt-16 md:py-20 lg:py-[5.5rem] rounded-3xl bg-primary-faded lg:items-center gap-6 flex max-lg:flex-col lg:justify-between">
+    <section className="pt-8 container">
+      <div className=" px-4 sm:px-8 relative overflow-hidden md:px-16 lg:px-20 py-10 sm:pt-16 md:py-20 lg:py-[5.5rem] rounded-3xl bg-primary-faded lg:items-center gap-6 flex max-lg:flex-col lg:justify-between">
         <div
           style={{
             filter: "blur(100px)",
@@ -77,7 +77,10 @@ const Hero: React.FC = () => {
           <p className="my-6 sm:my-10  !text-base md:!text-xl  text-text-1 max-w-xl">
             {text("newDescription")}
           </p>
-          <Button asChild className="sm:min-w-52 w-fit">
+          <Button
+            asChild
+            className="sm:min-w-52 w-fit"
+          >
             <Link href="/sign-up">{text("getStarted")}</Link>
           </Button>
         </TransitionBox>

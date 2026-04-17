@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Alexandria } from "next/font/google";
 import "./globals.css";
-import { NextIntlClientProvider, useMessages } from "next-intl";
+import { NextIntlClientProvider } from "next-intl";
 
 import "react-toastify/dist/ReactToastify.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
@@ -13,7 +13,6 @@ import { GoogleTagManager } from "@next/third-parties/google";
 import QueryProvider from "@/components/QueryProvider";
 import ProgressBarProvider from "@/components/progress-bar";
 
-import * as Sentry from "@sentry/nextjs";
 import SocketWrapper from "@/components/SocketWrapper";
 
 const alexandria = Alexandria({
@@ -43,9 +42,6 @@ export async function generateMetadata({
         "Market Analysis",
         "Trading Skills Development",
       ],
-      other: {
-        ...Sentry.getTraceData(),
-      },
     };
   } else {
     return {
@@ -64,14 +60,12 @@ export async function generateMetadata({
         "تحليل السوق",
         "تطوير مهارات التداول",
       ],
-      other: {
-        ...Sentry.getTraceData(),
-      },
     };
   }
 }
 
 import { getTranslations } from "next-intl/server";
+import ServiceUpdateNotice from "@/components/ServiceUpdateNotice";
 
 const locales = ["en", "ar"];
 export function generateStaticParams() {
@@ -86,7 +80,10 @@ export default async function RootLayout({
 }>) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "common" });
-
+  // utc date
+  const finishDate = "2025-06-31T00:00:00.000Z";
+  const isFinishInPast = new Date(finishDate) < new Date();
+  const serviceUpdateLastUpdated = "April 2, 2026";
   return (
     <html
       lang={locale}
@@ -157,7 +154,13 @@ export default async function RootLayout({
                 <SocketWrapper>
                   <ProgressBarProvider>
                     <ToastProvider />
-                    <div className="min-h-screen w-full">{children}</div>
+                    {!isFinishInPast ? (
+                      <ServiceUpdateNotice
+                        lastUpdated={serviceUpdateLastUpdated}
+                      />
+                    ) : (
+                      <div className="min-h-screen w-full">{children}</div>
+                    )}
                     <div
                       style={{
                         pointerEvents: "none",

@@ -23,7 +23,7 @@ const CourseProgress = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       setSelectedCourseProgress(courseScore.data.data as ICourseProgress);
     } catch (err) {
@@ -40,6 +40,7 @@ const CourseProgress = () => {
   // grades.png
   // time.png
   // progress.png
+  console.log(selectedCourseProgress);
   return (
     <div>
       {courseProgress?.certificate && (
@@ -66,7 +67,9 @@ const CourseProgress = () => {
           title="gradesAverage"
           icon={"/images/grades.png"}
           value={
-            Number(selectedCourseProgress?.totalLessonsExamsPercentage) || 0
+            Number(selectedCourseProgress?.avgCourseExamsPercentage) ||
+            Number(selectedCourseProgress?.avgLessonsExamsPercentage) ||
+            0
           }
           color="#1B7DF5"
           isFetching={isFetching}
@@ -80,8 +83,8 @@ const CourseProgress = () => {
               ((selectedUserObject?.timeSpent?.totalTimeSpent || 0) /
                 (100 * 60 * 60)) *
                 100,
-              100
-            ).toFixed(2)
+              100,
+            ).toFixed(2),
           )}
           timeSpent={selectedUserObject?.timeSpent?.totalTimeSpent}
           isFetching={isFetching}
@@ -136,7 +139,7 @@ const CircleCell = ({
     <div
       className={cn(
         "p-4 rounded-md bg-background cardShadowSecondary relative",
-        className
+        className,
       )}
     >
       <div className="flex items-start justify-between ">
@@ -158,11 +161,7 @@ const CircleCell = ({
         </div>
         <div className="w-[90px]">
           {!isFetching ? (
-            <HalfCircleProgress
-              color={color}
-              progress={value}
-              size="sm"
-            />
+            <HalfCircleProgress color={color} progress={value} size="sm" />
           ) : (
             <div className="font-semibold w-[90px] aspect-square rounded-full bg-muted animate-pulse" />
           )}

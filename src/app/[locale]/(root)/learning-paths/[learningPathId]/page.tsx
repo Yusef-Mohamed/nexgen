@@ -4,8 +4,6 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { ICoursePackage } from "@/types";
-import { notFound } from "next/navigation";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { CiDiscount1 } from "react-icons/ci";
 import { FiPlayCircle } from "react-icons/fi";
@@ -25,9 +23,11 @@ export async function generateMetadata(props: {
   params: Promise<{ locale: string; learningPathId: string }>;
 }): Promise<Metadata> {
   const params = await props.params;
-  const axiosInstance = await createServerAxiosInstance();
+  const axiosInstance = await createServerAxiosInstance({
+    overRideLocale: params.locale,
+  });
   const learningPathRes = await axiosInstance.get(
-    "/coursePackages/" + params.learningPathId
+    "/coursePackages/" + params.learningPathId,
   );
   const learningPathData = learningPathRes.data.data as ICoursePackage;
 
@@ -45,93 +45,90 @@ const LearningPathPage = async (props: {
 }) => {
   const params = await props.params;
 
-  try {
-    const axiosInstance = await createServerAxiosInstance();
-    const learningPathRes = await axiosInstance.get(
-      "/coursePackages/" + params.learningPathId
-    );
-    const learningPathData = learningPathRes.data.data as ICoursePackage;
-    const courseText = await getTranslations("coursePage");
-    return (
-      <main>
-        <section className="container flex gap-20 secPadding">
-          <div className="flex-1 w-full">
-            <LearningPathHeading
-              learningPathData={learningPathData}
-              className="max-lg:hidden"
-            />
-            <LearningPathCard
-              learningPathData={learningPathData}
-              className="lg:hidden relative overflow-hidden"
-            />
-            {learningPathData.whoThisCourseFor &&
-              learningPathData.whoThisCourseFor.length > 0 && (
-                <div className="my-4 md:my-8">
-                  <h3 className="mb-4 md:mb-8">
-                    {courseText("whoThisCourseFor")}
-                  </h3>
-                  <ul className="grid gap-4 list-disc md:grid-cols-2 md:gap-8">
-                    {learningPathData.whoThisCourseFor.map((item, index) => (
-                      <li
-                        key={index}
-                        className="flex items-start gap-2 text-sm text-text-2 md:text-base"
-                      >
-                        <p className="flex-1">{getDynamicString(item)}</p>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            {learningPathData.whatWillLearn &&
-              learningPathData.whatWillLearn.length > 0 && (
-                <div className="my-4 md:my-8">
-                  <h3 className="mb-4 md:mb-8">
-                    {courseText("whatYouWillLearn")}
-                  </h3>
-                  <ul className="grid gap-4 md:grid-cols-2 md:gap-8">
-                    {learningPathData.whatWillLearn.map((item, index) => (
-                      <li
-                        key={index}
-                        className="flex items-start gap-2 text-sm text-text-2 md:text-base"
-                      >
-                        <p className="flex-1"> {getDynamicString(item)}</p>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            {learningPathData.coursePrerequisites && (
+  const axiosInstance = await createServerAxiosInstance({
+    overRideLocale: params.locale,
+  });
+  const learningPathRes = await axiosInstance.get(
+    "/coursePackages/" + params.learningPathId,
+  );
+  const learningPathData = learningPathRes.data.data as ICoursePackage;
+  const learningPathText = await getTranslations("learningPathPage");
+  return (
+    <main>
+      <section className="container flex gap-20 secPadding">
+        <div className="flex-1 w-full">
+          <LearningPathHeading
+            learningPathData={learningPathData}
+            className="max-lg:hidden"
+          />
+          <LearningPathCard
+            learningPathData={learningPathData}
+            className="lg:hidden relative overflow-hidden"
+          />
+          {learningPathData.whoThisCourseFor &&
+            learningPathData.whoThisCourseFor.length > 0 && (
               <div className="my-4 md:my-8">
                 <h3 className="mb-4 md:mb-8">
-                  {courseText("coursePrerequisites")}
+                  {learningPathText("whoThisLearningPathFor")}
+                </h3>
+                <ul className="grid gap-4 list-disc md:grid-cols-2 md:gap-8">
+                  {learningPathData.whoThisCourseFor.map((item, index) => (
+                    <li
+                      key={index}
+                      className="flex items-start gap-2 text-sm text-text-2 md:text-base"
+                    >
+                      <p className="flex-1">{getDynamicString(item)}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          {learningPathData.whatWillLearn &&
+            learningPathData.whatWillLearn.length > 0 && (
+              <div className="my-4 md:my-8">
+                <h3 className="mb-4 md:mb-8">
+                  {learningPathText("whatYouWillLearn")}
                 </h3>
                 <ul className="grid gap-4 md:grid-cols-2 md:gap-8">
-                  {learningPathData.coursePrerequisites.map((item, index) => (
+                  {learningPathData.whatWillLearn.map((item, index) => (
                     <li
                       key={index}
                       className="flex items-start gap-2 text-sm text-text-2 md:text-base"
                     >
                       <p className="flex-1"> {getDynamicString(item)}</p>
                     </li>
-                  ))}{" "}
+                  ))}
                 </ul>
               </div>
             )}
+          {learningPathData.coursePrerequisites && (
+            <div className="my-4 md:my-8">
+              <h3 className="mb-4 md:mb-8">
+                {learningPathText("learningPathPrerequisites")}
+              </h3>
+              <ul className="grid gap-4 md:grid-cols-2 md:gap-8">
+                {learningPathData.coursePrerequisites.map((item, index) => (
+                  <li
+                    key={index}
+                    className="flex items-start gap-2 text-sm text-text-2 md:text-base"
+                  >
+                    <p className="flex-1"> {getDynamicString(item)}</p>
+                  </li>
+                ))}{" "}
+              </ul>
+            </div>
+          )}
 
-            <PathContent courses={learningPathData.courses} />
-          </div>
-          <div className="max-w-[29rem] hidden  relative overflow-hidden h-fit lg:block rounded-3xl  basis-[40%] bg-clear-ground cardShadow p-6">
-            <LearningPathCard learningPathData={learningPathData} />
-          </div>
-        </section>
-        <MobileAppHero />
-        <PopularLearningPaths />
-      </main>
-    );
-  } catch (e) {
-    console.log(e);
-    return notFound();
-  }
+          <PathContent courses={learningPathData.courses} />
+        </div>
+        <div className="max-w-[29rem] hidden  relative overflow-hidden h-fit lg:block rounded-3xl  basis-[40%] bg-clear-ground cardShadow p-6">
+          <LearningPathCard learningPathData={learningPathData} />
+        </div>
+      </section>
+      <MobileAppHero />
+      <PopularLearningPaths />
+    </main>
+  );
 };
 
 const LearningPathHeading: React.FC<{
@@ -162,14 +159,15 @@ const LearningPathHeading: React.FC<{
         </span>
       </div>
       <h1>{getDynamicString(learningPathData.title)}</h1>
-      <p
+      <div
         style={{
           fontWeight: 400,
         }}
-        className="my-4 text-text-2 h3 md:my-8"
-      >
-        {getDynamicString(learningPathData.description)}
-      </p>
+        className="my-4 text-text-2 md:my-8 prose prose-sm md:prose-base max-w-none prose-headings:font-semibold prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5"
+        dangerouslySetInnerHTML={{
+          __html: getDynamicString(learningPathData.description) ?? "",
+        }}
+      />
     </div>
   );
 };
@@ -183,7 +181,7 @@ const LearningPathCard: React.FC<{
   // Calculate total duration from all courses
   const totalDuration = learningPathData.courses.reduce(
     (total, course) => total + (course.courseDuration || 0),
-    0
+    0,
   );
 
   const items = [
@@ -230,7 +228,8 @@ const LearningPathCard: React.FC<{
       />
       <div className="flex items-center justify-between my-4 md:my-8">
         <div className="flex items-end gap-1 font-medium whitespace-nowrap">
-          {learningPathData.priceAfterDiscount ? (
+          {learningPathData.priceAfterDiscount &&
+          learningPathData.priceAfterDiscount !== learningPathData.price ? (
             <>
               <div className="h2">${learningPathData.priceAfterDiscount}</div>
               <del className="h3 text-text-3">${learningPathData.price}</del>

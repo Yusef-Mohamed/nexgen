@@ -26,7 +26,7 @@ const DisplayPosts = () => {
   const inputs = useTranslations("Forms");
   const { token, user } = useAuth();
   const [show, setShow] = useState<"completed" | "onProgress" | "addNew">(
-    "completed"
+    "completed",
   );
   const [selectedCourse, setSelectedCourse] = useState("");
   const [haveError, setHaveError] = useState(false);
@@ -57,12 +57,10 @@ const DisplayPosts = () => {
         const filters = filtersParams.toString();
 
         const res = await axiosInstance(
-          `/analytics/user-analytic/${user?._id}${
-            filters ? "?" + filters : ""
-          }`,
+          `/analytics/user-analytic${filters ? "?" + filters : ""}`,
           {
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         );
         const data = res.data.data as IAnalytic[];
         setPaginationData(res.data.paginationResult);
@@ -75,7 +73,7 @@ const DisplayPosts = () => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [token, setHaveError, haveError, user, show, selectedCourse]
+    [token, setHaveError, haveError, user, show, selectedCourse],
   );
 
   const {
@@ -124,10 +122,7 @@ const DisplayPosts = () => {
       />
       <div className="flex items-center gap-4 p-3 rounded-md cardShadow bg-background">
         <div>
-          <Label
-            htmlFor="course"
-            className="text-sm sr-only"
-          >
+          <Label htmlFor="course" className="text-sm sr-only">
             {inputs("course")}:
           </Label>
           <Select
@@ -144,10 +139,7 @@ const DisplayPosts = () => {
             </SelectTrigger>
             <SelectContent>
               {packages.map((pkg) => (
-                <SelectItem
-                  value={pkg.course._id}
-                  key={pkg.course._id}
-                >
+                <SelectItem value={pkg.course._id} key={pkg.course._id}>
                   {getDynamicString(pkg.course.title)}
                 </SelectItem>
               ))}

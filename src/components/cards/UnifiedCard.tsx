@@ -50,7 +50,7 @@ const UnifiedCard = ({ item, contentType }: UnifiedCardProps) => {
         title: service.title,
         image: service.image,
         status: service.status || "active",
-        detailsLink: `/instructor-dashboard/services/${service._id}`,
+        detailsLink: `/instructor-dashboard/services/service-form?serviceId=${service._id}&mode=edit`,
       };
     }
 
@@ -107,8 +107,8 @@ const UnifiedCard = ({ item, contentType }: UnifiedCardProps) => {
                 statusInfo.isActive
                   ? "text-green"
                   : statusInfo.isPending
-                  ? "text-yellow-600 dark:text-yellow-500"
-                  : "text-destructive"
+                    ? "text-yellow-600 dark:text-yellow-500"
+                    : "text-destructive",
               )}
             >
               {statusInfo.text}

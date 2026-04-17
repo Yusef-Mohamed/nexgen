@@ -14,14 +14,15 @@ const ServiceHeading: React.FC<ServiceHeadingProps> = ({
   return (
     <div className={className}>
       <h1>{getDynamicString(serviceData.title)}</h1>
-      <p
+      <div
         style={{
           fontWeight: 400,
         }}
-        className="my-4 text-text-2 h3 md:my-8"
-      >
-        {getDynamicString(serviceData.description)}
-      </p>
+        className="my-4 text-text-2 md:my-8 prose prose-sm md:prose-base max-w-none prose-headings:font-semibold prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5"
+        dangerouslySetInnerHTML={{
+          __html: getDynamicString(serviceData.description) ?? "",
+        }}
+      />
     </div>
   );
 };

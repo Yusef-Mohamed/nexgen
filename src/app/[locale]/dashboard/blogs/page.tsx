@@ -1,17 +1,15 @@
 import { getMetadataBlogsPage } from "@/getMetaData";
 import { Metadata } from "next";
 
-import { getTranslations} from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { IBlog } from "@/types";
 import { BlogCard2 } from "@/components/cards/BlogCard";
 import BlogsPageHeroSection from "../../(root)/blogs/components/BlogsPageHeroSection";
 
-export async function generateMetadata(
-  props: {
-    params: Promise<{ locale: string }>;
-  }
-): Promise<Metadata> {
+export async function generateMetadata(props: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
   const params = await props.params;
   return getMetadataBlogsPage({
     params,
@@ -20,9 +18,11 @@ export async function generateMetadata(
 
 const BlogsPage = async (props: { params: Promise<{ locale: string }> }) => {
   const params = await props.params;
-  
+
   const text = await getTranslations("blogs");
-  const axiosInstance = await createServerAxiosInstance();
+  const axiosInstance = await createServerAxiosInstance({
+    overRideLocale: params.locale,
+  });
   const blogsRes = await axiosInstance.get("/articals");
   const blogsData = blogsRes.data.data as IBlog[];
   return (

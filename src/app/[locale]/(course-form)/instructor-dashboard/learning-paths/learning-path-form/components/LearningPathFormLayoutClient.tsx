@@ -45,7 +45,7 @@ const LearningPathFormLayoutClient: React.FC<
                     </button>
                   </SheetTrigger>
                   <SheetContent className="p-0">
-                    <LearningPathFormSidebar className="w-full" />
+                    <LearningPathFormSidebar className="w-full h-full" />
                   </SheetContent>
                 </Sheet>
                 <UserHeader />

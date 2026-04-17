@@ -20,10 +20,10 @@ const fetchCategories = async (): Promise<ICategory[]> => {
 };
 
 export const useCategoryFilter = (
-  enableSearch = false
+  enableSearch = false,
 ): UseCategoryFilterReturn => {
   const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
-    null
+    null,
   );
 
   const {

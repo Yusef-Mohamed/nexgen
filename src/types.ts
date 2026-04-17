@@ -442,11 +442,11 @@ export interface INotification {
 export type BlogStatus = "active" | "inactive" | "pending";
 
 export interface IBlog {
-  title: string;
+  title: DynamicString;
   videoUrl: string;
   imageCover: string;
-  content: string;
-  description: string;
+  content: DynamicString;
+  description: DynamicString;
   _id: string;
   slug: string;
   createdAt: string;
@@ -479,6 +479,8 @@ export interface ISection {
   lessons?: ILesson[];
 }
 export interface ICourseProgress {
+  avgLessonsExamsPercentage: number;
+  avgCourseExamsPercentage: number;
   totalProgress: string;
   status: "Completed" | "failed";
   totalLessonsExamsPercentage: string;

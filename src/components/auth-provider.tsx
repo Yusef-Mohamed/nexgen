@@ -138,9 +138,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
     if (userData.emailVerified === false) {
       handleNotActive(userData, token || "");
+      return;
     } else if (userData.active === false) {
       router.push("/banned");
       setStatus(405);
+      return;
     } else if (!userData.country && !countryAlertDismissed) {
       setShowCountryAlert(true);
     }
@@ -185,7 +187,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           userData: user,
           token: token || "",
         });
-        router.refresh();
       } catch (err) {
         const typedError = err as AxiosError;
         if (

@@ -21,7 +21,7 @@ interface OurLearningPathsProps {
 
 const fetchLearningPathsByCategory = async (
   categoryId?: string,
-  searchKeyword?: string
+  searchKeyword?: string,
 ): Promise<ICoursePackage[]> => {
   try {
     // First get all learning paths, then filter by category on the client side
@@ -39,7 +39,9 @@ const fetchLearningPathsByCategory = async (
 
     // Filter learning paths that contain courses from the selected category
     const filteredLearningPaths = allLearningPaths.filter((learningPath) =>
-      learningPath.courses.some((course) => course.category?._id === categoryId)
+      learningPath.courses.some(
+        (course) => course.category?._id === categoryId,
+      ),
     );
 
     return filteredLearningPaths.slice(0, 10);
@@ -70,7 +72,7 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
   const pathname = usePathname();
   const containerRef = useRef<HTMLDivElement>(null);
   const [searchKeyword, setSearchKeyword] = useState(
-    searchParams?.get("keyword") || ""
+    searchParams?.get("keyword") || "",
   );
 
   const {
@@ -104,7 +106,6 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes
     });
-
   const {
     data: popularLearningPaths = [],
     isLoading: popularLearningPathsLoading,
@@ -115,6 +116,7 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
     gcTime: 10 * 60 * 1000, // 10 minutes
   });
 
+  console.log(popularLearningPaths);
   // Generate localized title for the selected category
   const getCategoryTitle = () => {
     if (!selectedCategory) return undefined;

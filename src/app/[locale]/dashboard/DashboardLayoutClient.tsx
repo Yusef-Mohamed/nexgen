@@ -39,10 +39,7 @@ const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
           <header className="sticky top-0 z-50 w-full px-3 sm:px-6 bg-background-2">
             <div className="flex items-center h-[76px] py-1 justify-between gap-10 max-w-6xl mx-auto">
               <div>
-                <Logo
-                  className="lg:hidden"
-                  size="sm"
-                />
+                <Logo className="lg:hidden" size="sm" />
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -66,7 +63,7 @@ const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
                     </button>
                   </SheetTrigger>
                   <SheetContent className="p-0">
-                    <Sidebar className="w-full" />
+                    <Sidebar className="w-full h-full" />
                   </SheetContent>
                 </Sheet>
                 <UserHeader />

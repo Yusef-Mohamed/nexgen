@@ -26,10 +26,7 @@ const ServiceFormSidebar: React.FC<ServiceFormSidebarProps> = ({
   const config: FormSidebarConfig = {
     backButton: {
       text: text("back") || "Back",
-      href: (isEditMode, itemId) =>
-        isEditMode && itemId
-          ? `/instructor-dashboard/courses/${itemId}?type=service`
-          : "/instructor-dashboard/courses?type=service",
+      href: () => "/instructor-dashboard/courses?type=service",
     },
     categories: [
       {

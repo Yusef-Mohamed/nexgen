@@ -59,7 +59,7 @@ const LearnLayoutClient: React.FC = () => {
                     </button>
                   </SheetTrigger>
                   <SheetContent className="p-0">
-                    <CourseSidebar className="w-full" />
+                    <CourseSidebar className="w-full h-full" />
                   </SheetContent>
                 </Sheet>
                 <UserHeader />

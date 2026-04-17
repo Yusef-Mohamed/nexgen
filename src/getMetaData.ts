@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { IBlog } from "./types";
+import { getDynamicString } from "./lib/utils";
 
 const getTitle = (title: string, locale: string) => {
   if (locale === "ar") {
@@ -185,8 +186,8 @@ export function getMetadataBlogPage({
   blog: IBlog;
 }): Metadata {
   return {
-    title: getTitle(blog.title, params.locale),
-    description: blog.description,
+    title: getTitle(getDynamicString(blog.title), params.locale),
+    description: getDynamicString(blog.description),
   };
 }
 

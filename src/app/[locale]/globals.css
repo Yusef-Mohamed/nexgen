@@ -1,7 +1,6 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @plugin 'tailwindcss-animate';
 @plugin '@tailwindcss/typography';
-
 
 @custom-variant dark (&:is(.dark *));
 
@@ -14,17 +13,8 @@
   @media (width >= theme(--breakpoint-md)) {
     padding-inline: 2rem;
   }
-  @media (width >= theme(--breakpoint-lg)) {
-    max-width: theme(--breakpoint-lg);
-  }
-  @media (width >= theme(--breakpoint-xl)) {
-    max-width: theme(--breakpoint-xl);
-  }
-  @media (width >= 1350px) {
-    max-width: 1350px;
-  }
+  max-width: 1400px;
 }
-
 
 @theme {
   --color-background: hsl(var(--background));
