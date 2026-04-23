@@ -25,12 +25,13 @@ const ServiceCard: React.FC<
   course,
   createdAt,
   className,
+  image,
   onCategoryClick,
 }) => {
   const text = useTranslations("services");
 
   // Use course image or default image
-  const imageUrl = course?.image || "/images/hero.png";
+  const imageUrl = image || "/images/hero.png";
 
   const isFree =
     (priceAfterDiscount && priceAfterDiscount === 0) || price === 0;
@@ -39,7 +40,7 @@ const ServiceCard: React.FC<
     <div
       className={cn(
         "flex flex-col w-full border hover:border-secondary hover:outline-secondary rounded-[40px] border-transparent outline outline-1  outline-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
-        className
+        className,
       )}
     >
       {/* Card Badges */}
@@ -123,7 +124,7 @@ export const ServiceCardSkeleton: React.FC<{ className?: string }> = ({
     <div
       className={cn(
         "flex flex-col w-full border hover:border-secondary hover:outline-secondary rounded-[40px] border-transparent outline outline-1 outline-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
-        className
+        className,
       )}
     >
       {/* Card Badges skeleton */}

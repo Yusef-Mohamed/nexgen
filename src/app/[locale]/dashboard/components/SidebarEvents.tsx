@@ -39,7 +39,7 @@ const SidebarEvents = () => {
 
     fetchEvents();
   }, [token]);
-
+  console.log(events);
   return (
     <div>
       <h4 className="mb-3 sm:mb-6">{eventText("upComingEvents")}</h4>

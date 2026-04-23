@@ -19,7 +19,7 @@ export const LearnCourseCard = ({
   const text = useTranslations("learn");
   const locale = useLocale();
   return (
-    <div className="relative flex items-stretch gap-4 p-3 md:p-6 md:gap-10 max-md:flex-col cardShadow rounded-xl bg-clear-ground">
+    <div className="relative flex items-stretch gap-4 p-3 md:p-6 md:gap-10 max-md:flex-col cardShadow rounded-xl bg-background-2">
       <Link href={`/dashboard/learn/${course._id}`}>
         <Image
           loading="lazy"
@@ -79,7 +79,7 @@ export const LearnCourseCard = ({
                   </div>
                   <span className="block mt-1 font-semibold">
                     {parseInt(
-                      course.userScore?.totalProgress?.toString() || "0"
+                      course.userScore?.totalProgress?.toString() || "0",
                     )}
                     %
                   </span>
