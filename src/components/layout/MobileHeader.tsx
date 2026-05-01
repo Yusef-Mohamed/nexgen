@@ -118,7 +118,7 @@ const MobileHeader = ({
                     logout();
                   }}
                 >
-                  {text("signIn")}
+                  {text("logout")}
                 </Button>
               </>
             ) : (

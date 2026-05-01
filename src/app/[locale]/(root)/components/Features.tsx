@@ -66,12 +66,12 @@ const Features: React.FC = () => {
         <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full bg-primary/10 border border-primary/20">
           <span className="size-1.5 rounded-full bg-primary animate-pulse" />
           <span className="text-xs sm:text-sm font-medium text-primary">
-            Why learners pick us
+            {text("eyebrow")}
           </span>
         </div>
         <h2 className="text-text-1 font-bold">
-          Everything you need to{" "}
-          <span className="text-primary">level up</span>
+          {text("headingStart")}{" "}
+          <span className="text-primary">{text("headingHighlight")}</span>
         </h2>
         <p className="mt-4 text-text-3">{text("intro_text")}</p>
       </div>
@@ -109,6 +109,7 @@ const Features: React.FC = () => {
                 <div
                   className={cn(
                     "absolute top-4 right-5 text-5xl sm:text-6xl font-black leading-none select-none pointer-events-none",
+                    "rtl:right-auto rtl:left-5",
                     styles.numberText,
                   )}
                 >

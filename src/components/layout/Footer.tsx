@@ -68,10 +68,10 @@ const Footer = ({}: { clear?: boolean }) => {
             </div>
             <div>
               <div className="font-bold text-text-1">
-                Ready to start learning?
+                {text("readyToStart")}
               </div>
               <p className="text-sm text-text-3 mt-0.5">
-                Join thousands of traders mastering the markets with NexGen.
+                {text("readyDescription")}
               </p>
             </div>
           </div>
@@ -80,13 +80,13 @@ const Footer = ({}: { clear?: boolean }) => {
               href="/courses"
               className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-clear-ground border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/5 transition-colors"
             >
-              Browse courses
+              {text("browseCourses")}
             </Link>
             <Link
               href="/sign-up"
               className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-b from-[#1b7df5] to-[#10498F] text-clear-ground text-sm font-semibold hover:shadow-lg hover:shadow-primary/20 transition-shadow"
             >
-              Get started
+              {text("getStarted")}
             </Link>
           </div>
         </div>
@@ -118,7 +118,7 @@ const Footer = ({}: { clear?: boolean }) => {
           </div>
 
           {/* Learn */}
-          <FooterColumn title="Learn">
+          <FooterColumn title={text("learn")}>
             {learnLinks.map((l) => (
               <FooterLink key={l.name} href={l.link}>
                 {text(l.name)}
@@ -147,7 +147,7 @@ const Footer = ({}: { clear?: boolean }) => {
           {/* Contact */}
           <div className="col-span-2 md:col-span-2">
             <h3 className="text-sm font-bold text-text-1 uppercase tracking-wider">
-              Contact
+              {text("contact")}
             </h3>
             <div className="mt-4 space-y-3">
               <a
@@ -191,12 +191,12 @@ const Footer = ({}: { clear?: boolean }) => {
           <div className="flex flex-wrap items-center gap-4 text-xs text-text-3">
             <span className="inline-flex items-center gap-1.5">
               <HiOutlineShieldCheck className="size-4 text-green" />
-              Licensed & accredited
+              {text("licensedAccredited")}
             </span>
             <span className="hidden sm:inline-block size-1 rounded-full bg-text-3/40" />
             <span className="inline-flex items-center gap-1.5">
               <HiOutlineGlobeAlt className="size-4 text-primary" />
-              Available in EN · AR
+              {text("availableLanguages")}
             </span>
           </div>
           <div className="text-xs text-text-3">{text("copyRight")}</div>

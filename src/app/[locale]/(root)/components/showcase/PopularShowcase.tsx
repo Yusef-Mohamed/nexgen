@@ -89,7 +89,7 @@ const LearningPathsBlock: React.FC = () => {
   );
   return (
     <Shell
-      eyebrow="Structured journeys"
+      eyebrow={lpText("popularEyebrow")}
       heading={lpText("ourPopularLearningPaths")}
       description={lpText("heading")}
       tone="primary"
@@ -135,7 +135,7 @@ const CoursesBlock: React.FC = () => {
   );
   return (
     <Shell
-      eyebrow="Hand-picked for you"
+      eyebrow={courseText("popularEyebrow")}
       heading={courseText("ourPopularCourses")}
       description={courseText("exploreOurPopularCourses")}
       tone="secondary"
@@ -183,7 +183,7 @@ const ServicesBlock: React.FC = () => {
     <Shell
       eyebrow={serviceText("weOffer")}
       heading={serviceText("ourPopularServices")}
-      description="Premium plans and ongoing support to keep you moving forward."
+      description={serviceText("popularDescription")}
       tone="gold"
       href="/services"
       cta={serviceText("exploreAllServices")}

@@ -80,7 +80,7 @@ const SuccessStories: React.FC = () => {
                   <Image
                     loading="lazy"
                     src="/images/success.jpeg"
-                    alt="Success story background"
+                    alt={text("imageAlt")}
                     width={825}
                     height={500}
                     className="aspect-[75/45] w-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -103,10 +103,10 @@ const SuccessStories: React.FC = () => {
                   {/* Caption pill */}
                   <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-3">
                     <div className="px-3 py-1.5 rounded-full bg-clear-ground/95 backdrop-blur text-xs font-semibold text-text-1">
-                      Watch the story
+                      {text("watchStory")}
                     </div>
                     <div className="px-3 py-1.5 rounded-full bg-primary text-clear-ground text-xs font-semibold">
-                      2:45 min
+                      {text("videoDuration")}
                     </div>
                   </div>
                 </div>
@@ -121,7 +121,7 @@ const SuccessStories: React.FC = () => {
                 <iframe
                   className="w-full aspect-video"
                   src="https://www.youtube.com/embed/PrpYc-IaUlk?si=z0s9FHtgJIEuPPTG"
-                  title="YouTube video player"
+                  title={text("youtubeTitle")}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
                 ></iframe>

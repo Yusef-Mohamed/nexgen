@@ -102,8 +102,11 @@ const MobileAppHero: React.FC = () => {
                   ))}
                 </div>
                 <div className="text-sm text-text-2">
-                  <span className="font-bold text-text-1">4.9</span> · 2k+
-                  reviews
+                  {text.rich("rating", {
+                    rating: (chunks) => (
+                      <span className="font-bold text-text-1">{chunks}</span>
+                    ),
+                  })}
                 </div>
               </div>
 
@@ -126,7 +129,7 @@ const MobileAppHero: React.FC = () => {
                   asChild
                 >
                   <a href="#" onClick={(e) => e.preventDefault()}>
-                    Learn More
+                    {text("learnMore")}
                   </a>
                 </Button>
               </div>
@@ -149,7 +152,7 @@ const MobileAppHero: React.FC = () => {
                 />
                 <Image
                   src="/images/download-app.png"
-                  alt="Mobile app preview"
+                  alt={text("imageAlt")}
                   width={1000}
                   height={1000}
                   className={cn(
@@ -173,7 +176,7 @@ const MobileAppHero: React.FC = () => {
                   style={{ animation: "floatY 4s ease-in-out infinite" }}
                 >
                   <div className="text-[10px] uppercase tracking-wider text-text-3 font-semibold">
-                    Downloads
+                    {text("downloads")}
                   </div>
                   <div className="text-base font-bold text-primary leading-none">
                     50K+

@@ -1,19 +1,30 @@
 "use client";
 
 import { axiosInstance } from "@/app/lib/utils";
+import { useAuth } from "@/components/auth-provider";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { FormEvent, KeyboardEvent, useMemo, useRef, useState } from "react";
+import {
+  FormEvent,
+  KeyboardEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Bot,
   BookOpen,
+  ExternalLink,
   GraduationCap,
   Loader2,
+  Plus,
   Send,
   Sparkles,
   X,
 } from "lucide-react";
+import { FaTelegramPlane } from "react-icons/fa";
 
 type ChatRole = "user" | "assistant";
 
@@ -21,6 +32,7 @@ type ChatMessage = {
   id: string;
   role: ChatRole;
   content: string;
+  createdAt?: string;
 };
 
 type RecommendationType = "course" | "learningPath" | "service";
@@ -36,14 +48,45 @@ type Recommendation = {
   reason: string;
 };
 
+type Handoff = {
+  show: boolean;
+  label: string;
+  url: string;
+  reason?: string;
+};
+
+type AiChatSession = {
+  _id: string;
+  title: string;
+  summary?: string;
+  recentMessages?: ChatMessage[];
+  lastMessageAt?: string;
+};
+
 type AiChatResponse = {
   data: {
     data: {
+      chatId: string;
       answer: string;
       recommendations: Recommendation[];
+      handoff?: Handoff | null;
     };
   };
 };
+
+type AiChatSessionsResponse = {
+  data: {
+    data: AiChatSession[];
+  };
+};
+
+type AiChatSessionResponse = {
+  data: {
+    data: AiChatSession;
+  };
+};
+
+const GUEST_CHAT_STORAGE_KEY = "nexgenAiChatId";
 
 const copy = {
   en: {
@@ -56,6 +99,10 @@ const copy = {
     send: "Send",
     thinking: "Thinking...",
     recommendations: "Recommended for you",
+    newChat: "New chat",
+    previousChats: "Previous chats",
+    telegramFallback: "Chat with us on Telegram",
+    telegramDescription: "You can contact technical support on Telegram.",
     course: "Course",
     learningPath: "Learning path",
     service: "Service",
@@ -73,6 +120,10 @@ const copy = {
     send: "إرسال",
     thinking: "جاري التفكير...",
     recommendations: "اقتراحات مناسبة لك",
+    newChat: "محادثة جديدة",
+    previousChats: "المحادثات السابقة",
+    telegramFallback: "فتح شات الدعم على تيليجرام",
+    telegramDescription: "يمكنك التواصل مع الدعم الفني من التيليجرام",
     course: "كورس",
     learningPath: "مسار تعلم",
     service: "خدمة",
@@ -106,17 +157,41 @@ const createMessage = (role: ChatRole, content: string): ChatMessage => ({
 
 export default function AiChatWidget() {
   const locale = useLocale();
+  const { token } = useAuth();
   const language = locale === "ar" ? "ar" : "en";
   const text = copy[language];
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
+  const [activeChatId, setActiveChatId] = useState<string | null>(null);
+  const [sessions, setSessions] = useState<AiChatSession[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([
     createMessage("assistant", text.greeting),
   ]);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [handoff, setHandoff] = useState<Handoff | null>(null);
   const [loading, setLoading] = useState(false);
+  const [sessionsLoading, setSessionsLoading] = useState(false);
+  const [typingMessageId, setTypingMessageId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const panelRef = useRef<HTMLDivElement>(null);
+  const typingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const isBusy = loading || Boolean(typingMessageId);
+  const isLoggedIn = Boolean(token);
+
+  useEffect(() => {
+    return () => {
+      if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (isLoggedIn) {
+      setActiveChatId(null);
+      return;
+    }
+    setActiveChatId(localStorage.getItem(GUEST_CHAT_STORAGE_KEY));
+  }, [isLoggedIn]);
 
   const requestMessages = useMemo(
     () =>
@@ -127,26 +202,109 @@ export default function AiChatWidget() {
     [messages, text.greeting],
   );
 
+  const loadSessions = async () => {
+    if (!isLoggedIn) return;
+    setSessionsLoading(true);
+    try {
+      const response = (await axiosInstance.get(
+        "/ai-chat/sessions",
+      )) as AiChatSessionsResponse;
+      setSessions(response.data.data || []);
+    } catch (err) {
+      console.error("Failed to load AI chat sessions:", err);
+    } finally {
+      setSessionsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!open || !isLoggedIn) return;
+    loadSessions();
+  }, [open, isLoggedIn]);
+
+  const resetChatState = () => {
+    if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
+    typingIntervalRef.current = null;
+    setTypingMessageId(null);
+    setLoading(false);
+    setInput("");
+    setError("");
+    setRecommendations([]);
+    setHandoff(null);
+    setMessages([createMessage("assistant", text.greeting)]);
+  };
+
+  const startNewChat = async () => {
+    if (isBusy) return;
+    resetChatState();
+
+    if (!isLoggedIn) {
+      setActiveChatId(null);
+      if (typeof window !== "undefined") {
+        localStorage.removeItem(GUEST_CHAT_STORAGE_KEY);
+      }
+      return;
+    }
+
+    try {
+      const response = (await axiosInstance.post("/ai-chat/sessions", {
+        title: text.newChat,
+      })) as AiChatSessionResponse;
+      setActiveChatId(response.data.data._id);
+      await loadSessions();
+    } catch (err) {
+      console.error("Failed to create AI chat session:", err);
+      setError(text.error);
+    }
+  };
+
+  const openSession = async (chatId: string) => {
+    if (!chatId || chatId === activeChatId || isBusy) return;
+    setSessionsLoading(true);
+    setError("");
+    setRecommendations([]);
+    setHandoff(null);
+    try {
+      const response = (await axiosInstance.get(
+        `/ai-chat/sessions/${chatId}`,
+      )) as AiChatSessionResponse;
+      const sessionMessages = response.data.data.recentMessages || [];
+      setActiveChatId(response.data.data._id);
+      setMessages(
+        sessionMessages.length > 0
+          ? sessionMessages.map((message) =>
+              createMessage(message.role, message.content),
+            )
+          : [createMessage("assistant", text.greeting)],
+      );
+    } catch (err) {
+      console.error("Failed to open AI chat session:", err);
+      setError(text.error);
+    } finally {
+      setSessionsLoading(false);
+    }
+  };
+
   const submitMessage = async (event?: FormEvent) => {
     event?.preventDefault();
     const content = input.trim();
 
-    if (!content || loading) {
+    if (!content || isBusy) {
       if (!content) setError(text.empty);
       return;
     }
 
     const userMessage = createMessage("user", content);
-    const nextMessages = [...messages, userMessage];
-
-    setMessages(nextMessages);
+    setMessages((current) => [...current, userMessage]);
     setInput("");
     setError("");
     setLoading(true);
     setRecommendations([]);
+    setHandoff(null);
 
     try {
       const response = (await axiosInstance.post("/ai-chat", {
+        chatId: activeChatId,
         messages: [
           ...requestMessages,
           {
@@ -156,18 +314,58 @@ export default function AiChatWidget() {
         ],
       })) as AiChatResponse;
 
-      const answer = response.data.data.answer;
-      setMessages((current) => [...current, createMessage("assistant", answer)]);
-      setRecommendations(response.data.data.recommendations || []);
+      const responseChatId = response.data.data.chatId;
+      if (responseChatId) {
+        setActiveChatId(responseChatId);
+        if (!isLoggedIn && typeof window !== "undefined") {
+          localStorage.setItem(GUEST_CHAT_STORAGE_KEY, responseChatId);
+        }
+      }
 
-      requestAnimationFrame(() => {
-        panelRef.current?.scrollTo({
-          top: panelRef.current.scrollHeight,
-          behavior: "smooth",
+      const answer = response.data.data.answer;
+      const assistantMessage = createMessage("assistant", "");
+      const nextRecommendations = response.data.data.recommendations || [];
+      const nextHandoff = response.data.data.handoff || null;
+      let index = 0;
+
+      if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
+      setLoading(false);
+      setTypingMessageId(assistantMessage.id);
+      setMessages((current) => [...current, assistantMessage]);
+
+      typingIntervalRef.current = setInterval(() => {
+        index += 1;
+        const nextContent = answer.slice(0, index);
+
+        setMessages((current) =>
+          current.map((message) =>
+            message.id === assistantMessage.id
+              ? { ...message, content: nextContent }
+              : message,
+          ),
+        );
+
+        requestAnimationFrame(() => {
+          panelRef.current?.scrollTo({
+            top: panelRef.current.scrollHeight,
+            behavior: "smooth",
+          });
         });
-      });
+
+        if (index >= answer.length) {
+          if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
+          typingIntervalRef.current = null;
+          setTypingMessageId(null);
+          setRecommendations(nextRecommendations);
+          setHandoff(nextHandoff);
+          if (isLoggedIn) loadSessions();
+        }
+      }, 18);
     } catch (err) {
       console.error("AI chat failed:", err);
+      if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
+      typingIntervalRef.current = null;
+      setTypingMessageId(null);
       setError(text.error);
       setMessages((current) => [
         ...current,
@@ -215,6 +413,34 @@ export default function AiChatWidget() {
               <X className="size-4" />
             </button>
           </div>
+
+          {isLoggedIn && (
+            <div className="flex items-center gap-2 border-b border-primary/10 bg-clear-ground px-3 py-2">
+              <select
+                value={activeChatId || ""}
+                disabled={sessionsLoading || isBusy}
+                onChange={(event) => openSession(event.target.value)}
+                className="min-w-0 flex-1 rounded-lg border border-primary/15 bg-background px-2 py-2 text-xs text-text-1 outline-none focus:border-primary"
+                aria-label={text.previousChats}
+              >
+                <option value="">{text.previousChats}</option>
+                {sessions.map((session) => (
+                  <option key={session._id} value={session._id}>
+                    {session.title || text.previousChats}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                disabled={isBusy}
+                onClick={startNewChat}
+                className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-primary/15 text-primary transition hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+                aria-label={text.newChat}
+              >
+                <Plus className="size-4" />
+              </button>
+            </div>
+          )}
 
           <div
             ref={panelRef}
@@ -289,6 +515,30 @@ export default function AiChatWidget() {
                 })}
               </div>
             )}
+
+            {handoff?.show && (
+              <a
+                href={handoff.url}
+                target="_blank"
+                rel="noreferrer"
+                className="block rounded-2xl border border-sky-200 bg-sky-50 p-3 text-sky-900 transition hover:border-sky-300 hover:bg-sky-100"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-sky-500 text-white">
+                    <FaTelegramPlane className="size-4" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-bold">
+                      {handoff.label || text.telegramFallback}
+                    </p>
+                    <p className="mt-0.5 line-clamp-2 text-xs text-sky-700">
+                      {text.telegramDescription}
+                    </p>
+                  </div>
+                  <ExternalLink className="size-4 shrink-0" />
+                </div>
+              </a>
+            )}
           </div>
 
           <form
@@ -310,11 +560,11 @@ export default function AiChatWidget() {
               />
               <button
                 type="submit"
-                disabled={loading}
+                disabled={isBusy}
                 className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-clear-ground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
                 aria-label={text.send}
               >
-                {loading ? (
+                {isBusy ? (
                   <Loader2 className="size-5 animate-spin" />
                 ) : (
                   <Send className="size-5" />

@@ -74,6 +74,10 @@
     "dashboard": "Dashboard",
     "instructorDashboard": "Instructor Dashboard"
   },
+  "logo": {
+    "alt": "NexGen Academy logo",
+    "beta": "Beta"
+  },
   "hero": {
     "heading": "Master Forex Trading with Expert-Led Courses",
     "subHeading": "The Premier Platform for Forex Courses",
@@ -85,7 +89,15 @@
     "headingPart3": "Master New Skills",
     "headingPart4": "Anytime, Anywhere.",
     "newDescription": "Explore expert-led courses designed to help you achieve your goals and elevate your knowledge.",
-    "getStarted": "Get Started"
+    "getStarted": "Get Started",
+    "activeLearners": "Active Learners",
+    "expertCourses": "Expert Courses",
+    "topRated": "Top Rated",
+    "imageAlt": "Learner exploring NexGen Academy courses",
+    "liveClasses": "Live Classes",
+    "joinAnytime": "Join anytime",
+    "certified": "Certified",
+    "onCompletion": "On completion"
   },
   "mobileAppHero": {
     "subtitle": "Learn anytime, anywhere.",
@@ -93,9 +105,16 @@
     "headingPart2": "you on the go and",
     "headingPart3": "never miss a lesson.",
     "description": "Seamless learning across web and mobile.",
-    "downloadButton": "Download Now"
+    "downloadButton": "Download Now",
+    "rating": "<rating>4.9</rating> · 2k+ reviews",
+    "learnMore": "Learn More",
+    "imageAlt": "NexGen Academy mobile app preview",
+    "downloads": "Downloads"
   },
   "features": {
+    "eyebrow": "Why learners pick us",
+    "headingStart": "Everything you need to",
+    "headingHighlight": "level up",
     "intro_text": "Whether you're just starting or looking to advance, explore courses designed to fit your learning goals and schedule.",
     "feature_1_title": "Live Class",
     "feature_2_title": "Best instructors",
@@ -105,6 +124,7 @@
     "feature_3_description": "Boost Your Career Prospects with a Professional Certificate!"
   },
   "popularCourses": {
+    "popularEyebrow": "Hand-picked for you",
     "beginnerToIntermediate": "Beginner to Intermediate",
     "intermediateToAdvanced": "Intermediate to Advanced",
     "beginnerToAdvanced": "Beginner to Advanced",
@@ -124,6 +144,7 @@
   },
 
   "learningPaths": {
+    "popularEyebrow": "Structured journeys",
     "heading": "Advance Your Forex Trading Career",
     "coursesCount": "Contains {count} courses",
     "showDetails": "Show Details",
@@ -241,7 +262,10 @@
     "case_3_title": "Track Your Progress",
     "case_1_description": "Our trainers are Forex experts with years of experience, providing you with effective insights and strategies in real markets.",
     "case_2_description": "Whether you're a beginner or looking to level up, our structured learning paths guide you from one level to the next.",
-    "case_3_description": "Engage with interactive tests and assignments to track your learning journey and enhance your skills."
+    "case_3_description": "Engage with interactive tests and assignments to track your learning journey and enhance your skills.",
+    "successRate": "98% Success",
+    "courseCompletion": "Course completion",
+    "trustedWorldwide": "Trusted by traders worldwide"
   },
   "services": {
     "heading": "Our Services",
@@ -256,6 +280,7 @@
     "showLess": "Show Less",
     "showMore": "Show More",
     "noServices": "No services found",
+    "popularDescription": "Premium plans and ongoing support to keep you moving forward.",
     "categoryTitle": "{categoryName}'s Services",
     "free": "Free"
   },
@@ -268,12 +293,18 @@
     "heading": "Our Students' Success Stories",
     "subHeading": "Your Success Story Starts Here",
     "description": "Discover how our students transformed their lives through education. Each success story highlights the journey, challenges, and achievements of individuals who chose to engage in Forex trading, overcoming market fluctuations and technical analysis challenges to achieve their financial goals.",
-    "startYourJourney": "Start Your Journey"
+    "startYourJourney": "Start Your Journey",
+    "imageAlt": "NexGen Academy success story video preview",
+    "watchStory": "Watch the story",
+    "videoDuration": "2:45 min",
+    "youtubeTitle": "NexGen Academy success story video"
   },
   "learnerReviews": {
     "heading": "Our Students' Reviews",
     "exploreAllReviews": "Explore All Reviews",
-    "loadMore": "Load More"
+    "loadMore": "Load More",
+    "eyebrow": "Learner stories",
+    "description": "Real feedback from learners who took action and never looked back."
   },
   "featuredInstructors": {
     "heading": "Meet Our Featured Instructors of the Week",
@@ -281,6 +312,8 @@
   },
   "blogs": {
     "heading": "Stay Ahead with Our Blogs",
+    "eyebrow": "From the blog",
+    "landingDescription": "Insights, strategies, and updates from our team of trading experts.",
     "exploreAllBlogs": "View more",
     "heading2": "Our Blog",
     "description": "Learn, Trade, and Succeed: Building Your Skills in the Forex Market",
@@ -293,7 +326,16 @@
   },
   "faqs": {
     "heading": "Frequently Asked Questions",
+    "eyebrow": "FAQs",
     "description": "Still unsure? Our support team is here to answer your questions and guide you every step of the way.",
+    "stillHaveQuestions": "Still have questions?",
+    "contactDescription": "Reach out and our team will get back to you fast.",
+    "searchPlaceholder": "Search questions...",
+    "clearSearch": "Clear search",
+    "noSearchResults": "No questions match your search.",
+    "searchResults": "{count, plural, one {# result} other {# results}}",
+    "noMatches": "No matches found",
+    "tryDifferentKeyword": "Try a different keyword or contact our team.",
     "faq_q_1": "What is trading?",
     "faq_a_1": "Trading - buying and selling in financial markets - is a modern phenomenon and fundamental economic activity that has evolved over centuries. Trading essentially involves exchanging goods, stocks, forex, and digital currencies to benefit from market price fluctuations. Unlike investing, which often focuses on long-term growth, trading capitalizes on short-term market movements.",
     "faq_q_2": "How long does it take to master trading?",
@@ -334,7 +376,14 @@
     "description": "Licensed by the Palestinian Ministry of Economy under number 565002342 according to the provisions of Law Decision No. 42 of 2021",
     "facebookAriaLabel": "Visit our Facebook page",
     "tiktokAriaLabel": "Visit our TikTok page",
-    "instagramAriaLabel": "Visit our Instagram page"
+    "instagramAriaLabel": "Visit our Instagram page",
+    "readyToStart": "Ready to start learning?",
+    "readyDescription": "Join thousands of traders mastering the markets with NexGen.",
+    "browseCourses": "Browse courses",
+    "getStarted": "Get started",
+    "learn": "Learn",
+    "licensedAccredited": "Licensed & accredited",
+    "availableLanguages": "Available in EN · AR"
   },
   "aboutHeroPage": {
     "heading": "Shaping the Next Generation of Learners, Innovators, and Leaders.",

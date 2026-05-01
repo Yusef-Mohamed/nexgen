@@ -122,6 +122,7 @@ const WhyChooseUs: React.FC = () => {
                       <div
                         className={cn(
                           "absolute -top-2 -right-2 size-7 rounded-full flex items-center justify-center text-xs font-bold ring-2 ring-clear-ground",
+                          "rtl:-right-auto rtl:-left-2",
                           styles.numberBg,
                           styles.numberText,
                         )}
@@ -171,22 +172,22 @@ const WhyChooseUs: React.FC = () => {
               </div>
 
               {/* Floating stat card - top-right */}
-              <div className="absolute top-5 right-5 sm:top-8 sm:right-8 px-4 py-3 rounded-2xl bg-clear-ground border border-primary/10 cardShadowSm flex items-center gap-3">
+              <div className="absolute top-5 end-5 sm:top-8 sm:end-8 px-4 py-3 rounded-2xl bg-clear-ground border border-primary/10 cardShadowSm flex items-center gap-3">
                 <div className="size-10 rounded-xl bg-fadedGreen flex items-center justify-center">
                   <HiOutlineCheckCircle className="size-5 text-green" />
                 </div>
                 <div>
                   <div className="text-sm font-bold text-text-1 leading-none">
-                    98% Success
+                    {text("successRate")}
                   </div>
                   <div className="text-xs text-text-3 mt-1">
-                    Course completion
+                    {text("courseCompletion")}
                   </div>
                 </div>
               </div>
 
               {/* Floating stat card - bottom-left */}
-              <div className="absolute bottom-5 left-5 sm:bottom-8 sm:left-8 px-4 py-3 rounded-2xl bg-clear-ground border border-primary/10 cardShadowSm">
+              <div className="absolute bottom-5 start-5 sm:bottom-8 sm:start-8 px-4 py-3 rounded-2xl bg-clear-ground border border-primary/10 cardShadowSm">
                 <div className="flex items-center -space-x-2 mb-1.5">
                   <span className="size-7 rounded-full bg-primary/30 ring-2 ring-clear-ground" />
                   <span className="size-7 rounded-full bg-secondary/30 ring-2 ring-clear-ground" />
@@ -196,7 +197,7 @@ const WhyChooseUs: React.FC = () => {
                   </span>
                 </div>
                 <div className="text-xs font-medium text-text-2">
-                  Trusted by traders worldwide
+                  {text("trustedWorldwide")}
                 </div>
               </div>
             </div>

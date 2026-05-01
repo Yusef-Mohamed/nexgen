@@ -12,7 +12,7 @@ const LanguageSelector: React.FC = () => {
       locale={locale === "en" ? "ar" : "en"}
       className="flex items-center justify-center rounded-full h-[2.5rem] w-[2.5rem] border"
     >
-      {locale === "en" ? "ع ر" : "EN"}
+      {locale === "en" ? "ع" : "EN"}
     </Link>
   );
 };

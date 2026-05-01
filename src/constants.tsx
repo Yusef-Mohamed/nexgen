@@ -18,8 +18,8 @@ export const SOCKET_URL = getRequiredEnv(
   process.env.NEXT_PUBLIC_SOCKET_URL
 );
 export const CAROUSEL_CLASSES = {
-  content: "-ml-2 pl-1 md:-ml-4",
-  item: "md:pl-4 pl-2 py-1 basis-auto",
+  content: "-ms-2 ps-1 md:-ms-4",
+  item: "md:ps-4 ps-2 py-1 basis-auto",
   card: "lg:w-[26.5rem] w-[20rem] md:w-[23rem]",
 };
 export const mainLinks = [

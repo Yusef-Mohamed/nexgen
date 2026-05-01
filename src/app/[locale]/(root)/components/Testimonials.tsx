@@ -62,8 +62,8 @@ const Testimonials: React.FC = () => {
       <GridSection
         button={text("exploreAllReviews")}
         heading={text("heading")}
-        eyebrow="Learner stories"
-        description="Real feedback from learners who took action and never looked back."
+        eyebrow={text("eyebrow")}
+        description={text("description")}
         tone="secondary"
         align="center"
         onClick={() => setShowDialog(true)}

@@ -1,5 +1,6 @@
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 const Logo = ({
@@ -11,6 +12,7 @@ const Logo = ({
   size?: "sm" | "md" | "lg";
   isIconic?: boolean;
 }) => {
+  const text = useTranslations("logo");
   const sizes = {
     sm: {
       width: 65,
@@ -55,7 +57,7 @@ const Logo = ({
     >
       <Image
         src="/logos/logo.svg"
-        alt="NexGen Logo"
+        alt={text("alt")}
         className={cn(
           `sm:w-${sizes[size].width} w-${responsiveSizes[size].width} sm:h-${sizes[size].height} h-${responsiveSizes[size].height}`
         )}
@@ -67,7 +69,7 @@ const Logo = ({
           className={`${responsiveSizes[size].textSize} sm:${sizes[size].textSize} flex flex-col`}
         >
           <span>NexGen</span>
-          <span className="h-1 text-xs text-text-3">Beta</span>
+          <span className="h-1 text-xs text-text-3">{text("beta")}</span>
         </div>
       )}
     </Link>

@@ -50,7 +50,7 @@ const FAQ: React.FC = () => {
           <div className="inline-flex w-fit items-center gap-2 px-3 py-1.5 mb-5 rounded-full bg-primary/10 border border-primary/20">
             <HiOutlineQuestionMarkCircle className="size-4 text-primary" />
             <span className="text-xs sm:text-sm font-medium text-primary">
-              FAQs
+              {text("eyebrow")}
             </span>
           </div>
 
@@ -69,10 +69,10 @@ const FAQ: React.FC = () => {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="font-semibold text-text-1">
-                  Still have questions?
+                  {text("stillHaveQuestions")}
                 </div>
                 <p className="text-sm text-text-3 mt-1">
-                  Reach out and our team will get back to you fast.
+                  {text("contactDescription")}
                 </p>
                 <div className="flex flex-wrap gap-2 mt-4">
                   <Button
@@ -105,7 +105,7 @@ const FAQ: React.FC = () => {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search questions..."
+                placeholder={text("searchPlaceholder")}
                 className={cn(
                   "w-full ps-12 pe-12 py-3.5 rounded-2xl bg-clear-ground",
                   "border border-primary/15 focus:border-primary/40 focus:ring-2 focus:ring-primary/15",
@@ -115,7 +115,7 @@ const FAQ: React.FC = () => {
               {isSearching && (
                 <button
                   onClick={() => setQuery("")}
-                  aria-label="Clear search"
+                  aria-label={text("clearSearch")}
                   className="absolute end-3 inline-flex size-7 items-center justify-center rounded-full bg-muted hover:bg-primary/10 text-text-2 transition-colors"
                 >
                   <HiOutlineXMark className="size-4" />
@@ -125,8 +125,8 @@ const FAQ: React.FC = () => {
             {isSearching && (
               <div className="mt-2 text-xs text-text-3 px-2">
                 {items.length === 0
-                  ? "No questions match your search."
-                  : `${items.length} ${items.length === 1 ? "result" : "results"}`}
+                  ? text("noSearchResults")
+                  : text("searchResults", { count: items.length })}
               </div>
             )}
           </div>
@@ -163,9 +163,11 @@ const FAQ: React.FC = () => {
             </Accordion>
           ) : (
             <div className="rounded-2xl border-2 border-dashed border-primary/15 bg-background-2 px-6 py-12 text-center">
-              <div className="text-text-2 font-semibold">No matches found</div>
+              <div className="text-text-2 font-semibold">
+                {text("noMatches")}
+              </div>
               <p className="text-sm text-text-3 mt-1">
-                Try a different keyword or contact our team.
+                {text("tryDifferentKeyword")}
               </p>
             </div>
           )}

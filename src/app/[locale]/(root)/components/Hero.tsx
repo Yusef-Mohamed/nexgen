@@ -128,7 +128,9 @@ const Hero: React.FC = () => {
                 <div className="text-base font-bold text-text-1 leading-none">
                   10K+
                 </div>
-                <div className="text-xs text-text-3 mt-1">Active Learners</div>
+                <div className="text-xs text-text-3 mt-1">
+                  {text("activeLearners")}
+                </div>
               </div>
             </div>
             <div className="hidden sm:block w-px h-10 bg-primary/20" />
@@ -140,7 +142,9 @@ const Hero: React.FC = () => {
                 <div className="text-base font-bold text-text-1 leading-none">
                   200+
                 </div>
-                <div className="text-xs text-text-3 mt-1">Expert Courses</div>
+                <div className="text-xs text-text-3 mt-1">
+                  {text("expertCourses")}
+                </div>
               </div>
             </div>
             <div className="hidden sm:block w-px h-10 bg-primary/20" />
@@ -152,7 +156,9 @@ const Hero: React.FC = () => {
                 <div className="text-base font-bold text-text-1 leading-none">
                   4.9/5
                 </div>
-                <div className="text-xs text-text-3 mt-1">Top Rated</div>
+                <div className="text-xs text-text-3 mt-1">
+                  {text("topRated")}
+                </div>
               </div>
             </div>
           </div>
@@ -171,7 +177,7 @@ const Hero: React.FC = () => {
 
             <Image
               src="/images/new_hero.png"
-              alt="hero"
+              alt={text("imageAlt")}
               className={cn(
                 "relative w-full h-full object-contain drop-shadow-2xl",
                 {
@@ -196,10 +202,10 @@ const Hero: React.FC = () => {
               </div>
               <div>
                 <div className="text-[11px] font-semibold text-text-1 leading-none">
-                  Live Classes
+                  {text("liveClasses")}
                 </div>
                 <div className="text-[10px] text-text-3 mt-0.5">
-                  Join anytime
+                  {text("joinAnytime")}
                 </div>
               </div>
             </div>
@@ -217,10 +223,10 @@ const Hero: React.FC = () => {
               </div>
               <div>
                 <div className="text-[11px] font-semibold text-text-1 leading-none">
-                  Certified
+                  {text("certified")}
                 </div>
                 <div className="text-[10px] text-text-3 mt-0.5">
-                  On completion
+                  {text("onCompletion")}
                 </div>
               </div>
             </div>
