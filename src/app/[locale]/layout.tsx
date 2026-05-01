@@ -6,7 +6,6 @@ import { NextIntlClientProvider } from "next-intl";
 import "react-toastify/dist/ReactToastify.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Script from "next/script";
-import { FaTelegramPlane } from "react-icons/fa";
 import ToastProvider from "@/components/ToastProvider";
 import { AuthProvider } from "@/components/auth-provider";
 import { GoogleTagManager } from "@next/third-parties/google";
@@ -14,6 +13,7 @@ import QueryProvider from "@/components/QueryProvider";
 import ProgressBarProvider from "@/components/progress-bar";
 
 import SocketWrapper from "@/components/SocketWrapper";
+import FloatingSupportActions from "@/components/FloatingSupportActions";
 
 const alexandria = Alexandria({
   subsets: ["latin"],
@@ -64,7 +64,6 @@ export async function generateMetadata({
   }
 }
 
-import { getTranslations } from "next-intl/server";
 import ServiceUpdateNotice from "@/components/ServiceUpdateNotice";
 
 const locales = ["en", "ar"];
@@ -79,7 +78,6 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>;
 }>) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "common" });
   // utc date
   const finishDate = "2025-06-31T00:00:00.000Z";
   const isFinishInPast = new Date(finishDate) < new Date();
@@ -161,30 +159,7 @@ export default async function RootLayout({
                     ) : (
                       <div className="min-h-screen w-full">{children}</div>
                     )}
-                    <div
-                      style={{
-                        pointerEvents: "none",
-                      }}
-                      className="fixed right-0 z-10 flex justify-end w-full px-10 bottom-10"
-                    >
-                      <a
-                        style={{
-                          pointerEvents: "auto",
-                        }}
-                        target="_blank"
-                        href="https://t.me/nexgensupport"
-                        className="relative flex items-center justify-center w-12 h-12 text-3xl text-white rounded-full bg-sky-500"
-                        aria-label={t("contactTelegramAria")}
-                      >
-                        <FaTelegramPlane className="z-10" />
-                        <div
-                          className="absolute w-full h-full rounded-full opacity-50 animate-ping top-0 right-0 bg-sky-500 z-0"
-                          style={{
-                            transformOrigin: "center",
-                          }}
-                        />
-                      </a>
-                    </div>
+                    <FloatingSupportActions />
                   </ProgressBarProvider>
                 </SocketWrapper>
               </AuthProvider>

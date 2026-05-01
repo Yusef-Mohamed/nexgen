@@ -1,0 +1,341 @@
+"use client";
+
+import { axiosInstance } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { useLocale } from "next-intl";
+import { FormEvent, KeyboardEvent, useMemo, useRef, useState } from "react";
+import {
+  Bot,
+  BookOpen,
+  GraduationCap,
+  Loader2,
+  Send,
+  Sparkles,
+  X,
+} from "lucide-react";
+
+type ChatRole = "user" | "assistant";
+
+type ChatMessage = {
+  id: string;
+  role: ChatRole;
+  content: string;
+};
+
+type RecommendationType = "course" | "learningPath" | "service";
+
+type Recommendation = {
+  id: string;
+  type: RecommendationType;
+  title: string;
+  slug: string;
+  category?: string;
+  price?: number;
+  priceAfterDiscount?: number;
+  reason: string;
+};
+
+type AiChatResponse = {
+  data: {
+    data: {
+      answer: string;
+      recommendations: Recommendation[];
+    };
+  };
+};
+
+const copy = {
+  en: {
+    button: "AI assistant",
+    title: "Nexgen AI",
+    subtitle: "Ask about courses, services, and learning paths.",
+    greeting:
+      "Hi, I am Nexgen Academy's assistant. Tell me what you want to learn and I will point you to the best options.",
+    placeholder: "I want to learn forex...",
+    send: "Send",
+    thinking: "Thinking...",
+    recommendations: "Recommended for you",
+    course: "Course",
+    learningPath: "Learning path",
+    service: "Service",
+    open: "Open",
+    error: "I could not answer right now. Please try again in a moment.",
+    empty: "Type a message first.",
+  },
+  ar: {
+    button: "المساعد الذكي",
+    title: "مساعد Nexgen",
+    subtitle: "اسأل عن الكورسات والخدمات ومسارات التعلم.",
+    greeting:
+      "أهلا بك، أنا مساعد Nexgen Academy. أخبرني ماذا تريد أن تتعلم وسأقترح عليك أفضل الخيارات.",
+    placeholder: "أريد تعلم الفوركس...",
+    send: "إرسال",
+    thinking: "جاري التفكير...",
+    recommendations: "اقتراحات مناسبة لك",
+    course: "كورس",
+    learningPath: "مسار تعلم",
+    service: "خدمة",
+    open: "فتح",
+    error: "لم أستطع الرد الآن. حاول مرة أخرى بعد قليل.",
+    empty: "اكتب رسالة أولا.",
+  },
+};
+
+const getRecommendationHref = (locale: string, item: Recommendation) => {
+  const paths: Record<RecommendationType, string> = {
+    course: "courses",
+    learningPath: "learning-paths",
+    service: "services",
+  };
+
+  return `/${locale}/${paths[item.type]}/${item.slug}`;
+};
+
+const getRecommendationIcon = (type: RecommendationType) => {
+  if (type === "course") return GraduationCap;
+  if (type === "learningPath") return BookOpen;
+  return Sparkles;
+};
+
+const createMessage = (role: ChatRole, content: string): ChatMessage => ({
+  id: `${role}-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  role,
+  content,
+});
+
+export default function AiChatWidget() {
+  const locale = useLocale();
+  const language = locale === "ar" ? "ar" : "en";
+  const text = copy[language];
+  const [open, setOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    createMessage("assistant", text.greeting),
+  ]);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  const requestMessages = useMemo(
+    () =>
+      messages
+        .filter((message) => message.content !== text.greeting)
+        .slice(-8)
+        .map(({ role, content }) => ({ role, content })),
+    [messages, text.greeting],
+  );
+
+  const submitMessage = async (event?: FormEvent) => {
+    event?.preventDefault();
+    const content = input.trim();
+
+    if (!content || loading) {
+      if (!content) setError(text.empty);
+      return;
+    }
+
+    const userMessage = createMessage("user", content);
+    const nextMessages = [...messages, userMessage];
+
+    setMessages(nextMessages);
+    setInput("");
+    setError("");
+    setLoading(true);
+    setRecommendations([]);
+
+    try {
+      const response = (await axiosInstance.post("/ai-chat", {
+        messages: [
+          ...requestMessages,
+          {
+            role: userMessage.role,
+            content: userMessage.content,
+          },
+        ],
+      })) as AiChatResponse;
+
+      const answer = response.data.data.answer;
+      setMessages((current) => [...current, createMessage("assistant", answer)]);
+      setRecommendations(response.data.data.recommendations || []);
+
+      requestAnimationFrame(() => {
+        panelRef.current?.scrollTo({
+          top: panelRef.current.scrollHeight,
+          behavior: "smooth",
+        });
+      });
+    } catch (err) {
+      console.error("AI chat failed:", err);
+      setError(text.error);
+      setMessages((current) => [
+        ...current,
+        createMessage("assistant", text.error),
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      submitMessage();
+    }
+  };
+
+  return (
+    <div className="relative pointer-events-auto">
+      {open && (
+        <div
+          className={cn(
+            "absolute bottom-16 end-0 z-50 flex h-[min(34rem,calc(100vh-8rem))] w-[calc(100vw-2rem)] max-w-[24rem] flex-col overflow-hidden",
+            "rounded-2xl border border-primary/15 bg-clear-ground shadow-2xl shadow-primary/15",
+          )}
+        >
+          <div className="flex items-center justify-between gap-3 border-b border-primary/10 bg-primary px-4 py-3 text-clear-ground">
+            <div className="flex min-w-0 items-center gap-2">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-clear-ground/15">
+                <Bot className="size-5" />
+              </span>
+              <div className="min-w-0">
+                <h2 className="truncate text-sm font-bold">{text.title}</h2>
+                <p className="truncate text-xs text-clear-ground/80">
+                  {text.subtitle}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="flex size-8 shrink-0 items-center justify-center rounded-full text-clear-ground/85 transition hover:bg-clear-ground/15 hover:text-clear-ground"
+              aria-label="Close AI chat"
+            >
+              <X className="size-4" />
+            </button>
+          </div>
+
+          <div
+            ref={panelRef}
+            className="flex-1 space-y-3 overflow-y-auto px-3 py-4"
+          >
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={cn(
+                  "flex",
+                  message.role === "user" ? "justify-end" : "justify-start",
+                )}
+              >
+                <div
+                  className={cn(
+                    "max-w-[85%] whitespace-pre-line break-words rounded-2xl px-3 py-2 text-sm leading-6",
+                    message.role === "user"
+                      ? "rounded-ee-sm bg-primary text-clear-ground"
+                      : "rounded-es-sm bg-muted text-text-1",
+                  )}
+                >
+                  {message.content}
+                </div>
+              </div>
+            ))}
+
+            {loading && (
+              <div className="flex justify-start">
+                <div className="flex items-center gap-2 rounded-2xl rounded-es-sm bg-muted px-3 py-2 text-sm text-text-2">
+                  <Loader2 className="size-4 animate-spin" />
+                  {text.thinking}
+                </div>
+              </div>
+            )}
+
+            {recommendations.length > 0 && (
+              <div className="space-y-2 rounded-2xl border border-primary/10 bg-primary/5 p-3">
+                <h3 className="text-xs font-bold uppercase text-primary">
+                  {text.recommendations}
+                </h3>
+                {recommendations.map((item) => {
+                  const Icon = getRecommendationIcon(item.type);
+                  return (
+                    <Link
+                      key={`${item.type}-${item.id}`}
+                      href={getRecommendationHref(locale, item)}
+                      className="block rounded-xl border border-primary/10 bg-clear-ground p-3 transition hover:border-primary/35 hover:shadow-md"
+                    >
+                      <div className="flex items-start gap-2">
+                        <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                          <Icon className="size-4" />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="truncate text-sm font-bold text-text-1">
+                              {item.title}
+                            </span>
+                            <span className="shrink-0 rounded-full bg-secondary/10 px-2 py-0.5 text-[10px] font-semibold text-secondary">
+                              {text[item.type]}
+                            </span>
+                          </div>
+                          <p className="mt-1 line-clamp-2 text-xs leading-5 text-text-2">
+                            {item.reason}
+                          </p>
+                          <span className="mt-2 inline-flex text-xs font-semibold text-primary">
+                            {text.open}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <form
+            onSubmit={submitMessage}
+            className="border-t border-primary/10 bg-clear-ground p-3"
+          >
+            {error && <p className="mb-2 text-xs text-destructive">{error}</p>}
+            <div className="flex items-end gap-2">
+              <textarea
+                value={input}
+                onChange={(event) => {
+                  setInput(event.target.value);
+                  if (error) setError("");
+                }}
+                onKeyDown={handleKeyDown}
+                placeholder={text.placeholder}
+                rows={2}
+                className="min-h-11 flex-1 resize-none rounded-xl border border-primary/15 bg-background px-3 py-2 text-sm text-text-1 outline-none transition placeholder:text-text-3 focus:border-primary"
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-clear-ground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+                aria-label={text.send}
+              >
+                {loading ? (
+                  <Loader2 className="size-5 animate-spin" />
+                ) : (
+                  <Send className="size-5" />
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        className="relative flex size-12 items-center justify-center rounded-full bg-primary text-clear-ground shadow-lg shadow-primary/25 transition hover:-translate-y-0.5 hover:bg-primary/90"
+        aria-label={text.button}
+      >
+        <Bot className="z-10 size-6" />
+        {!open && (
+          <span className="absolute inset-0 rounded-full bg-primary opacity-40 animate-ping" />
+        )}
+      </button>
+    </div>
+  );
+}
