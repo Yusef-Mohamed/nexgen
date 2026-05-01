@@ -2,7 +2,6 @@
 import React from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import TransitionBox from "@/components/TransitionBox";
 
@@ -23,62 +22,42 @@ const FEATURES: FeatureItem[] = [
 const toneStyles: Record<
   FeatureTone,
   {
-    light: React.CSSProperties;
-    dark: React.CSSProperties;
+    bg: string;
+    border: string;
+    hoverBorder: string;
     accent: string;
     iconBg: string;
     numberText: string;
-    border: string;
   }
 > = {
   primary: {
-    light: {
-      background: "linear-gradient(180deg, #FFF 0%, #BCE4FF 100%)",
-      boxShadow: "2px 4px 16px 0 rgba(142, 213, 255, 0.40)",
-    },
-    dark: {
-      background: "linear-gradient(180deg, #282828 0%, #003051 100%)",
-      boxShadow: "2px 4px 16px 0 rgba(142, 213, 255, 0.40)",
-    },
+    bg: "bg-primary-faded",
+    border: "border-primary/15",
+    hoverBorder: "group-hover:border-primary/40",
     accent: "bg-primary",
-    iconBg: "bg-primary/10",
-    numberText: "text-primary/30",
-    border: "group-hover:border-primary/40",
+    iconBg: "bg-primary/15",
+    numberText: "text-primary/25",
   },
   secondary: {
-    light: {
-      background: "linear-gradient(0deg, #E2CEFD 0%, #FFF 100%)",
-      boxShadow: "2px 4px 200px 0 #F3EBFF",
-    },
-    dark: {
-      background: "linear-gradient(0deg, #1A003B 0%, #282828 100%)",
-      boxShadow: "0 2px 16px 0 rgba(142, 213, 255, 0.24)",
-    },
+    bg: "bg-secondary/10",
+    border: "border-secondary/20",
+    hoverBorder: "group-hover:border-secondary/50",
     accent: "bg-secondary",
-    iconBg: "bg-secondary/10",
+    iconBg: "bg-secondary/20",
     numberText: "text-secondary/30",
-    border: "group-hover:border-secondary/40",
   },
   gold: {
-    light: {
-      background: "linear-gradient(180deg, #FFF 0%, #B2F7FF 100%)",
-      boxShadow: "2px 4px 16px 0 rgba(142, 213, 255, 0.40)",
-    },
-    dark: {
-      background: "linear-gradient(180deg, #282828 0%, #00424A 100%)",
-      boxShadow: "2px 4px 16px 0 rgba(142, 213, 255, 0.40)",
-    },
+    bg: "bg-gold/10",
+    border: "border-gold/25",
+    hoverBorder: "group-hover:border-gold/50",
     accent: "bg-gold",
-    iconBg: "bg-gold/15",
-    numberText: "text-gold/40",
-    border: "group-hover:border-gold/40",
+    iconBg: "bg-gold/20",
+    numberText: "text-gold/35",
   },
 };
 
 const Features: React.FC = () => {
   const text = useTranslations("features");
-  const theme = useTheme();
-  const isDark = theme.resolvedTheme === "dark";
 
   return (
     <section className="container secPadding">
@@ -111,17 +90,18 @@ const Features: React.FC = () => {
             >
               <div
                 className={cn(
-                  "group relative h-full p-6 sm:p-7 rounded-2xl border border-transparent transition-all duration-300",
-                  "hover:-translate-y-1.5 hover:shadow-xl",
-                  styles.border
+                  "group relative h-full p-6 sm:p-7 rounded-2xl border transition-all duration-300",
+                  "hover:-translate-y-1.5 hover:shadow-lg hover:shadow-text-1/5",
+                  styles.bg,
+                  styles.border,
+                  styles.hoverBorder,
                 )}
-                style={isDark ? styles.dark : styles.light}
               >
                 {/* Top accent bar */}
                 <div
                   className={cn(
-                    "absolute top-0 left-6 right-6 h-1 rounded-b-full opacity-60 group-hover:opacity-100 transition-opacity",
-                    styles.accent
+                    "absolute top-0 left-6 right-6 h-1 rounded-b-full opacity-70 group-hover:opacity-100 transition-opacity",
+                    styles.accent,
                   )}
                 />
 
@@ -129,7 +109,7 @@ const Features: React.FC = () => {
                 <div
                   className={cn(
                     "absolute top-4 right-5 text-5xl sm:text-6xl font-black leading-none select-none pointer-events-none",
-                    styles.numberText
+                    styles.numberText,
                   )}
                 >
                   {number}
@@ -139,7 +119,7 @@ const Features: React.FC = () => {
                   <div
                     className={cn(
                       "flex items-center justify-center size-16 sm:size-[4.5rem] rounded-2xl transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3",
-                      styles.iconBg
+                      styles.iconBg,
                     )}
                   >
                     <Image

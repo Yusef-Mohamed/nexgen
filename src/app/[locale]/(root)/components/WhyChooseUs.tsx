@@ -1,6 +1,5 @@
 "use client";
 import { useTranslations } from "next-intl";
-import { useTheme } from "next-themes";
 import Image from "next/image";
 import React from "react";
 import { cn } from "@/lib/utils";
@@ -15,59 +14,42 @@ const ITEMS: { tone: Tone; number: string }[] = [
   { tone: "gold", number: "03" },
 ];
 
-const getCardStyle = (tone: Tone, isDark: boolean): React.CSSProperties => {
-  if (tone === "primary") {
-    return isDark
-      ? {
-          background: "linear-gradient(180deg, #282828 0%, #003051 100%)",
-          boxShadow: "2px 4px 16px 0 rgba(142, 213, 255, 0.40)",
-        }
-      : {
-          background: "linear-gradient(180deg, #FFF 0%, #BCE4FF 100%)",
-          boxShadow: "2px 4px 16px 0 rgba(142, 213, 255, 0.40)",
-        };
-  }
-  if (tone === "secondary") {
-    return isDark
-      ? {
-          background: "linear-gradient(0deg, #1A003B 0%, #282828 100%)",
-          boxShadow: "0 2px 16px 0 rgba(142, 213, 255, 0.24)",
-        }
-      : {
-          background: "linear-gradient(0deg, #E2CEFD 0%, #FFF 100%)",
-          boxShadow: "2px 4px 200px 0 #F3EBFF",
-        };
-  }
-  return isDark
-    ? {
-        background: "linear-gradient(180deg, #282828 0%, #00424A 100%)",
-        boxShadow: "2px 4px 16px 0 rgba(142, 213, 255, 0.40)",
-      }
-    : {
-        background: "linear-gradient(180deg, #FFF 0%, #B2F7FF 100%)",
-        boxShadow: "2px 4px 16px 0 rgba(142, 213, 255, 0.40)",
-      };
-};
-
-const toneAccent: Record<
+const toneStyles: Record<
   Tone,
-  { bar: string; numberBg: string; numberText: string; iconRing: string }
+  {
+    bg: string;
+    border: string;
+    hoverBorder: string;
+    bar: string;
+    numberBg: string;
+    numberText: string;
+    iconRing: string;
+  }
 > = {
   primary: {
+    bg: "bg-primary-faded",
+    border: "border-primary/15",
+    hoverBorder: "hover:border-primary/40",
     bar: "bg-primary",
-    numberBg: "bg-primary/10",
+    numberBg: "bg-primary/15",
     numberText: "text-primary",
     iconRing: "ring-primary/20",
   },
   secondary: {
+    bg: "bg-secondary/10",
+    border: "border-secondary/20",
+    hoverBorder: "hover:border-secondary/50",
     bar: "bg-secondary",
-    numberBg: "bg-secondary/10",
+    numberBg: "bg-secondary/15",
     numberText: "text-secondary",
-    iconRing: "ring-secondary/20",
+    iconRing: "ring-secondary/25",
   },
   gold: {
+    bg: "bg-gold/10",
+    border: "border-gold/25",
+    hoverBorder: "hover:border-gold/50",
     bar: "bg-gold",
-    numberBg: "bg-gold/15",
+    numberBg: "bg-gold/20",
     numberText: "text-gold",
     iconRing: "ring-gold/30",
   },
@@ -75,8 +57,6 @@ const toneAccent: Record<
 
 const WhyChooseUs: React.FC = () => {
   const text = useTranslations("whyChooseUs");
-  const theme = useTheme();
-  const isDark = theme.resolvedTheme === "dark";
 
   return (
     <section className="container secPadding">
@@ -97,7 +77,7 @@ const WhyChooseUs: React.FC = () => {
 
           <div className="mt-10 space-y-5 max-md:mt-8 max-md:space-y-4">
             {ITEMS.map(({ tone, number }, index) => {
-              const accent = toneAccent[tone];
+              const styles = toneStyles[tone];
               return (
                 <TransitionBox
                   key={index}
@@ -108,17 +88,19 @@ const WhyChooseUs: React.FC = () => {
                 >
                   <div
                     className={cn(
-                      "group relative flex items-center gap-4 p-4 md:gap-6 md:p-6 rounded-2xl",
-                      "transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                      "group relative flex items-center gap-4 p-4 md:gap-6 md:p-6 rounded-2xl border",
+                      "transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-text-1/5",
+                      styles.bg,
+                      styles.border,
+                      styles.hoverBorder,
                     )}
-                    style={getCardStyle(tone, isDark)}
                   >
                     {/* Side accent bar */}
                     <div
                       className={cn(
-                        "absolute top-4 bottom-4 w-1 rounded-full opacity-60 group-hover:opacity-100 transition-opacity",
-                        accent.bar,
-                        "ltr:left-0 rtl:right-0"
+                        "absolute top-4 bottom-4 w-1 rounded-full opacity-70 group-hover:opacity-100 transition-opacity",
+                        styles.bar,
+                        "ltr:left-0 rtl:right-0",
                       )}
                     />
 
@@ -126,7 +108,7 @@ const WhyChooseUs: React.FC = () => {
                       <div
                         className={cn(
                           "rounded-xl ring-4 transition-transform group-hover:scale-105",
-                          accent.iconRing
+                          styles.iconRing,
                         )}
                       >
                         <Image
@@ -140,8 +122,8 @@ const WhyChooseUs: React.FC = () => {
                       <div
                         className={cn(
                           "absolute -top-2 -right-2 size-7 rounded-full flex items-center justify-center text-xs font-bold ring-2 ring-clear-ground",
-                          accent.numberBg,
-                          accent.numberText
+                          styles.numberBg,
+                          styles.numberText,
                         )}
                       >
                         {number}
@@ -171,10 +153,10 @@ const WhyChooseUs: React.FC = () => {
             containerClassName="overflow-visible"
           >
             <div className="relative">
-              {/* Backdrop blob */}
+              {/* Decorative tinted backdrop (solid) */}
               <div
                 aria-hidden
-                className="absolute -inset-6 rounded-[40px] bg-gradient-to-br from-primary/15 via-secondary/10 to-gold/10 blur-2xl"
+                className="absolute -inset-3 rounded-[40px] bg-primary-faded -z-10"
               />
 
               {/* Image frame */}
@@ -186,13 +168,11 @@ const WhyChooseUs: React.FC = () => {
                   width={1000}
                   className="aspect-[66/69] w-full object-cover"
                 />
-                {/* Subtle overlay tint */}
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/10 via-transparent to-transparent pointer-events-none" />
               </div>
 
               {/* Floating stat card - top-right */}
-              <div className="absolute top-5 right-5 sm:top-8 sm:right-8 px-4 py-3 rounded-2xl bg-clear-ground/95 backdrop-blur cardShadowSm flex items-center gap-3">
-                <div className="size-10 rounded-xl bg-green/15 flex items-center justify-center">
+              <div className="absolute top-5 right-5 sm:top-8 sm:right-8 px-4 py-3 rounded-2xl bg-clear-ground border border-primary/10 cardShadowSm flex items-center gap-3">
+                <div className="size-10 rounded-xl bg-fadedGreen flex items-center justify-center">
                   <HiOutlineCheckCircle className="size-5 text-green" />
                 </div>
                 <div>
@@ -206,12 +186,12 @@ const WhyChooseUs: React.FC = () => {
               </div>
 
               {/* Floating stat card - bottom-left */}
-              <div className="absolute bottom-5 left-5 sm:bottom-8 sm:left-8 px-4 py-3 rounded-2xl bg-clear-ground/95 backdrop-blur cardShadowSm">
+              <div className="absolute bottom-5 left-5 sm:bottom-8 sm:left-8 px-4 py-3 rounded-2xl bg-clear-ground border border-primary/10 cardShadowSm">
                 <div className="flex items-center -space-x-2 mb-1.5">
-                  <span className="size-7 rounded-full bg-primary/20 ring-2 ring-clear-ground" />
+                  <span className="size-7 rounded-full bg-primary/30 ring-2 ring-clear-ground" />
                   <span className="size-7 rounded-full bg-secondary/30 ring-2 ring-clear-ground" />
                   <span className="size-7 rounded-full bg-gold/30 ring-2 ring-clear-ground" />
-                  <span className="size-7 rounded-full bg-green/20 ring-2 ring-clear-ground flex items-center justify-center text-[10px] font-bold text-green">
+                  <span className="size-7 rounded-full bg-fadedGreen ring-2 ring-clear-ground flex items-center justify-center text-[10px] font-bold text-green">
                     +9k
                   </span>
                 </div>

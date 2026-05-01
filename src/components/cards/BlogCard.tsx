@@ -2,14 +2,20 @@ import { IBlog } from "@/types";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import React from "react";
-import { GiSandsOfTime } from "react-icons/gi";
-import { CiCalendarDate } from "react-icons/ci";
-import { FaRegUser } from "react-icons/fa";
 import { Link } from "@/i18n/navigation";
 import UserAvatar from "../UserAvatar";
 import { cn, getDynamicString } from "@/lib/utils";
 import { ShareButtons } from "./BlogsShareButtons";
-const BlogCard: React.FC<IBlog & { inDashboard?: boolean }> = ({
+import {
+  HiOutlineClock,
+  HiOutlineCalendarDays,
+  HiOutlineNewspaper,
+  HiOutlineArrowRight,
+} from "react-icons/hi2";
+
+const BlogCard: React.FC<
+  IBlog & { inDashboard?: boolean; className?: string }
+> = ({
   slug,
   title,
   imageCover,
@@ -17,54 +23,102 @@ const BlogCard: React.FC<IBlog & { inDashboard?: boolean }> = ({
   readTime,
   author,
   inDashboard,
+  className,
 }) => {
   const locale = useLocale();
   if (!author) return null;
+
+  const href = `${inDashboard ? "/dashboard/blogs" : "/blogs"}/${slug}`;
+  const dateLabel = new Date(createdAt).toLocaleDateString(
+    locale === "ar" ? "ar-EG" : "en-US",
+    { year: "numeric", month: "short", day: "numeric" },
+  );
+
   return (
-    <article className="flex flex-col w-full h-full ">
+    <article
+      className={cn(
+        "group flex flex-col w-full h-full relative gap-4 p-4 sm:p-5",
+        "rounded-3xl bg-clear-ground border border-primary/10",
+        "transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5",
+        className,
+      )}
+    >
+      {/* Image */}
       <Link
-        href={`${inDashboard ? "/dashboard/blogs" : "/blogs"}/${slug}`}
-        className="w-full shadow-md rounded-2xl shadow-primary/20"
+        href={href}
+        className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden shrink-0 block"
       >
         <Image
           src={imageCover}
           alt={getDynamicString(title)}
           width={430}
           height={240}
-          className="object-cover w-full rounded-2xl aspect-[1.79]"
+          className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
         />
-      </Link>
-      <div className="flex flex-col justify-between flex-grow px-3 mt-5 sm:px-4 sm:mt-6">
-        <Link
-          href={`/blogs/${slug}`}
-          className="w-full"
-        >
-          <h3 className="h5">{getDynamicString(title)}</h3>
-        </Link>
-        <div className="flex flex-row items-center justify-start w-full gap-4 mt-3 text-sm sm:text-base sm:gap-6 sm:mt-4 text-text-2">
-          <div className="flex items-center gap-2 sm:gap-3 ">
-            <GiSandsOfTime />
-            <div>
-              {readTime} {locale === "ar" ? " د" : " min"}
-            </div>
-          </div>
-          <div className="flex items-center gap-2 sm:gap-3 whitespace-nowrap">
-            <CiCalendarDate />
-            <div>
-              {new Date(createdAt).toLocaleDateString(
-                locale === "ar" ? "ar-EG" : "en-US",
-                {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                }
-              )}
-            </div>
-          </div>
-          <div className="flex items-center gap-2 whitespace-nowrap sm:gap-3 ">
-            <FaRegUser /> <div>{author?.name?.slice(0, 8)}</div>
-          </div>
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/55 via-black/15 to-transparent pointer-events-none" />
+        {/* Article ribbon */}
+        <div className="absolute top-3 end-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/90 text-clear-ground text-[11px] font-semibold uppercase tracking-wider">
+          <HiOutlineNewspaper className="size-3.5" />
+          <span>Article</span>
         </div>
+        {/* Read time pill */}
+        <div className="absolute bottom-3 start-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-clear-ground/95 backdrop-blur text-xs font-semibold text-text-1">
+          <HiOutlineClock className="size-3.5" />
+          <span>
+            {readTime} {locale === "ar" ? "د" : "min read"}
+          </span>
+        </div>
+      </Link>
+
+      {/* Content */}
+      <div className="flex-1 flex flex-col gap-3">
+        {/* Date chip */}
+        <div className="flex items-center justify-between gap-2">
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-secondary bg-secondary/10 px-2.5 py-1 rounded-full">
+            <HiOutlineCalendarDays className="size-3.5" />
+            {dateLabel}
+          </span>
+        </div>
+
+        {/* Title */}
+        <Link href={href} className="block">
+          <h3 className="text-lg sm:text-xl font-bold text-text-1 leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+            {getDynamicString(title)}
+          </h3>
+        </Link>
+
+        {/* Author row */}
+        <div className="flex items-center gap-2 text-xs text-text-3">
+          {author.profileImg ? (
+            <span className="relative size-6 rounded-full overflow-hidden shrink-0">
+              <Image
+                src={author.profileImg}
+                alt={author.name}
+                fill
+                className="object-cover"
+              />
+            </span>
+          ) : (
+            <span className="size-6 rounded-full bg-muted shrink-0" />
+          )}
+          <span className="font-medium text-text-2 truncate">
+            {author.name}
+          </span>
+        </div>
+      </div>
+
+      {/* Footer: read more */}
+      <div className="flex items-center justify-between gap-3 pt-3 border-t border-primary/10">
+        <span className="text-xs text-text-3">
+          {locale === "ar" ? "اقرأ المقال" : "Read article"}
+        </span>
+        <Link
+          href={href}
+          className="inline-flex items-center gap-1.5 px-3 h-9 rounded-full bg-gradient-to-b from-[#1b7df5] to-[#10498F] text-clear-ground text-xs font-semibold transition-transform hover:translate-x-0.5 rtl:hover:-translate-x-0.5"
+        >
+          <span>{locale === "ar" ? "المزيد" : "Read more"}</span>
+          <HiOutlineArrowRight className="size-3.5 rtl:rotate-180" />
+        </Link>
       </div>
     </article>
   );
@@ -96,35 +150,33 @@ export const BlogCard2: React.FC<BlogCardProps> = ({
     >
       <Link
         href={`${inDashboard ? "/dashboard/blogs" : "/blogs"}/${slug}`}
-        className={cn("w-full shadow-md rounded-2xl shadow-primary/20", {
-          "md:basis-1/2": isRow,
-        })}
+        className={cn(
+          "group block w-full overflow-hidden rounded-2xl border border-primary/10",
+          {
+            "md:basis-1/2": isRow,
+          },
+        )}
       >
         <Image
           src={imageCover}
           alt={getDynamicString(title)}
           width={430}
           height={240}
-          className="object-cover w-full rounded-2xl aspect-[1.79]"
+          className="object-cover w-full aspect-[1.79] transition-transform duration-500 group-hover:scale-105"
         />
       </Link>
       <div
         className={cn(
           "flex flex-col justify-between flex-grow px-3 mt-5 sm:px-4 sm:mt-6",
-          {
-            "md:basis-1/2": isRow,
-          }
+          { "md:basis-1/2": isRow },
         )}
       >
-        <Link
-          href={`/blogs/${slug}`}
-          className="w-full"
-        >
-          <h3 className="h5">{getDynamicString(title)}</h3>
+        <Link href={`/blogs/${slug}`} className="block">
+          <h3 className="text-lg sm:text-xl font-bold text-text-1 leading-snug hover:text-primary transition-colors">
+            {getDynamicString(title)}
+          </h3>
         </Link>
-        <p className="mt-1 text-text-2 sm:mt-2">
-          {getDynamicString(description)}
-        </p>
+        <p className="mt-2 text-text-3">{getDynamicString(description)}</p>
         <BlogUserComponent
           author={author}
           readTime={readTime}
@@ -170,7 +222,7 @@ export const BlogUserComponent = ({
           <span>
             {readTime} {locale === "ar" ? "د" : "min"}
           </span>{" "}
-          .{" "}
+          ·{" "}
           <span>
             {new Date(createdAt).toLocaleDateString(
               locale === "ar" ? "ar-EG" : "en-US",
@@ -178,7 +230,7 @@ export const BlogUserComponent = ({
                 year: "numeric",
                 month: "long",
                 day: "numeric",
-              }
+              },
             )}
           </span>
         </div>
