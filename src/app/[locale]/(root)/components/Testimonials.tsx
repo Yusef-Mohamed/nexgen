@@ -62,6 +62,10 @@ const Testimonials: React.FC = () => {
       <GridSection
         button={text("exploreAllReviews")}
         heading={text("heading")}
+        eyebrow="Learner stories"
+        description="Real feedback from learners who took action and never looked back."
+        tone="secondary"
+        align="center"
         onClick={() => setShowDialog(true)}
       >
         {reviews?.slice(0, 3).map((testimonial, index) => (

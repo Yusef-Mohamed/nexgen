@@ -10,6 +10,7 @@ import Image from "next/image";
 import { LevelsIcons } from "../icons";
 import { cn, getDynamicString } from "@/lib/utils";
 import CardBadges from "./CardBadges";
+import { HiOutlineArrowRight } from "react-icons/hi2";
 
 const CourseCard: React.FC<
   ICourse & {
@@ -21,7 +22,6 @@ const CourseCard: React.FC<
   ratingsQuantity,
   price,
   priceAfterDiscount,
-  _id,
   slug,
   type,
   courseDuration,
@@ -35,7 +35,6 @@ const CourseCard: React.FC<
 }) => {
   const text = useTranslations("popularCourses");
 
-  // Get difficulty level based on type
   const getDifficultyLevel = (type: string) => {
     switch (type?.toLowerCase()) {
       case "beginner":
@@ -48,12 +47,18 @@ const CourseCard: React.FC<
         return text("beginner");
     }
   };
+
   const isFree =
     (priceAfterDiscount && priceAfterDiscount === 0) || price === 0;
+  const hasDiscount =
+    priceAfterDiscount > 0 && priceAfterDiscount < price && !isFree;
+
   return (
     <div
       className={cn(
-        "flex flex-col w-full border hover:border-secondary rounded-[40px] border-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
+        "group flex flex-col w-full h-full relative gap-4 p-4 sm:p-5",
+        "rounded-3xl bg-clear-ground border border-primary/10",
+        "transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5",
         className,
       )}
     >
@@ -67,108 +72,110 @@ const CourseCard: React.FC<
       {/* Image */}
       <Link
         href={`/courses/${slug}`}
-        className="relative w-full aspect-[16/9] rounded-[24px] overflow-hidden shrink-0 block"
+        className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden shrink-0 block"
       >
         <Image
           src={image}
           alt={getDynamicString(title)}
           title={getDynamicString(title)}
           fill
-          className="object-cover"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
+        {/* Bottom gradient + level pill */}
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/55 via-black/15 to-transparent pointer-events-none" />
+        <div className="absolute bottom-3 start-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-clear-ground/95 backdrop-blur text-xs font-semibold text-text-1">
+          <LevelsIcons className="size-3.5 shrink-0" />
+          <span>{getDifficultyLevel(type)}</span>
+        </div>
       </Link>
 
       {/* Content */}
       <div className="flex-1 flex flex-col gap-3">
-        {/* Level and Category Row */}
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-end gap-1.5">
-            <LevelsIcons className="size-6 shrink-0" />
-            <span className="text-lg font-medium text-text-2">
-              {getDifficultyLevel(type)}
-            </span>
-          </div>
-          <div
-            className="bg-secondary/10 px-3 py-1 rounded-full cursor-pointer"
+        {/* Category + rating */}
+        <div className="flex items-center justify-between gap-2">
+          <button
+            type="button"
             onClick={() => onCategoryClick?.(category as ICategory)}
+            className="text-xs font-semibold text-secondary bg-secondary/10 hover:bg-secondary/15 px-2.5 py-1 rounded-full transition-colors truncate max-w-[60%]"
           >
-            <span className="text-secondary text-lg">
-              {getDynamicString(category?.title) || type}
+            {getDynamicString(category?.title) || type}
+          </button>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <FaStar className="size-4 text-gold" />
+            <span className="text-sm font-semibold text-text-1">
+              {ratingsAverage?.toFixed(1) || 0}
+            </span>
+            <span className="text-xs text-text-3">
+              ({ratingsQuantity.toLocaleString()})
             </span>
           </div>
         </div>
 
         {/* Title */}
-        <Link href={`/courses/${slug}`}>
-          <h3 className="text-3xl font-bold text-text-1 leading-tight hover:text-secondary transition-colors">
+        <Link href={`/courses/${slug}`} className="block">
+          <h3 className="text-lg sm:text-xl font-bold text-text-1 leading-snug line-clamp-2 group-hover:text-primary transition-colors">
             {getDynamicString(title)}
           </h3>
         </Link>
 
-        {/* Rating and Duration Row */}
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-2">
-            <div className="relative size-8 shrink-0">
-              <FaStar className="size-full text-gold" />
-            </div>
-            <div className="flex items-center gap-2">
-              <span
-                className="text-xl font-medium text-muted-foreground
-              "
-              >
-                {ratingsAverage?.toFixed(1) || 0}
-              </span>
-              <span className="text-sm text-muted-foreground">
-                ({ratingsQuantity.toLocaleString()})
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center gap-1">
-            <FaRegClock className="size-[18px] text-text-3" />
-            <span className="text-base text-text-3">
+        {/* Meta row */}
+        <div className="flex items-center gap-3 text-xs text-text-3">
+          <div className="flex items-center gap-1.5">
+            <FaRegClock className="size-3.5" />
+            <span>
               {(courseDuration / 60)?.toFixed(0)} {text("hours")}
             </span>
           </div>
-        </div>
-
-        {/* Instructor */}
-        {instructor && (
-          <div className="flex items-center gap-1.5">
-            {instructor.profileImg ? (
-              <div className="relative size-10 rounded-full overflow-hidden shrink-0">
-                <Image
-                  src={instructor.profileImg}
-                  alt={instructor.name}
-                  fill
-                  className="object-cover"
-                />
+          {instructor?.name && (
+            <>
+              <span className="size-1 rounded-full bg-text-3/40" />
+              <div className="flex items-center gap-1.5 min-w-0">
+                {instructor.profileImg ? (
+                  <span className="relative size-5 rounded-full overflow-hidden shrink-0">
+                    <Image
+                      src={instructor.profileImg}
+                      alt={instructor.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </span>
+                ) : (
+                  <span className="size-5 rounded-full bg-muted shrink-0" />
+                )}
+                <span className="truncate font-medium text-text-2">
+                  {instructor.name}
+                </span>
               </div>
-            ) : (
-              <div className="size-10 rounded-full bg-muted shrink-0" />
-            )}
-            <span className="text-base font-semibold text-text-1">
-              {instructor.name}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Button and Price Row */}
-      <div className="flex items-center gap-3 w-full">
-        <Button size="lg" className="rounded-full  flex-1" asChild>
-          <Link href={`/courses/${slug}`}>{text("learnMore")}</Link>
-        </Button>
-        <div className="flex items-start gap-0.5 justify-end min-w-[103px]">
-          <span className="text-2xl font-medium text-foreground">
-            {!isFree && "$"}
-            {isFree ? text("free") : priceAfterDiscount || price}
-          </span>
-          {priceAfterDiscount > 0 && priceAfterDiscount < price && !isFree && (
-            <span className="text-xs text-destructive line-through">
-              {price}
-            </span>
+            </>
           )}
         </div>
+      </div>
+
+      {/* Footer: price + CTA */}
+      <div className="flex items-center justify-between gap-3 pt-3 border-t border-primary/10">
+        <div className="flex items-baseline gap-2">
+          <span
+            className={cn(
+              "text-xl font-bold leading-none",
+              isFree ? "text-green" : "text-text-1",
+            )}
+          >
+            {isFree ? text("free") : `$${priceAfterDiscount || price}`}
+          </span>
+          {hasDiscount && (
+            <span className="text-xs text-text-3 line-through">${price}</span>
+          )}
+        </div>
+        <Button
+          size="sm"
+          className="rounded-full group/btn h-9 px-4"
+          asChild
+        >
+          <Link href={`/courses/${slug}`} className="flex items-center gap-1.5">
+            <span>{text("learnMore")}</span>
+            <HiOutlineArrowRight className="size-3.5 transition-transform group-hover/btn:translate-x-0.5 rtl:rotate-180 rtl:group-hover/btn:-translate-x-0.5" />
+          </Link>
+        </Button>
       </div>
     </div>
   );
@@ -197,56 +204,30 @@ export const CourseCardSkeleton: React.FC<{ className?: string }> = ({
   return (
     <div
       className={cn(
-        "flex flex-col w-full border hover:border-secondary hover:outline-secondary rounded-[40px] border-transparent outline outline-1 outline-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
+        "flex flex-col w-full h-full relative gap-4 p-4 sm:p-5 rounded-3xl bg-clear-ground border border-primary/10",
         className,
       )}
     >
-      {/* Card Badges skeleton */}
       <div className="absolute top-4 start-4 z-10 flex gap-2">
-        <Skeleton className="w-12 h-6 rounded-sm" />
-        <Skeleton className="w-10 h-6 rounded-sm" />
+        <Skeleton className="w-12 h-6 rounded-full" />
+        <Skeleton className="w-10 h-6 rounded-full" />
       </div>
 
-      {/* Image skeleton */}
-      <Skeleton className="w-full aspect-[16/9] rounded-[24px] bg-muted" />
+      <Skeleton className="w-full aspect-[16/10] rounded-2xl bg-muted" />
 
       <div className="flex-1 flex flex-col gap-3">
-        {/* Level and Category Row skeleton */}
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-end gap-1.5">
-            <Skeleton className="w-6 h-6 rounded" />
-            <Skeleton className="h-5 w-20" />
-          </div>
-          <Skeleton className="h-7 w-16 rounded-full" />
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-6 w-24 rounded-full" />
+          <Skeleton className="h-5 w-16" />
         </div>
-
-        {/* Title skeleton */}
-        <Skeleton className="h-9 w-full" />
-
-        {/* Rating and Duration Row skeleton */}
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-2">
-            <Skeleton className="w-8 h-8 rounded" />
-            <Skeleton className="h-5 w-12" />
-            <Skeleton className="h-4 w-16" />
-          </div>
-          <div className="flex items-center gap-1">
-            <Skeleton className="w-[18px] h-[18px] rounded" />
-            <Skeleton className="h-4 w-16" />
-          </div>
-        </div>
-
-        {/* Instructor skeleton */}
-        <div className="flex items-center gap-1.5">
-          <Skeleton className="w-10 h-10 rounded-full" />
-          <Skeleton className="h-4 w-32" />
-        </div>
+        <Skeleton className="h-6 w-full" />
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-4 w-2/3" />
       </div>
 
-      {/* Button and Price Row skeleton */}
-      <div className="flex items-center gap-3 w-full">
-        <Skeleton className="h-[60px] flex-1 rounded-full" />
-        <Skeleton className="h-6 w-20" />
+      <div className="flex items-center justify-between pt-3 border-t border-primary/10">
+        <Skeleton className="h-6 w-16" />
+        <Skeleton className="h-9 w-24 rounded-full" />
       </div>
     </div>
   );

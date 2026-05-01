@@ -1,9 +1,14 @@
 import { Link } from "@/i18n/navigation";
 import { Button } from "./ui/button";
+import SectionHeader from "./SectionHeader";
 
 const GridSection = ({
   children,
   heading,
+  eyebrow,
+  description,
+  tone = "primary",
+  align = "start",
   button,
   href,
   id,
@@ -11,6 +16,10 @@ const GridSection = ({
 }: {
   children: React.ReactNode;
   heading: string;
+  eyebrow?: React.ReactNode;
+  description?: React.ReactNode;
+  tone?: "primary" | "secondary" | "gold";
+  align?: "start" | "center";
   button?: string;
   href?: string;
   id?: string;
@@ -18,7 +27,17 @@ const GridSection = ({
 }) => {
   return (
     <section id={id} className="container secPadding">
-      <h2>{heading}</h2>
+      {eyebrow || description ? (
+        <SectionHeader
+          eyebrow={eyebrow}
+          heading={heading}
+          description={description}
+          tone={tone}
+          align={align}
+        />
+      ) : (
+        <h2>{heading}</h2>
+      )}
       <div className="grid gap-6 my-6 sm:my-12 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
         {children}
       </div>

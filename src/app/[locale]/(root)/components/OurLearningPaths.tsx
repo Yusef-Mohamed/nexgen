@@ -13,6 +13,7 @@ import { useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/app/lib/utils";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { getDynamicString } from "@/lib/utils";
+import SectionHeader from "@/components/SectionHeader";
 
 interface OurLearningPathsProps {
   enableSearch?: boolean;
@@ -106,10 +107,13 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
 
   return (
     <section className="py-12 space-y-8">
-      <div className="container" ref={containerRef}>
-        <h2 className="h2 !font-bold mb-6">
-          {text("ourPopularLearningPaths")}
-        </h2>
+      <div className="container space-y-6" ref={containerRef}>
+        <SectionHeader
+          eyebrow="Structured journeys"
+          heading={text("ourPopularLearningPaths")}
+          description={text("heading")}
+          tone="primary"
+        />
 
         {/* Search Bar */}
         {enableSearch && (
@@ -121,7 +125,7 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
         )}
 
         <CategoryFilter
-          className="mb-8"
+          className="mb-2"
           categories={categories}
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}

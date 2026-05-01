@@ -20,6 +20,10 @@ const BlogSection: React.FC = async () => {
     return (
       <GridSection
         heading={text("heading")}
+        eyebrow="From the blog"
+        description="Insights, strategies, and updates from our team of trading experts."
+        tone="primary"
+        align="center"
         button={text("exploreAllBlogs")}
         href="/blogs"
       >

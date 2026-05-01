@@ -9,17 +9,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useCustomSearchParams from "@/hooks/useSearchParams";
-import { useFilterCourses } from "@/hooks/useFilterCourses";
 import { useFilterPackages } from "@/hooks/useFilterPackages";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { getDynamicString } from "@/lib/utils";
 
 const sharedToValues = [
-  {
-    label: "relatedToCourse",
-    value: "courses",
-  },
   {
     label: "relatedToService",
     value: "services",
@@ -37,24 +32,17 @@ const CommunityFilters = () => {
 
   // Local state for filters
   const [selectedSharedTo, setSelectedSharedTo] = useState(
-    searchParams.get("sharedTo") || "students"
-  );
-  const [selectedCourse, setSelectedCourse] = useState(
-    searchParams.get("course") || ""
+    searchParams.get("sharedTo") || "students",
   );
   const [selectedPackage, setSelectedPackage] = useState(
-    searchParams.get("package") || ""
+    searchParams.get("package") || "",
   );
-  const { courses } = useFilterCourses({
-    enable: true,
-  });
   const { packages } = useFilterPackages({
     enable: true,
   });
   useEffect(() => {
     const isRelatedToStudents =
       selectedSharedTo === "students" ||
-      (selectedSharedTo === "courses" && selectedCourse === "") ||
       (selectedSharedTo === "services" && selectedPackage === "");
     if (isRelatedToStudents)
       setSearchParams({
@@ -65,10 +53,9 @@ const CommunityFilters = () => {
     else
       setSearchParams({
         sharedTo: selectedSharedTo,
-        course: selectedCourse || "",
         service: selectedPackage || "",
       });
-  }, [selectedSharedTo, selectedCourse, selectedPackage, setSearchParams]);
+  }, [selectedSharedTo, selectedPackage, setSearchParams]);
   return (
     <div className="flex items-center gap-4 p-3 rounded-md cardShadow bg-background">
       <div>
@@ -80,7 +67,6 @@ const CommunityFilters = () => {
           value={selectedSharedTo}
           onValueChange={(value) => {
             setSelectedSharedTo(value);
-            setSelectedCourse(""); // Reset course when sharedTo changes
             setSelectedPackage(""); // Reset package when sharedTo changes
           }}
         >
@@ -96,29 +82,6 @@ const CommunityFilters = () => {
           </SelectContent>
         </Select>
       </div>
-      {selectedSharedTo === "courses" && (
-        <div>
-          <Label htmlFor={"course"} className="text-sm sr-only">
-            {inputs("course")}
-          </Label>
-          <Select
-            name="course"
-            value={selectedCourse}
-            onValueChange={(value) => setSelectedCourse(value)}
-          >
-            <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs !h-10">
-              <SelectValue placeholder={inputs("SelectCourse")} />
-            </SelectTrigger>
-            <SelectContent>
-              {courses.map((course) => (
-                <SelectItem value={course._id} key={course._id}>
-                  {getDynamicString(course.title)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
       {selectedSharedTo === "services" && (
         <div>
           <Label htmlFor={"service"} className="text-sm sr-only ">

@@ -4,92 +4,197 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import TransitionBox from "@/components/TransitionBox";
+import {
+  HiOutlineDevicePhoneMobile,
+  HiOutlineStar,
+  HiOutlineArrowDownTray,
+} from "react-icons/hi2";
 
 const MobileAppHero: React.FC = () => {
   const text = useTranslations("mobileAppHero");
   const locale = useLocale();
+  const isRTL = locale === "ar";
 
   return (
     <section className="container secPadding">
-      <div className="px-4 sm:px-8 relative overflow-hidden md:px-16 lg:px-20  rounded-3xl bg-primary-faded">
+      <div
+        className={cn(
+          "relative overflow-hidden rounded-3xl bg-primary-faded",
+          "px-4 sm:px-8 md:px-16 lg:px-20"
+        )}
+      >
+        {/* Decorative blobs */}
         <div
-          style={{
-            filter: "blur(100px)",
-            width: "200px",
-            height: "200px",
-            borderRadius: "50%",
-          }}
-          className="absolute  bg-primary/50 opacity-90 top-0 left-0 -translate-x-1/4 -translate-y-1/4 size-20"
-        ></div>
+          aria-hidden
+          className="absolute top-0 left-0 -translate-x-1/4 -translate-y-1/4 size-72 rounded-full bg-primary/40 opacity-90 blur-[110px]"
+        />
         <div
-          style={{
-            filter: "blur(100px)",
-            width: "200px",
-            height: "200px",
-            borderRadius: "50%",
-          }}
-          className="absolute  dark:bg-purple-400 bg-purple-200 bottom-0 right-0 translate-x-1/4 translate-y-1/4 size-20"
-        ></div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="relative z-10 py-10 sm:pt-16 md:py-20 lg:py-[5.5rem]">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-16 h-0.5 bg-primary"></div>
-              <h2 className="text-primary h4 font-medium">
-                {text("subtitle")}
-              </h2>
-            </div>
+          aria-hidden
+          className="absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4 size-72 rounded-full bg-secondary/30 dark:bg-secondary/40 blur-[110px]"
+        />
+        <div
+          aria-hidden
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-40 rounded-full bg-gold/15 blur-[90px]"
+        />
 
-            {/* Main Heading */}
-            <div className="flex flex-col gap-4 relative">
-              <h1
+        {/* Subtle dot pattern */}
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-[0.05] pointer-events-none"
+          style={{
+            backgroundImage:
+              "radial-gradient(hsl(var(--primary)) 1.2px, transparent 1.2px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+
+        <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+          {/* Left: copy */}
+          <TransitionBox
+            transitionType="fromLeft"
+            fromValue="40%"
+            containerClassName="overflow-visible"
+          >
+            <div className="relative z-10 py-10 sm:pt-16 md:py-20 lg:py-[5.5rem]">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-5 rounded-full bg-clear-ground/80 backdrop-blur border border-primary/20 cardShadowSm">
+                <HiOutlineDevicePhoneMobile className="size-4 text-primary" />
+                <span className="text-xs sm:text-sm font-medium text-primary-main">
+                  {text("subtitle")}
+                </span>
+              </div>
+
+              {/* Main heading */}
+              <h2
                 className={cn(
-                  "mt-4",
-                  locale === "ar" ? "space-y-5" : "space-y-2"
+                  "font-bold leading-tight tracking-tight",
+                  isRTL ? "space-y-5" : "space-y-2"
                 )}
               >
-                <div>{text("headingPart1")} </div>
+                <div className="text-text-1">{text("headingPart1")} </div>
                 <div className="block relative w-fit">
                   <div
                     className={cn(
                       "w-full h-full bg-primary/10 absolute top-0 left-0",
-                      locale === "ar" ? "h-[120%]" : "translate-y-[10%]"
+                      isRTL ? "h-[120%]" : "translate-y-[10%]"
                     )}
                   />
-                  <span className="text-primary rounded">
+                  <span className="relative z-10 text-primary">
                     {text("headingPart2")}
                   </span>
                 </div>
-                <div>{text("headingPart3")}</div>
-              </h1>
+                <div className="text-text-1">{text("headingPart3")}</div>
+              </h2>
+
+              <p className="my-6 sm:my-8 !text-base md:!text-lg text-text-2 max-w-xl leading-relaxed">
+                {text("description")}
+              </p>
+
+              {/* Rating row */}
+              <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <HiOutlineStar
+                      key={i}
+                      className="size-4 sm:size-5 text-gold"
+                      style={{ fill: "currentColor" }}
+                    />
+                  ))}
+                </div>
+                <div className="text-sm text-text-2">
+                  <span className="font-bold text-text-1">4.9</span> · 2k+
+                  reviews
+                </div>
+              </div>
+
+              {/* Download buttons */}
+              <div className="flex flex-wrap items-center gap-3">
+                <Button size="lg" className="rounded-full group" asChild>
+                  <a
+                    href="#"
+                    onClick={(e) => e.preventDefault()}
+                    className="flex items-center gap-2"
+                  >
+                    <HiOutlineArrowDownTray className="size-4 transition-transform group-hover:translate-y-0.5" />
+                    {text("downloadButton")}
+                  </a>
+                </Button>
+                <Button
+                  size="lg"
+                  variant="primaryOutline"
+                  className="rounded-full bg-clear-ground/60 backdrop-blur"
+                  asChild
+                >
+                  <a href="#" onClick={(e) => e.preventDefault()}>
+                    Learn More
+                  </a>
+                </Button>
+              </div>
             </div>
+          </TransitionBox>
 
-            <p className="my-6 sm:my-10 !text-base md:!text-xl  text-text-1 max-w-xl">
-              {text("description")}
-            </p>
+          {/* Right: phone image */}
+          <div className="flex justify-center items-end relative">
+            <TransitionBox
+              transitionType="fromBottom"
+              fromValue="20%"
+              containerClassName="overflow-visible w-full flex justify-center"
+              className="w-full flex justify-center"
+            >
+              <div className="relative">
+                {/* Decorative ring */}
+                <div
+                  aria-hidden
+                  className="absolute inset-0 -z-0 rounded-full bg-gradient-to-br from-primary/20 via-secondary/15 to-transparent blur-3xl"
+                />
+                <Image
+                  src="/images/download-app.png"
+                  alt="Mobile app preview"
+                  width={1000}
+                  height={1000}
+                  className={cn(
+                    "relative z-10 object-contain w-full max-w-lg drop-shadow-2xl",
+                    {
+                      "-scale-x-100": isRTL,
+                    }
+                  )}
+                  style={{
+                    aspectRatio: "1920/1785",
+                  }}
+                  priority
+                />
 
-            {/* Download Button */}
-            <Button size="lg" className="rounded-full w-fit" asChild>
-              <a href="#" onClick={(e) => e.preventDefault()}>
-                {text("downloadButton")}
-              </a>
-            </Button>
-          </div>
-          <div className="flex justify-center items-end">
-            <Image
-              src="/images/download-app.png"
-              alt="Mobile app preview"
-              width={1000}
-              height={1000}
-              className={cn("object-contain w-full max-w-lg", {
-                "-scale-x-100": locale === "ar",
-              })}
-              style={{
-                aspectRatio: "1920/1785",
-              }}
-              priority
-            />
+                {/* Floating download badge */}
+                <div
+                  className={cn(
+                    "absolute top-10 hidden sm:flex flex-col items-center gap-1 px-3 py-2.5 rounded-2xl bg-clear-ground/95 backdrop-blur cardShadowSm z-20",
+                    isRTL ? "right-0" : "left-0"
+                  )}
+                  style={{ animation: "floatY 4s ease-in-out infinite" }}
+                >
+                  <div className="text-[10px] uppercase tracking-wider text-text-3 font-semibold">
+                    Downloads
+                  </div>
+                  <div className="text-base font-bold text-primary leading-none">
+                    50K+
+                  </div>
+                </div>
+              </div>
+            </TransitionBox>
           </div>
         </div>
+
+        <style jsx>{`
+          @keyframes floatY {
+            0%,
+            100% {
+              transform: translateY(0px);
+            }
+            50% {
+              transform: translateY(-10px);
+            }
+          }
+        `}</style>
       </div>
     </section>
   );

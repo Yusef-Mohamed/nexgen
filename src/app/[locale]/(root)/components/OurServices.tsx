@@ -12,6 +12,7 @@ import SearchInput from "@/components/SearchInput";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { getDynamicString } from "@/lib/utils";
+import SectionHeader from "@/components/SectionHeader";
 
 interface OurServicesProps {
   enableSearch?: boolean;
@@ -96,8 +97,13 @@ const OurServices: React.FC<OurServicesProps> = ({
 
   return (
     <section className="py-12 space-y-8">
-      <div className="container" ref={containerRef}>
-        <h2 className="h2 !font-bold mb-6">{text("heading")}</h2>
+      <div className="container space-y-6" ref={containerRef}>
+        <SectionHeader
+          eyebrow={text("weOffer")}
+          heading={text("ourPopularServices")}
+          description="Premium plans and ongoing support to keep you moving forward."
+          tone="gold"
+        />
 
         {/* Search Bar */}
         {enableSearch && (

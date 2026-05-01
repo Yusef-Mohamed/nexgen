@@ -13,6 +13,7 @@ import SearchInput from "@/components/SearchInput";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { getDynamicString } from "@/lib/utils";
+import SectionHeader from "@/components/SectionHeader";
 
 interface OurCoursesProps {
   enableSearch?: boolean;
@@ -94,8 +95,13 @@ const OurCourses: React.FC<OurCoursesProps> = ({
   };
   return (
     <section className="py-12 space-y-8">
-      <div className="container" ref={containerRef}>
-        <h2 className="h2 !font-bold mb-6">{text("ourPopularCourses")}</h2>
+      <div className="container space-y-6" ref={containerRef}>
+        <SectionHeader
+          eyebrow="Hand-picked for you"
+          heading={text("ourPopularCourses")}
+          description={text("exploreOurPopularCourses")}
+          tone="secondary"
+        />
 
         {/* Search Bar */}
         {enableSearch && (
@@ -107,7 +113,7 @@ const OurCourses: React.FC<OurCoursesProps> = ({
         )}
 
         <CategoryFilter
-          className="mb-8"
+          className="mb-2"
           categories={categories}
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
