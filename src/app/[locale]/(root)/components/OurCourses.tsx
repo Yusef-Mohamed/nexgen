@@ -21,7 +21,7 @@ interface OurCoursesProps {
 
 const fetchCoursesByCategory = async (
   categoryId?: string,
-  searchKeyword?: string
+  searchKeyword?: string,
 ): Promise<ICourse[]> => {
   try {
     let params = "?limit=10";
@@ -42,18 +42,6 @@ const fetchCoursesByCategory = async (
   }
 };
 
-const fetchPopularCourses = async (): Promise<ICourse[]> => {
-  try {
-    const params = "?sort=-ratingsQuantity&limit=20";
-
-    const response = await axiosInstance.get(`/courses${params}`);
-    return response.data.data as ICourse[];
-  } catch (error) {
-    console.error("Error fetching popular courses:", error);
-    return [];
-  }
-};
-
 const OurCourses: React.FC<OurCoursesProps> = ({
   enableSearch = false,
   gridClassName,
@@ -64,7 +52,7 @@ const OurCourses: React.FC<OurCoursesProps> = ({
   const pathname = usePathname();
   const containerRef = useRef<HTMLDivElement>(null);
   const [searchKeyword, setSearchKeyword] = useState(
-    searchParams?.get("keyword") || ""
+    searchParams?.get("keyword") || "",
   );
 
   const {
@@ -97,14 +85,6 @@ const OurCourses: React.FC<OurCoursesProps> = ({
     gcTime: 10 * 60 * 1000, // 10 minutes
   });
 
-  const { data: popularCourses = [], isLoading: popularCoursesLoading } =
-    useQuery({
-      queryKey: ["popularCourses"],
-      queryFn: () => fetchPopularCourses(),
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
-    });
-
   // Generate localized title for the selected category
   const getCategoryTitle = () => {
     if (!selectedCategory) return undefined;
@@ -114,10 +94,7 @@ const OurCourses: React.FC<OurCoursesProps> = ({
   };
   return (
     <section className="py-12 space-y-8">
-      <div
-        className="container"
-        ref={containerRef}
-      >
+      <div className="container" ref={containerRef}>
         <h2 className="h2 !font-bold mb-6">{text("ourPopularCourses")}</h2>
 
         {/* Search Bar */}
@@ -168,18 +145,6 @@ const OurCourses: React.FC<OurCoursesProps> = ({
           />
         </OneSidedContainer>
       )}{" "}
-      <OneSidedContainer>
-        <CoursesSubsection
-          courses={popularCourses}
-          loading={popularCoursesLoading}
-          theme={"carousel"}
-          title={text("ourPopularCourses")}
-          onCategoryClick={(category) => {
-            setSelectedCategory(category);
-            containerRef.current?.scrollIntoView({ behavior: "smooth" });
-          }}
-        />
-      </OneSidedContainer>
     </section>
   );
 };

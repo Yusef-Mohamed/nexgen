@@ -16,7 +16,7 @@ interface UseCategoryFilterReturn {
 
 const fetchCategories = async (): Promise<ICategory[]> => {
   const response = await axiosInstance.get("/categories?limit=1000");
-  return response.data.data as ICategory[];
+  return (response.data.data as ICategory[]).reverse();
 };
 
 export const useCategoryFilter = (

@@ -22,7 +22,7 @@ interface OurServicesProps {
 // Function to fetch services by category (server-side filter)
 const fetchServicesByCategory = async (
   categoryId?: string,
-  searchKeyword?: string
+  searchKeyword?: string,
 ): Promise<IPackage[]> => {
   const params = new URLSearchParams();
   params.set("limit", "50");
@@ -36,13 +36,6 @@ const fetchServicesByCategory = async (
   return response.data.data as IPackage[];
 };
 
-// Function to fetch popular services
-const fetchPopularServices = async (): Promise<IPackage[]> => {
-  const url = "/packages?sort=-ratingsQuantity&limit=50";
-  const response = await axiosInstance.get(url);
-  return response.data.data;
-};
-
 const OurServices: React.FC<OurServicesProps> = ({
   enableSearch = false,
   gridClassName = "",
@@ -54,7 +47,7 @@ const OurServices: React.FC<OurServicesProps> = ({
   const pathname = usePathname();
   const containerRef = useRef<HTMLDivElement>(null);
   const [searchKeyword, setSearchKeyword] = useState(
-    searchParams?.get("keyword") || ""
+    searchParams?.get("keyword") || "",
   );
 
   // Get categories and selected category from the hook
@@ -88,19 +81,11 @@ const OurServices: React.FC<OurServicesProps> = ({
     enabled: enableSearch ? true : !!selectedCategory,
   });
 
-  // Fetch popular services
-  const { data: popularServices = [], isLoading: popularServicesLoading } =
-    useQuery({
-      queryKey: ["popularServices"],
-      queryFn: () => fetchPopularServices(),
-      enabled: true,
-    });
-
   // Get category title for display
   const getCategoryTitle = () => {
     if (!selectedCategory) return "";
     const category = categories.find(
-      (cat) => cat._id === selectedCategory?._id
+      (cat) => cat._id === selectedCategory?._id,
     );
     return category
       ? text("categoryTitle", {
@@ -111,10 +96,7 @@ const OurServices: React.FC<OurServicesProps> = ({
 
   return (
     <section className="py-12 space-y-8">
-      <div
-        className="container"
-        ref={containerRef}
-      >
+      <div className="container" ref={containerRef}>
         <h2 className="h2 !font-bold mb-6">{text("heading")}</h2>
 
         {/* Search Bar */}
@@ -166,15 +148,6 @@ const OurServices: React.FC<OurServicesProps> = ({
           />
         </OneSidedContainer>
       )}{" "}
-      <OneSidedContainer>
-        <ServicesSubsection
-          services={popularServices}
-          loading={popularServicesLoading}
-          theme={"carousel"}
-          title={text("ourPopularServices")}
-          onCategoryClick={onCategoryClick}
-        />
-      </OneSidedContainer>
     </section>
   );
 };

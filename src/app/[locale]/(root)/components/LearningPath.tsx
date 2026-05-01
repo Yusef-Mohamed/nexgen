@@ -50,7 +50,7 @@ const LearningPath: React.FC<
   // Calculate total duration from all courses
   const totalDuration = courses.reduce(
     (total, course) => total + (course.courseDuration || 0),
-    0
+    0,
   );
 
   // Use first course image or default image
@@ -61,7 +61,7 @@ const LearningPath: React.FC<
     <div
       className={cn(
         "flex flex-col w-full border hover:border-secondary hover:outline-secondary rounded-[40px] border-transparent outline outline-1  outline-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
-        className
+        className,
       )}
     >
       {/* Card Badges */}
@@ -74,7 +74,7 @@ const LearningPath: React.FC<
       {/* Image */}
       <Link
         href={`/learning-paths/${slug}`}
-        className="relative w-full aspect-[38/29] rounded-[24px] overflow-hidden shrink-0 block"
+        className="relative w-full aspect-[16/9] rounded-[24px] overflow-hidden shrink-0 block"
       >
         <Image
           src={imageUrl}
@@ -158,7 +158,7 @@ export const LearningPathSkeleton: React.FC<{ className?: string }> = ({
     <div
       className={cn(
         "flex flex-col w-full border hover:border-secondary hover:outline-secondary rounded-[40px] border-transparent outline outline-1 outline-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
-        className
+        className,
       )}
     >
       {/* Card Badges skeleton */}
@@ -168,7 +168,7 @@ export const LearningPathSkeleton: React.FC<{ className?: string }> = ({
       </div>
 
       {/* Image skeleton */}
-      <Skeleton className="w-full aspect-[38/29] rounded-[24px] bg-muted" />
+      <Skeleton className="w-full aspect-[16/9] rounded-[24px] bg-muted" />
 
       <div className="flex-1 flex flex-col gap-3">
         {/* Level and Category Row skeleton */}

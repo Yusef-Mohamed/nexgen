@@ -23,7 +23,7 @@ const CourseImage = ({ courseData }: CourseImageProps) => {
           src={courseData.image}
           width={1000}
           height={1000}
-          className="aspect-41/31 object-cover w-full rounded-2xl"
+          className="aspect-16/9 object-cover w-full rounded-2xl"
           alt={getDynamicString(courseData.title)}
         />
       </div>
@@ -38,7 +38,7 @@ const CourseImage = ({ courseData }: CourseImageProps) => {
             src={courseData.image}
             width={1000}
             height={1000}
-            className="aspect-41/31 object-cover w-full rounded-2xl"
+            className="aspect-16/9 object-cover w-full rounded-2xl"
             alt={getDynamicString(courseData.title)}
           />
           <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-2xl transition-all duration-300 group-hover:bg-black/50">

@@ -12,11 +12,9 @@ import OurLearningPaths from "./components/OurLearningPaths";
 import OurCourses from "./components/OurCourses";
 import OurServices from "./components/OurServices";
 import MobileAppHero from "./components/MobileAppHero";
-export async function generateMetadata(
-  props: {
-    params: Promise<{ locale: string }>;
-  }
-): Promise<Metadata> {
+export async function generateMetadata(props: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
   const params = await props.params;
   return getMetadataLandingPage({
     params,
@@ -25,14 +23,13 @@ export async function generateMetadata(
 
 const LandingPage = async (props: { params: Promise<{ locale: string }> }) => {
   const params = await props.params;
-  
 
   return (
     <main className="max-w-full overflow-hidden">
       <Hero />
       <Features />
-      <OurCourses />
       <OurLearningPaths />
+      <OurCourses />
       <OurServices />
       <WhyChooseUs />
       <MobileAppHero />

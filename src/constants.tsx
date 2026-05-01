@@ -1,10 +1,22 @@
 import { FaTelegramPlane } from "react-icons/fa";
 import { MdOutlineMailOutline } from "react-icons/md";
-export const API_URL = "https://api.nexgen-academy.com/api/v1";
-// export const API_URL = "https://development.nexgen-academy.com/api/v1";
-// export const API_URL = "https://pre.nexgen-academy.com/api/v1";
-// export const API_URL = "http://localhost:8000/api/v1";
-export const SOCKET_URL = "https://api.nexgen-academy.com";
+
+const getRequiredEnv = (key: string, value: string | undefined) => {
+  if (!value) {
+    throw new Error(`Missing environment variable: ${key}`);
+  }
+
+  return value;
+};
+
+export const API_URL = getRequiredEnv(
+  "NEXT_PUBLIC_API_URL",
+  process.env.NEXT_PUBLIC_API_URL
+);
+export const SOCKET_URL = getRequiredEnv(
+  "NEXT_PUBLIC_SOCKET_URL",
+  process.env.NEXT_PUBLIC_SOCKET_URL
+);
 export const CAROUSEL_CLASSES = {
   content: "-ml-2 pl-1 md:-ml-4",
   item: "md:pl-4 pl-2 py-1 basis-auto",

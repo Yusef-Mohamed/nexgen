@@ -54,7 +54,7 @@ const CourseCard: React.FC<
     <div
       className={cn(
         "flex flex-col w-full border hover:border-secondary rounded-[40px] border-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
-        className
+        className,
       )}
     >
       {/* Card Badges */}
@@ -67,7 +67,7 @@ const CourseCard: React.FC<
       {/* Image */}
       <Link
         href={`/courses/${slug}`}
-        className="relative w-full aspect-[38/29] rounded-[24px] overflow-hidden shrink-0 block"
+        className="relative w-full aspect-[16/9] rounded-[24px] overflow-hidden shrink-0 block"
       >
         <Image
           src={image}
@@ -155,11 +155,7 @@ const CourseCard: React.FC<
 
       {/* Button and Price Row */}
       <div className="flex items-center gap-3 w-full">
-        <Button
-          size="lg"
-          className="rounded-full  flex-1"
-          asChild
-        >
+        <Button size="lg" className="rounded-full  flex-1" asChild>
           <Link href={`/courses/${slug}`}>{text("learnMore")}</Link>
         </Button>
         <div className="flex items-start gap-0.5 justify-end min-w-[103px]">
@@ -202,7 +198,7 @@ export const CourseCardSkeleton: React.FC<{ className?: string }> = ({
     <div
       className={cn(
         "flex flex-col w-full border hover:border-secondary hover:outline-secondary rounded-[40px] border-transparent outline outline-1 outline-primary/20 transition-all duration-300 p-6 h-full relative gap-5",
-        className
+        className,
       )}
     >
       {/* Card Badges skeleton */}
@@ -212,7 +208,7 @@ export const CourseCardSkeleton: React.FC<{ className?: string }> = ({
       </div>
 
       {/* Image skeleton */}
-      <Skeleton className="w-full aspect-[38/29] rounded-[24px] bg-muted" />
+      <Skeleton className="w-full aspect-[16/9] rounded-[24px] bg-muted" />
 
       <div className="flex-1 flex flex-col gap-3">
         {/* Level and Category Row skeleton */}

@@ -53,7 +53,7 @@ const ServiceCard: React.FC<
       {/* Image */}
       <Link
         href={`/services/${slug}`}
-        className="relative w-full aspect-[38/29] rounded-[24px] overflow-hidden shrink-0 block"
+        className="relative w-full aspect-[16/9] rounded-[24px] overflow-hidden shrink-0 block"
       >
         <Image
           src={imageUrl}
@@ -134,7 +134,7 @@ export const ServiceCardSkeleton: React.FC<{ className?: string }> = ({
       </div>
 
       {/* Image skeleton */}
-      <Skeleton className="w-full aspect-[38/29] rounded-[24px] bg-muted" />
+      <Skeleton className="w-full aspect-[16/9] rounded-[24px] bg-muted" />
 
       <div className="flex-1 flex flex-col gap-3">
         {/* Category Row skeleton */}

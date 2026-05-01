@@ -51,17 +51,6 @@ const fetchLearningPathsByCategory = async (
   }
 };
 
-const fetchPopularLearningPaths = async (): Promise<ICoursePackage[]> => {
-  try {
-    const url = "/coursePackages?sort=-ratingsQuantity&limit=20";
-    const response = await axiosInstance.get(url);
-    return response.data.data as ICoursePackage[];
-  } catch (error) {
-    console.error("Error fetching popular learning paths:", error);
-    return [];
-  }
-};
-
 const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
   enableSearch = false,
   gridClassName = "",
@@ -106,17 +95,7 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes
     });
-  const {
-    data: popularLearningPaths = [],
-    isLoading: popularLearningPathsLoading,
-  } = useQuery({
-    queryKey: ["popularLearningPaths"],
-    queryFn: () => fetchPopularLearningPaths(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
-  });
 
-  console.log(popularLearningPaths);
   // Generate localized title for the selected category
   const getCategoryTitle = () => {
     if (!selectedCategory) return undefined;
@@ -180,18 +159,6 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
           />
         </OneSidedContainer>
       )}{" "}
-      <OneSidedContainer>
-        <LearningPathsSubsection
-          learningPaths={popularLearningPaths}
-          loading={popularLearningPathsLoading}
-          theme={"carousel"}
-          title={text("ourPopularLearningPaths")}
-          onCategoryClick={(category) => {
-            setSelectedCategory(category);
-            containerRef.current?.scrollIntoView({ behavior: "smooth" });
-          }}
-        />
-      </OneSidedContainer>
     </section>
   );
 };
