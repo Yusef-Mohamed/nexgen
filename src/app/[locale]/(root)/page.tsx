@@ -8,10 +8,9 @@ import FAQ from "./components/FAQ";
 import { Metadata } from "next";
 import { getMetadataLandingPage } from "@/getMetaData";
 
-import OurLearningPaths from "./components/OurLearningPaths";
-import OurCourses from "./components/OurCourses";
-import OurServices from "./components/OurServices";
 import MobileAppHero from "./components/MobileAppHero";
+import PopularShowcase from "./components/showcase/PopularShowcase";
+
 export async function generateMetadata(props: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
@@ -22,15 +21,13 @@ export async function generateMetadata(props: {
 }
 
 const LandingPage = async (props: { params: Promise<{ locale: string }> }) => {
-  const params = await props.params;
+  await props.params;
 
   return (
     <main className="max-w-full overflow-hidden">
       <Hero />
       <Features />
-      <OurLearningPaths />
-      <OurCourses />
-      <OurServices />
+      <PopularShowcase />
       <WhyChooseUs />
       <MobileAppHero />
       <SuccessStories />
