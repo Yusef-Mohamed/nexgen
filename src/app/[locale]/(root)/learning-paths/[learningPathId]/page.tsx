@@ -18,7 +18,7 @@ import { getDynamicString } from "@/lib/utils";
 import MobileAppHero from "../../components/MobileAppHero";
 import ItemImage from "../../courses/[courseId]/components/ItemImage";
 import CouponAwarePrice from "@/components/CouponAwarePrice";
-import { getCouponCodeFromSearchParams } from "@/lib/coupons";
+import { getCouponCodeFromSearchParams, getItemBasePrice } from "@/lib/coupons";
 
 export async function generateMetadata(props: {
   params: Promise<{ locale: string; learningPathId: string }>;
@@ -249,7 +249,7 @@ const LearningPathCard: React.FC<{
       />
       <BuyLearningPath
         id={learningPathData._id}
-        price={learningPathData.priceAfterDiscount ?? learningPathData.price}
+        price={getItemBasePrice(learningPathData)}
         couponCode={couponCode}
       />
       <div className="mt-6">

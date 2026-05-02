@@ -23,7 +23,7 @@ import MobileAppHero from "../../components/MobileAppHero";
 import CourseMetadata from "./components/CourseMetadata";
 import ItemImage from "./components/ItemImage";
 import CouponAwarePrice from "@/components/CouponAwarePrice";
-import { getCouponCodeFromSearchParams } from "@/lib/coupons";
+import { getCouponCodeFromSearchParams, getItemBasePrice } from "@/lib/coupons";
 export async function generateMetadata(props: {
   params: Promise<{ locale: string; courseId: string }>;
 }): Promise<Metadata> {
@@ -239,7 +239,7 @@ const CourseCard: React.FC<{
       <CourseHeading courseData={courseData} className="lg:hidden" />
       <BuyCourse
         id={courseData._id}
-        price={courseData.priceAfterDiscount ?? courseData.price}
+        price={getItemBasePrice(courseData)}
         couponCode={couponCode}
       />
       <div>

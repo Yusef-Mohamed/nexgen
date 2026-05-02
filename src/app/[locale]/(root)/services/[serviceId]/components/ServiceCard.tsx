@@ -8,6 +8,7 @@ import ServiceHeading from "./ServiceHeading";
 import BuyService from "./BuyService";
 import ItemImage from "../../../courses/[courseId]/components/ItemImage";
 import CouponAwarePrice from "@/components/CouponAwarePrice";
+import { getItemBasePrice } from "@/lib/coupons";
 
 interface ServiceCardProps {
   serviceData: IPackage;
@@ -74,7 +75,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       <ServiceHeading serviceData={serviceData} className="lg:hidden" />
       <BuyService
         id={serviceData._id}
-        price={serviceData.priceAfterDiscount ?? serviceData.price}
+        price={getItemBasePrice(serviceData)}
         couponCode={couponCode}
       />
       <div className="mt-6">
