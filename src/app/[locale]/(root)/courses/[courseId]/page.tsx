@@ -6,13 +6,21 @@ import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { ICourse } from "@/types";
 import { notFound } from "next/navigation";
 import { CourseReviewOverView } from "@/components/cards/CourseCard";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { FiPlayCircle } from "react-icons/fi";
 import { PiExam } from "react-icons/pi";
 import { CiMobile2 } from "react-icons/ci";
 import { GoInfinity } from "react-icons/go";
 import { GrCertificate } from "react-icons/gr";
+import {
+  HiOutlineCheckCircle,
+  HiOutlineUserGroup,
+  HiOutlineClipboardDocumentList,
+  HiOutlineSparkles,
+  HiOutlineArrowRight,
+  HiOutlineBookOpen,
+  HiOutlineChatBubbleLeftRight,
+} from "react-icons/hi2";
 import { Link } from "@/i18n/navigation";
 import PopularCourses from "../../components/PopularCourses";
 import ReviewsGrid from "@/components/ReviewsGrid";
@@ -65,8 +73,22 @@ const CoursesPage = async (props: {
   const text = await getTranslations("coursePage");
   return (
     <main>
-      <section className="container flex gap-20 secPadding">
-        <div className="flex-1 w-full">
+      {/* Decorative top accent strip — mirrors landing page hero blobs */}
+      <section className="container pt-6 sm:pt-8">
+        <div className="relative">
+          <div
+            aria-hidden
+            className="absolute -top-10 -left-10 size-56 rounded-full bg-secondary/20 dark:bg-secondary/30 blur-[110px] opacity-70 pointer-events-none"
+          />
+          <div
+            aria-hidden
+            className="absolute -top-10 right-0 size-56 rounded-full bg-gold/20 dark:bg-gold/30 blur-[110px] opacity-60 pointer-events-none"
+          />
+        </div>
+      </section>
+
+      <section className="container relative flex gap-12 xl:gap-20 secPadding">
+        <div className="flex-1 w-full min-w-0">
           <CourseHeading courseData={courseData} className="max-lg:hidden" />
           <CourseCard
             courseData={courseData}
@@ -74,82 +96,136 @@ const CoursesPage = async (props: {
             className="lg:hidden relative overflow-hidden"
           />
           <CourseMetadata courseData={courseData} />
-          {courseData.whoThisCourseFor &&
-            courseData.whoThisCourseFor.length > 0 && (
-              <div className="my-4 md:my-8">
-                <h3 className="mb-4 md:mb-8">{text("whoThisCourseFor")}</h3>
-                <ul className="grid gap-4 list-disc md:grid-cols-2 md:gap-8">
-                  {courseData.whoThisCourseFor.map((item, index) => (
-                    <li
-                      key={index}
-                      className="flex items-start gap-2 text-sm text-text-2 md:text-base"
-                    >
-                      <p className="flex-1">{getDynamicString(item)}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+
           {courseData.whatWillLearn && courseData.whatWillLearn.length > 0 && (
-            <div className="my-4 md:my-8">
-              <h3 className="mb-4 md:mb-8">{text("whatYouWillLearn")}</h3>
-              <ul className="grid gap-4 md:grid-cols-2 md:gap-8">
+            <SectionBlock
+              tone="primary"
+              eyebrow={text("whatYouWillLearn")}
+              icon={<HiOutlineCheckCircle className="size-5" />}
+              title={text("whatYouWillLearn")}
+            >
+              <ul className="grid gap-3 md:grid-cols-2 md:gap-4">
                 {courseData.whatWillLearn.map((item, index) => (
                   <li
                     key={index}
-                    className="flex items-start gap-2 text-sm text-text-2 md:text-base"
+                    className="group flex items-start gap-3 rounded-xl bg-clear-ground/70 border border-primary/10 p-3 sm:p-4 transition-colors hover:border-primary/30"
                   >
-                    <p className="flex-1"> {getDynamicString(item)}</p>
+                    <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                      <HiOutlineCheckCircle className="size-4" />
+                    </span>
+                    <p className="flex-1 text-sm md:text-base text-text-2 leading-relaxed">
+                      {getDynamicString(item)}
+                    </p>
                   </li>
                 ))}
               </ul>
-            </div>
+            </SectionBlock>
           )}
+
+          {courseData.whoThisCourseFor &&
+            courseData.whoThisCourseFor.length > 0 && (
+              <SectionBlock
+                tone="secondary"
+                eyebrow={text("whoThisCourseFor")}
+                icon={<HiOutlineUserGroup className="size-5" />}
+                title={text("whoThisCourseFor")}
+              >
+                <ul className="grid gap-3 md:grid-cols-2 md:gap-4">
+                  {courseData.whoThisCourseFor.map((item, index) => (
+                    <li
+                      key={index}
+                      className="flex items-start gap-3 rounded-xl bg-clear-ground/70 border border-secondary/15 p-3 sm:p-4 transition-colors hover:border-secondary/40"
+                    >
+                      <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-secondary/15 text-secondary">
+                        <HiOutlineUserGroup className="size-4" />
+                      </span>
+                      <p className="flex-1 text-sm md:text-base text-text-2 leading-relaxed">
+                        {getDynamicString(item)}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </SectionBlock>
+            )}
+
           {(courseData.coursePrerequisites.length > 0 ||
             courseData.accessibleCourses.length > 0) && (
-            <div className="my-4 md:my-8">
-              <h3 className="mb-4 md:mb-8">{text("coursePrerequisites")}</h3>
-              <ul className="grid gap-4 md:grid-cols-2 md:gap-8">
+            <SectionBlock
+              tone="gold"
+              eyebrow={text("coursePrerequisites")}
+              icon={<HiOutlineClipboardDocumentList className="size-5" />}
+              title={text("coursePrerequisites")}
+            >
+              <ul className="grid gap-3 md:grid-cols-2 md:gap-4">
                 {courseData.coursePrerequisites.map((item, index) => (
                   <li
                     key={index}
-                    className="flex items-start gap-2 text-sm text-text-2 md:text-base"
+                    className="flex items-start gap-3 rounded-xl bg-clear-ground/70 border border-gold/20 p-3 sm:p-4 transition-colors hover:border-gold/45"
                   >
-                    <p className="flex-1"> {getDynamicString(item)}</p>
+                    <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-gold/20 text-gold">
+                      <HiOutlineClipboardDocumentList className="size-4" />
+                    </span>
+                    <p className="flex-1 text-sm md:text-base text-text-2 leading-relaxed">
+                      {getDynamicString(item)}
+                    </p>
                   </li>
-                ))}{" "}
+                ))}
                 {courseData.accessibleCourses &&
                   courseData.accessibleCourses.length > 0 &&
                   courseData.accessibleCourses.map((course, index) => (
                     <li
                       key={`accessible-${index}`}
-                      className="flex items-start gap-2 text-sm text-text-1 md:text-base"
+                      className="md:col-span-2 flex items-start gap-3 rounded-xl bg-gold/10 border border-gold/30 p-3 sm:p-4"
                     >
-                      <p className="flex-1 font-semibold md:text-lg">
+                      <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-gold/25 text-gold">
+                        <HiOutlineSparkles className="size-4" />
+                      </span>
+                      <p className="flex-1 text-sm md:text-base text-text-1 font-medium">
                         {text("recommendedToSee")}{" "}
                         <Link
                           href={`/courses/${course._id}`}
                           target="_blank"
-                          className="underline"
+                          className="text-primary underline underline-offset-2 hover:text-primary-main inline-flex items-center gap-1"
                         >
                           {getDynamicString(course.title)}
+                          <HiOutlineArrowRight className="size-3.5 rtl:rotate-180" />
                         </Link>
                       </p>
                     </li>
                   ))}
               </ul>
-            </div>
+            </SectionBlock>
           )}
 
           <CourseContent />
         </div>
-        <div className="max-w-[29rem] hidden  relative overflow-hidden h-fit lg:block rounded-3xl  basis-[40%] bg-clear-ground cardShadow p-6">
-          <CourseCard courseData={courseData} couponCode={couponCode} />
+
+        {/* Sticky purchase card */}
+        <div className="max-w-[29rem] hidden relative h-fit lg:block basis-[40%] lg:sticky lg:top-24">
+          <div
+            aria-hidden
+            className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-primary/15 via-secondary/10 to-gold/10 blur-2xl -z-10"
+          />
+          <div className="relative overflow-hidden rounded-3xl bg-clear-ground border border-primary/10 cardShadow p-5 sm:p-6">
+            <CourseCard courseData={courseData} couponCode={couponCode} />
+          </div>
         </div>
       </section>
+
       <MobileAppHero />
+
       <section className="container secPadding">
-        <h2 className="mb-6 md:mb-12">{text("studentsReviews")}</h2>
+        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full bg-primary/10 border border-primary/20">
+            <HiOutlineChatBubbleLeftRight className="size-4 text-primary" />
+            <span className="text-xs sm:text-sm font-medium text-primary">
+              {text("studentsReviews")}
+            </span>
+          </div>
+          <h2 className="text-text-1 font-bold">
+            {text("studentsReviews")}
+          </h2>
+        </div>
         <ReviewsGrid
           reviews={courseData.reviews}
           isAll
@@ -161,13 +237,95 @@ const CoursesPage = async (props: {
   );
 };
 
+const SectionBlock: React.FC<{
+  tone: "primary" | "secondary" | "gold";
+  eyebrow: string;
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}> = ({ tone, eyebrow, title, icon, children }) => {
+  const toneStyles = {
+    primary: {
+      pillBg: "bg-primary/10 border-primary/20 text-primary",
+      iconBg: "bg-primary/15 text-primary",
+      panelBg: "bg-primary-faded",
+      panelBorder: "border-primary/15",
+      bar: "bg-primary",
+    },
+    secondary: {
+      pillBg: "bg-secondary/10 border-secondary/20 text-secondary",
+      iconBg: "bg-secondary/15 text-secondary",
+      panelBg: "bg-secondary/10",
+      panelBorder: "border-secondary/20",
+      bar: "bg-secondary",
+    },
+    gold: {
+      pillBg: "bg-gold/10 border-gold/25 text-gold",
+      iconBg: "bg-gold/20 text-gold",
+      panelBg: "bg-gold/10",
+      panelBorder: "border-gold/25",
+      bar: "bg-gold",
+    },
+  }[tone];
+
+  return (
+    <div
+      className={cn(
+        "relative my-6 md:my-8 rounded-2xl border p-5 sm:p-6 md:p-7 overflow-hidden",
+        toneStyles.panelBg,
+        toneStyles.panelBorder,
+      )}
+    >
+      <div
+        className={cn(
+          "absolute top-0 left-6 right-6 h-1 rounded-b-full opacity-70",
+          toneStyles.bar,
+        )}
+      />
+      <div className="flex items-center gap-3 mb-5 md:mb-6">
+        <div
+          className={cn(
+            "inline-flex items-center justify-center size-10 rounded-xl",
+            toneStyles.iconBg,
+          )}
+        >
+          {icon}
+        </div>
+        <div>
+          <div
+            className={cn(
+              "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] sm:text-xs font-semibold uppercase tracking-wide",
+              toneStyles.pillBg,
+            )}
+          >
+            <span className="size-1 rounded-full bg-current opacity-70" />
+            {eyebrow}
+          </div>
+          <h3 className="mt-1 font-bold text-text-1">{title}</h3>
+        </div>
+      </div>
+      {children}
+    </div>
+  );
+};
+
 const CourseHeading: React.FC<{
   courseData: ICourse;
   className?: string;
 }> = ({ courseData, className }) => {
   return (
-    <div className={className}>
-      <h1>{getDynamicString(courseData.title)}</h1>
+    <div className={cn("relative", className)}>
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full bg-primary/10 border border-primary/20 cardShadowSm">
+        <HiOutlineBookOpen className="size-4 text-primary" />
+        <span className="text-xs sm:text-sm font-medium text-primary">
+          {courseData.category && typeof courseData.category === "object"
+            ? getDynamicString(courseData.category.title)
+            : "Course"}
+        </span>
+      </div>
+      <h1 className="font-bold leading-tight tracking-tight text-text-1">
+        {getDynamicString(courseData.title)}
+      </h1>
       <CourseReviewOverView
         ratingsAverage={courseData.ratingsAverage}
         ratingsQuantity={courseData.ratingsQuantity}
@@ -176,7 +334,7 @@ const CourseHeading: React.FC<{
         style={{
           fontWeight: 400,
         }}
-        className="my-4 text-text-2 md:my-8 prose prose-sm md:prose-base max-w-none prose-headings:font-semibold prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5"
+        className="my-4 text-text-2 md:my-6 prose prose-sm md:prose-base max-w-none prose-headings:font-semibold prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5"
         dangerouslySetInnerHTML={{
           __html: getDynamicString(courseData.description) ?? "",
         }}
@@ -196,65 +354,97 @@ const CourseCard: React.FC<{
       icon: <FiPlayCircle className="w-4 h-4 sm:w-5 sm:h-5" />,
       text: "nHourOfVideos",
       params: { n: (courseData.courseDuration / 60).toFixed(1) },
+      tone: "primary" as const,
     },
-    { icon: <PiExam className="w-4 h-4 sm:w-5 sm:h-5" />, text: "quizes" },
+    {
+      icon: <PiExam className="w-4 h-4 sm:w-5 sm:h-5" />,
+      text: "quizes",
+      tone: "secondary" as const,
+    },
     {
       icon: <CiMobile2 className="w-4 h-4 sm:w-5 sm:h-5" />,
       text: "accessOnMobile",
+      tone: "gold" as const,
     },
     {
       icon: <GoInfinity className="w-4 h-4 sm:w-5 sm:h-5" />,
       text: "lifetimeAccess",
+      tone: "primary" as const,
     },
     {
       icon: <GrCertificate className="w-4 h-4 sm:w-5 sm:h-5" />,
       text: "certificateOfCompletion",
+      tone: "secondary" as const,
     },
   ];
+
+  const toneToBg: Record<"primary" | "secondary" | "gold", string> = {
+    primary: "bg-primary/10 text-primary",
+    secondary: "bg-secondary/10 text-secondary",
+    gold: "bg-gold/15 text-gold",
+  };
+
   return (
     <div className={cn(className)}>
+      {/* Decorative blob — palette aligned */}
       <div
-        style={{
-          filter: "blur(100px)",
-          width: "300px",
-          height: "300px",
-          borderRadius: "50%",
-        }}
-        className="absolute  max-lg:hidden dark:bg-purple-400 bg-purple-200  opacity-70 bottom-0 right-0 translate-x-1/4 translate-y-1/4 size-20"
-      ></div>
-      <ItemImage
-        image={courseData.image}
-        title={courseData.title}
-        promotionVideo={courseData.promotionVideo}
+        aria-hidden
+        className="absolute max-lg:hidden -bottom-16 -right-16 size-48 rounded-full bg-secondary/30 dark:bg-secondary/40 blur-[100px] opacity-60 pointer-events-none"
+      />
+      <div
+        aria-hidden
+        className="absolute max-lg:hidden -top-16 -left-16 size-40 rounded-full bg-gold/25 dark:bg-gold/35 blur-[100px] opacity-60 pointer-events-none"
       />
 
-      <CouponAwarePrice
-        item={courseData}
-        itemId={courseData._id}
-        itemType="course"
-        couponCode={couponCode}
-        freeLabel={text("free")}
-        discountedLabel={text("discounted")}
-      />
-      <CourseHeading courseData={courseData} className="lg:hidden" />
-      <BuyCourse
-        id={courseData._id}
-        price={getItemBasePrice(courseData)}
-        couponCode={couponCode}
-      />
-      <div>
-        <h4 className="mb-4 md:mb-6">{text("thisCourseIncludes")}</h4>
-        <ul className="space-y-2 md:space-y-4">
-          {items.map((item, index) => (
-            <li
-              className="flex items-center gap-2 text-sm md:text-base"
-              key={index}
-            >
-              {item.icon}
-              {item.params ? text(item.text, item.params) : text(item.text)}
-            </li>
-          ))}
-        </ul>
+      <div className="relative">
+        <ItemImage
+          image={courseData.image}
+          title={courseData.title}
+          promotionVideo={courseData.promotionVideo}
+        />
+
+        <CouponAwarePrice
+          item={courseData}
+          itemId={courseData._id}
+          itemType="course"
+          couponCode={couponCode}
+          freeLabel={text("free")}
+          discountedLabel={text("discounted")}
+        />
+        <CourseHeading courseData={courseData} className="lg:hidden" />
+        <BuyCourse
+          id={courseData._id}
+          price={getItemBasePrice(courseData)}
+          couponCode={couponCode}
+        />
+        <div>
+          <div className="flex items-center gap-2 mb-4 md:mb-5">
+            <span className="size-1.5 rounded-full bg-primary" />
+            <h4 className="font-bold text-text-1">
+              {text("thisCourseIncludes")}
+            </h4>
+          </div>
+          <ul className="space-y-2.5 md:space-y-3">
+            {items.map((item, index) => (
+              <li
+                className="flex items-center gap-3 text-sm md:text-base text-text-2"
+                key={index}
+              >
+                <span
+                  className={cn(
+                    "inline-flex size-9 shrink-0 items-center justify-center rounded-xl",
+                    toneToBg[item.tone],
+                  )}
+                >
+                  {item.icon}
+                </span>
+                <span className="flex-1">
+                  {item.params ? text(item.text, item.params) : text(item.text)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

@@ -30,7 +30,6 @@ const SignInForm = () => {
   useEffect(() => {
     if (redirect) {
       rememberAuthRedirect(redirect);
-      toast.error(t("pleaseLoginFirstSoYouCanAccessThisPage"));
     }
   }, [redirect]);
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
