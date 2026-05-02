@@ -5,6 +5,7 @@ import { getMetadataSignInPage } from "@/getMetaData";
 import { Link } from "@/i18n/navigation";
 import { Metadata } from "next";
 import { useTranslations } from "next-intl";
+import { buildAuthHref, getRedirectFromSearchParams } from "@/lib/authRedirect";
 
 export async function generateMetadata(
   props: {
@@ -16,14 +17,20 @@ export async function generateMetadata(
     params,
   });
 }
-const SignInPage = (props: { params: Promise<{ locale: string }> }) => {
+const SignInPage = (props: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ redirect?: string }>;
+}) => {
   const params = use(props.params);
+  const searchParams = use(props.searchParams);
 
   const {
     locale
   } = params;
 
-  
+  const redirect = getRedirectFromSearchParams({
+    get: (key) => (key === "redirect" ? searchParams.redirect || null : null),
+  });
 
   const t = useTranslations("SignIn");
   return (
@@ -32,13 +39,19 @@ const SignInPage = (props: { params: Promise<{ locale: string }> }) => {
       <div className="space-y-4 ">
         <div className="mt-4 text-sm text-center">
           {t("fall_back_paragraph")}
-          <Link href="/sign-up" className="px-2 underline text-primary">
+          <Link
+            href={buildAuthHref("/sign-up", redirect)}
+            className="px-2 underline text-primary"
+          >
             {t("fall_back_label")}
           </Link>
         </div>
         <div className="mt-4 text-sm text-center">
           {t("forgot_password")}
-          <Link href="/forgot-password" className="px-2 underline text-primary">
+          <Link
+            href={buildAuthHref("/forgot-password", redirect)}
+            className="px-2 underline text-primary"
+          >
             {t("reset_password")}
           </Link>
         </div>

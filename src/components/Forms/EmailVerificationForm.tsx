@@ -12,10 +12,17 @@ import { Form } from "../ui/form";
 import CustomFormField from "../FormField";
 import { axiosInstance } from "@/app/lib/utils";
 import { AxiosError } from "axios";
+import { useSearchParams } from "next/navigation";
+import {
+  clearStoredAuthRedirect,
+  getAuthRedirect,
+} from "@/lib/authRedirect";
 const EmailVerificationForm = () => {
   const t = useTranslations("ResetCode");
   const inputs = useTranslations("Forms");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = getAuthRedirect(searchParams);
   const [isLoading, setIsLoading] = useState(false);
   const formSchema = z.object({
     otp: z.string().min(6, {
@@ -34,7 +41,8 @@ const EmailVerificationForm = () => {
       await axiosInstance.post("/auth/verifyEmail", {
         code: data.otp,
       });
-      router.push("/");
+      router.push(redirect || "/");
+      clearStoredAuthRedirect();
       toast.success(inputs("your_email_have_been_verified"));
     } catch (err) {
       const typedError = err as AxiosError<{

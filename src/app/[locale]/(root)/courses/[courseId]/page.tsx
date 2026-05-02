@@ -8,7 +8,6 @@ import { notFound } from "next/navigation";
 import { CourseReviewOverView } from "@/components/cards/CourseCard";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { CiDiscount1 } from "react-icons/ci";
 import { FiPlayCircle } from "react-icons/fi";
 import { PiExam } from "react-icons/pi";
 import { CiMobile2 } from "react-icons/ci";
@@ -23,6 +22,8 @@ import { cn, getDynamicString } from "@/lib/utils";
 import MobileAppHero from "../../components/MobileAppHero";
 import CourseMetadata from "./components/CourseMetadata";
 import ItemImage from "./components/ItemImage";
+import CouponAwarePrice from "@/components/CouponAwarePrice";
+import { getCouponCodeFromSearchParams } from "@/lib/coupons";
 export async function generateMetadata(props: {
   params: Promise<{ locale: string; courseId: string }>;
 }): Promise<Metadata> {
@@ -44,8 +45,11 @@ export async function generateMetadata(props: {
 
 const CoursesPage = async (props: {
   params: Promise<{ locale: string; courseId: string }>;
+  searchParams: Promise<{ coupon?: string | string[]; code?: string | string[] }>;
 }) => {
   const params = await props.params;
+  const searchParams = await props.searchParams;
+  const couponCode = getCouponCodeFromSearchParams(searchParams);
 
   let courseData: ICourse | null = null;
   try {
@@ -66,6 +70,7 @@ const CoursesPage = async (props: {
           <CourseHeading courseData={courseData} className="max-lg:hidden" />
           <CourseCard
             courseData={courseData}
+            couponCode={couponCode}
             className="lg:hidden relative overflow-hidden"
           />
           <CourseMetadata courseData={courseData} />
@@ -139,7 +144,7 @@ const CoursesPage = async (props: {
           <CourseContent />
         </div>
         <div className="max-w-[29rem] hidden  relative overflow-hidden h-fit lg:block rounded-3xl  basis-[40%] bg-clear-ground cardShadow p-6">
-          <CourseCard courseData={courseData} />
+          <CourseCard courseData={courseData} couponCode={couponCode} />
         </div>
       </section>
       <MobileAppHero />
@@ -182,8 +187,9 @@ const CourseHeading: React.FC<{
 
 const CourseCard: React.FC<{
   courseData: ICourse;
+  couponCode?: string;
   className?: string;
-}> = ({ courseData, className }) => {
+}> = ({ courseData, couponCode, className }) => {
   const text = useTranslations("coursePage");
   const items = [
     {
@@ -222,42 +228,20 @@ const CourseCard: React.FC<{
         promotionVideo={courseData.promotionVideo}
       />
 
-      <div className="flex items-center justify-between my-4 md:my-8">
-        <div className="flex items-end gap-1 font-medium whitespace-nowrap">
-          {courseData.priceAfterDiscount &&
-          courseData.priceAfterDiscount !== courseData.price ? (
-            <>
-              <div className="h2">${courseData.priceAfterDiscount}</div>
-              <del className="h3 text-text-3">${courseData.price}</del>
-            </>
-          ) : (
-            <div className="h2">
-              {courseData.price ? <>${courseData.price}</> : text("free")}
-            </div>
-          )}
-        </div>
-        {courseData.priceAfterDiscount ? (
-          <div
-            style={{
-              fontWeight: 400,
-            }}
-            className="flex items-center gap-1 px-3 py-2 rounded-md h5 text-green bg-fadedGreen"
-          >
-            <CiDiscount1 className="w-6 h-6" />
-            <span>
-              <span className="!text-sm">{text("discounted")} </span>
-              {(
-                ((courseData.price - courseData.priceAfterDiscount) /
-                  courseData.price) *
-                100
-              ).toFixed(0)}
-              %
-            </span>
-          </div>
-        ) : null}
-      </div>
+      <CouponAwarePrice
+        item={courseData}
+        itemId={courseData._id}
+        itemType="course"
+        couponCode={couponCode}
+        freeLabel={text("free")}
+        discountedLabel={text("discounted")}
+      />
       <CourseHeading courseData={courseData} className="lg:hidden" />
-      <BuyCourse id={courseData._id} price={courseData.price} />
+      <BuyCourse
+        id={courseData._id}
+        price={courseData.priceAfterDiscount ?? courseData.price}
+        couponCode={couponCode}
+      />
       <div>
         <h4 className="mb-4 md:mb-6">{text("thisCourseIncludes")}</h4>
         <ul className="space-y-2 md:space-y-4">

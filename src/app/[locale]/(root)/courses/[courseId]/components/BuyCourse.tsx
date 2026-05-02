@@ -8,8 +8,17 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "@/i18n/navigation";
 import { axiosInstance } from "@/app/lib/utils";
+import { buildCheckoutHref } from "@/lib/coupons";
 
-const BuyCourse = ({ id, price }: { id: string; price: number }) => {
+const BuyCourse = ({
+  id,
+  price,
+  couponCode,
+}: {
+  id: string;
+  price: number;
+  couponCode?: string;
+}) => {
   const text = useTranslations("coursePage");
   const { token, user } = useAuth();
   const { courses, getCourses } = useMyCoursesStore();
@@ -74,7 +83,9 @@ const BuyCourse = ({ id, price }: { id: string; price: number }) => {
 
   return (
     <Button asChild className="w-full mb-4 md:mb-8 rounded-full">
-      <Link href={`/checkout/course/${id}`}>{text("startNow")}</Link>
+      <Link href={buildCheckoutHref("course", id, couponCode)}>
+        {text("startNow")}
+      </Link>
     </Button>
   );
 };

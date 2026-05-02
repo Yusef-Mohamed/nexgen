@@ -5,7 +5,6 @@ import { getTranslations } from "next-intl/server";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { ICoursePackage } from "@/types";
 import { useTranslations } from "next-intl";
-import { CiDiscount1 } from "react-icons/ci";
 import { FiPlayCircle } from "react-icons/fi";
 import { PiExam } from "react-icons/pi";
 import { CiMobile2 } from "react-icons/ci";
@@ -18,6 +17,8 @@ import PathContent from "./components/PathContent";
 import { getDynamicString } from "@/lib/utils";
 import MobileAppHero from "../../components/MobileAppHero";
 import ItemImage from "../../courses/[courseId]/components/ItemImage";
+import CouponAwarePrice from "@/components/CouponAwarePrice";
+import { getCouponCodeFromSearchParams } from "@/lib/coupons";
 
 export async function generateMetadata(props: {
   params: Promise<{ locale: string; learningPathId: string }>;
@@ -42,8 +43,11 @@ export async function generateMetadata(props: {
 
 const LearningPathPage = async (props: {
   params: Promise<{ locale: string; learningPathId: string }>;
+  searchParams: Promise<{ coupon?: string | string[]; code?: string | string[] }>;
 }) => {
   const params = await props.params;
+  const searchParams = await props.searchParams;
+  const couponCode = getCouponCodeFromSearchParams(searchParams);
 
   const axiosInstance = await createServerAxiosInstance({
     overRideLocale: params.locale,
@@ -63,6 +67,7 @@ const LearningPathPage = async (props: {
           />
           <LearningPathCard
             learningPathData={learningPathData}
+            couponCode={couponCode}
             className="lg:hidden relative overflow-hidden"
           />
           {learningPathData.whoThisCourseFor &&
@@ -122,7 +127,10 @@ const LearningPathPage = async (props: {
           <PathContent courses={learningPathData.courses} />
         </div>
         <div className="max-w-[29rem] hidden  relative overflow-hidden h-fit lg:block rounded-3xl  basis-[40%] bg-clear-ground cardShadow p-6">
-          <LearningPathCard learningPathData={learningPathData} />
+          <LearningPathCard
+            learningPathData={learningPathData}
+            couponCode={couponCode}
+          />
         </div>
       </section>
       <MobileAppHero />
@@ -174,8 +182,9 @@ const LearningPathHeading: React.FC<{
 
 const LearningPathCard: React.FC<{
   learningPathData: ICoursePackage;
+  couponCode?: string;
   className?: string;
-}> = ({ learningPathData, className }) => {
+}> = ({ learningPathData, couponCode, className }) => {
   const text = useTranslations("learningPathPage");
 
   // Calculate total duration from all courses
@@ -226,53 +235,22 @@ const LearningPathCard: React.FC<{
         title={learningPathData.title}
         promotionVideo={learningPathData.promotionVideo}
       />
-      <div className="flex items-center justify-between my-4 md:my-8">
-        <div className="flex items-end gap-1 font-medium whitespace-nowrap">
-          {learningPathData.priceAfterDiscount &&
-          learningPathData.priceAfterDiscount !== learningPathData.price ? (
-            <>
-              <div className="h2">${learningPathData.priceAfterDiscount}</div>
-              <del className="h3 text-text-3">${learningPathData.price}</del>
-            </>
-          ) : (
-            <div className="h2">
-              {learningPathData.price && learningPathData.price !== 0 ? (
-                <>${learningPathData.price}</>
-              ) : (
-                text("free")
-              )}
-            </div>
-          )}
-        </div>
-        {learningPathData.priceAfterDiscount &&
-        learningPathData.priceAfterDiscount !== learningPathData.price ? (
-          <div
-            style={{
-              fontWeight: 400,
-            }}
-            className="flex items-center gap-1 px-3 py-2 rounded-md h5 text-green bg-fadedGreen"
-          >
-            <CiDiscount1 className="w-6 h-6" />
-            <span>
-              {text("discounted")}{" "}
-              {(
-                ((learningPathData.price -
-                  learningPathData.priceAfterDiscount) /
-                  learningPathData.price) *
-                100
-              ).toFixed(0)}
-              %
-            </span>
-          </div>
-        ) : null}
-      </div>
+      <CouponAwarePrice
+        item={learningPathData}
+        itemId={learningPathData._id}
+        itemType="learning-path"
+        couponCode={couponCode}
+        freeLabel={text("free")}
+        discountedLabel={text("discounted")}
+      />
       <LearningPathHeading
         learningPathData={learningPathData}
         className="lg:hidden"
       />
       <BuyLearningPath
         id={learningPathData._id}
-        price={learningPathData.price.toString()}
+        price={learningPathData.priceAfterDiscount ?? learningPathData.price}
+        couponCode={couponCode}
       />
       <div className="mt-6">
         <h4 className="mb-4 md:mb-6">{text("thisLearningPathIncludes")}</h4>

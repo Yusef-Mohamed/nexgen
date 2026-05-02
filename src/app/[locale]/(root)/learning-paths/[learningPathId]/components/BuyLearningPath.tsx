@@ -3,17 +3,23 @@ import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useState } from "react";
+import { buildCheckoutHref } from "@/lib/coupons";
 
 interface BuyLearningPathProps {
   id: string;
-  price?: string;
+  price?: number;
+  couponCode?: string;
 }
 
-const BuyLearningPath: React.FC<BuyLearningPathProps> = ({ id, price }) => {
+const BuyLearningPath: React.FC<BuyLearningPathProps> = ({
+  id,
+  price,
+  couponCode,
+}) => {
   const text = useTranslations("learningPathPage");
   const [isLoading, setIsLoading] = useState(false);
 
-  const isFree = !price || price === "0";
+  const isFree = !price || price === 0;
 
   const handleEnroll = async () => {
     if (isFree) {
@@ -44,7 +50,9 @@ const BuyLearningPath: React.FC<BuyLearningPathProps> = ({ id, price }) => {
 
   return (
     <Button size="lg" className="w-full" asChild>
-      <Link href={`/checkout/learning-path/${id}`}>{text("startNow")}</Link>
+      <Link href={buildCheckoutHref("learning-path", id, couponCode)}>
+        {text("startNow")}
+      </Link>
     </Button>
   );
 };

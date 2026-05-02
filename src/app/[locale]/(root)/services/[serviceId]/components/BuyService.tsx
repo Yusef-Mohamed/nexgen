@@ -3,17 +3,19 @@ import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useState } from "react";
+import { buildCheckoutHref } from "@/lib/coupons";
 
 interface BuyServiceProps {
   id: string;
-  price?: string;
+  price?: number;
+  couponCode?: string;
 }
 
-const BuyService: React.FC<BuyServiceProps> = ({ id, price }) => {
+const BuyService: React.FC<BuyServiceProps> = ({ id, price, couponCode }) => {
   const text = useTranslations("servicePage");
   const [isLoading, setIsLoading] = useState(false);
 
-  const isFree = !price || price === "0";
+  const isFree = !price || price === 0;
 
   const handleEnroll = async () => {
     if (isFree) {
@@ -44,7 +46,9 @@ const BuyService: React.FC<BuyServiceProps> = ({ id, price }) => {
 
   return (
     <Button size="lg" className="w-full" asChild>
-      <Link href={`/checkout/service/${id}`}>{text("startNow")}</Link>
+      <Link href={buildCheckoutHref("service", id, couponCode)}>
+        {text("startNow")}
+      </Link>
     </Button>
   );
 };

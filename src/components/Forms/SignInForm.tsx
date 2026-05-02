@@ -10,6 +10,11 @@ import { useAuth } from "../auth-provider";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import {
+  clearStoredAuthRedirect,
+  getAuthRedirect,
+  rememberAuthRedirect,
+} from "@/lib/authRedirect";
 
 const SignInForm = () => {
   const t = useTranslations("SignIn");
@@ -21,9 +26,10 @@ const SignInForm = () => {
   });
   const { updateUser } = useAuth();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect");
+  const redirect = getAuthRedirect(searchParams);
   useEffect(() => {
     if (redirect) {
+      rememberAuthRedirect(redirect);
       toast.error(t("pleaseLoginFirstSoYouCanAccessThisPage"));
     }
   }, [redirect]);
@@ -43,6 +49,7 @@ const SignInForm = () => {
     if (user.emailVerified === false) {
     } else {
       router.push(redirect || "/dashboard");
+      clearStoredAuthRedirect();
     }
   };
 

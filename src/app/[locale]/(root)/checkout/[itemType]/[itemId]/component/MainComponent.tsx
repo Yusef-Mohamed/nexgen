@@ -5,7 +5,7 @@ import { cn, getDynamicString } from "@/lib/utils";
 import { ICourse, ICoursePackage, IPackage } from "@/types";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { ItemType } from "../page";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,14 @@ import {
 import { useAuth } from "@/components/auth-provider";
 import { useMyCoursesStore } from "@/stores/MyCoursesStore";
 import { axiosInstance } from "@/app/lib/utils";
+import {
+  calculateCouponPrice,
+  canCouponApplyToItem,
+  CouponDetails,
+  getCouponCodeFromSearchParams,
+  getItemBasePrice,
+} from "@/lib/coupons";
+import { useSearchParams } from "next/navigation";
 const methods = [
   {
     label: "stripe",
@@ -51,13 +59,25 @@ const MainComponent = ({
     "stripe" | "lahza" | "crypto" | ""
   >("");
   const [isVerified, setIsVerified] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+  const [isCouponLoading, setIsCouponLoading] = useState(false);
   const [needPlacementExams, setNeedPlacementExams] = useState(false);
   const [discount, setDiscount] = useState(0);
   const [selectedCoupon, setSelectedCoupon] = useState("");
   const { token, user } = useAuth();
   const { getCourses } = useMyCoursesStore();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialCoupon = useMemo(
+    () => getCouponCodeFromSearchParams(searchParams),
+    [searchParams],
+  );
+  const [coupon, setCoupon] = useState(initialCoupon);
+  const isLoading = isPaymentLoading || isCouponLoading;
+  const priceSummary = useMemo(
+    () => calculateCouponPrice(getItemBasePrice(thisItem), discount),
+    [discount, thisItem],
+  );
   const handelPayment = async (force = false) => {
     if (!token) {
       toast.error(text("loginFirst"));
@@ -68,7 +88,7 @@ const MainComponent = ({
       return;
     }
     try {
-      setIsLoading(true);
+      setIsPaymentLoading(true);
       if (
         itemType === "course" &&
         ((thisItem.priceAfterDiscount && thisItem.priceAfterDiscount == 0) ||
@@ -123,7 +143,7 @@ const MainComponent = ({
           endpoint,
           {
             paymentMethod: selectedMethod,
-            couponName: selectedCoupon,
+            ...(selectedCoupon ? { couponName: selectedCoupon } : {}),
             ...(force ? { force: true } : {}),
           },
           {
@@ -156,42 +176,95 @@ const MainComponent = ({
       }
       console.log(err);
     } finally {
-      setIsLoading(false);
+      setIsPaymentLoading(false);
     }
   };
-  const [coupon, setCoupon] = useState("");
-  const applyCoupon = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      setIsLoading(true);
-      const res = await axiosInstance.get(
-        `/coupons/getCouponDetails/${coupon}`,
-        {
+  const applyCouponCode = useCallback(
+    async (couponCode: string, showSuccessToast = true) => {
+      const normalizedCoupon = couponCode.trim();
+
+      if (!normalizedCoupon) return;
+
+      if (!token) {
+        toast.error(text("loginFirst"));
+        return;
+      }
+
+      if (!thisItem || !itemType) {
+        toast.error(text("invalidItem"));
+        return;
+      }
+
+      try {
+        setIsCouponLoading(true);
+        const identifiableItem = thisItem as typeof thisItem & {
+          id?: string;
+          slug?: string;
+        };
+        const itemIdentifiers = [
+          identifiableItem._id,
+          identifiableItem.id,
+          identifiableItem.slug,
+        ].filter((identifier): identifier is string => !!identifier);
+
+        const res = await axiosInstance.get<{
+          coupon: CouponDetails;
+        }>(`/coupons/getCouponDetails/${encodeURIComponent(normalizedCoupon)}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
-      );
-      const couponObj = res.data.coupon;
-      if (couponObj.usedTimes < couponObj.maxUsageTimes) {
-        setDiscount(res.data.coupon.discount);
-        toast.success(text("couponAppliedSuccessfully"));
-        setSelectedCoupon(coupon);
-      } else {
-        toast.error(text("couponExceeded"));
+        });
+        const couponObj = res.data.coupon;
+
+        if (couponObj.usedTimes >= couponObj.maxUsageTimes) {
+          setDiscount(0);
+          setSelectedCoupon("");
+          if (showSuccessToast) toast.error(text("couponExceeded"));
+          return;
+        }
+
+        if (
+          !canCouponApplyToItem(couponObj, itemType, itemIdentifiers)
+        ) {
+          setDiscount(0);
+          setSelectedCoupon("");
+          if (showSuccessToast) toast.error(text("invalidCoupon"));
+          return;
+        }
+
+        setDiscount(couponObj.discount);
+        setSelectedCoupon(couponObj.couponName);
+        setCoupon(couponObj.couponName);
+        if (showSuccessToast) toast.success(text("couponAppliedSuccessfully"));
+      } catch (err) {
+        setDiscount(0);
+        setSelectedCoupon("");
+        const typedError = err as AxiosError<{
+          error?: string;
+          message?: string;
+        }>;
+        if (!showSuccessToast) return;
+        if (typedError.response?.data.error)
+          toast.error(typedError.response.data.error);
+        else if (typedError.response?.data.message)
+          toast.error(typedError.response.data.message);
+        else toast.error(text("invalidCoupon"));
+      } finally {
+        setIsCouponLoading(false);
       }
-    } catch (err) {
-      const typedError = err as AxiosError<{
-        error?: string;
-        message?: string;
-      }>;
-      if (typedError.response?.data.error)
-        toast.error(typedError.response.data.error);
-      else if (typedError.response?.data.message)
-        toast.error(typedError.response.data.message);
-      else toast.error(text("invalidCoupon"));
-    }
-    setIsLoading(false);
+    },
+    [itemType, text, thisItem, token],
+  );
+
+  useEffect(() => {
+    if (!initialCoupon || !token) return;
+    setCoupon(initialCoupon);
+    applyCouponCode(initialCoupon, false);
+  }, [applyCouponCode, initialCoupon, token]);
+
+  const applyCoupon = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    applyCouponCode(coupon);
   };
   return (
     <>
@@ -298,16 +371,19 @@ const MainComponent = ({
               </span>
             </div>
             <div className="flex items-start gap-1 font-medium whitespace-nowrap">
-              {thisItem?.priceAfterDiscount ? (
+              {thisItem?.priceAfterDiscount &&
+              thisItem.priceAfterDiscount !== thisItem.price ? (
                 <>
                   {" "}
                   <div className="h4 text-primary">
-                    ${thisItem?.priceAfterDiscount}
+                    ${priceSummary.subtotal.toFixed(2).replace(".00", "")}
                   </div>
                   <del className="h5 text-text-3">${thisItem?.price}</del>
                 </>
               ) : (
-                <div className="h4 text-primary">${thisItem?.price}</div>
+                <div className="h4 text-primary">
+                  ${priceSummary.subtotal.toFixed(2).replace(".00", "")}
+                </div>
               )}
             </div>
           </div>
@@ -317,40 +393,34 @@ const MainComponent = ({
               disabled={isLoading}
               placeholder={text("discountCode")}
               value={coupon}
-              onChange={(e) => setCoupon(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setCoupon(value);
+                if (value.trim() !== selectedCoupon) {
+                  setDiscount(0);
+                  setSelectedCoupon("");
+                }
+              }}
             />
-            <Button isLoading={isLoading}>{text("apply")}</Button>
+            <Button isLoading={isCouponLoading}>{text("apply")}</Button>
           </form>
           <div className="mt-4">
             <div className="flex justify-between mt-1 text-sm">
               <span className="font-medium">{text("subTotal")}</span>
               <span className="text-text-3">
-                ${thisItem?.priceAfterDiscount || thisItem?.price}
+                ${priceSummary.subtotal.toFixed(2).replace(".00", "")}
               </span>
             </div>
             <div className="flex justify-between mt-1 text-sm">
               <span className="font-medium">{text("discount")}</span>
               <span className="text-text-3">
-                $
-                {thisItem?.priceAfterDiscount
-                  ? //@ts-ignore
-                    thisItem?.priceAfterDiscount * (discount / 100)
-                  : //@ts-ignore
-                    thisItem?.price * (discount / 100)}
+                ${priceSummary.discountAmount.toFixed(2).replace(".00", "")}
               </span>
             </div>
             <div className="flex justify-between mt-1 text-sm">
               <span className="font-medium">{text("total")}</span>
               <span className="text-text-3">
-                $
-                {
-                  //@ts-ignore
-                  thisItem?.priceAfterDiscount -
-                    //@ts-ignore
-                    thisItem?.priceAfterDiscount * (discount / 100) ||
-                    //@ts-ignore
-                    thisItem?.price - thisItem?.price * (discount / 100)
-                }
+                ${priceSummary.total.toFixed(2).replace(".00", "")}
               </span>
             </div>
           </div>

@@ -9,6 +9,7 @@ import {
 } from "react";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
 import { IUser } from "@/types";
 import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
@@ -22,6 +23,12 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  buildAuthHref,
+  getAuthRedirect,
+  getCurrentRedirectPath,
+  rememberAuthRedirect,
+} from "@/lib/authRedirect";
 
 const AuthContext = createContext<{
   user: IUser | null;
@@ -57,10 +64,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return false;
   });
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const text = useTranslations("common");
   const router = useRouter();
   const [status, setStatus] = useState<number>();
   const handleNotActive = async (user: IUser | null, token: string) => {
+    const redirect = getAuthRedirect(searchParams);
+    const emailVerificationHref = buildAuthHref(
+      "/email-verification",
+      redirect,
+    );
     try {
       if (!user?.email) return;
       if (pathname === "/email-verification") return;
@@ -76,7 +89,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const timeSinceLastSent = now - parseInt(lastSent, 10);
           if (timeSinceLastSent < fifteenMinutes) {
             // Less than 15 minutes have passed, skip POST and just redirect
-            router.push("/email-verification");
+            router.push(emailVerificationHref);
             toast.success(text("please_verify_your_email"));
             return;
           }
@@ -97,7 +110,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         // Update localStorage with current timestamp after successful POST
         localStorage.setItem(storageKey, now.toString());
-        router.push("/email-verification");
+        router.push(emailVerificationHref);
         toast.success(text("please_verify_your_email"));
       } else {
         // Fallback if window is not available (shouldn't happen in client component)
@@ -112,13 +125,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             },
           }
         );
-        router.push("/email-verification");
+        router.push(emailVerificationHref);
         toast.success(text("please_verify_your_email"));
       }
     } catch (err) {
       console.log(err);
       // Always redirect even if POST request fails
-      router.push("/email-verification");
+      router.push(emailVerificationHref);
       toast.success(text("please_verify_your_email"));
     }
   };
@@ -239,10 +252,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!token) {
       if (pathname.includes("dashboard") || pathname.includes("checkout")) {
-        router.push("/sign-in" + "?redirect=" + pathname);
+        const redirectPath = getCurrentRedirectPath(pathname, searchParams);
+        rememberAuthRedirect(redirectPath);
+        router.push(buildAuthHref("/sign-in", redirectPath));
       }
     }
-  }, [token, pathname]);
+  }, [token, pathname, router, searchParams]);
   return (
     <AuthContext.Provider
       value={{ user, updateUser, token: token || "", logout, setStatus }}

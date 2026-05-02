@@ -9,11 +9,15 @@ import { useAuth } from "../auth-provider";
 import { useEffect } from "react";
 import { countries } from "@/data/countries";
 import { useLocale } from "next-intl";
+import { useSearchParams } from "next/navigation";
+import { getAuthRedirect, rememberAuthRedirect } from "@/lib/authRedirect";
 
 const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
   const t = useTranslations("SignUp");
   const inputs = useTranslations("Forms");
   const locale = useLocale();
+  const searchParams = useSearchParams();
+  const redirect = getAuthRedirect(searchParams);
   const formSchema = z
     .object({
       name: z.string({ message: inputs("thisFieldIsRequired") }),
@@ -131,6 +135,10 @@ const SignUpForm = ({ inviteKey }: { inviteKey?: string }) => {
         `/marketingAnalytics/incrementSignUpClicks/${inviteKey}`
       );
   }, [inviteKey]);
+
+  useEffect(() => {
+    rememberAuthRedirect(redirect);
+  }, [redirect]);
 
   return (
     <CustomForm

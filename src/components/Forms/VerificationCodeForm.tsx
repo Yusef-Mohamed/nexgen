@@ -6,11 +6,15 @@ import * as z from "zod";
 import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import CustomForm from "./CustomForm";
+import { useSearchParams } from "next/navigation";
+import { buildAuthHref, getAuthRedirect } from "@/lib/authRedirect";
 
 const VerificationCodeForm = () => {
   const t = useTranslations("ResetCode");
   const inputs = useTranslations("Forms");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = getAuthRedirect(searchParams);
 
   const formSchema = z.object({
     otp: z.string().min(6, {
@@ -22,7 +26,7 @@ const VerificationCodeForm = () => {
     await axiosInstance.post("/auth/verifyResetCode", {
       resetCode: data.otp,
     });
-    router.push("/reset-password");
+    router.push(buildAuthHref("/reset-password", redirect));
     toast.success(inputs("code_verified"));
   };
 

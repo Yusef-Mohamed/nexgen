@@ -6,11 +6,15 @@ import * as z from "zod";
 import { axiosInstance } from "@/app/lib/utils";
 import CustomForm from "./CustomForm";
 import { toast } from "react-toastify";
+import { useSearchParams } from "next/navigation";
+import { buildAuthHref, getAuthRedirect } from "@/lib/authRedirect";
 
 const ResetPassword = () => {
   const t = useTranslations("SignIn");
   const inputs = useTranslations("Forms");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = getAuthRedirect(searchParams);
   const formSchema = z.object({
     email: z.string().email({ message: inputs("invalidEmail") }),
     newPassword: z
@@ -23,7 +27,7 @@ const ResetPassword = () => {
   });
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     await axiosInstance.put("/auth/resetPassword", data);
-    router.push("/sign-in");
+    router.push(buildAuthHref("/sign-in", redirect));
     toast.success(inputs("password_reset_success_please_login"));
     router.refresh();
   };

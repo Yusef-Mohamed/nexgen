@@ -8,6 +8,7 @@ import MobileAppHero from "../../components/MobileAppHero";
 import PopularServices from "../../components/PopularServices";
 import ServiceHeading from "./components/ServiceHeading";
 import ServiceCard from "./components/ServiceCard";
+import { getCouponCodeFromSearchParams } from "@/lib/coupons";
 
 export async function generateMetadata(props: {
   params: Promise<{ locale: string; serviceId: string }>;
@@ -30,8 +31,11 @@ export async function generateMetadata(props: {
 
 const ServicePage = async (props: {
   params: Promise<{ locale: string; serviceId: string }>;
+  searchParams: Promise<{ coupon?: string | string[]; code?: string | string[] }>;
 }) => {
   const params = await props.params;
+  const searchParams = await props.searchParams;
+  const couponCode = getCouponCodeFromSearchParams(searchParams);
 
   const text = await getTranslations("servicePage");
   const axiosInstance = await createServerAxiosInstance({
@@ -46,6 +50,7 @@ const ServicePage = async (props: {
           <ServiceHeading serviceData={serviceData} className="max-lg:hidden" />
           <ServiceCard
             serviceData={serviceData}
+            couponCode={couponCode}
             className="lg:hidden relative overflow-hidden"
           />
           {serviceData.whoThisCourseFor &&
@@ -98,7 +103,7 @@ const ServicePage = async (props: {
             )}
         </div>
         <div className="max-w-[29rem] hidden relative overflow-hidden h-fit lg:block rounded-3xl basis-[40%] bg-clear-ground cardShadow p-6">
-          <ServiceCard serviceData={serviceData} />
+          <ServiceCard serviceData={serviceData} couponCode={couponCode} />
         </div>
       </section>
       <MobileAppHero />
