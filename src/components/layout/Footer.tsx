@@ -1,3 +1,4 @@
+"use client";
 import { useTranslations } from "next-intl";
 import React from "react";
 import Logo from "../logo";
@@ -9,7 +10,10 @@ import {
   HiOutlineSparkles,
   HiOutlineShieldCheck,
   HiOutlineGlobeAlt,
+  HiOutlineArrowUp,
+  HiOutlineArrowRight,
 } from "react-icons/hi2";
+import { cn } from "@/lib/utils";
 
 const learnLinks = [
   { name: "courses", link: "/courses" },
@@ -32,68 +36,57 @@ const socialLinks = [
     link: "https://www.facebook.com/profile.php?id=61566778123491",
     icon: <FaFacebookF />,
     ariaLabelKey: "facebookAriaLabel",
+    hoverClass: "hover:bg-[#1877F2] hover:border-[#1877F2]",
   },
   {
     name: "tiktok",
     link: "https://www.tiktok.com/@nexgen.academy0",
     icon: <FaTiktok />,
     ariaLabelKey: "tiktokAriaLabel",
+    hoverClass: "hover:bg-foreground hover:border-foreground",
   },
   {
     name: "instagram",
     link: "https://www.instagram.com/Nex.genacademy",
     icon: <FaInstagram />,
     ariaLabelKey: "instagramAriaLabel",
+    hoverClass:
+      "hover:bg-gradient-to-br hover:from-[#F58529] hover:via-[#DD2A7B] hover:to-[#8134AF] hover:border-transparent",
   },
 ];
 
 const Footer = ({}: { clear?: boolean }) => {
   const text = useTranslations("footer");
+
+  const scrollToTop = () => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
-    <footer className="relative mt-12 bg-background-2 border-t border-primary/10">
-      {/* Top contact strip */}
-      <div className="container -mt-8">
-        <div className="relative overflow-hidden rounded-2xl bg-clear-ground border border-primary/15 cardShadowSm px-5 py-5 sm:px-8 sm:py-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div
-            aria-hidden
-            className="absolute -top-12 -end-12 size-40 rounded-full bg-primary/10 blur-2xl"
-          />
-          <div
-            aria-hidden
-            className="absolute -bottom-12 -start-12 size-40 rounded-full bg-secondary/10 blur-2xl"
-          />
-          <div className="relative flex items-start sm:items-center gap-3">
-            <div className="flex shrink-0 size-11 items-center justify-center rounded-xl bg-primary/15 text-primary">
-              <HiOutlineSparkles className="size-5" />
-            </div>
-            <div>
-              <div className="font-bold text-text-1">
-                {text("readyToStart")}
-              </div>
-              <p className="text-sm text-text-3 mt-0.5">
-                {text("readyDescription")}
-              </p>
-            </div>
-          </div>
-          <div className="relative flex flex-wrap items-center gap-3 shrink-0">
-            <Link
-              href="/courses"
-              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-clear-ground border border-primary/30 text-primary text-sm font-semibold hover:bg-primary/5 transition-colors"
-            >
-              {text("browseCourses")}
-            </Link>
-            <Link
-              href="/sign-up"
-              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-b from-[#1b7df5] to-[#10498F] text-clear-ground text-sm font-semibold hover:shadow-lg hover:shadow-primary/20 transition-shadow"
-            >
-              {text("getStarted")}
-            </Link>
-          </div>
-        </div>
-      </div>
+    <footer className="relative mt-12 bg-background-2 border-t border-primary/10 overflow-hidden">
+      {/* Decorative background */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage:
+            "linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-32 start-1/4 size-72 rounded-full bg-primary/10 blur-[120px]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-32 end-1/4 size-72 rounded-full bg-secondary/10 blur-[120px]"
+      />
 
       {/* Main grid */}
-      <div className="container pt-12 pb-8">
+      <div className="container relative pt-12 pb-8">
         <div className="grid gap-10 md:gap-8 grid-cols-2 md:grid-cols-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-4">
@@ -109,7 +102,10 @@ const Footer = ({}: { clear?: boolean }) => {
                   aria-label={text(platform.ariaLabelKey)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center justify-center size-10 rounded-full bg-clear-ground border border-primary/15 text-text-2 hover:text-clear-ground hover:bg-primary hover:border-primary transition-colors"
+                  className={cn(
+                    "group flex items-center justify-center size-10 rounded-full bg-clear-ground border border-primary/15 text-text-2 hover:text-clear-ground transition-all hover:-translate-y-0.5 hover:shadow-md",
+                    platform.hoverClass,
+                  )}
                 >
                   {platform.icon}
                 </a>
@@ -154,7 +150,7 @@ const Footer = ({}: { clear?: boolean }) => {
                 href="https://t.me/nexgensupport"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-start gap-3 group"
+                className="flex items-start gap-3 p-2 -mx-2 rounded-lg group hover:bg-primary/5 transition-colors"
               >
                 <span className="flex shrink-0 size-9 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-clear-ground transition-colors">
                   <FaTelegramPlane className="size-4" />
@@ -170,7 +166,7 @@ const Footer = ({}: { clear?: boolean }) => {
               </a>
               <a
                 href="mailto:nexgensupprot@gmail.com"
-                className="flex items-start gap-3 group"
+                className="flex items-start gap-3 p-2 -mx-2 rounded-lg group hover:bg-primary/5 transition-colors"
               >
                 <span className="flex shrink-0 size-9 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-clear-ground transition-colors">
                   <MdOutlineMail className="size-4" />
@@ -186,20 +182,28 @@ const Footer = ({}: { clear?: boolean }) => {
           </div>
         </div>
 
-        {/* Trust badges */}
+        {/* Trust badges + bottom row */}
         <div className="mt-10 pt-6 border-t border-primary/10 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-4 text-xs text-text-3">
-            <span className="inline-flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-3 text-xs text-text-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-clear-ground border border-primary/10">
               <HiOutlineShieldCheck className="size-4 text-green" />
-              {text("licensedAccredited")}
+              <span className="font-medium">{text("licensedAccredited")}</span>
             </span>
-            <span className="hidden sm:inline-block size-1 rounded-full bg-text-3/40" />
-            <span className="inline-flex items-center gap-1.5">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-clear-ground border border-primary/10">
               <HiOutlineGlobeAlt className="size-4 text-primary" />
-              {text("availableLanguages")}
+              <span className="font-medium">{text("availableLanguages")}</span>
             </span>
           </div>
-          <div className="text-xs text-text-3">{text("copyRight")}</div>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-text-3">{text("copyRight")}</span>
+            <button
+              onClick={scrollToTop}
+              aria-label={text("backToTop")}
+              className="inline-flex items-center justify-center size-9 rounded-full bg-clear-ground border border-primary/15 text-primary hover:bg-primary hover:text-clear-ground hover:border-primary transition-colors"
+            >
+              <HiOutlineArrowUp className="size-4" />
+            </button>
+          </div>
         </div>
       </div>
     </footer>
@@ -224,7 +228,13 @@ const FooterLink: React.FC<{
   children: React.ReactNode;
 }> = ({ href, external, children }) => {
   const className =
-    "text-sm text-text-3 hover:text-primary transition-colors inline-block";
+    "group inline-flex items-center gap-1.5 text-sm text-text-3 hover:text-primary transition-colors";
+  const content = (
+    <>
+      <span className="size-1 rounded-full bg-primary/30 group-hover:bg-primary group-hover:scale-125 transition-all" />
+      <span>{children}</span>
+    </>
+  );
   if (external) {
     return (
       <li>
@@ -234,7 +244,7 @@ const FooterLink: React.FC<{
           target="_blank"
           rel="noopener noreferrer"
         >
-          {children}
+          {content}
         </a>
       </li>
     );
@@ -242,7 +252,7 @@ const FooterLink: React.FC<{
   return (
     <li>
       <Link href={href} className={className}>
-        {children}
+        {content}
       </Link>
     </li>
   );

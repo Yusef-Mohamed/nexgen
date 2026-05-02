@@ -10,6 +10,7 @@ import { Button } from "../ui/button";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useAuth } from "../auth-provider";
+
 const MobileHeader = ({
   headerLinks,
 }: {
@@ -17,132 +18,130 @@ const MobileHeader = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
   const text = useTranslations("header");
   const { token, logout, user } = useAuth();
-  const handleClickOutside = (event: MouseEvent) => {
-    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-      setIsOpen(false);
-    }
-  };
 
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(target) &&
+        toggleRef.current &&
+        !toggleRef.current.contains(target)
+      ) {
+        setIsOpen(false);
+      }
+    };
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = "hidden";
     } else {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = "";
     }
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
   return (
     <>
       <button
-        onClick={() => {
-          setIsOpen((prev) => !prev);
-        }}
-        className="block xl:hidden"
+        ref={toggleRef}
+        onClick={() => setIsOpen((prev) => !prev)}
+        aria-label={text("toggleMenu")}
+        aria-expanded={isOpen}
+        className="xl:hidden flex items-center justify-center size-10 rounded-xl bg-primary/5 text-primary border border-primary/10 hover:bg-primary/10 transition-colors"
       >
         {isOpen ? (
-          <IoClose className="w-8 h-8" />
+          <IoClose className="size-5" />
         ) : (
-          <FaBarsStaggered className="w-8 h-8" />
+          <FaBarsStaggered className="size-5" />
         )}
       </button>
+
       <div
         ref={menuRef}
-        style={{
-          transition: "max-height 0.3s",
-        }}
         className={cn(
-          "absolute bottom-0 xl:hidden right-0 overflow-hidden w-full translate-y-full shadow-md bg-clear-ground",
-          {
-            "max-h-0": !isOpen,
-            "max-h-[calc(100vh-4rem)]": isOpen,
-          }
+          "xl:hidden absolute top-full inset-x-0 z-50 origin-top transition-all duration-300 ease-out",
+          isOpen
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 -translate-y-2 pointer-events-none"
         )}
       >
-        <div className="p-4">
-          <nav>
-            <ul>
-              {headerLinks.map((link) => (
-                <NavItem
-                  onClick={() => setIsOpen(false)}
-                  className="gap-2.5 px-2.5 py-2 my-auto hover:text-primary transition-colors w-full block"
-                  activeClass="font-semibold text-primary bg-primary/10"
-                  key={link.name}
-                  href={link.url}
-                  name={link.name}
-                />
-              ))}
-            </ul>
-          </nav>
-          <div className="flex flex-col items-start justify-start gap-4 mt-4 md:hidden">
-            <div
-              className="flex items-center gap-4"
-              onClick={() => {
-                setIsOpen(false);
-              }}
-            >
-              <LanguageSelector />
-              <ThemeToggler />
-            </div>
-            {token ? (
-              <>
-                {user?.isInstructor && (
+        <div className="container">
+          <div className="mx-auto bg-clear-ground border border-primary/10 rounded-2xl shadow-xl shadow-foreground/10 overflow-hidden">
+            <nav className="p-3">
+              <ul className="space-y-1">
+                {headerLinks.map((link) => (
+                  <NavItem
+                    onClick={() => setIsOpen(false)}
+                    className="block w-full px-3.5 py-2.5 rounded-xl text-sm font-medium text-text-2 hover:text-primary hover:bg-primary/5 transition-colors"
+                    activeClass="!text-primary !bg-primary/10 font-semibold"
+                    key={link.name}
+                    href={link.url}
+                    name={link.name}
+                  />
+                ))}
+              </ul>
+            </nav>
+
+            <div className="border-t border-primary/10 p-4 flex flex-col gap-3 md:hidden">
+              <div
+                className="flex items-center gap-2"
+                onClick={() => setIsOpen(false)}
+              >
+                <LanguageSelector />
+                <ThemeToggler />
+              </div>
+              {token ? (
+                <div className="flex flex-col gap-2">
+                  {user?.isInstructor && (
+                    <Button
+                      onClick={() => setIsOpen(false)}
+                      asChild
+                      className="w-full"
+                    >
+                      <Link href="/instructor-dashboard/courses">
+                        {text("instructorDashboard")}
+                      </Link>
+                    </Button>
+                  )}
                   <Button
+                    onClick={() => setIsOpen(false)}
+                    asChild
+                    className="w-full"
+                  >
+                    <Link href="/dashboard">{text("dashboard")}</Link>
+                  </Button>
+                  <Button
+                    variant={"outline"}
+                    className="w-full"
                     onClick={() => {
                       setIsOpen(false);
+                      logout();
                     }}
-                    asChild
                   >
-                    <Link href="/instructor-dashboard/courses">
-                      {text("instructorDashboard")}
-                    </Link>
+                    {text("logout")}
                   </Button>
-                )}
-                <Button
-                  onClick={() => {
-                    setIsOpen(false);
-                  }}
-                  asChild
-                >
-                  <Link href="/dashboard">{text("dashboard")}</Link>
-                </Button>{" "}
-                <Button
-                  variant={"outline"}
-                  onClick={() => {
-                    setIsOpen(false);
-                    logout();
-                  }}
-                >
-                  {text("logout")}
-                </Button>
-              </>
-            ) : (
-              <>
-                {" "}
-                <Button
-                  onClick={() => {
-                    setIsOpen(false);
-                  }}
-                  asChild
-                  variant={"outline"}
-                >
-                  <Link href="/sign-in">{text("signIn")}</Link>
-                </Button>
-                <Button
-                  onClick={() => {
-                    setIsOpen(false);
-                  }}
-                  asChild
-                >
-                  <Link href="/sign-up">{text("startNow")}</Link>
-                </Button>
-              </>
-            )}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    onClick={() => setIsOpen(false)}
+                    asChild
+                    variant={"outline"}
+                  >
+                    <Link href="/sign-in">{text("signIn")}</Link>
+                  </Button>
+                  <Button onClick={() => setIsOpen(false)} asChild>
+                    <Link href="/sign-up">{text("startNow")}</Link>
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

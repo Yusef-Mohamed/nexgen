@@ -10,6 +10,7 @@ import { ICategory } from "@/types";
 import { cn, getDynamicString } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 interface CategoryFilterProps {
   categories: ICategory[];
@@ -29,6 +30,8 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   loading = false,
   enableSearch = false,
 }) => {
+  const text = useTranslations("common");
+
   return (
     <div className={cn("w-full", className)}>
       <Carousel
@@ -49,7 +52,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
                 )}
                 variant={selectedCategory ? "outline" : "default"}
               >
-                All
+                {text("all")}
               </Button>
             </CarouselItem>
           )}

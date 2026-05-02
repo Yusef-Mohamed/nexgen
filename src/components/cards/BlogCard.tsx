@@ -1,5 +1,5 @@
 import { IBlog } from "@/types";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import React from "react";
 import { Link } from "@/i18n/navigation";
@@ -26,6 +26,7 @@ const BlogCard: React.FC<
   className,
 }) => {
   const locale = useLocale();
+  const text = useTranslations("blogs");
   if (!author) return null;
 
   const href = `${inDashboard ? "/dashboard/blogs" : "/blogs"}/${slug}`;
@@ -59,14 +60,12 @@ const BlogCard: React.FC<
         {/* Article ribbon */}
         <div className="absolute top-3 end-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/90 text-clear-ground text-[11px] font-semibold uppercase tracking-wider">
           <HiOutlineNewspaper className="size-3.5" />
-          <span>Article</span>
+          <span>{text("article")}</span>
         </div>
         {/* Read time pill */}
         <div className="absolute bottom-3 start-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-clear-ground/95 backdrop-blur text-xs font-semibold text-text-1">
           <HiOutlineClock className="size-3.5" />
-          <span>
-            {readTime} {locale === "ar" ? "د" : "min read"}
-          </span>
+          <span>{text("minRead", { readTime })}</span>
         </div>
       </Link>
 
@@ -109,14 +108,12 @@ const BlogCard: React.FC<
 
       {/* Footer: read more */}
       <div className="flex items-center justify-between gap-3 pt-3 border-t border-primary/10">
-        <span className="text-xs text-text-3">
-          {locale === "ar" ? "اقرأ المقال" : "Read article"}
-        </span>
+        <span className="text-xs text-text-3">{text("readArticle")}</span>
         <Link
           href={href}
           className="inline-flex items-center gap-1.5 px-3 h-9 rounded-full bg-gradient-to-b from-[#1b7df5] to-[#10498F] text-clear-ground text-xs font-semibold transition-transform hover:translate-x-0.5 rtl:hover:-translate-x-0.5"
         >
-          <span>{locale === "ar" ? "المزيد" : "Read more"}</span>
+          <span>{text("readMore")}</span>
           <HiOutlineArrowRight className="size-3.5 rtl:rotate-180" />
         </Link>
       </div>
@@ -207,6 +204,7 @@ export const BlogUserComponent = ({
   className?: string;
 }) => {
   const locale = useLocale();
+  const text = useTranslations("blogs");
   return (
     <div className={cn("flex items-center gap-2 mt-2 sm:mt-4", className)}>
       <UserAvatar
@@ -220,7 +218,7 @@ export const BlogUserComponent = ({
         <div className="text-sm text-text-1 sm:text-base">{author?.name}</div>
         <div className="text-xs sm:text-sm text-text-3">
           <span>
-            {readTime} {locale === "ar" ? "د" : "min"}
+            {readTime} {text("minuteAbbr")}
           </span>{" "}
           ·{" "}
           <span>

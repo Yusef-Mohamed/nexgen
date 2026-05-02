@@ -20,6 +20,7 @@
     "footer": "© ٢٠٢٦ أكاديمية نيكسجين · منصة تعليمية"
   },
   "common": {
+    "all": "الكل",
     "switchToLightMode": "التبديل إلى الوضع الفاتح",
     "switchToDarkMode": "التبديل إلى الوضع الداكن",
     "contactTelegramAria": "تواصل معنا عبر تليجرام",
@@ -72,7 +73,8 @@
     "signIn": "تسجيل الدخول",
     "logout": "تسجيل الخروج",
     "dashboard": "لوحة التحكم",
-    "instructorDashboard": "لوحة تحكم المدرب"
+    "instructorDashboard": "لوحة تحكم المدرب",
+    "toggleMenu": "فتح أو إغلاق القائمة"
   },
   "logo": {
     "alt": "شعار أكاديمية نكسجن",
@@ -146,6 +148,8 @@
     "popularEyebrow": "مسارات منظمة",
     "heading": "ارتقِ بمسيرتك في تداول الفوركس",
     "coursesCount": "يحتوي على{count} كورسات",
+    "coursesIncludedCount": "{count, plural, one {# دورة} other {# دورات مضمنة}}",
+    "path": "مسار",
     "showDetails": "عرض التفاصيل",
     "exploreAllPaths": "استكشف جميع المسارات",
     "searchLearningPaths": "البحث في مسارات التعلم...",
@@ -269,6 +273,7 @@
     "startNow": "ابدأ الآن",
     "perMonth": "شهرياً",
     "save": "وفر",
+    "service": "خدمة",
     "weOffer": "نحن نقدم",
     "searchServices": "البحث في الخدمات...",
     "ourPopularServices": "خدماتنا الرائجة",
@@ -319,7 +324,12 @@
     "startNow": "ابدأ الآن",
     "donotOnlyLearnSuccessP": "سجل الآن للحصول على إرشادات الخبراء، الموارد الشاملة، والانضمام إلى مجتمع داعم!",
     "relatedBlogsHeading": "مواضيع ذات صلة",
-    "relatedBlogsDescription": "استكشف المزيد من الرؤى حول استراتيجيات التداول والاستثمار"
+    "relatedBlogsDescription": "استكشف المزيد من الرؤى حول استراتيجيات التداول والاستثمار",
+    "article": "مقال",
+    "minRead": "{readTime} دقائق قراءة",
+    "minuteAbbr": "د",
+    "readArticle": "اقرأ المقال",
+    "readMore": "المزيد"
   },
   "faqs": {
     "heading": "الأسئلة الشائعة",
@@ -354,6 +364,7 @@
     "faq_q_10": "ما هو الحد الادنى من رأس المال الذي استطيع ان ابدأ به بالتداول؟",
     "faq_a_10": "لا احد يستطيع تحديد راس مالك و لكن يمكنك سؤال نفسك ما هو مقدار الربح اليومي الذي ستكون راض عنه في سوق الفوركس على ان يكون ١-٣ بالمئة من راس المال.",
     "contact": "تواصل معنا",
+    "telegram": "تليجرام",
     "displayMore": "عرض المزيد",
     "displayLess": "عرض أقل"
   },
@@ -380,7 +391,8 @@
     "getStarted": "ابدأ الآن",
     "learn": "تعلّم",
     "licensedAccredited": "مرخصة ومعتمدة",
-    "availableLanguages": "متاحة بالعربية والإنجليزية"
+    "availableLanguages": "متاحة بالعربية والإنجليزية",
+    "backToTop": "العودة إلى الأعلى"
   },
   "aboutHeroPage": {
     "heading": "تشكيل الجيل القادم من المتعلمين والمبدعين والقادة.",

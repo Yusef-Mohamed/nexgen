@@ -93,7 +93,7 @@ const LearningPath: React.FC<
         {/* Path indicator */}
         <div className="absolute top-3 end-3 flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/90 text-clear-ground text-[11px] font-semibold uppercase tracking-wider">
           <HiOutlineBookOpen className="size-3.5" />
-          <span>Path</span>
+          <span>{text("path")}</span>
         </div>
       </Link>
 
@@ -135,8 +135,7 @@ const LearningPath: React.FC<
           <span className="size-1 rounded-full bg-text-3/40" />
           <div className="flex items-center gap-1.5">
             <span className="font-medium text-text-2">
-              {courses.length}{" "}
-              {courses.length === 1 ? "course" : "courses included"}
+              {text("coursesIncludedCount", { count: courses.length })}
             </span>
           </div>
         </div>

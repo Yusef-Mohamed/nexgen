@@ -20,6 +20,7 @@
     "footer": "© 2026 NEXGEN ACADEMY · EDUCATION PLATFORM"
   },
   "common": {
+    "all": "All",
     "switchToLightMode": "Switch to light mode",
     "switchToDarkMode": "Switch to dark mode",
     "contactTelegramAria": "Contact us on Telegram",
@@ -72,7 +73,8 @@
     "signIn": "Sign In",
     "logout": "Logout",
     "dashboard": "Dashboard",
-    "instructorDashboard": "Instructor Dashboard"
+    "instructorDashboard": "Instructor Dashboard",
+    "toggleMenu": "Toggle menu"
   },
   "logo": {
     "alt": "NexGen Academy logo",
@@ -147,6 +149,8 @@
     "popularEyebrow": "Structured journeys",
     "heading": "Advance Your Forex Trading Career",
     "coursesCount": "Contains {count} courses",
+    "coursesIncludedCount": "{count, plural, one {# course} other {# courses included}}",
+    "path": "Path",
     "showDetails": "Show Details",
     "exploreAllPaths": "Explore All Paths",
     "searchLearningPaths": "Search learning paths...",
@@ -272,6 +276,7 @@
     "startNow": "Start Now",
     "perMonth": "per month",
     "save": "Save",
+    "service": "Service",
     "weOffer": "We Offer",
     "searchServices": "Search services...",
     "ourPopularServices": "Our Popular Services",
@@ -322,7 +327,12 @@
     "startNow": "Start Now",
     "donotOnlyLearnSuccessP": "Register now for expert guidance, comprehensive resources, and join a supportive community!",
     "relatedBlogsHeading": "Related Topics",
-    "relatedBlogsDescription": "Explore more insights about trading and investment strategies"
+    "relatedBlogsDescription": "Explore more insights about trading and investment strategies",
+    "article": "Article",
+    "minRead": "{readTime} min read",
+    "minuteAbbr": "min",
+    "readArticle": "Read article",
+    "readMore": "Read more"
   },
   "faqs": {
     "heading": "Frequently Asked Questions",
@@ -357,6 +367,7 @@
     "faq_q_10": "What is the minimum capital I can start trading with?",
     "faq_a_10": "No one can determine your capital, but you can ask yourself what amount of daily profit would you be satisfied with in the Forex market, considering it should be 1-3 percent of the capital.",
     "contact": "Contact Us",
+    "telegram": "Telegram",
     "displayMore": "Display More",
     "displayLess": "Display Less"
   },
@@ -383,7 +394,8 @@
     "getStarted": "Get started",
     "learn": "Learn",
     "licensedAccredited": "Licensed & accredited",
-    "availableLanguages": "Available in EN · AR"
+    "availableLanguages": "Available in EN · AR",
+    "backToTop": "Back to top"
   },
   "aboutHeroPage": {
     "heading": "Shaping the Next Generation of Learners, Innovators, and Leaders.",
