@@ -404,7 +404,9 @@
     "ourLearners": "نجاح طلابنا."
   },
   "aboutPartnersPage": {
-    "heading": "موثوق من قبل أفضل شركات العالم"
+    "eyebrow": "الشركاء",
+    "heading": "جامعات وشركات وشركاء تعليميون",
+    "partnerLogoAlt": "شعار الشريك {number}"
   },
   "aboutOurValuesPage": {
     "ourValues": "قيمنا.",

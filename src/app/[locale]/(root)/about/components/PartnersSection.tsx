@@ -1,13 +1,20 @@
 import { useTranslations } from "next-intl";
+import SectionHeader from "@/components/SectionHeader";
 import PartnersSlider from "./PartnersSlider";
 
 const PartnersSection = () => {
   const text = useTranslations("aboutPartnersPage");
   return (
-    <section className=" secPadding">
-      <h2 className="container mb-6 text-center sm:mb-8 h4">
-        {text("heading")}
-      </h2>
+    <section className="secPadding">
+      <div className="container mb-8">
+        <SectionHeader
+          eyebrow={text("eyebrow")}
+          heading={text("heading")}
+          align="center"
+          tone="secondary"
+        />
+      </div>
+
       <PartnersSlider />
     </section>
   );

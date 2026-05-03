@@ -407,7 +407,9 @@
     "ourLearners": "Our Students' Success"
   },
   "aboutPartnersPage": {
-    "heading": "Trusted by the world's best companies"
+    "eyebrow": "Partners",
+    "heading": "Universities, companies, and learning partners",
+    "partnerLogoAlt": "Partner logo {number}"
   },
   "aboutOurValuesPage": {
     "ourValues": "Our Values",

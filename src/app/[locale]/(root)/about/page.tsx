@@ -1,6 +1,6 @@
 import { getMetadataAboutPage } from "@/getMetaData";
 import { Metadata } from "next";
-import { BlogSection2 } from "../components/BlogSection";
+import BlogSection from "../components/BlogSection";
 import HeroSection from "./components/HeroSection";
 import PartnersSection from "./components/PartnersSection";
 import OurValues from "./components/OurValues";
@@ -21,17 +21,17 @@ export async function generateMetadata(
 }
 
 const AboutPage = async (props: { params: Promise<{ locale: string }> }) => {
-  const params = await props.params;
-  
+  await props.params;
+
   return (
-    <main>
+    <main className="max-w-full overflow-hidden">
       <HeroSection />
       <PartnersSection />
       <OurValues />
       <MobileAppHero />
       <ReviewsSection />
       <PromoBanner2 />
-      <BlogSection2 />
+      <BlogSection />
     </main>
   );
 };
