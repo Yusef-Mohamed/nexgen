@@ -1,6 +1,8 @@
 "use client";
 import { IPackage } from "@/types";
-import { getDynamicString } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
+import { useTranslations } from "next-intl";
+import { HiOutlineSparkles } from "react-icons/hi2";
 
 interface ServiceHeadingProps {
   serviceData: IPackage;
@@ -11,9 +13,19 @@ const ServiceHeading: React.FC<ServiceHeadingProps> = ({
   serviceData,
   className,
 }) => {
+  const text = useTranslations("servicePage");
+
   return (
-    <div className={className}>
-      <h1>{getDynamicString(serviceData.title)}</h1>
+    <div className={cn("relative", className)}>
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full bg-primary/10 border border-primary/20 cardShadowSm">
+        <HiOutlineSparkles className="size-4 text-primary" />
+        <span className="text-xs sm:text-sm font-medium text-primary">
+          {text("service")}
+        </span>
+      </div>
+      <h1 className="font-bold leading-tight tracking-tight text-text-1">
+        {getDynamicString(serviceData.title)}
+      </h1>
       <div
         style={{
           fontWeight: 400,

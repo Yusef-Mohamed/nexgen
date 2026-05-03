@@ -667,6 +667,7 @@
     "goToCourse": "الذهاب إلى الدورة"
   },
   "servicePage": {
+    "service": "خدمة",
     "discounted": "خصم",
     "startNow": "ابدأ الآن",
     "startLearning": "ابدأ التعلم",
@@ -677,6 +678,8 @@
     "servicePrerequisites": "متطلبات الخدمة",
     "subscriptionDuration": "اشتراك لمدة {days} يوم",
     "accessOnMobile": "الوصول عبر الهاتف المحمول",
+    "liveCoachingSessions": "جلسات تدريب مباشرة للتطبيق العملي والإجابة على الأسئلة",
+    "communityGroupChat": "مجموعة نقاش خاصة مع المدرب والزملاء",
     "subscriptionAccess": "الوصول خلال فترة الاشتراك",
     "certificateOfCompletion": "شهادة إتمام",
     "free": "مجاني"

@@ -670,6 +670,7 @@
     "goToCourse": "Go to Course"
   },
   "servicePage": {
+    "service": "Service",
     "discounted": "Discounted",
     "startNow": "Start Now",
     "startLearning": "Start Learning",
@@ -680,6 +681,8 @@
     "servicePrerequisites": "Service Prerequisites",
     "subscriptionDuration": "{days} days subscription",
     "accessOnMobile": "Mobile access",
+    "liveCoachingSessions": "Practical live coaching sessions with Q&A",
+    "communityGroupChat": "Private group chat with your coach and peers",
     "subscriptionAccess": "Access during subscription period",
     "certificateOfCompletion": "Certificate of completion",
     "free": "Free"

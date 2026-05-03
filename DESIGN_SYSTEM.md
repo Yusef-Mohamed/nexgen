@@ -330,6 +330,12 @@ These are good references when designing a new page:
   primary-faded panel with ringed icon tiles.
 - `src/app/[locale]/(root)/courses/[courseId]/components/CourseContent.tsx` —
   numbered accordion inside a `SectionBlock`.
+- `src/app/[locale]/(root)/services/[serviceId]/page.tsx` - service detail
+  layout aligned to the course detail page, redesigned 2026-05-03.
+- `src/app/[locale]/(root)/learning-paths/[learningPathId]/page.tsx` - learning
+  path detail layout and course accordion aligned to the course detail page,
+  redesigned 2026-05-03.
+- `src/components/SectionBlock.tsx` - shared tone-aware section wrapper.
 - `src/components/cards/CourseCard.tsx` — card hover + footer-CTA pattern.
 
 ---
@@ -372,7 +378,34 @@ What was changed when this doc was first written, kept here so you can see
 
 ---
 
-## 10. How to use this doc when redesigning a new page
+## 10. Service and learning path redesign — 2026-05-03 changelog
+
+**Shared**
+- Lifted the course detail `SectionBlock` pattern into
+  `src/components/SectionBlock.tsx` so detail pages share one implementation.
+
+**`services/[serviceId]`**
+- Replaced the bare split layout with the course page's `gap-12 xl:gap-20`
+  content + sticky purchase layout.
+- Added the top secondary/gold blob strip and a service eyebrow above the
+  `<h1>`.
+- Converted service audience, outcomes, and prerequisites into tone-rotating
+  `SectionBlock` panels with row cards.
+- Replaced the purple inline blur in `ServiceCard` with token-based secondary
+  and gold decorative blobs, and upgraded included items to tone icon chips.
+
+**`learning-paths/[learningPathId]`**
+- Matched the course page shell, sticky card treatment, and section rhythm.
+- Converted audience, outcomes, and prerequisites into `SectionBlock` panels.
+- Reworked `LearningPathCard` to use token-based decorative blobs and
+  tone-rotating included-item chips.
+- Rebuilt `PathContent` as a `SectionBlock` with numbered course rows, nested
+  section cards, lesson duration chips, loading skeletons, and a rounded
+  `primaryOutline` course CTA.
+
+---
+
+## 11. How to use this doc when redesigning a new page
 
 1. **Read the current page.** Note which patterns are missing (eyebrow,
    blobs, tone rotation, list-item cards, sticky aside, etc.).
@@ -386,5 +419,5 @@ What was changed when this doc was first written, kept here so you can see
 6. **Audit for tokens.** No hex, no inline gradient strings, no `useTheme`
    color swaps, no `left/right` positioning.
 7. **Run `npx tsc --noEmit`** before declaring done.
-8. **Append a changelog entry** to section 9 of this doc so the next
+8. **Append a changelog entry** to the redesign changelog section so the next
    redesign has a precedent.

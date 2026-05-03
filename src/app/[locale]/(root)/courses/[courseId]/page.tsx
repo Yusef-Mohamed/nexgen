@@ -32,6 +32,7 @@ import CourseMetadata from "./components/CourseMetadata";
 import ItemImage from "./components/ItemImage";
 import CouponAwarePrice from "@/components/CouponAwarePrice";
 import { getCouponCodeFromSearchParams, getItemBasePrice } from "@/lib/coupons";
+import SectionBlock from "@/components/SectionBlock";
 export async function generateMetadata(props: {
   params: Promise<{ locale: string; courseId: string }>;
 }): Promise<Metadata> {
@@ -234,78 +235,6 @@ const CoursesPage = async (props: {
       </section>
       <PopularCourses />
     </main>
-  );
-};
-
-const SectionBlock: React.FC<{
-  tone: "primary" | "secondary" | "gold";
-  eyebrow: string;
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}> = ({ tone, eyebrow, title, icon, children }) => {
-  const toneStyles = {
-    primary: {
-      pillBg: "bg-primary/10 border-primary/20 text-primary",
-      iconBg: "bg-primary/15 text-primary",
-      panelBg: "bg-primary-faded",
-      panelBorder: "border-primary/15",
-      bar: "bg-primary",
-    },
-    secondary: {
-      pillBg: "bg-secondary/10 border-secondary/20 text-secondary",
-      iconBg: "bg-secondary/15 text-secondary",
-      panelBg: "bg-secondary/10",
-      panelBorder: "border-secondary/20",
-      bar: "bg-secondary",
-    },
-    gold: {
-      pillBg: "bg-gold/10 border-gold/25 text-gold",
-      iconBg: "bg-gold/20 text-gold",
-      panelBg: "bg-gold/10",
-      panelBorder: "border-gold/25",
-      bar: "bg-gold",
-    },
-  }[tone];
-
-  return (
-    <div
-      className={cn(
-        "relative my-6 md:my-8 rounded-2xl border p-5 sm:p-6 md:p-7 overflow-hidden",
-        toneStyles.panelBg,
-        toneStyles.panelBorder,
-      )}
-    >
-      <div
-        className={cn(
-          "absolute top-0 left-6 right-6 h-1 rounded-b-full opacity-70",
-          toneStyles.bar,
-        )}
-      />
-      <div className="flex items-center gap-3 mb-5 md:mb-6">
-        <div
-          className={cn(
-            "inline-flex items-center justify-center size-10 rounded-xl",
-            toneStyles.iconBg,
-          )}
-        >
-          {icon}
-        </div>
-        <div>
-          <div
-            className={cn(
-              "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] sm:text-xs font-semibold uppercase tracking-wide",
-              toneStyles.pillBg,
-            )}
-          >
-            <span className="size-1 rounded-full bg-current opacity-70" />
-            {eyebrow}
-          </div>
-          <h3 className="mt-1 font-bold text-text-1">{title}</h3>
-        </div>
-      </div>
-      {children}
-    </div>
   );
 };
 
