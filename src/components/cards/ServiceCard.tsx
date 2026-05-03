@@ -119,7 +119,7 @@ const ServiceCard: React.FC<
         <Button size="sm" className="rounded-full group/btn h-9 px-4" asChild>
           <Link
             href={`/services/${slug}`}
-            className="flex items-center gap-1.5"
+            className="flex items-center gap-1.5 text-xs!"
           >
             <span>{text("startNow")}</span>
             <HiOutlineArrowRight className="size-3.5 transition-transform group-hover/btn:translate-x-0.5 rtl:rotate-180 rtl:group-hover/btn:-translate-x-0.5" />

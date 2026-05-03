@@ -28,7 +28,7 @@ const OurValues = () => {
 
   return (
     <section className="container secPadding">
-      <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+      <div className="space-y-8">
         <SectionHeader
           eyebrow={text("ourValues")}
           heading={text("heading")}
@@ -36,13 +36,13 @@ const OurValues = () => {
           tone="primary"
           className="lg:sticky lg:top-24"
         />
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 3 }).map((_, index) => (
             <div
               key={index}
               className={cn(
                 "group relative overflow-hidden rounded-2xl border p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-text-1/5",
-                index === 2 && "md:col-span-2",
+                index === 2 && "md:col-span-2 lg:col-span-1",
                 tones[index].bg,
                 tones[index].border,
               )}

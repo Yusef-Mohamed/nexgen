@@ -12,6 +12,7 @@ import {
   HiOutlineNewspaper,
   HiOutlineArrowRight,
 } from "react-icons/hi2";
+import { Button } from "../ui/button";
 
 const BlogCard: React.FC<
   IBlog & { inDashboard?: boolean; className?: string }
@@ -63,10 +64,6 @@ const BlogCard: React.FC<
           <span>{text("article")}</span>
         </div>
         {/* Read time pill */}
-        <div className="absolute bottom-3 start-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-clear-ground/95 backdrop-blur text-xs font-semibold text-text-1">
-          <HiOutlineClock className="size-3.5" />
-          <span>{text("minRead", { readTime })}</span>
-        </div>
       </Link>
 
       {/* Content */}
@@ -76,7 +73,11 @@ const BlogCard: React.FC<
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-secondary bg-secondary/10 px-2.5 py-1 rounded-full">
             <HiOutlineCalendarDays className="size-3.5" />
             {dateLabel}
-          </span>
+          </span>{" "}
+          <div className="inline-flex bg-muted items-center gap-1.5 px-2.5 py-1 rounded-full bg-clear-ground/95 backdrop-blur text-xs font-semibold text-text-1">
+            <HiOutlineClock className="size-3.5" />
+            <span>{text("minRead", { readTime })}</span>
+          </div>
         </div>
 
         {/* Title */}
@@ -109,13 +110,12 @@ const BlogCard: React.FC<
       {/* Footer: read more */}
       <div className="flex items-center justify-between gap-3 pt-3 border-t border-primary/10">
         <span className="text-xs text-text-3">{text("readArticle")}</span>
-        <Link
-          href={href}
-          className="inline-flex items-center gap-1.5 px-3 h-9 rounded-full bg-gradient-to-b from-[#1b7df5] to-[#10498F] text-clear-ground text-xs font-semibold transition-transform hover:translate-x-0.5 rtl:hover:-translate-x-0.5"
-        >
-          <span>{text("readMore")}</span>
-          <HiOutlineArrowRight className="size-3.5 rtl:rotate-180" />
-        </Link>
+        <Button size="sm" className="rounded-full group/btn h-9 px-4" asChild>
+          <Link href={href} className="flex items-center gap-1.5 text-xs!">
+            <span>{text("readMore")}</span>
+            <HiOutlineArrowRight className="size-3.5 rtl:rotate-180" />
+          </Link>
+        </Button>
       </div>
     </article>
   );

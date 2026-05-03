@@ -21,6 +21,12 @@ const MobileHeader = ({
   const toggleRef = useRef<HTMLButtonElement>(null);
   const text = useTranslations("header");
   const { token, logout, user } = useAuth();
+  const [isMounted, setIsMounted] = useState(false);
+  const canRenderAuth = isMounted && !!token;
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -96,7 +102,7 @@ const MobileHeader = ({
                 <LanguageSelector />
                 <ThemeToggler />
               </div>
-              {token ? (
+              {canRenderAuth ? (
                 <div className="flex flex-col gap-2">
                   {user?.isInstructor && (
                     <Button

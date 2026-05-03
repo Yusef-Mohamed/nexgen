@@ -15,10 +15,10 @@ export async function generateMetadata(
 }
 
 const ContactPage = async (props: { params: Promise<{ locale: string }> }) => {
-  const params = await props.params;
-  
+  await props.params;
+
   return (
-    <main>
+    <main className="max-w-full overflow-hidden">
       <ContactForm />
       <ContactCols />
     </main>

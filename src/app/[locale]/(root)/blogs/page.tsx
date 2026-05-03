@@ -5,8 +5,9 @@ import { getTranslations } from "next-intl/server";
 import BlogsPageHeroSection from "./components/BlogsPageHeroSection";
 import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { IBlog } from "@/types";
-import { BlogCard2 } from "@/components/cards/BlogCard";
+import BlogCard from "@/components/cards/BlogCard";
 import DonotOnlyLearnSuccess from "./components/DonotOnlyLearnSuccess";
+import GridSection from "@/components/GridSection";
 
 export async function generateMetadata(props: {
   params: Promise<{ locale: string }>;
@@ -27,17 +28,19 @@ const BlogsPage = async (props: { params: Promise<{ locale: string }> }) => {
   const blogsRes = await axiosInstance.get("/articals");
   const blogsData = blogsRes.data.data as IBlog[];
   return (
-    <main>
+    <main className="max-w-full overflow-hidden">
       <BlogsPageHeroSection blog={blogsData[0]} />
-
-      <section className="container secPadding">
-        <h2>{text("latestBlogs")}</h2>
-        <div className="grid gap-6 my-6 sm:my-12 sm:gap-12 lg:grid-cols-2">
-          {blogsData.slice(1).map((blog, index) => (
-            <BlogCard2 key={index} {...blog} />
-          ))}
-        </div>
-      </section>
+      <GridSection
+        heading={text("latestBlogs")}
+        eyebrow={text("eyebrow")}
+        description={text("landingDescription")}
+        tone="primary"
+        align="center"
+      >
+        {blogsData.slice(1).map((blog, index) => (
+          <BlogCard key={index} {...blog} />
+        ))}
+      </GridSection>
       <DonotOnlyLearnSuccess />
     </main>
   );

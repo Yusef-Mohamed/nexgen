@@ -90,11 +90,6 @@ const LearningPath: React.FC<
           <LevelsIcons className="size-3.5 shrink-0" />
           <span>{getDifficultyLevel(type)}</span>
         </div>
-        {/* Path indicator */}
-        <div className="absolute top-3 end-3 flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/90 text-clear-ground text-[11px] font-semibold uppercase tracking-wider">
-          <HiOutlineBookOpen className="size-3.5" />
-          <span>{text("path")}</span>
-        </div>
       </Link>
 
       <div className="flex-1 flex flex-col gap-3">
@@ -162,7 +157,7 @@ const LearningPath: React.FC<
         <Button size="sm" className="rounded-full group/btn h-9 px-4" asChild>
           <Link
             href={`/learning-paths/${slug}`}
-            className="flex items-center gap-1.5"
+            className="flex items-center gap-1.5 text-xs!"
           >
             <span>{text("showDetails")}</span>
             <HiOutlineArrowRight className="size-3.5 transition-transform group-hover/btn:translate-x-0.5 rtl:rotate-180 rtl:group-hover/btn:-translate-x-0.5" />

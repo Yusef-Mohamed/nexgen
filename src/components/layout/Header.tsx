@@ -24,8 +24,11 @@ const Header = () => {
   const text = useTranslations("header");
   const { token } = useAuth();
   const [scrolled, setScrolled] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const canRenderAuth = isMounted && !!token;
 
   useEffect(() => {
+    setIsMounted(true);
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -51,7 +54,7 @@ const Header = () => {
           <div className="flex gap-3 items-center min-w-0">
             <MobileHeader headerLinks={headerLinks} />
             <Logo />
-            {token && (
+            {canRenderAuth && (
               <Button size={"sm"} className="lg:hidden" asChild>
                 <Link href="/dashboard">{text("dashboard")}</Link>
               </Button>
@@ -70,14 +73,14 @@ const Header = () => {
           </ul>
         </nav>
         <div className="hidden gap-2 items-center lg:gap-3 md:flex">
-          {token && (
+          {canRenderAuth && (
             <Button size={"sm"} asChild>
               <Link href="/dashboard">{text("dashboard")}</Link>
             </Button>
           )}
           <LanguageSelector />
           <ThemeToggler />
-          {token ? (
+          {canRenderAuth ? (
             <UserHeader />
           ) : (
             <>

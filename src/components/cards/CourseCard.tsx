@@ -166,12 +166,11 @@ const CourseCard: React.FC<
             <span className="text-xs text-text-3 line-through">${price}</span>
           )}
         </div>
-        <Button
-          size="sm"
-          className="rounded-full group/btn h-9 px-4"
-          asChild
-        >
-          <Link href={`/courses/${slug}`} className="flex items-center gap-1.5">
+        <Button size="sm" className="rounded-full group/btn h-9 px-4" asChild>
+          <Link
+            href={`/courses/${slug}`}
+            className="flex items-center gap-1.5 text-xs!"
+          >
             <span>{text("learnMore")}</span>
             <HiOutlineArrowRight className="size-3.5 transition-transform group-hover/btn:translate-x-0.5 rtl:rotate-180 rtl:group-hover/btn:-translate-x-0.5" />
           </Link>
