@@ -118,14 +118,14 @@ const LearningPathPage = async (props: {
           {learningPathData.coursePrerequisites &&
             learningPathData.coursePrerequisites.length > 0 && (
               <SectionBlock
-                tone="gold"
+                tone="secondary"
                 eyebrow={learningPathText("learningPathPrerequisites")}
                 icon={<HiOutlineClipboardDocumentList className="size-5" />}
                 title={learningPathText("learningPathPrerequisites")}
               >
                 <ItemDetailList
                   items={learningPathData.coursePrerequisites}
-                  tone="gold"
+                  tone="secondary"
                   icon={<HiOutlineClipboardDocumentList className="size-4" />}
                 />
               </SectionBlock>
@@ -211,7 +211,7 @@ const LearningPathCard: React.FC<{
     {
       icon: <PiExam className="w-4 h-4 sm:w-5 sm:h-5" />,
       text: "quizes",
-      tone: "gold" as const,
+      tone: "primary" as const,
     },
     {
       icon: <CiMobile2 className="w-4 h-4 sm:w-5 sm:h-5" />,
@@ -226,14 +226,13 @@ const LearningPathCard: React.FC<{
     {
       icon: <GrCertificate className="w-4 h-4 sm:w-5 sm:h-5" />,
       text: "certificatesOfCompletion",
-      tone: "gold" as const,
+      tone: "secondary" as const,
     },
   ];
 
-  const toneToBg: Record<"primary" | "secondary" | "gold", string> = {
+  const toneToBg: Record<"primary" | "secondary", string> = {
     primary: "bg-primary/10 text-primary",
     secondary: "bg-secondary/10 text-secondary",
-    gold: "bg-gold/15 text-gold",
   };
 
   return (
@@ -244,7 +243,7 @@ const LearningPathCard: React.FC<{
       />
       <div
         aria-hidden
-        className="absolute max-lg:hidden -top-16 -start-16 size-40 rounded-full bg-gold/25 dark:bg-gold/35 blur-[100px] opacity-60 pointer-events-none"
+        className="absolute max-lg:hidden -top-16 -start-16 size-40 rounded-full bg-primary/15 dark:bg-primary/25 blur-[100px] opacity-60 pointer-events-none"
       />
       <ItemImage
         image={learningPathData.image || "/images/hero.png"}

@@ -15,26 +15,26 @@ If you need a tinted variant, use opacity (e.g. `bg-primary/10`).
 
 ### Brand
 
-| Token              | Tailwind                       | Use                                           |
-| ------------------ | ------------------------------ | --------------------------------------------- |
-| `--primary`        | `bg-primary`, `text-primary`   | Primary CTAs, links, primary tone accents.    |
-| `--primary-main`   | `text-primary-main`            | Slightly darker primary for badge text.       |
-| `--primary-faded`  | `bg-primary-faded`             | Soft tinted panel background (panels, hero).  |
-| `--secondary`      | `bg-secondary`, `text-secondary` | Secondary tone (purple) — alternates with primary. |
-| `--gold`           | `bg-gold`, `text-gold`         | Tertiary accent — ratings, highlights, "premium". |
-| `--green` / `--fadedGreen` | `text-green`, `bg-fadedGreen` | Success, "free", positive deltas.       |
-| `--destructive`    | `text-destructive`             | Errors, warnings.                             |
+| Token                      | Tailwind                         | Use                                                                 |
+| -------------------------- | -------------------------------- | ------------------------------------------------------------------- |
+| `--primary`                | `bg-primary`, `text-primary`     | Primary CTAs, links, primary tone accents.                          |
+| `--primary-main`           | `text-primary-main`              | Slightly darker primary for badge text.                             |
+| `--primary-faded`          | `bg-primary-faded`               | Soft tinted panel background (panels, hero).                        |
+| `--secondary`              | `bg-secondary`, `text-secondary` | Secondary tone (purple) — alternates with primary.                  |
+| `--gold`                   | `bg-gold`, `text-gold`           | Review-only accent: stars, ratings, testimonials, review summaries. |
+| `--green` / `--fadedGreen` | `text-green`, `bg-fadedGreen`    | Success, "free", positive deltas.                                   |
+| `--destructive`            | `text-destructive`               | Errors, warnings.                                                   |
 
 ### Surface / text
 
-| Token              | Tailwind            | Use                                           |
-| ------------------ | ------------------- | --------------------------------------------- |
-| `--background`     | `bg-background`     | Page background (handled by `<main>`).        |
-| `--clear-ground`   | `bg-clear-ground`   | Card / panel surface (works in light & dark). |
-| `--muted`          | `bg-muted`          | Skeleton/disabled.                             |
-| `--text-1`         | `text-text-1`       | Primary text (titles).                        |
-| `--text-2`         | `text-text-2`       | Body text.                                    |
-| `--text-3`         | `text-text-3`       | Tertiary / captions.                          |
+| Token            | Tailwind          | Use                                           |
+| ---------------- | ----------------- | --------------------------------------------- |
+| `--background`   | `bg-background`   | Page background (handled by `<main>`).        |
+| `--clear-ground` | `bg-clear-ground` | Card / panel surface (works in light & dark). |
+| `--muted`        | `bg-muted`        | Skeleton/disabled.                            |
+| `--text-1`       | `text-text-1`     | Primary text (titles).                        |
+| `--text-2`       | `text-text-2`     | Body text.                                    |
+| `--text-3`       | `text-text-3`     | Tertiary / captions.                          |
 
 > Light **and** dark modes are already wired up — only use these tokens and the
 > theme will swap automatically.
@@ -66,25 +66,27 @@ These are the building blocks. Reuse them; don't reinvent.
 
 ### 3.1 Eyebrow pill
 
-A small pill above section headings. Comes in three tones.
+A small pill above section headings. Generic section eyebrows use primary or
+secondary only. Reserve gold/yellow for review-related UI.
 
 ```tsx
-{/* Primary */}
+{
+  /* Primary */
+}
 <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full bg-primary/10 border border-primary/20">
   <span className="size-1.5 rounded-full bg-primary animate-pulse" />
   <span className="text-xs sm:text-sm font-medium text-primary">
     {eyebrowText}
   </span>
-</div>
+</div>;
 ```
 
 Tone variants — swap the three color references together:
 
-| Tone      | bg              | border              | dot/text         |
-| --------- | --------------- | ------------------- | ---------------- |
-| primary   | `bg-primary/10` | `border-primary/20` | `text-primary`   |
+| Tone      | bg                | border                | dot/text         |
+| --------- | ----------------- | --------------------- | ---------------- |
+| primary   | `bg-primary/10`   | `border-primary/20`   | `text-primary`   |
 | secondary | `bg-secondary/10` | `border-secondary/20` | `text-secondary` |
-| gold      | `bg-gold/10`    | `border-gold/25`    | `text-gold`      |
 
 For an eyebrow with a glass-morphic look (used inside the hero), use
 `bg-clear-ground/80 backdrop-blur-sm border border-primary/20 cardShadowSm`
@@ -117,8 +119,8 @@ pattern from `Features.tsx` (`text-center max-w-2xl mx-auto`).
 The landing's `Features` and `WhyChooseUs` cards use this pattern. Reuse it for
 any grouped content. Each panel has:
 
-1. A tone-tinted background (`bg-primary-faded` / `bg-secondary/10` / `bg-gold/10`).
-2. A matching border (`border-primary/15` / `border-secondary/20` / `border-gold/25`).
+1. A tone-tinted background (`bg-primary-faded` / `bg-secondary/10`).
+2. A matching border (`border-primary/15` / `border-secondary/20`).
 3. A 1px top accent bar in the brand tone.
 4. The Section heading block above (3.2).
 
@@ -146,8 +148,9 @@ Used throughout the hero, sticky cards, panels. Always `aria-hidden`,
 />
 ```
 
-- Two opposing blobs (secondary top-left, gold bottom-right) is the standard
-  hero treatment.
+- Two opposing blobs should use primary and secondary variants. Do not use gold
+  for decorative blobs unless the surrounding component is explicitly about
+  reviews or ratings.
 - For a smaller card, drop the size to `size-40` / `size-48` and the blur to
   `blur-[80px]` or `blur-[100px]`.
 
@@ -173,8 +176,8 @@ hero image (see `Hero.tsx`).
 
 ### 3.6 Numbered tone-rotating cards
 
-When showing a 3-step set (Features, WhyChooseUs), rotate primary → secondary
-→ gold across the items. Each card has:
+When showing a 3-step set (Features, WhyChooseUs), rotate primary and secondary
+across the items. Each card has:
 
 - Tinted bg + tinted border + hover-darker border.
 - Top accent bar (`absolute top-0 left-6 right-6 h-1 rounded-b-full`) OR side
@@ -223,7 +226,7 @@ Use the variants in `src/components/ui/button.tsx`. Don't restyle inline.
 - **Inside cards**: `size="sm"` with `rounded-full`.
 - **Animated arrow on hover**: pair with `HiOutlineArrowRight` and
   `transition-transform group-hover:translate-x-1` (and `rtl:rotate-180
-  group-hover:-translate-x-1` for RTL).
+group-hover:-translate-x-1` for RTL).
 
 ---
 
@@ -272,18 +275,21 @@ The site supports Arabic (`ar`). Always:
 
 ### Hero panel (top of a content page)
 
-A rounded-3xl `bg-primary-faded` panel containing two corner blobs (secondary +
-gold), an optional grid overlay, an eyebrow pill, a styled `<h1>`, supporting
+A rounded-3xl `bg-primary-faded` panel containing primary/secondary corner
+blobs, an optional grid overlay, an eyebrow pill, a styled `<h1>`, supporting
 copy, two CTAs, and a stats row. Reference: `Hero.tsx`.
 
 ### Sticky purchase / sidebar card
 
 For pages with a buy box (`courses/[courseId]`), the right column at `lg+` is
-`lg:sticky lg:top-24`, wrapped in a soft gradient backdrop:
+`lg:sticky lg:top-32`, wrapped in a soft gradient backdrop:
 
 ```tsx
-<div className="hidden lg:block lg:sticky lg:top-24 ...">
-  <div aria-hidden className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-primary/15 via-secondary/10 to-gold/10 blur-2xl -z-10" />
+<div className="hidden lg:block lg:sticky lg:top-32 ...">
+  <div
+    aria-hidden
+    className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-primary/15 via-secondary/10 to-transparent blur-2xl -z-10"
+  />
   <div className="relative rounded-3xl bg-clear-ground border border-primary/10 cardShadow p-6">
     {/* card content */}
   </div>
@@ -312,7 +318,7 @@ content column and `basis-[40%] max-w-[29rem]` for the sticky aside.
 - ❌ Plain `<h2>{...}</h2>` section openers without an eyebrow + supporting
   context. The site's voice is illustrative — always frame headings.
 - ❌ Mixing the brand palette with arbitrary accent colors (teal, pink, etc.).
-  Stick to primary / secondary / gold (+ green for success).
+  Stick to primary / secondary (+ green for success). Gold/yellow is review-only.
 
 ---
 
@@ -346,29 +352,32 @@ What was changed when this doc was first written, kept here so you can see
 "before vs after" reasoning:
 
 **`page.tsx`**
+
 - Replaced the bare `flex gap-20` layout with a tone-aware section-block
-  layout (primary / secondary / gold rotation).
+  layout (primary / secondary rotation).
 - Added decorative blob strip at the top to anchor the page to the hero
   language.
 - Each "What you'll learn" / "Who this course is for" / "Prerequisites" list
   is now a tinted `SectionBlock` with an eyebrow, icon tile, top accent bar,
   and individual list-item cards.
-- "Recommended to see" became a highlighted gold callout with an arrow link.
+- "Recommended to see" became a highlighted primary callout with an arrow link.
 - Added an eyebrow pill above the `<h1>` showing the course's category.
 - Reviews section grew an eyebrow + centered heading.
-- Sticky buy card (lg+) became `lg:sticky lg:top-24` and got a soft
-  primary→secondary→gold blurred backdrop.
+- Sticky buy card (lg+) became `lg:sticky lg:top-32` and got a soft
+  primary/secondary blurred backdrop.
 - The "This course includes" list inside the buy card now uses tone-rotating
   icon chips.
 
 **`CourseMetadata.tsx`**
+
 - Removed the hard-coded `#FFF → #B2F7FF` (light) / `#282828 → #00424A` (dark)
   gradient — clashed with the brand palette.
-- Replaced with `bg-primary-faded` panel + secondary/gold blob accents and
-  white inner cards with ringed icon tiles in primary / secondary / gold.
+- Replaced with `bg-primary-faded` panel + primary/secondary blob accents and
+  white inner cards with ringed icon tiles in primary / secondary.
 - Dropped the `useTheme` hook (tokens handle dark mode).
 
 **`CourseContent.tsx`**
+
 - Wrapped the accordion in the `SectionBlock` visual language.
 - Added a "N sections · M lessons" summary chip.
 - Section rows are individual cards with a numbered chip; lessons hover-
@@ -381,20 +390,23 @@ What was changed when this doc was first written, kept here so you can see
 ## 10. Service and learning path redesign — 2026-05-03 changelog
 
 **Shared**
+
 - Lifted the course detail `SectionBlock` pattern into
   `src/components/SectionBlock.tsx` so detail pages share one implementation.
 
 **`services/[serviceId]`**
+
 - Replaced the bare split layout with the course page's `gap-12 xl:gap-20`
   content + sticky purchase layout.
-- Added the top secondary/gold blob strip and a service eyebrow above the
+- Added the top primary/secondary blob strip and a service eyebrow above the
   `<h1>`.
 - Converted service audience, outcomes, and prerequisites into tone-rotating
   `SectionBlock` panels with row cards.
 - Replaced the purple inline blur in `ServiceCard` with token-based secondary
-  and gold decorative blobs, and upgraded included items to tone icon chips.
+  and primary decorative blobs, and upgraded included items to tone icon chips.
 
 **`learning-paths/[learningPathId]`**
+
 - Matched the course page shell, sticky card treatment, and section rhythm.
 - Converted audience, outcomes, and prerequisites into `SectionBlock` panels.
 - Reworked `LearningPathCard` to use token-based decorative blobs and
@@ -410,7 +422,7 @@ What was changed when this doc was first written, kept here so you can see
 1. **Read the current page.** Note which patterns are missing (eyebrow,
    blobs, tone rotation, list-item cards, sticky aside, etc.).
 2. **Map content to patterns.** Each grouped section becomes a `SectionBlock`
-   with a tone (rotate primary → secondary → gold for visual rhythm).
+   with a tone (rotate primary and secondary for visual rhythm).
 3. **Add an entry hero/heading.** Eyebrow pill + styled `<h1>` + supporting
    copy + (optional) CTA pair.
 4. **Replace plain bullets with row cards.** Use the tone-matched icon chip.

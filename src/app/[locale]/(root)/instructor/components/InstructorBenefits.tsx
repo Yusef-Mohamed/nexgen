@@ -8,7 +8,7 @@ const InstructorBenefits: React.FC = () => {
 
   const benefits = [
     {
-      icon: <FiHeart className="w-8 h-8 text-yellow-500" />,
+      icon: <FiHeart className="w-8 h-8 text-secondary" />,
       title: text("impactLives.title"),
       description: text("impactLives.description"),
     },

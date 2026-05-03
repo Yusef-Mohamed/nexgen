@@ -1,10 +1,20 @@
 import { IUser } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { FaMedal } from "react-icons/fa";
-import Image from "next/image";
 import UserAvatar from "./UserAvatar";
 import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
+
+const medalClassName = (index: number) =>
+  cn(
+    "text-2xl",
+    index === 0
+      ? "text-primary"
+      : index === 1
+        ? "text-secondary"
+        : "text-primary/60",
+  );
 
 const LeaderBoardCard = ({
   users,
@@ -36,7 +46,11 @@ const LeaderBoardCard = ({
                     [locale === "ar"
                       ? "borderRight"
                       : "borderLeft"]: `4px solid ${
-                      i === 0 ? "#FFED78" : i === 1 ? "#DCDFE5" : "#F0C093"
+                      i === 0
+                        ? "hsl(var(--primary))"
+                        : i === 1
+                          ? "hsl(var(--secondary))"
+                          : "hsl(var(--primary) / 0.45)"
                     }`,
                   }}
                   className={`flex items-center justify-between px-6 py-2 rounded-sm`}
@@ -45,14 +59,7 @@ const LeaderBoardCard = ({
                     <div className="w-10 h-10 rounded-full bg-input animate-pulse"></div>
                     <div className="w-32 h-4 rounded-full bg-input animate-pulse"></div>
                   </div>
-                  <Image
-                    src={`/images/medals/${
-                      i === 0 ? "gold" : i === 1 ? "silver" : "bronze"
-                    }.svg`}
-                    alt="avatar"
-                    width={32}
-                    height={32}
-                  />
+                  <FaMedal className={medalClassName(i)} />
                 </li>
               );
             })}
@@ -68,7 +75,11 @@ const LeaderBoardCard = ({
                     [locale === "ar"
                       ? "borderRight"
                       : "borderLeft"]: `4px solid ${
-                      i === 0 ? "#FFED78" : i === 1 ? "#DCDFE5" : "#F0C093"
+                      i === 0
+                        ? "hsl(var(--primary))"
+                        : i === 1
+                          ? "hsl(var(--secondary))"
+                          : "hsl(var(--primary) / 0.45)"
                     }`,
                   }}
                   className={`flex items-center justify-between px-6 py-2 rounded-sm`}
@@ -81,14 +92,7 @@ const LeaderBoardCard = ({
                     <UserAvatar user={user} />
                     <span>{user.name}</span>
                   </Link>
-                  <Image
-                    src={`/images/medals/${
-                      i === 0 ? "gold" : i === 1 ? "silver" : "bronze"
-                    }.svg`}
-                    alt="avatar"
-                    width={32}
-                    height={32}
-                  />
+                  <FaMedal className={medalClassName(i)} />
                 </li>
               );
             })}

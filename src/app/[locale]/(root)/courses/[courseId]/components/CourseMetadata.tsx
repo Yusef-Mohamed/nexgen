@@ -9,7 +9,7 @@ interface CourseMetadataProps {
   courseData: ICourse;
 }
 
-type Tone = "primary" | "secondary" | "gold";
+type Tone = "primary" | "secondary";
 
 const toneStyles: Record<
   Tone,
@@ -24,11 +24,6 @@ const toneStyles: Record<
     ring: "ring-secondary/25",
     iconBg: "bg-secondary/10",
     bar: "bg-secondary",
-  },
-  gold: {
-    ring: "ring-gold/30",
-    iconBg: "bg-gold/15",
-    bar: "bg-gold",
   },
 };
 
@@ -67,7 +62,7 @@ const CourseMetadata = ({ courseData }: CourseMetadataProps) => {
 
   if (hasCertificate) {
     items.push({
-      tone: "gold",
+      tone: "secondary",
       image: "/images/certificate.png",
       title: text("certificate"),
       subtitle: text("earnCertificate"),
@@ -82,7 +77,7 @@ const CourseMetadata = ({ courseData }: CourseMetadataProps) => {
       />
       <div
         aria-hidden
-        className="absolute -bottom-12 -left-12 size-40 rounded-full bg-gold/15 dark:bg-gold/25 blur-[80px] opacity-60 pointer-events-none"
+        className="absolute -bottom-12 -left-12 size-40 rounded-full bg-primary/10 dark:bg-primary/20 blur-[80px] opacity-60 pointer-events-none"
       />
 
       <div className="relative grid grid-cols-1 md:grid-cols-3 gap-4">

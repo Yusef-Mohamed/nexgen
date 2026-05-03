@@ -95,14 +95,14 @@ const ServicePage = async (props: {
           {serviceData.coursePrerequisites &&
             serviceData.coursePrerequisites.length > 0 && (
               <SectionBlock
-                tone="gold"
+                tone="secondary"
                 eyebrow={text("servicePrerequisites")}
                 icon={<HiOutlineClipboardDocumentList className="size-5" />}
                 title={text("servicePrerequisites")}
               >
                 <ItemDetailList
                   items={serviceData.coursePrerequisites}
-                  tone="gold"
+                  tone="secondary"
                   icon={<HiOutlineClipboardDocumentList className="size-4" />}
                 />
               </SectionBlock>

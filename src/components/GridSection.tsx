@@ -18,7 +18,7 @@ const GridSection = ({
   heading: string;
   eyebrow?: React.ReactNode;
   description?: React.ReactNode;
-  tone?: "primary" | "secondary" | "gold";
+  tone?: "primary" | "secondary";
   align?: "start" | "center";
   button?: string;
   href?: string;

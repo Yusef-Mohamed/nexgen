@@ -2,7 +2,7 @@ import { cn, getDynamicString } from "@/lib/utils";
 import type { DynamicString } from "@/types";
 import type { ReactNode } from "react";
 
-type Tone = "primary" | "secondary" | "gold";
+type Tone = "primary" | "secondary";
 
 const toneStyles: Record<
   Tone,
@@ -18,10 +18,6 @@ const toneStyles: Record<
   secondary: {
     item: "border-secondary/15 hover:border-secondary/40",
     icon: "bg-secondary/15 text-secondary",
-  },
-  gold: {
-    item: "border-gold/20 hover:border-gold/45",
-    icon: "bg-gold/20 text-gold",
   },
 };
 

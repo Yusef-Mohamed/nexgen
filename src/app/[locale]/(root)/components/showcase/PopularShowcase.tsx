@@ -27,7 +27,7 @@ import {
 } from "./usePopularData";
 import { HiOutlineArrowRight } from "react-icons/hi2";
 
-type Tone = "primary" | "secondary" | "gold";
+type Tone = "primary" | "secondary";
 
 interface ShellProps {
   eyebrow: string;
@@ -184,7 +184,7 @@ const ServicesBlock: React.FC = () => {
       eyebrow={serviceText("weOffer")}
       heading={serviceText("ourPopularServices")}
       description={serviceText("popularDescription")}
-      tone="gold"
+      tone="primary"
       href="/services"
       cta={serviceText("exploreAllServices")}
       filterSlot={

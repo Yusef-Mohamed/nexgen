@@ -28,9 +28,9 @@ const SuccessStories: React.FC = () => {
           fromValue="40%"
           containerClassName="overflow-visible order-2 lg:order-1"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-5 rounded-full bg-gold/10 border border-gold/30">
-            <HiOutlineSparkles className="size-4 text-gold" />
-            <span className="text-xs sm:text-sm font-medium text-gold">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-5 rounded-full bg-secondary/10 border border-secondary/20">
+            <HiOutlineSparkles className="size-4 text-secondary" />
+            <span className="text-xs sm:text-sm font-medium text-secondary">
               {text("subHeading")}
             </span>
           </div>
@@ -66,7 +66,7 @@ const SuccessStories: React.FC = () => {
             {/* Backdrop blur */}
             <div
               aria-hidden
-              className="absolute -inset-4 rounded-[40px] bg-gradient-to-br from-primary/20 via-secondary/15 to-gold/15 blur-2xl"
+              className="absolute -inset-4 rounded-[40px] bg-gradient-to-br from-primary/20 via-secondary/15 to-transparent blur-2xl"
             />
 
             <Dialog>

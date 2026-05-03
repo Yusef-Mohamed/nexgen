@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import TransitionBox from "@/components/TransitionBox";
 
-type FeatureTone = "primary" | "secondary" | "gold";
+type FeatureTone = "primary" | "secondary";
 
 interface FeatureItem {
   index: number;
@@ -16,7 +16,7 @@ interface FeatureItem {
 const FEATURES: FeatureItem[] = [
   { index: 1, number: "01", tone: "primary" },
   { index: 2, number: "02", tone: "secondary" },
-  { index: 3, number: "03", tone: "gold" },
+  { index: 3, number: "03", tone: "primary" },
 ];
 
 const toneStyles: Record<
@@ -45,14 +45,6 @@ const toneStyles: Record<
     accent: "bg-secondary",
     iconBg: "bg-secondary/20",
     numberText: "text-secondary/30",
-  },
-  gold: {
-    bg: "bg-gold/10",
-    border: "border-gold/25",
-    hoverBorder: "group-hover:border-gold/50",
-    accent: "bg-gold",
-    iconBg: "bg-gold/20",
-    numberText: "text-gold/35",
   },
 };
 

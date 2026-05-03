@@ -6,12 +6,12 @@ import { cn } from "@/lib/utils";
 import TransitionBox from "@/components/TransitionBox";
 import { HiOutlineCheckCircle } from "react-icons/hi2";
 
-type Tone = "primary" | "secondary" | "gold";
+type Tone = "primary" | "secondary";
 
 const ITEMS: { tone: Tone; number: string }[] = [
   { tone: "primary", number: "01" },
   { tone: "secondary", number: "02" },
-  { tone: "gold", number: "03" },
+  { tone: "primary", number: "03" },
 ];
 
 const toneStyles: Record<
@@ -43,15 +43,6 @@ const toneStyles: Record<
     numberBg: "bg-secondary/15",
     numberText: "text-secondary",
     iconRing: "ring-secondary/25",
-  },
-  gold: {
-    bg: "bg-gold/10",
-    border: "border-gold/25",
-    hoverBorder: "hover:border-gold/50",
-    bar: "bg-gold",
-    numberBg: "bg-gold/20",
-    numberText: "text-gold",
-    iconRing: "ring-gold/30",
   },
 };
 
@@ -147,7 +138,7 @@ const WhyChooseUs: React.FC = () => {
         </div>
 
         {/* Right: image + floating accents */}
-        <div className="order-1 lg:order-2 relative lg:sticky lg:top-24">
+        <div className="order-1 lg:order-2 relative lg:sticky lg:top-32">
           <TransitionBox
             transitionType="fromRight"
             fromValue="20%"
@@ -191,7 +182,7 @@ const WhyChooseUs: React.FC = () => {
                 <div className="flex items-center -space-x-2 mb-1.5">
                   <span className="size-7 rounded-full bg-primary/30 ring-2 ring-clear-ground" />
                   <span className="size-7 rounded-full bg-secondary/30 ring-2 ring-clear-ground" />
-                  <span className="size-7 rounded-full bg-gold/30 ring-2 ring-clear-ground" />
+                  <span className="size-7 rounded-full bg-primary/20 ring-2 ring-clear-ground" />
                   <span className="size-7 rounded-full bg-fadedGreen ring-2 ring-clear-ground flex items-center justify-center text-[10px] font-bold text-green">
                     +9k
                   </span>

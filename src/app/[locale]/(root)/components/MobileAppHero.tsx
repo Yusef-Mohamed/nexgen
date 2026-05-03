@@ -21,7 +21,7 @@ const MobileAppHero: React.FC = () => {
       <div
         className={cn(
           "relative overflow-hidden rounded-3xl bg-primary-faded",
-          "px-4 sm:px-8 md:px-16 lg:px-20"
+          "px-4 sm:px-8 md:px-16 lg:px-20",
         )}
       >
         {/* Decorative blobs */}
@@ -35,7 +35,7 @@ const MobileAppHero: React.FC = () => {
         />
         <div
           aria-hidden
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-40 rounded-full bg-gold/15 blur-[90px]"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-40 rounded-full bg-primary/15 blur-[90px]"
         />
 
         {/* Subtle dot pattern */}
@@ -49,7 +49,7 @@ const MobileAppHero: React.FC = () => {
           }}
         />
 
-        <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+        <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 items-end">
           {/* Left: copy */}
           <TransitionBox
             transitionType="fromLeft"
@@ -68,7 +68,7 @@ const MobileAppHero: React.FC = () => {
               <h2
                 className={cn(
                   "font-bold leading-tight tracking-tight",
-                  isRTL ? "space-y-5" : "space-y-2"
+                  isRTL ? "space-y-5" : "space-y-2",
                 )}
               >
                 <div className="text-text-1">{text("headingPart1")} </div>
@@ -76,7 +76,7 @@ const MobileAppHero: React.FC = () => {
                   <div
                     className={cn(
                       "w-full h-full bg-primary/10 absolute top-0 left-0",
-                      isRTL ? "h-[120%]" : "translate-y-[10%]"
+                      isRTL ? "h-[120%]" : "translate-y-[10%]",
                     )}
                   />
                   <span className="relative z-10 text-primary">
@@ -136,8 +136,8 @@ const MobileAppHero: React.FC = () => {
             </div>
           </TransitionBox>
 
-          {/* Right: phone image */}
-          <div className="flex justify-center items-end relative">
+          {/* Right: phone image (lg+) */}
+          <div className="hidden lg:flex justify-center items-end relative">
             <TransitionBox
               transitionType="fromBottom"
               fromValue="20%"
@@ -151,16 +151,15 @@ const MobileAppHero: React.FC = () => {
                   className="absolute inset-0 -z-0 rounded-full bg-gradient-to-br from-primary/20 via-secondary/15 to-transparent blur-3xl"
                 />
                 <Image
-                  src="/images/download-app.png"
+                  src={
+                    isRTL
+                      ? "/images/download-app-rtl.png"
+                      : "/images/download-app.png"
+                  }
                   alt={text("imageAlt")}
                   width={1000}
                   height={1000}
-                  className={cn(
-                    "relative z-10 object-contain w-full max-w-lg drop-shadow-2xl",
-                    {
-                      "-scale-x-100": isRTL,
-                    }
-                  )}
+                  className="relative z-10 object-contain w-full max-w-lg drop-shadow-2xl"
                   style={{
                     aspectRatio: "1920/1785",
                   }}
@@ -171,7 +170,7 @@ const MobileAppHero: React.FC = () => {
                 <div
                   className={cn(
                     "absolute top-10 hidden sm:flex flex-col items-center gap-1 px-3 py-2.5 rounded-2xl bg-clear-ground/95 backdrop-blur cardShadowSm z-20",
-                    isRTL ? "right-0" : "left-0"
+                    isRTL ? "right-0" : "left-0",
                   )}
                   style={{ animation: "floatY 4s ease-in-out infinite" }}
                 >

@@ -122,7 +122,7 @@ const CoursesPage = async (props: {
           {(courseData.coursePrerequisites.length > 0 ||
             courseData.accessibleCourses.length > 0) && (
             <SectionBlock
-              tone="gold"
+              tone="primary"
               eyebrow={text("coursePrerequisites")}
               icon={<HiOutlineClipboardDocumentList className="size-5" />}
               title={text("coursePrerequisites")}
@@ -130,7 +130,7 @@ const CoursesPage = async (props: {
               <ul className="grid gap-3 md:grid-cols-2 md:gap-4">
                 <ItemDetailList
                   items={courseData.coursePrerequisites}
-                  tone="gold"
+                  tone="primary"
                   icon={<HiOutlineClipboardDocumentList className="size-4" />}
                   asFragment
                 />
@@ -139,9 +139,9 @@ const CoursesPage = async (props: {
                   courseData.accessibleCourses.map((course, index) => (
                     <li
                       key={`accessible-${index}`}
-                      className="md:col-span-2 flex items-start gap-3 rounded-xl bg-gold/10 border border-gold/30 p-3 sm:p-4"
+                      className="md:col-span-2 flex items-start gap-3 rounded-xl bg-primary/10 border border-primary/20 p-3 sm:p-4"
                     >
-                      <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-gold/25 text-gold">
+                      <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
                         <HiOutlineSparkles className="size-4" />
                       </span>
                       <p className="flex-1 text-sm md:text-base text-text-1 font-medium">
@@ -244,7 +244,7 @@ const CourseCard: React.FC<{
     {
       icon: <CiMobile2 className="w-4 h-4 sm:w-5 sm:h-5" />,
       text: "accessOnMobile",
-      tone: "gold" as const,
+      tone: "primary" as const,
     },
     {
       icon: <GoInfinity className="w-4 h-4 sm:w-5 sm:h-5" />,
@@ -258,10 +258,9 @@ const CourseCard: React.FC<{
     },
   ];
 
-  const toneToBg: Record<"primary" | "secondary" | "gold", string> = {
+  const toneToBg: Record<"primary" | "secondary", string> = {
     primary: "bg-primary/10 text-primary",
     secondary: "bg-secondary/10 text-secondary",
-    gold: "bg-gold/15 text-gold",
   };
 
   return (
@@ -273,7 +272,7 @@ const CourseCard: React.FC<{
       />
       <div
         aria-hidden
-        className="absolute max-lg:hidden -top-16 -left-16 size-40 rounded-full bg-gold/25 dark:bg-gold/35 blur-[100px] opacity-60 pointer-events-none"
+        className="absolute max-lg:hidden -top-16 -left-16 size-40 rounded-full bg-primary/15 dark:bg-primary/25 blur-[100px] opacity-60 pointer-events-none"
       />
 
       <div className="relative">

@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
-type Tone = "primary" | "secondary" | "gold";
+type Tone = "primary" | "secondary";
 
 interface SectionHeaderProps {
   eyebrow?: React.ReactNode;
@@ -23,11 +23,6 @@ const toneClasses: Record<Tone, { dot: string; chip: string; text: string }> = {
     dot: "bg-secondary",
     chip: "bg-secondary/10 border-secondary/20",
     text: "text-secondary",
-  },
-  gold: {
-    dot: "bg-gold",
-    chip: "bg-gold/15 border-gold/30",
-    text: "text-gold",
   },
 };
 

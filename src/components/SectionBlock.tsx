@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-type SectionTone = "primary" | "secondary" | "gold";
+type SectionTone = "primary" | "secondary";
 
 const toneStyles: Record<
   SectionTone,
@@ -25,13 +25,6 @@ const toneStyles: Record<
     panelBg: "bg-secondary/10",
     panelBorder: "border-secondary/20",
     bar: "bg-secondary",
-  },
-  gold: {
-    pillBg: "bg-gold/10 border-gold/25 text-gold",
-    iconBg: "bg-gold/20 text-gold",
-    panelBg: "bg-gold/10",
-    panelBorder: "border-gold/25",
-    bar: "bg-gold",
   },
 };
 

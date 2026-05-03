@@ -102,7 +102,7 @@ const OurServices: React.FC<OurServicesProps> = ({
           eyebrow={text("weOffer")}
           heading={text("ourPopularServices")}
           description="Premium plans and ongoing support to keep you moving forward."
-          tone="gold"
+          tone="secondary"
         />
 
         {/* Search Bar */}

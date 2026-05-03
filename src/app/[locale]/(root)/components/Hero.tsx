@@ -36,7 +36,7 @@ const Hero: React.FC = () => {
         />
         <div
           aria-hidden
-          className="absolute -bottom-24 -right-24 size-72 rounded-full bg-gold/30 dark:bg-gold/40 blur-[110px] opacity-70 animate-pulse [animation-delay:1.5s]"
+          className="absolute -bottom-24 -right-24 size-72 rounded-full bg-secondary/20 dark:bg-secondary/30 blur-[110px] opacity-70 animate-pulse [animation-delay:1.5s]"
         />
         <div
           aria-hidden
@@ -62,7 +62,7 @@ const Hero: React.FC = () => {
         >
           {/* Eyebrow badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-6 rounded-full bg-clear-ground/80 backdrop-blur-sm border border-primary/20 cardShadowSm">
-            <HiOutlineSparkles className="size-4 text-gold" />
+            <HiOutlineSparkles className="size-4 text-secondary" />
             <span className="text-xs sm:text-sm font-medium text-primary-main">
               {text("bestPlatform")}
             </span>
@@ -218,8 +218,8 @@ const Hero: React.FC = () => {
               )}
               style={{ animation: "float 4s ease-in-out infinite 1.5s" }}
             >
-              <div className="size-8 rounded-lg bg-gold/15 flex items-center justify-center">
-                <HiOutlineStar className="size-4 text-gold" />
+              <div className="size-8 rounded-lg bg-secondary/15 flex items-center justify-center">
+                <HiOutlineAcademicCap className="size-4 text-secondary" />
               </div>
               <div>
                 <div className="text-[11px] font-semibold text-text-1 leading-none">

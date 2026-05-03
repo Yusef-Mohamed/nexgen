@@ -107,7 +107,7 @@ const UnifiedCard = ({ item, contentType }: UnifiedCardProps) => {
                 statusInfo.isActive
                   ? "text-green"
                   : statusInfo.isPending
-                    ? "text-yellow-600 dark:text-yellow-500"
+                    ? "text-secondary"
                     : "text-destructive",
               )}
             >

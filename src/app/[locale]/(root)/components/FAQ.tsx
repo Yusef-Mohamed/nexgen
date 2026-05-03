@@ -38,13 +38,13 @@ const Highlight: React.FC<{ text: string; query: string }> = ({
         part.toLowerCase() === lower ? (
           <mark
             key={i}
-            className="bg-gold/25 text-text-1 rounded px-0.5 py-px"
+            className="bg-primary/15 text-text-1 rounded px-0.5 py-px"
           >
             {part}
           </mark>
         ) : (
           <React.Fragment key={i}>{part}</React.Fragment>
-        )
+        ),
       )}
     </>
   );
@@ -64,8 +64,7 @@ const FAQ: React.FC = () => {
     if (!query.trim()) return all.slice(0, count);
     const q = query.trim().toLowerCase();
     return all.filter(
-      (it) =>
-        it.q.toLowerCase().includes(q) || it.a.toLowerCase().includes(q),
+      (it) => it.q.toLowerCase().includes(q) || it.a.toLowerCase().includes(q),
     );
   }, [text, count, query]);
 
@@ -76,7 +75,7 @@ const FAQ: React.FC = () => {
     <section className="container secPadding">
       <div className="flex flex-col items-start w-full gap-10 lg:gap-16 lg:flex-row">
         {/* Left: header + contact CTA */}
-        <div className="lg:w-[420px] lg:sticky lg:top-24 w-full">
+        <div className="lg:w-[420px] lg:sticky lg:top-32 w-full">
           <div className="inline-flex w-fit items-center gap-2 px-3 py-1.5 mb-5 rounded-full bg-primary/10 border border-primary/20">
             <HiOutlineQuestionMarkCircle className="size-4 text-primary" />
             <span className="text-xs sm:text-sm font-semibold text-primary tracking-wide uppercase">
@@ -156,7 +155,7 @@ const FAQ: React.FC = () => {
                 className={cn(
                   "w-full ps-12 pe-12 py-3.5 rounded-2xl bg-clear-ground",
                   "border border-primary/15 focus:border-primary/40 focus:ring-2 focus:ring-primary/15",
-                  "text-sm text-text-1 placeholder:text-text-3 outline-none transition-colors"
+                  "text-sm text-text-1 placeholder:text-text-3 outline-none transition-colors",
                 )}
               />
               {isSearching && (
@@ -192,13 +191,13 @@ const FAQ: React.FC = () => {
                   value={"item-" + it.idx}
                   className={cn(
                     "group !border !border-primary/15 hover:!border-primary/40 !my-0 !py-0 !px-0 rounded-2xl bg-clear-ground transition-all",
-                    "data-[state=open]:!border-primary/40 data-[state=open]:shadow-md data-[state=open]:shadow-primary/5"
+                    "data-[state=open]:!border-primary/40 data-[state=open]:shadow-md data-[state=open]:shadow-primary/5",
                   )}
                 >
                   <AccordionTrigger
                     className={cn(
                       "w-full px-4 sm:px-5 py-4 text-start font-semibold text-text-1 hover:no-underline gap-3 sm:gap-4",
-                      "[&>svg]:hidden"
+                      "[&>svg]:hidden",
                     )}
                   >
                     <span className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
@@ -207,7 +206,7 @@ const FAQ: React.FC = () => {
                           "flex shrink-0 size-8 items-center justify-center rounded-lg text-xs font-bold mt-0.5 transition-colors",
                           "bg-primary/10 text-primary",
                           "group-hover:bg-primary/15",
-                          "group-data-[state=open]:bg-primary group-data-[state=open]:text-clear-ground"
+                          "group-data-[state=open]:bg-primary group-data-[state=open]:text-clear-ground",
                         )}
                       >
                         {String(it.idx).padStart(2, "0")}
@@ -220,7 +219,7 @@ const FAQ: React.FC = () => {
                       className={cn(
                         "shrink-0 inline-flex size-7 items-center justify-center rounded-full border border-primary/20 text-primary transition-all",
                         "group-data-[state=open]:bg-primary group-data-[state=open]:text-clear-ground group-data-[state=open]:border-primary",
-                        "group-data-[state=open]:rotate-45"
+                        "group-data-[state=open]:rotate-45",
                       )}
                       aria-hidden
                     >
