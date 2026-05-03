@@ -282,6 +282,7 @@
     "ourPopularServices": "Our Popular Services",
     "exploreAllServices": "Explore All Services",
     "day": "Day",
+    "durationBadge": "{days} days access",
     "showLess": "Show Less",
     "showMore": "Show More",
     "noServices": "No services found",

@@ -9,7 +9,7 @@ import { FaRegClock } from "react-icons/fa6";
 import Image from "next/image";
 import { cn, getDynamicString } from "@/lib/utils";
 import CardBadges from "./CardBadges";
-import { HiOutlineArrowRight, HiOutlineSparkles } from "react-icons/hi2";
+import { HiOutlineArrowRight } from "react-icons/hi2";
 
 const ServiceCard: React.FC<
   IPackage & {
@@ -65,15 +65,10 @@ const ServiceCard: React.FC<
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/55 via-black/15 to-transparent pointer-events-none" />
-        {/* Service indicator */}
-        <div className="absolute top-3 end-3 flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary/90 text-clear-ground text-[11px] font-semibold uppercase tracking-wider">
-          <HiOutlineSparkles className="size-3.5" />
-          <span>{text("service")}</span>
-        </div>
       </Link>
 
       <div className="flex-1 flex flex-col gap-3">
-        {/* Category + duration */}
+        {/* Category + access time */}
         <div className="flex items-center justify-between gap-2">
           <button
             type="button"
@@ -82,11 +77,9 @@ const ServiceCard: React.FC<
           >
             {getDynamicString(course?.category?.title) || text("service")}
           </button>
-          <div className="flex items-center gap-1.5 text-xs text-text-3 shrink-0">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full shrink-0">
             <FaRegClock className="size-3.5" />
-            <span>
-              {subscriptionDurationDays} {text("day")}
-            </span>
+            <span>{text("durationBadge", { days: subscriptionDurationDays })}</span>
           </div>
         </div>
 
@@ -154,7 +147,7 @@ export const ServiceCardSkeleton: React.FC<{ className?: string }> = ({
       <div className="flex-1 flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <Skeleton className="h-6 w-24 rounded-full" />
-          <Skeleton className="h-5 w-16" />
+          <Skeleton className="h-5 w-24" />
         </div>
         <Skeleton className="h-6 w-full" />
         <Skeleton className="h-4 w-2/3" />

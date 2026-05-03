@@ -279,6 +279,7 @@
     "ourPopularServices": "خدماتنا الرائجة",
     "exploreAllServices": "استكشف جميع الخدمات",
     "day": "يوم",
+    "durationBadge": "وصول لمدة {days} يوم",
     "showLess": "عرض أقل",
     "showMore": "عرض المزيد",
     "noServices": "لم يتم العثور على خدمات",
