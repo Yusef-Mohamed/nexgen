@@ -26,6 +26,7 @@ const ServiceCard: React.FC<
   createdAt,
   className,
   image,
+  category,
   onCategoryClick,
 }) => {
   const text = useTranslations("services");
@@ -72,14 +73,16 @@ const ServiceCard: React.FC<
         <div className="flex items-center justify-between gap-2">
           <button
             type="button"
-            onClick={() => onCategoryClick?.(course?.category as ICategory)}
+            onClick={() => onCategoryClick?.(category as ICategory)}
             className="text-xs font-semibold text-secondary bg-secondary/10 hover:bg-secondary/15 px-2.5 py-1 rounded-full transition-colors truncate max-w-[60%]"
           >
-            {getDynamicString(course?.category?.title) || text("service")}
+            {getDynamicString(category?.title) || text("service")}
           </button>
           <div className="flex items-center gap-1.5 text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full shrink-0">
             <FaRegClock className="size-3.5" />
-            <span>{text("durationBadge", { days: subscriptionDurationDays })}</span>
+            <span>
+              {text("durationBadge", { days: subscriptionDurationDays })}
+            </span>
           </div>
         </div>
 

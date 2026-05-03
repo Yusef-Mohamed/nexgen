@@ -179,6 +179,7 @@ export interface IPackage {
   whoThisCourseFor: DynamicString[];
   coursePrerequisites: DynamicString[];
   whatWillLearn: DynamicString[];
+  category: ICategory;
   image: string;
   price: number;
   priceAfterDiscount?: number;
