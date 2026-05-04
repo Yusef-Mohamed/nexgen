@@ -35,7 +35,7 @@ const CoursesPage = async (props: { params: Promise<{ locale: string }> }) => {
           <div className="basis-[35%] max-lg:hidden">
             <Image
               src="/images/courses.png"
-              alt="courses"
+              alt={text("imageAlt")}
               width={536}
               height={209}
               className="w-full object-cover rounded-3xl aspect-[536/209]"

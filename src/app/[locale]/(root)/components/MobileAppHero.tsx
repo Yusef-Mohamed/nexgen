@@ -15,7 +15,7 @@ const MobileAppHero: React.FC = () => {
   const text = useTranslations("mobileAppHero");
   const locale = useLocale();
   const isRTL = locale === "ar";
-
+  return null;
   return (
     <section className="container secPadding">
       <div

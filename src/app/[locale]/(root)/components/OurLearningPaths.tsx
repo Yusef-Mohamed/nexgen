@@ -60,6 +60,7 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const currentQueryString = searchParams?.toString() || "";
   const containerRef = useRef<HTMLDivElement>(null);
   const [searchKeyword, setSearchKeyword] = useState(
     searchParams?.get("keyword") || "",
@@ -76,16 +77,19 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
   useEffect(() => {
     if (!enableSearch) return;
 
-    const params = new URLSearchParams(searchParams?.toString());
+    const params = new URLSearchParams(currentQueryString);
     if (searchKeyword) {
       params.set("keyword", searchKeyword);
     } else {
       params.delete("keyword");
     }
 
-    const newUrl = `${pathname}?${params.toString()}`;
+    const nextQueryString = params.toString();
+    if (nextQueryString === currentQueryString) return;
+
+    const newUrl = nextQueryString ? `${pathname}?${nextQueryString}` : pathname;
     router.replace(newUrl, { scroll: false });
-  }, [searchKeyword, searchParams, pathname, router, enableSearch]);
+  }, [searchKeyword, currentQueryString, pathname, router, enableSearch]);
 
   const { data: learningPaths = [], isLoading: learningPathsLoading } =
     useQuery({
@@ -109,7 +113,7 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
     <section className="py-12 space-y-8">
       <div className="container space-y-6" ref={containerRef}>
         <SectionHeader
-          eyebrow="Structured journeys"
+          eyebrow={text("popularEyebrow")}
           heading={text("ourPopularLearningPaths")}
           description={text("heading")}
           tone="primary"

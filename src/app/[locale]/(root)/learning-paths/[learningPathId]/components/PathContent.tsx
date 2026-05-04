@@ -27,6 +27,16 @@ interface PathContentProps {
 
 const PathContent: React.FC<PathContentProps> = ({ courses }) => {
   const text = useTranslations("learningPathPage");
+  const coursesSummary = (
+    <div className="flex flex-wrap items-center gap-2 rounded-xl bg-clear-ground/70 border border-primary/10 px-3 py-2">
+      <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        <HiOutlineBookOpen className="size-4" />
+      </span>
+      <span className="text-xs sm:text-sm font-medium text-text-2">
+        {text("coursesCount", { count: courses.length })}
+      </span>
+    </div>
+  );
 
   const [courseSections, setCourseSections] = useState<
     Record<
@@ -88,32 +98,23 @@ const PathContent: React.FC<PathContentProps> = ({ courses }) => {
   return (
     <SectionBlock
       tone="primary"
-      eyebrow={text("coursesIncluded")}
       icon={<HiOutlineQueueList className="size-5" />}
       title={text("coursesIncluded")}
+      headerRight={coursesSummary}
     >
-      <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl bg-clear-ground/70 border border-primary/10 p-3">
-        <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-          <HiOutlineBookOpen className="size-5" />
-        </span>
-        <span className="text-sm md:text-base font-medium text-text-2">
-          {text("coursesCount", { count: courses.length })}
-        </span>
-      </div>
-
       <Accordion
         type="single"
         collapsible
-        className="w-full space-y-3"
+        className="w-full flex flex-col gap-3"
         onValueChange={handleAccordionValueChange}
       >
         {courses.map((course, index) => (
           <AccordionItem
             key={course._id}
             value={course._id}
-            className="my-0 rounded-xl border border-primary/15 bg-clear-ground/80 backdrop-blur-sm overflow-hidden transition-colors hover:border-primary/30"
+            className="my-0 px-0 py-0 rounded-xl border border-primary/15 bg-clear-ground/80 backdrop-blur-sm overflow-hidden transition-colors hover:border-primary/30"
           >
-            <AccordionTrigger className="px-4 py-3 sm:py-4 text-start text-text-1 hover:no-underline">
+            <AccordionTrigger className="px-4 py-3 sm:py-4 text-text-1 hover:no-underline">
               <div className="flex w-full items-center gap-3 pe-3 text-start">
                 <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary text-xs font-bold">
                   {String(index + 1).padStart(2, "0")}
@@ -124,7 +125,7 @@ const PathContent: React.FC<PathContentProps> = ({ courses }) => {
               </div>
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-4 pt-0">
-              <div className="border-t border-primary/10 pt-4 space-y-4">
+              <div className="border-t border-primary/10 space-y-4">
                 {courseSections[course._id]?.loading ? (
                   <div className="space-y-3">
                     {Array.from({ length: 3 }).map((_, loadingIndex) => (
@@ -143,7 +144,7 @@ const PathContent: React.FC<PathContentProps> = ({ courses }) => {
                           value={`${course._id}-${section.section}`}
                           className="rounded-xl border border-secondary/15 bg-secondary/5 px-0 overflow-hidden"
                         >
-                          <AccordionTrigger className="px-3 py-2.5 text-start hover:no-underline">
+                          <AccordionTrigger className="px-3 text-start hover:no-underline">
                             <div className="flex items-center justify-between gap-3 w-full">
                               <span className="text-sm font-medium text-text-1">
                                 {section.section}
@@ -153,7 +154,7 @@ const PathContent: React.FC<PathContentProps> = ({ courses }) => {
                               </span>
                             </div>
                           </AccordionTrigger>
-                          <AccordionContent className="px-3 pb-3 pt-0">
+                          <AccordionContent className="px-3 pb-3 pt-3">
                             <div className="border-t border-secondary/10 pt-2 space-y-1">
                               {section.lessons?.map((lesson, lessonIndex) => (
                                 <div

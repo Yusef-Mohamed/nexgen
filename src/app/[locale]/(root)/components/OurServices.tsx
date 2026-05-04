@@ -46,6 +46,7 @@ const OurServices: React.FC<OurServicesProps> = ({
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const currentQueryString = searchParams?.toString() || "";
   const containerRef = useRef<HTMLDivElement>(null);
   const [searchKeyword, setSearchKeyword] = useState(
     searchParams?.get("keyword") || "",
@@ -63,16 +64,19 @@ const OurServices: React.FC<OurServicesProps> = ({
   useEffect(() => {
     if (!enableSearch) return;
 
-    const params = new URLSearchParams(searchParams?.toString());
+    const params = new URLSearchParams(currentQueryString);
     if (searchKeyword) {
       params.set("keyword", searchKeyword);
     } else {
       params.delete("keyword");
     }
 
-    const newUrl = `${pathname}?${params.toString()}`;
+    const nextQueryString = params.toString();
+    if (nextQueryString === currentQueryString) return;
+
+    const newUrl = nextQueryString ? `${pathname}?${nextQueryString}` : pathname;
     router.replace(newUrl, { scroll: false });
-  }, [searchKeyword, searchParams, pathname, router, enableSearch]);
+  }, [searchKeyword, currentQueryString, pathname, router, enableSearch]);
 
   // Fetch services filtered by category
   const { data: services = [], isLoading: servicesLoading } = useQuery({
@@ -101,7 +105,7 @@ const OurServices: React.FC<OurServicesProps> = ({
         <SectionHeader
           eyebrow={text("weOffer")}
           heading={text("ourPopularServices")}
-          description="Premium plans and ongoing support to keep you moving forward."
+          description={text("popularDescription")}
           tone="secondary"
         />
 
@@ -110,7 +114,7 @@ const OurServices: React.FC<OurServicesProps> = ({
           <SearchInput
             value={searchKeyword}
             onChange={setSearchKeyword}
-            placeholder={text("searchCourses") || "Search courses..."}
+            placeholder={text("searchServices")}
           />
         )}
         <CategoryFilter

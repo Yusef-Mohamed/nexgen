@@ -48,7 +48,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
               <Button
                 onClick={() => onCategoryChange(null)}
                 className={cn(
-                  "rounded-full px-4 py-2 h-auto text-base whitespace-nowrap transition-colors"
+                  "rounded-full px-4 py-2 whitespace-nowrap transition-colors",
                 )}
                 variant={selectedCategory ? "outline" : "default"}
               >
@@ -62,7 +62,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
               <Button
                 onClick={() => onCategoryChange(category)}
                 className={cn(
-                  "rounded-full px-4 py-2 !h-auto text-base whitespace-nowrap transition-colors"
+                  "rounded-full px-4 py-2 whitespace-nowrap transition-colors",
                 )}
                 variant={
                   selectedCategory?._id === category._id ? "default" : "outline"

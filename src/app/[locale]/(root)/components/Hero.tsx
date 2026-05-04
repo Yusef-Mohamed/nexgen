@@ -26,7 +26,7 @@ const Hero: React.FC = () => {
           "relative overflow-hidden rounded-3xl bg-primary-faded",
           "px-4 sm:px-8 md:px-16 lg:px-20",
           "py-10 sm:pt-16 md:py-20 lg:py-[5.5rem]",
-          "flex max-lg:flex-col gap-6 lg:items-center lg:justify-between"
+          "flex max-lg:flex-col gap-6 lg:items-center lg:justify-between",
         )}
       >
         {/* Decorative gradient blobs (existing palette only) */}
@@ -72,7 +72,7 @@ const Hero: React.FC = () => {
           <h1
             className={cn(
               "font-bold leading-tight tracking-tight",
-              isRTL ? "space-y-5" : "space-y-2"
+              isRTL ? "space-y-5" : "space-y-2",
             )}
           >
             <div className="block text-text-1">{text("headingPart1")}</div>
@@ -80,7 +80,7 @@ const Hero: React.FC = () => {
               <div
                 className={cn(
                   "w-full h-full bg-primary/10 absolute top-0 left-0 -z-0",
-                  isRTL ? "h-[120%]" : "translate-y-[10%]"
+                  isRTL ? "h-[120%]" : "translate-y-[10%]",
                 )}
               />
               <span className="relative z-10 text-primary">
@@ -103,7 +103,7 @@ const Hero: React.FC = () => {
                 <HiOutlineArrowRight
                   className={cn(
                     "size-4 transition-transform group-hover:translate-x-1",
-                    isRTL && "rotate-180 group-hover:-translate-x-1"
+                    isRTL && "rotate-180 group-hover:-translate-x-1",
                   )}
                 />
               </Link>
@@ -126,7 +126,7 @@ const Hero: React.FC = () => {
               </div>
               <div>
                 <div className="text-base font-bold text-text-1 leading-none">
-                  10K+
+                  1K+
                 </div>
                 <div className="text-xs text-text-3 mt-1">
                   {text("activeLearners")}
@@ -140,7 +140,7 @@ const Hero: React.FC = () => {
               </div>
               <div>
                 <div className="text-base font-bold text-text-1 leading-none">
-                  200+
+                  10+
                 </div>
                 <div className="text-xs text-text-3 mt-1">
                   {text("expertCourses")}
@@ -182,7 +182,7 @@ const Hero: React.FC = () => {
                 "relative w-full h-full object-contain drop-shadow-2xl",
                 {
                   "-scale-x-100": isRTL,
-                }
+                },
               )}
               width={650}
               height={650}
@@ -193,7 +193,7 @@ const Hero: React.FC = () => {
             <div
               className={cn(
                 "absolute top-4 sm:top-8 hidden sm:flex items-center gap-2 px-3 py-2 rounded-2xl bg-clear-ground cardShadowSm",
-                isRTL ? "right-0 sm:-right-4" : "left-0 sm:-left-4"
+                isRTL ? "right-0 sm:-right-4" : "left-0 sm:-left-4",
               )}
               style={{ animation: "float 4s ease-in-out infinite" }}
             >
@@ -214,7 +214,7 @@ const Hero: React.FC = () => {
             <div
               className={cn(
                 "absolute bottom-4 sm:bottom-12 hidden sm:flex items-center gap-2 px-3 py-2 rounded-2xl bg-clear-ground cardShadowSm",
-                isRTL ? "left-0 sm:-left-6" : "right-0 sm:-right-6"
+                isRTL ? "left-0 sm:-left-6" : "right-0 sm:-right-6",
               )}
               style={{ animation: "float 4s ease-in-out infinite 1.5s" }}
             >

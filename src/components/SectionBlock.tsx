@@ -30,12 +30,13 @@ const toneStyles: Record<
 
 const SectionBlock: React.FC<{
   tone: SectionTone;
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   icon: React.ReactNode;
+  headerRight?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
-}> = ({ tone, eyebrow, title, icon, children, className }) => {
+}> = ({ tone, eyebrow, title, icon, headerRight, children, className }) => {
   const styles = toneStyles[tone];
 
   return (
@@ -54,27 +55,21 @@ const SectionBlock: React.FC<{
           styles.bar,
         )}
       />
-      <div className="flex items-center gap-3 mb-5 md:mb-6">
-        <div
-          className={cn(
-            "inline-flex items-center justify-center size-10 rounded-xl",
-            styles.iconBg,
-          )}
-        >
-          {icon}
-        </div>
-        <div>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-5 md:mb-6">
+        <div className="flex items-center gap-3">
           <div
             className={cn(
-              "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10px] sm:text-xs font-semibold uppercase tracking-wide",
-              styles.pillBg,
+              "inline-flex items-center justify-center size-10 rounded-xl",
+              styles.iconBg,
             )}
           >
-            <span className="size-1 rounded-full bg-current opacity-70" />
-            {eyebrow}
+            {icon}
           </div>
-          <h3 className="mt-1 font-bold text-text-1">{title}</h3>
+          <div>
+            <h3 className="mt-1 font-bold text-text-1">{title}</h3>
+          </div>
         </div>
+        {headerRight}
       </div>
       {children}
     </div>

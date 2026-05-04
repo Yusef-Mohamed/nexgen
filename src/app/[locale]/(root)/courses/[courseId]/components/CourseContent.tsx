@@ -18,6 +18,7 @@ import {
 } from "react-icons/hi2";
 import { axiosInstance } from "@/app/lib/utils";
 import { getDynamicString } from "@/lib/utils";
+import SectionBlock from "@/components/SectionBlock";
 
 async function getSections(courseId: string): Promise<
   {
@@ -27,7 +28,7 @@ async function getSections(courseId: string): Promise<
 > {
   try {
     const sectionsRes = await axiosInstance.get(
-      `/lessons/sectionLessons/${courseId}/public`
+      `/lessons/sectionLessons/${courseId}/public`,
     );
 
     return sectionsRes.data.data;
@@ -62,45 +63,28 @@ const CourseContent: React.FC = () => {
     (acc, s) => acc + (s.lessons?.length || 0),
     0,
   );
+  const sectionsSummary =
+    !loading && totalLessons > 0 ? (
+      <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-clear-ground border border-primary/15 cardShadowSm">
+        <FiPlayCircle className="size-4 text-primary" />
+        <span className="text-xs sm:text-sm font-medium text-text-2">
+          {sections.length} {locale === "ar" ? "أقسام" : "sections"} ·{" "}
+          {totalLessons} {locale === "ar" ? "درس" : "lessons"}
+        </span>
+      </div>
+    ) : null;
 
   return (
-    <div className="relative my-6 md:my-8 rounded-2xl border border-primary/15 bg-primary-faded p-5 sm:p-6 md:p-7 overflow-hidden">
-      <div
-        aria-hidden
-        className="absolute top-0 left-6 right-6 h-1 rounded-b-full opacity-70 bg-primary"
-      />
-
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-5 md:mb-6">
-        <div className="flex items-center gap-3">
-          <div className="inline-flex items-center justify-center size-10 rounded-xl bg-primary/15 text-primary">
-            <HiOutlineQueueList className="size-5" />
-          </div>
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border bg-primary/10 border-primary/20 text-primary text-[10px] sm:text-xs font-semibold uppercase tracking-wide">
-              <span className="size-1 rounded-full bg-current opacity-70" />
-              {text("courseContent")}
-            </div>
-            <h3 className="mt-1 font-bold text-text-1">
-              {text("courseContent")}
-            </h3>
-          </div>
-        </div>
-        {!loading && totalLessons > 0 && (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-clear-ground border border-primary/15 cardShadowSm">
-            <FiPlayCircle className="size-4 text-primary" />
-            <span className="text-xs sm:text-sm font-medium text-text-2">
-              {sections.length}{" "}
-              {locale === "ar" ? "أقسام" : "sections"} · {totalLessons}{" "}
-              {locale === "ar" ? "درس" : "lessons"}
-            </span>
-          </div>
-        )}
-      </div>
-
+    <SectionBlock
+      tone="primary"
+      title={text("courseContent")}
+      icon={<HiOutlineQueueList className="size-5" />}
+      headerRight={sectionsSummary}
+    >
       <Accordion
         type="single"
         collapsible
-        className="flex-1 w-full space-y-3"
+        className="flex-1 w-full flex flex-col gap-3"
       >
         {sections.slice(0, count).map((section, index) => (
           <AccordionItem
@@ -169,7 +153,7 @@ const CourseContent: React.FC = () => {
           </div>
         )}
       </Accordion>
-    </div>
+    </SectionBlock>
   );
 };
 

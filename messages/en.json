@@ -302,7 +302,7 @@
     "startYourJourney": "Start Your Journey",
     "imageAlt": "NexGen Academy success story video preview",
     "watchStory": "Watch the story",
-    "videoDuration": "2:45 min",
+    "videoDuration": "13:50 min",
     "youtubeTitle": "NexGen Academy success story video"
   },
   "learnerReviews": {
@@ -602,6 +602,7 @@
   "coursesPage": {
     "heading": "Find the perfect course for your journey.",
     "description": "Whether you're just starting or looking to advance, explore courses designed to fit your learning goals and schedules.",
+    "imageAlt": "NexGen Academy courses preview",
     "courses": "Courses",
     "learningPaths": "Learning Paths",
     "services": "Services"

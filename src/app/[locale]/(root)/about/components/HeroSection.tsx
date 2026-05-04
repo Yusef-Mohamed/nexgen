@@ -2,30 +2,54 @@ import { useTranslations } from "next-intl";
 import {
   HiOutlineAcademicCap,
   HiOutlineGlobeAlt,
-  HiOutlineSparkles,
-  HiOutlineUserGroup,
+  HiOutlineStar,
+  HiOutlineUsers,
 } from "react-icons/hi2";
 
 const HeroSection = () => {
   const text = useTranslations("aboutHeroPage");
+  const heroText = useTranslations("hero");
+
+  // Temporarily keeping the old about metrics here for later reuse.
+  // const aboutStats = [
+  //   {
+  //     value: "10+",
+  //     label: text("yearsOfExperience"),
+  //     icon: <HiOutlineSparkles className="size-5" />,
+  //     tone: "primary",
+  //   },
+  //   {
+  //     value: "40+",
+  //     label: text("ourInstructors"),
+  //     icon: <HiOutlineAcademicCap className="size-5" />,
+  //     tone: "secondary",
+  //   },
+  //   {
+  //     value: "10K+",
+  //     label: text("ourLearners"),
+  //     icon: <HiOutlineUserGroup className="size-5" />,
+  //     tone: "primary",
+  //   },
+  // ];
+
   const stats = [
     {
-      value: "10+",
-      label: text("yearsOfExperience"),
-      icon: <HiOutlineSparkles className="size-5" />,
+      value: "1K+",
+      label: heroText("activeLearners"),
+      icon: <HiOutlineUsers className="size-5" />,
       tone: "primary",
     },
     {
-      value: "40+",
-      label: text("ourInstructors"),
+      value: "10+",
+      label: heroText("expertCourses"),
       icon: <HiOutlineAcademicCap className="size-5" />,
       tone: "secondary",
     },
     {
-      value: "10K+",
-      label: text("ourLearners"),
-      icon: <HiOutlineUserGroup className="size-5" />,
-      tone: "primary",
+      value: "4.9/5",
+      label: heroText("topRated"),
+      icon: <HiOutlineStar className="size-5" />,
+      tone: "gold",
     },
   ];
 
@@ -73,6 +97,8 @@ const HeroSection = () => {
                   className={
                     stat.tone === "primary"
                       ? "mb-3 inline-flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary"
+                      : stat.tone === "gold"
+                      ? "mb-3 inline-flex size-10 items-center justify-center rounded-xl bg-gold/15 text-gold"
                       : "mb-3 inline-flex size-10 items-center justify-center rounded-xl bg-secondary/10 text-secondary"
                   }
                 >

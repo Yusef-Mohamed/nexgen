@@ -51,6 +51,7 @@ const OurCourses: React.FC<OurCoursesProps> = ({
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const currentQueryString = searchParams?.toString() || "";
   const containerRef = useRef<HTMLDivElement>(null);
   const [searchKeyword, setSearchKeyword] = useState(
     searchParams?.get("keyword") || "",
@@ -67,16 +68,19 @@ const OurCourses: React.FC<OurCoursesProps> = ({
   useEffect(() => {
     if (!enableSearch) return;
 
-    const params = new URLSearchParams(searchParams?.toString());
+    const params = new URLSearchParams(currentQueryString);
     if (searchKeyword) {
       params.set("keyword", searchKeyword);
     } else {
       params.delete("keyword");
     }
 
-    const newUrl = `${pathname}?${params.toString()}`;
+    const nextQueryString = params.toString();
+    if (nextQueryString === currentQueryString) return;
+
+    const newUrl = nextQueryString ? `${pathname}?${nextQueryString}` : pathname;
     router.replace(newUrl, { scroll: false });
-  }, [searchKeyword, searchParams, pathname, router, enableSearch]);
+  }, [searchKeyword, currentQueryString, pathname, router, enableSearch]);
 
   const { data: courses = [], isLoading: coursesLoading } = useQuery({
     queryKey: ["courses", selectedCategory?._id, searchKeyword],
@@ -97,7 +101,7 @@ const OurCourses: React.FC<OurCoursesProps> = ({
     <section className="py-12 space-y-8">
       <div className="container space-y-6" ref={containerRef}>
         <SectionHeader
-          eyebrow="Hand-picked for you"
+          eyebrow={text("popularEyebrow")}
           heading={text("ourPopularCourses")}
           description={text("exploreOurPopularCourses")}
           tone="secondary"
@@ -108,7 +112,7 @@ const OurCourses: React.FC<OurCoursesProps> = ({
           <SearchInput
             value={searchKeyword}
             onChange={setSearchKeyword}
-            placeholder={text("searchCourses") || "Search courses..."}
+            placeholder={text("searchCourses")}
           />
         )}
 

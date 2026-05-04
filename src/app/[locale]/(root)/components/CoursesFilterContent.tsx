@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import OurCourses from "./OurCourses";
 import OurLearningPaths from "./OurLearningPaths";
 import OurServices from "./OurServices";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 type FilterType = "courses" | "learning-paths" | "services";
 
@@ -16,17 +16,14 @@ interface FilterTabProps {
 }
 
 const FilterTab: React.FC<FilterTabProps> = ({ label, isActive, onClick }) => (
-  <button
+  <Button
     onClick={onClick}
-    className={cn(
-      "px-6 py-3 rounded-full font-medium grow transition-all duration-300 border",
-      isActive
-        ? "bg-primary text-white border-primary shadow-lg"
-        : "bg-transparent text-foreground border-primary/30 hover:border-primary hover:text-primary"
-    )}
+    variant={isActive ? "default" : "outline"}
+    size="old"
+    className="rounded-full font-medium grow transition-all duration-300 h-12! text-base"
   >
     {label}
-  </button>
+  </Button>
 );
 
 const CoursesFilterContent: React.FC = () => {
@@ -72,17 +69,17 @@ const CoursesFilterContent: React.FC = () => {
       <section className="container py-8 pb-0">
         <div className="flex flex-wrap gap-2">
           <FilterTab
-            label={text("courses") || "Courses"}
+            label={text("courses")}
             isActive={activeFilter === "courses"}
             onClick={() => setActiveFilter("courses")}
           />
           <FilterTab
-            label={text("learningPaths") || "Learning Paths"}
+            label={text("learningPaths")}
             isActive={activeFilter === "learning-paths"}
             onClick={() => setActiveFilter("learning-paths")}
           />
           <FilterTab
-            label={text("services") || "Services"}
+            label={text("services")}
             isActive={activeFilter === "services"}
             onClick={() => setActiveFilter("services")}
           />
