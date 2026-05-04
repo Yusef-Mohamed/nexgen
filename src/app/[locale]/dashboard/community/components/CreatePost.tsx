@@ -181,7 +181,7 @@ const CreatePost = ({
         <div className="pb-3 flex gap-4 flex-wrap">
           <div>
             <Label htmlFor="postType" className="text-sm sr-only">
-              {text("sharedTo")}:
+              {text("createPostAudience")}:
             </Label>
             <Select
               value={postType}
@@ -191,8 +191,8 @@ const CreatePost = ({
                 setSelectedPackage("");
               }}
             >
-              <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs !h-10">
-                <SelectValue placeholder={text("sharedTo")} />
+              <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs h-10!">
+                <SelectValue placeholder={text("createPostAudience")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="profile">{text("onMyProfile")}</SelectItem>
@@ -200,7 +200,7 @@ const CreatePost = ({
                   {text("relatedToCourse")}
                 </SelectItem>
                 <SelectItem value="service">
-                  {text("relatedToService")}
+                  {text("postOptionRelatedToService")}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -216,7 +216,7 @@ const CreatePost = ({
                 onValueChange={setSelectedCourse}
                 disabled={loadingCourses}
               >
-                <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs !h-10">
+                <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs h-10!">
                   <SelectValue
                     placeholder={
                       loadingCourses ? text("loading") : inputs("SelectCourse")
@@ -244,7 +244,7 @@ const CreatePost = ({
                 onValueChange={setSelectedPackage}
                 disabled={loadingPackages}
               >
-                <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs !h-10">
+                <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs h-10!">
                   <SelectValue
                     placeholder={
                       loadingPackages

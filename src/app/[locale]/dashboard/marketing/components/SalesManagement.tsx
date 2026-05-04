@@ -72,7 +72,7 @@ const SalesManagement = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         setMarketLog(res.data);
       } catch (err) {
@@ -101,7 +101,7 @@ const SalesManagement = () => {
       <div className="space-y-6 basis-[40%]">
         <AffiliateMarketing />
         <MyTeam />
-        <TopInstructors />
+        {/* <TopInstructors /> */}
       </div>
     </div>
   );
@@ -200,13 +200,13 @@ const MainComponent = ({
       try {
         const res = await axiosInstance.get(
           `/marketingAnalytics/item/${item}?startDate=${date.from.toLocaleDateString(
-            "en-GB"
+            "en-GB",
           )}&endDate=${(date.to || date.from).toLocaleDateString("en-GB")}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         setData(res.data);
       } catch (err) {
@@ -229,10 +229,7 @@ const MainComponent = ({
             </SelectTrigger>
             <SelectContent>
               {courses.map((course) => (
-                <SelectItem
-                  key={course._id}
-                  value={`${course._id}`}
-                >
+                <SelectItem key={course._id} value={`${course._id}`}>
                   {t("nCourse")} - {getDynamicString(course.title)}
                 </SelectItem>
               ))}
@@ -245,19 +242,13 @@ const MainComponent = ({
                 </SelectItem>
               ))}
               {packages.map((pack) => (
-                <SelectItem
-                  key={pack._id}
-                  value={`${pack._id}`}
-                >
+                <SelectItem key={pack._id} value={`${pack._id}`}>
                   {t("service")} - {getDynamicString(pack.title)}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>{" "}
-          <DatePickerWithRange
-            date={date}
-            setDate={setDate}
-          />
+          <DatePickerWithRange date={date} setDate={setDate} />
         </div>
       </CardHeader>
       <CardContent>
@@ -387,10 +378,7 @@ const OrdersChart = ({
         {chartData.length === 0 ? (
           <p className="py-8 text-center">{t("noOrdersFound")}</p>
         ) : (
-          <ResponsiveContainer
-            width="100%"
-            height={400}
-          >
+          <ResponsiveContainer width="100%" height={400}>
             <AreaChart
               data={chartData}
               margin={{
@@ -418,7 +406,7 @@ const OrdersChart = ({
                         <div className="flex flex-col gap-2">
                           <span className="text-center text-muted-foreground">
                             {new Date(
-                              payload[0].payload.date
+                              payload[0].payload.date,
                             ).toLocaleDateString()}
                           </span>
                           <span className="font-bold">
@@ -435,13 +423,7 @@ const OrdersChart = ({
                 }}
               />
               <defs>
-                <linearGradient
-                  id="colorAmount"
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="1"
-                >
+                <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="5%"
                     stopColor="hsl(var(--primary))"
@@ -485,10 +467,7 @@ const LoadingState = () => (
         <Skeleton className="mb-4 w-48 h-8" />
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton
-              key={i}
-              className="w-full h-12"
-            />
+            <Skeleton key={i} className="w-full h-12" />
           ))}
         </div>
       </CardContent>
@@ -521,8 +500,8 @@ const StatsCards = ({
         title={t("hoursSpent")}
         value={Number(
           ((user?.timeSpent.monthlyTimeSpent || 0) / (60 * 60 * 1000)).toFixed(
-            2
-          )
+            2,
+          ),
         )}
         difference={0}
         total={0}
@@ -594,10 +573,7 @@ const MyTeam = () => {
       </CardHeader>
       <CardContent className="p-0">{/*   */}</CardContent>
       <CardFooter className="p-0 mt-6">
-        <Button
-          className="w-full"
-          asChild
-        >
+        <Button className="w-full" asChild>
           <Link href="/dashboard/marketing/my-team">{text("seeAllTeam")}</Link>
         </Button>
       </CardFooter>
@@ -659,17 +635,10 @@ const AffiliateMarketing = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <Button
-          className="mb-2 w-full"
-          variant={"outline"}
-          asChild
-        >
+        <Button className="mb-2 w-full" variant={"outline"} asChild>
           <Link href="/dashboard/marketing/coupons">{text("coupons")}</Link>
         </Button>
-        <Button
-          className="w-full"
-          asChild
-        >
+        <Button className="w-full" asChild>
           <Link href="/dashboard/marketing/my-team#invites">
             {text("invitations")}
           </Link>

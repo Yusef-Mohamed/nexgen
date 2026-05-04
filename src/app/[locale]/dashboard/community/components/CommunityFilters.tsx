@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { FilterTabs } from "@/components/filters/FilterTabs";
 import useCustomSearchParams from "@/hooks/useSearchParams";
 import { useFilterPackages } from "@/hooks/useFilterPackages";
 import { useTranslations } from "next-intl";
@@ -40,6 +41,11 @@ const CommunityFilters = () => {
   const { packages } = useFilterPackages({
     enable: true,
   });
+  const sharedToTabOptions = sharedToValues.map((item) => ({
+    value: item.value,
+    label: text(item.label),
+  }));
+
   useEffect(() => {
     const isRelatedToStudents =
       selectedSharedTo === "students" ||
@@ -57,31 +63,15 @@ const CommunityFilters = () => {
       });
   }, [selectedSharedTo, selectedPackage, setSearchParams]);
   return (
-    <div className="flex items-center gap-4 p-3 rounded-md cardShadow bg-background">
-      <div>
-        <Label htmlFor={"sharedTo"} className="text-sm sr-only">
-          {inputs("RelatedTo")}
-        </Label>
-        <Select
-          name="sharedTo"
-          value={selectedSharedTo}
-          onValueChange={(value) => {
-            setSelectedSharedTo(value);
-            setSelectedPackage(""); // Reset package when sharedTo changes
-          }}
-        >
-          <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs !h-10">
-            <SelectValue placeholder={inputs("SelectRelatedTo")} />
-          </SelectTrigger>
-          <SelectContent>
-            {sharedToValues.map((value) => (
-              <SelectItem value={value.value} key={value.value}>
-                {text(value.label)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+    <div className="flex flex-wrap items-center gap-4 p-3 rounded-md cardShadow bg-background">
+      <FilterTabs
+        options={sharedToTabOptions}
+        activeValue={selectedSharedTo}
+        onChange={(value) => {
+          setSelectedSharedTo(value);
+          setSelectedPackage(""); // Reset package when sharedTo changes
+        }}
+      />
       {selectedSharedTo === "services" && (
         <div>
           <Label htmlFor={"service"} className="text-sm sr-only ">
@@ -92,7 +82,7 @@ const CommunityFilters = () => {
             value={selectedPackage}
             onValueChange={(value) => setSelectedPackage(value)}
           >
-            <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs !h-10">
+            <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs h-10!">
               <SelectValue placeholder={inputs("selectService")} />
             </SelectTrigger>
             <SelectContent>
