@@ -41,13 +41,13 @@ const Header = () => {
         "sticky top-0 z-50 w-full transition-all duration-300",
         scrolled
           ? "bg-background/80 backdrop-blur-xl border-b border-primary/10 shadow-[0_4px_24px_-12px_rgba(0,0,0,0.12)]"
-          : "bg-background border-b border-transparent"
+          : "bg-background border-b border-transparent",
       )}
     >
       <div
         className={cn(
           "container flex gap-6 lg:gap-10 justify-between items-center transition-[padding] duration-300",
-          scrolled ? "py-2" : "py-2.5 md:py-3"
+          scrolled ? "py-2" : "py-2.5 md:py-3",
         )}
       >
         <nav className="flex gap-8 items-center min-w-0">
@@ -55,7 +55,7 @@ const Header = () => {
             <MobileHeader headerLinks={headerLinks} />
             <Logo />
             {canRenderAuth && (
-              <Button size={"sm"} className="lg:hidden" asChild>
+              <Button size={"sm"} className=" max-sm:hidden md:hidden" asChild>
                 <Link href="/dashboard">{text("dashboard")}</Link>
               </Button>
             )}
