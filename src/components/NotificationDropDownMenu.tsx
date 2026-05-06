@@ -28,6 +28,7 @@ const NotificationDropDownMenu = () => {
     readNotification,
     getUnReadCount,
     clearAllUnread,
+    disconnectSocket,
   } = useNotificationStore();
   useEffect(() => {
     if (token) {
@@ -36,7 +37,10 @@ const NotificationDropDownMenu = () => {
         userId: user?._id as string,
       });
     }
-  }, [getUnReadCount, setupSocket, user, token]);
+    return () => {
+      disconnectSocket();
+    };
+  }, [disconnectSocket, getUnReadCount, setupSocket, user?._id, token]);
   useEffect(() => {
     if (!observerRef.current) return;
     const observer = new IntersectionObserver(

@@ -35,9 +35,11 @@ const AuthContext = createContext<{
   updateUser: ({
     userData,
     token,
+    refresh,
   }: {
     userData: IUser;
     token?: string;
+    refresh?: boolean;
   }) => void;
   token: string;
   logout: () => void;
@@ -139,9 +141,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const updateUser = ({
     userData,
     token,
+    refresh = true,
   }: {
     userData: IUser;
     token?: string;
+    refresh?: boolean;
   }) => {
     setCookie("user", JSON.stringify(userData), { maxAge: 60 * 60 * 24 });
     setUser(userData);
@@ -160,7 +164,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setShowCountryAlert(true);
     }
 
-    router.refresh();
+    if (refresh) router.refresh();
   };
   useLayoutEffect(() => {
     if (token) {

@@ -21,7 +21,9 @@ import { Label } from "@/components/ui/label";
 import { getDynamicString } from "@/lib/utils";
 import { useFilterPackages } from "@/hooks/useFilterPackages";
 
-const DisplayPosts = () => {
+type ForceRole = "student" | "marketer";
+
+const DisplayPosts = ({ forceRole }: { forceRole?: ForceRole }) => {
   const text = useTranslations("practice");
   const inputs = useTranslations("Forms");
   const { token, user } = useAuth();
@@ -37,7 +39,7 @@ const DisplayPosts = () => {
   const fetchPosts = useCallback(
     async (page: number, search?: string): Promise<IAnalytic[]> => {
       try {
-        if (haveError || !selectedCourse) {
+        if (!selectedCourse || show === "addNew") {
           return [];
         }
 
@@ -52,6 +54,9 @@ const DisplayPosts = () => {
         }
         if (selectedCourse) {
           filtersParams.append("course", selectedCourse);
+        }
+        if (forceRole) {
+          filtersParams.append("forceRole", forceRole);
         }
 
         const filters = filtersParams.toString();
@@ -73,7 +78,7 @@ const DisplayPosts = () => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [token, setHaveError, haveError, user, show, selectedCourse],
+    [token, setHaveError, user, show, selectedCourse, forceRole],
   );
 
   const {
@@ -88,10 +93,12 @@ const DisplayPosts = () => {
     dependencies: [show, selectedCourse], // Add show and selectedCourse as dependencies to trigger reset
   });
   const handleShowChange = (newShow: typeof show) => {
+    setHaveError(false);
     setShow(newShow);
     resetData(); // Reset the data when show changes
   };
   const handleCourseChange = (courseId: string) => {
+    setHaveError(false);
     setSelectedCourse(courseId);
     resetData(); // Reset the data when course changes
   };
@@ -109,6 +116,7 @@ const DisplayPosts = () => {
       ];
   useEffect(() => {
     if (packages.length > 0) {
+      setHaveError(false);
       setSelectedCourse(packages[0].course._id);
     }
   }, [packages]);

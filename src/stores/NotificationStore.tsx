@@ -19,6 +19,7 @@ type NotificationStore = {
   getUnReadCount: () => void;
   haveError: boolean;
   clearAllUnread: () => void;
+  disconnectSocket: () => void;
 };
 export const useNotificationStore = create<NotificationStore>((set, get) => ({
   notifications: [],
@@ -71,6 +72,13 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
     }
   },
   setupSocket: ({ userId }: { userId: string }) => {
+    if (!userId) return;
+    const existingSocket = get().socket;
+    if (existingSocket) {
+      if (!existingSocket.connected) existingSocket.connect();
+      return;
+    }
+
     const socket = io(SOCKET_URL);
     socket.emit("addUser", { userId });
     set({ socket });
@@ -82,6 +90,13 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
         unReadCount: state.unReadCount + 1,
       }));
     });
+  },
+  disconnectSocket: () => {
+    const socket = get().socket;
+    if (socket) {
+      socket.disconnect();
+      set({ socket: null });
+    }
   },
   readNotification: async ({ id }: { id: string }) => {
     const token = getCookie("token");

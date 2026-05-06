@@ -86,11 +86,10 @@ const CreatePractice = ({
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        params: lessonId
-          ? {
-              lesson: lessonId,
-            }
-          : undefined,
+        params: {
+          course: courseId || selectedCourse,
+          ...(lessonId ? { lesson: lessonId } : {}),
+        },
       });
 
       // Unlock lessons if CourseContext is available and lesson has no quiz

@@ -1,18 +1,10 @@
-
 import DisplayPosts from "./components/DisplayPosts";
 
-const Dashboard = async (
-  props: {
-    params: Promise<{ locale: string }>;
-  }
-) => {
+const Dashboard = async (props: { params: Promise<{ locale: string }> }) => {
   const params = await props.params;
 
-  const {
-    locale
-  } = params;
+  const { locale } = params;
 
-  
   return (
     <main
       style={{
