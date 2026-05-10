@@ -80,6 +80,7 @@ export interface ILesson {
   attachments: string[];
   image: string;
   videoUrl?: string;
+  isUnlocked?: boolean;
   _id: string;
   type: string;
   isRequireAnalytic: boolean;

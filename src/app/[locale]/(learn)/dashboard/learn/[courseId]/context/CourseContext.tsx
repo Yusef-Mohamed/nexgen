@@ -15,7 +15,7 @@ interface CourseContextType {
   error: string | null;
   refetch: () => void;
   updateSections: (
-    newSections: { section: string; lessons: ILesson[] }[]
+    newSections: { section: string; lessons: ILesson[] }[],
   ) => void;
 }
 
@@ -77,7 +77,7 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({
   };
 
   const updateSections = (
-    newSections: { section: string; lessons: ILesson[] }[]
+    newSections: { section: string; lessons: ILesson[] }[],
   ) => {
     setSections(newSections);
   };
