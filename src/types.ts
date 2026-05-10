@@ -14,6 +14,9 @@ export interface ICourse {
   certificateDescription: DynamicString;
   courseWelcomeMessage: DynamicString;
   goodByeMessage: DynamicString;
+  whatIsNextTitle?: DynamicString;
+  whatIsNextDescription?: DynamicString;
+  nextCourses?: ICourse[];
 
   whoThisCourseFor: DynamicString[];
   coursePrerequisites: DynamicString[];

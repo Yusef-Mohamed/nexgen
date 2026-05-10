@@ -18,6 +18,7 @@ interface CourseFormContextType {
     step4: boolean;
     step5: boolean;
     step6: boolean;
+    step7: boolean;
   };
 }
 
@@ -135,6 +136,24 @@ export const CourseFormProvider: React.FC<CourseFormProviderProps> = ({
           (!!course.courseWelcomeMessage || !!course.goodByeMessage))
     );
 
+    const hasWhatIsNext = Boolean(
+      formValues.whatIsNextTitle?.en?.trim() ||
+        formValues.whatIsNextTitle?.ar?.trim() ||
+        formValues.whatIsNextDescription?.en?.trim() ||
+        formValues.whatIsNextDescription?.ar?.trim() ||
+        (Array.isArray(formValues.nextCourses) &&
+          formValues.nextCourses.length > 0)
+    );
+
+    const step7 = Boolean(
+      hasWhatIsNext ||
+        (isEditMode &&
+          course &&
+          (!!course.whatIsNextTitle ||
+            !!course.whatIsNextDescription ||
+            (Array.isArray(course.nextCourses) && course.nextCourses.length > 0)))
+    );
+
     return {
       step1,
       step2,
@@ -142,6 +161,7 @@ export const CourseFormProvider: React.FC<CourseFormProviderProps> = ({
       step4,
       step5,
       step6,
+      step7,
     };
   }, [watchedValues, isEditMode, course]);
 

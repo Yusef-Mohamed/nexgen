@@ -161,6 +161,53 @@ const CoursesPage = async (props: {
             </SectionBlock>
           )}
 
+          {courseData.nextCourses && courseData.nextCourses.length > 0 && (
+            <SectionBlock
+              tone="secondary"
+              eyebrow={text("whatIsNext")}
+              icon={<HiOutlineSparkles className="size-5" />}
+              title={
+                getDynamicString(courseData.whatIsNextTitle) ||
+                text("whatIsNext")
+              }
+            >
+              {getDynamicString(courseData.whatIsNextDescription) && (
+                <p className="text-sm md:text-base text-text-2 mb-5">
+                  {getDynamicString(courseData.whatIsNextDescription)}
+                </p>
+              )}
+              <div className="grid gap-3 md:grid-cols-2">
+                {courseData.nextCourses.map((course) => (
+                  <Link
+                    key={course._id}
+                    href={`/courses/${course.slug || course._id}`}
+                    className="group rounded-xl bg-clear-ground border border-secondary/15 p-4 transition-colors hover:border-secondary/40"
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-secondary/10 text-secondary">
+                        <HiOutlineBookOpen className="size-5" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-semibold text-text-1 line-clamp-2 group-hover:text-secondary">
+                          {getDynamicString(course.title)}
+                        </h3>
+                        {getDynamicString(course.description) && (
+                          <p className="mt-1 text-sm text-text-2 line-clamp-2">
+                            {getDynamicString(course.description)}
+                          </p>
+                        )}
+                        <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-secondary">
+                          {text("viewCourse")}
+                          <HiOutlineArrowRight className="size-3.5 rtl:rotate-180" />
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </SectionBlock>
+          )}
+
           <CourseContent />
       </ItemPageLayout>
 

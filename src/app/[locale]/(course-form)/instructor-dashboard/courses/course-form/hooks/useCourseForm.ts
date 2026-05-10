@@ -27,6 +27,9 @@ export interface CourseFormSchema {
   certificateDescription: { en: string; ar: string };
   courseWelcomeMessage?: { en?: string; ar?: string };
   goodByeMessage?: { en?: string; ar?: string };
+  whatIsNextTitle?: { en?: string; ar?: string };
+  whatIsNextDescription?: { en?: string; ar?: string };
+  nextCourses?: string[];
   category: string;
   price: string;
   priceAfterDiscount?: string;
@@ -54,6 +57,7 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
   const [categories, setCategories] = useState<Array<ICategory>>([]);
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [accessibleCourses, setAccessibleCourses] = useState<ICourse[]>([]);
+  const [nextCourses, setNextCourses] = useState<ICourse[]>([]);
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [currentCourse, setCurrentCourse] = useState<ICourse | null>(null);
@@ -178,6 +182,25 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
             .optional(),
         })
         .optional(),
+      whatIsNextTitle: z
+        .object({
+          en: z.string().max(150, text("validation.title_max_length")).optional(),
+          ar: z.string().max(150, text("validation.title_max_length")).optional(),
+        })
+        .optional(),
+      whatIsNextDescription: z
+        .object({
+          en: z
+            .string()
+            .max(1000, text("validation.description_max_length"))
+            .optional(),
+          ar: z
+            .string()
+            .max(1000, text("validation.description_max_length"))
+            .optional(),
+        })
+        .optional(),
+      nextCourses: z.array(z.string()).default([]),
       category: z.string().min(1, text("validation.category_required")),
       price: z.string().min(1, text("validation.price_required")),
       priceAfterDiscount: z.string().optional(),
@@ -250,6 +273,9 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
       certificateDescription: { ar: "", en: "" },
       courseWelcomeMessage: { ar: "", en: "" },
       goodByeMessage: { ar: "", en: "" },
+      whatIsNextTitle: { ar: "", en: "" },
+      whatIsNextDescription: { ar: "", en: "" },
+      nextCourses: [],
       category: "",
       price: "",
       priceAfterDiscount: "",
@@ -289,6 +315,12 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
           course.courseWelcomeMessage
         );
         const formattedGoodByeMessage = getStringObject(course.goodByeMessage);
+        const formattedWhatIsNextTitle = getStringObject(
+          course.whatIsNextTitle
+        );
+        const formattedWhatIsNextDescription = getStringObject(
+          course.whatIsNextDescription
+        );
         form.reset({
           title: formattedTitle,
           description: formattedDescription,
@@ -346,12 +378,22 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
             en: formattedGoodByeMessage.en || "",
             ar: formattedGoodByeMessage.ar || "",
           },
+          whatIsNextTitle: {
+            en: formattedWhatIsNextTitle.en || "",
+            ar: formattedWhatIsNextTitle.ar || "",
+          },
+          whatIsNextDescription: {
+            en: formattedWhatIsNextDescription.en || "",
+            ar: formattedWhatIsNextDescription.ar || "",
+          },
+          nextCourses: course.nextCourses?.map((nextCourse) => nextCourse._id) || [],
         });
 
         // Set accessible courses if they exist
         if (course.accessibleCourses) {
           setAccessibleCourses(course.accessibleCourses);
         }
+        setNextCourses(course.nextCourses || []);
 
         // Reset image preview when course changes
         setImagePreview(null);
@@ -375,6 +417,8 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
       setIsInitialized(true);
     } else if (!courseId && !isInitialized) {
       setCurrentCourse(null);
+      setAccessibleCourses([]);
+      setNextCourses([]);
       setIsInitialized(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -553,11 +597,37 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
             (stepData.goodByeMessage?.ar || "") !==
               (currentGoodbyeMessage.ar || "")
           );
+        case 6: // What Is Next
+          const currentNextTitle = getStringObject(
+            currentCourse.whatIsNextTitle || ""
+          );
+          const currentNextDescription = getStringObject(
+            currentCourse.whatIsNextDescription || ""
+          );
+          const currentNextCourseIds = (currentCourse.nextCourses || [])
+            .map((course) => course._id)
+            .sort()
+            .join(",");
+          const nextCourseIds = nextCourses
+            .map((course) => course._id)
+            .sort()
+            .join(",");
+          return (
+            (stepData.whatIsNextTitle?.en || "") !==
+              (currentNextTitle.en || "") ||
+            (stepData.whatIsNextTitle?.ar || "") !==
+              (currentNextTitle.ar || "") ||
+            (stepData.whatIsNextDescription?.en || "") !==
+              (currentNextDescription.en || "") ||
+            (stepData.whatIsNextDescription?.ar || "") !==
+              (currentNextDescription.ar || "") ||
+            nextCourseIds !== currentNextCourseIds
+          );
         default:
           return true;
       }
     },
-    [currentCourse]
+    [currentCourse, nextCourses]
   );
 
   // Submit step data to server
@@ -1098,6 +1168,97 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
             );
           }
         }
+      } else if (stepNumber === 6) {
+        // Step 7: What Is Next
+        if (currentCourse) {
+          const currentNextTitle = getStringObject(
+            currentCourse.whatIsNextTitle || ""
+          );
+          const currentNextDescription = getStringObject(
+            currentCourse.whatIsNextDescription || ""
+          );
+
+          if (
+            stepData.whatIsNextTitle?.en !== undefined &&
+            (stepData.whatIsNextTitle.en || "") !== (currentNextTitle.en || "")
+          ) {
+            formData.append(
+              "whatIsNextTitle.en",
+              stepData.whatIsNextTitle.en || ""
+            );
+          }
+          if (
+            stepData.whatIsNextTitle?.ar !== undefined &&
+            (stepData.whatIsNextTitle.ar || "") !== (currentNextTitle.ar || "")
+          ) {
+            formData.append(
+              "whatIsNextTitle.ar",
+              stepData.whatIsNextTitle.ar || ""
+            );
+          }
+          if (
+            stepData.whatIsNextDescription?.en !== undefined &&
+            (stepData.whatIsNextDescription.en || "") !==
+              (currentNextDescription.en || "")
+          ) {
+            formData.append(
+              "whatIsNextDescription.en",
+              stepData.whatIsNextDescription.en || ""
+            );
+          }
+          if (
+            stepData.whatIsNextDescription?.ar !== undefined &&
+            (stepData.whatIsNextDescription.ar || "") !==
+              (currentNextDescription.ar || "")
+          ) {
+            formData.append(
+              "whatIsNextDescription.ar",
+              stepData.whatIsNextDescription.ar || ""
+            );
+          }
+
+          const currentNextCourseIds = (currentCourse.nextCourses || [])
+            .map((course) => course._id)
+            .sort()
+            .join(",");
+          const nextCourseIds = nextCourses
+            .map((course) => course._id)
+            .sort()
+            .join(",");
+          if (nextCourseIds !== currentNextCourseIds) {
+            if (nextCourses.length > 0) {
+              nextCourses.forEach((course) => {
+                formData.append("nextCourses", course._id);
+              });
+            } else {
+              formData.append("nextCourses", "");
+            }
+          }
+        } else {
+          if (stepData.whatIsNextTitle) {
+            formData.append(
+              "whatIsNextTitle.en",
+              stepData.whatIsNextTitle.en || ""
+            );
+            formData.append(
+              "whatIsNextTitle.ar",
+              stepData.whatIsNextTitle.ar || ""
+            );
+          }
+          if (stepData.whatIsNextDescription) {
+            formData.append(
+              "whatIsNextDescription.en",
+              stepData.whatIsNextDescription.en || ""
+            );
+            formData.append(
+              "whatIsNextDescription.ar",
+              stepData.whatIsNextDescription.ar || ""
+            );
+          }
+          nextCourses.forEach((course) => {
+            formData.append("nextCourses", course._id);
+          });
+        }
       }
 
       let response;
@@ -1205,6 +1366,8 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
     courses,
     accessibleCourses,
     setAccessibleCourses,
+    nextCourses,
+    setNextCourses,
     imagePreview,
     form,
     submitStepData,

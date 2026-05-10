@@ -51,6 +51,11 @@ const CourseFormSidebar: React.FC<CourseFormSidebarProps> = ({
             title: text("course_messages"),
             index: 5,
           },
+          {
+            id: "what-is-next",
+            title: text("what_is_next"),
+            index: 6,
+          },
         ],
       },
       {
@@ -77,7 +82,7 @@ const CourseFormSidebar: React.FC<CourseFormSidebarProps> = ({
     ],
     skeleton: {
       categoryCount: 3,
-      stepsPerCategory: [2, 2, 1],
+      stepsPerCategory: [4, 2, 1],
     },
     additionalContent: (itemId) =>
       itemId ? (
@@ -112,6 +117,8 @@ const CourseFormSidebar: React.FC<CourseFormSidebarProps> = ({
         return "step5";
       case 5:
         return "step6";
+      case 6:
+        return "step7";
       default:
         return "step1";
     }

@@ -10,6 +10,7 @@ import Step3Certificate from "./steps/Step3Certificate";
 import Step4Highlights from "./steps/Step4Highlights";
 import Step5Appearance from "./steps/Step5Appearance";
 import Step6Messages from "./steps/Step6Messages";
+import Step7WhatIsNext from "./steps/Step7WhatIsNext";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -31,6 +32,8 @@ const AddCourseClient = () => {
     courses,
     accessibleCourses,
     setAccessibleCourses,
+    nextCourses,
+    setNextCourses,
     imagePreview,
     form,
     submitStepData,
@@ -48,9 +51,9 @@ const AddCourseClient = () => {
   // Use URL-based current step from hook to persist state across refreshes
   const currentStep = initialStep;
 
-  // Get the next step based on sidebar order: 0 -> 3 -> 5 -> 1 -> 2 -> 4
+  // Get the next step based on sidebar order: 0 -> 3 -> 5 -> 6 -> 1 -> 2 -> 4
   const getNextStepInSidebarOrder = (currentStep: number): number | null => {
-    const sidebarStepOrder = [0, 3, 5, 1, 2, 4];
+    const sidebarStepOrder = [0, 3, 5, 6, 1, 2, 4];
     const currentIndex = sidebarStepOrder.indexOf(currentStep);
     if (currentIndex === -1 || currentIndex === sidebarStepOrder.length - 1) {
       return null; // Last step or invalid step
@@ -99,6 +102,14 @@ const AddCourseClient = () => {
           "courseWelcomeMessage.ar",
           "goodByeMessage.en",
           "goodByeMessage.ar",
+        ];
+      case 6: // What Is Next
+        return [
+          "whatIsNextTitle.en",
+          "whatIsNextTitle.ar",
+          "whatIsNextDescription.en",
+          "whatIsNextDescription.ar",
+          "nextCourses",
         ];
       default:
         return [];
@@ -153,6 +164,12 @@ const AddCourseClient = () => {
         return {
           courseWelcomeMessage: formData.courseWelcomeMessage,
           goodByeMessage: formData.goodByeMessage,
+        };
+      case 6: // What Is Next
+        return {
+          whatIsNextTitle: formData.whatIsNextTitle,
+          whatIsNextDescription: formData.whatIsNextDescription,
+          nextCourses: nextCourses.map((course) => course._id),
         };
       default:
         return {};
@@ -246,6 +263,18 @@ const AddCourseClient = () => {
         return (
           <Step6Messages
             form={form}
+            commonFormStyles={commonFormStyles}
+            loading={loading}
+          />
+        );
+      case 6:
+        return (
+          <Step7WhatIsNext
+            form={form}
+            courses={courses}
+            nextCourses={nextCourses}
+            setNextCourses={setNextCourses}
+            currentCourseId={currentCourse?._id}
             commonFormStyles={commonFormStyles}
             loading={loading}
           />
