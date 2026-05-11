@@ -51,6 +51,7 @@ const SectionEditDialog = ({
     sectionIndex,
     sectionsLength,
   });
+  console.log("section", section);
 
   const handleSubmit = async (data: Parameters<typeof onSubmit>[0]) => {
     const success = await onSubmit(data);

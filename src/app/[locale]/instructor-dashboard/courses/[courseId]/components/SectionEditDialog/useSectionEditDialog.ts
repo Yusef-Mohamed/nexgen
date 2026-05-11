@@ -91,7 +91,7 @@ export const useSectionEditDialog = ({
           : Math.max(1, sectionsLength + 1);
       let response;
       if (isEdit && section) {
-        response = await axiosInstance.put(`/sections/${section._id}`, {
+        response = await axiosInstance.put(`/sections/${section.sectionId}`, {
           title: {
             ar: data.title.ar,
             en: data.title.en,
@@ -114,7 +114,7 @@ export const useSectionEditDialog = ({
       if (response.data && response.data.data) {
         const updatedSection = response.data.data;
         onSectionUpdated(
-          { ...updatedSection, sectionId: updatedSection._id },
+          { ...updatedSection, sectionId: updatedSection.sectionId  || updatedSection._id },
           isEdit
         );
       }

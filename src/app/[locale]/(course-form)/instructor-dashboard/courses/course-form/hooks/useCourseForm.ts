@@ -606,11 +606,9 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
           );
           const currentNextCourseIds = (currentCourse.nextCourses || [])
             .map((course) => course._id)
-            .sort()
             .join(",");
           const nextCourseIds = nextCourses
             .map((course) => course._id)
-            .sort()
             .join(",");
           return (
             (stepData.whatIsNextTitle?.en || "") !==
@@ -1219,11 +1217,9 @@ export const useCourseForm = ({ onCourseUpdated }: UseCourseFormProps = {}) => {
 
           const currentNextCourseIds = (currentCourse.nextCourses || [])
             .map((course) => course._id)
-            .sort()
             .join(",");
           const nextCourseIds = nextCourses
             .map((course) => course._id)
-            .sort()
             .join(",");
           if (nextCourseIds !== currentNextCourseIds) {
             if (nextCourses.length > 0) {

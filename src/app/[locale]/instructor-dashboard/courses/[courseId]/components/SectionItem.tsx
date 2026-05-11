@@ -36,7 +36,7 @@ interface SectionItemProps {
   onDragStart: (
     e: React.DragEvent,
     id: string,
-    type: "section" | "lesson"
+    type: "section" | "lesson",
   ) => void;
   onDragOver: (e: React.DragEvent) => void;
   onDragLeave: (e: React.DragEvent) => void;
@@ -74,7 +74,6 @@ const SectionItem = ({
   };
 
   const sectionId = section?.sectionId || section?._id || "";
-
   return (
     <div
       onDragOver={(e) => {
