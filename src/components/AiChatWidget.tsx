@@ -8,6 +8,7 @@ import { useLocale } from "next-intl";
 import {
   FormEvent,
   KeyboardEvent,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -67,6 +68,7 @@ type AiChatResponse = {
   data: {
     data: {
       chatId: string;
+      guestKey?: string;
       answer: string;
       recommendations: Recommendation[];
       handoff?: Handoff | null;
@@ -87,6 +89,7 @@ type AiChatSessionResponse = {
 };
 
 const GUEST_CHAT_STORAGE_KEY = "nexgenAiChatId";
+const GUEST_CHAT_GUEST_KEY_STORAGE_KEY = "nexgenAiGuestKey";
 
 const copy = {
   en: {
@@ -94,7 +97,7 @@ const copy = {
     title: "Nexgen AI",
     subtitle: "Ask about courses, services, and learning paths.",
     greeting:
-      "Hi, I am Nexgen Academy's assistant. Tell me what you want to learn and I will point you to the best options.",
+      "Hi, I am Nexgen Academy's assistant. Tell me what you want to learn, and I will ask a quick question to find the right fit.",
     placeholder: "I want to learn forex...",
     send: "Send",
     thinking: "Thinking...",
@@ -163,6 +166,7 @@ export default function AiChatWidget() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
+  const [activeGuestKey, setActiveGuestKey] = useState<string | null>(null);
   const [sessions, setSessions] = useState<AiChatSession[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([
     createMessage("assistant", text.greeting),
@@ -188,9 +192,21 @@ export default function AiChatWidget() {
     if (typeof window === "undefined") return;
     if (isLoggedIn) {
       setActiveChatId(null);
+      setActiveGuestKey(null);
       return;
     }
-    setActiveChatId(localStorage.getItem(GUEST_CHAT_STORAGE_KEY));
+    const storedChatId = localStorage.getItem(GUEST_CHAT_STORAGE_KEY);
+    const storedGuestKey = localStorage.getItem(GUEST_CHAT_GUEST_KEY_STORAGE_KEY);
+
+    if (storedChatId && !storedGuestKey) {
+      localStorage.removeItem(GUEST_CHAT_STORAGE_KEY);
+      setActiveChatId(null);
+      setActiveGuestKey(null);
+      return;
+    }
+
+    setActiveChatId(storedChatId);
+    setActiveGuestKey(storedGuestKey);
   }, [isLoggedIn]);
 
   const requestMessages = useMemo(
@@ -202,7 +218,7 @@ export default function AiChatWidget() {
     [messages, text.greeting],
   );
 
-  const loadSessions = async () => {
+  const loadSessions = useCallback(async () => {
     if (!isLoggedIn) return;
     setSessionsLoading(true);
     try {
@@ -215,12 +231,12 @@ export default function AiChatWidget() {
     } finally {
       setSessionsLoading(false);
     }
-  };
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (!open || !isLoggedIn) return;
     loadSessions();
-  }, [open, isLoggedIn]);
+  }, [open, isLoggedIn, loadSessions]);
 
   const resetChatState = () => {
     if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
@@ -240,8 +256,10 @@ export default function AiChatWidget() {
 
     if (!isLoggedIn) {
       setActiveChatId(null);
+      setActiveGuestKey(null);
       if (typeof window !== "undefined") {
         localStorage.removeItem(GUEST_CHAT_STORAGE_KEY);
+        localStorage.removeItem(GUEST_CHAT_GUEST_KEY_STORAGE_KEY);
       }
       return;
     }
@@ -303,8 +321,10 @@ export default function AiChatWidget() {
     setHandoff(null);
 
     try {
+      const canContinueGuestChat = isLoggedIn || Boolean(activeGuestKey);
       const response = (await axiosInstance.post("/ai-chat", {
-        chatId: activeChatId,
+        chatId: canContinueGuestChat ? activeChatId : null,
+        guestKey: !isLoggedIn ? activeGuestKey : undefined,
         messages: [
           ...requestMessages,
           {
@@ -315,10 +335,20 @@ export default function AiChatWidget() {
       })) as AiChatResponse;
 
       const responseChatId = response.data.data.chatId;
+      const responseGuestKey = response.data.data.guestKey;
       if (responseChatId) {
         setActiveChatId(responseChatId);
         if (!isLoggedIn && typeof window !== "undefined") {
           localStorage.setItem(GUEST_CHAT_STORAGE_KEY, responseChatId);
+        }
+      }
+      if (!isLoggedIn && responseGuestKey) {
+        setActiveGuestKey(responseGuestKey);
+        if (typeof window !== "undefined") {
+          localStorage.setItem(
+            GUEST_CHAT_GUEST_KEY_STORAGE_KEY,
+            responseGuestKey,
+          );
         }
       }
 
