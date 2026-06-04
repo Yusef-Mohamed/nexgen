@@ -2,13 +2,16 @@
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
-import { useMyCoursesStore } from "@/stores/MyCoursesStore";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "@/i18n/navigation";
 import { axiosInstance } from "@/app/lib/utils";
 import { buildCheckoutHref } from "@/lib/coupons";
+import {
+  useInvalidateMyCourses,
+  useMyOwnedCourseIds,
+} from "@/hooks/useMyCoursesQueries";
 
 const BuyCourse = ({
   id,
@@ -21,19 +24,14 @@ const BuyCourse = ({
 }) => {
   const text = useTranslations("coursePage");
   const { token, user } = useAuth();
-  const { courses, getCourses } = useMyCoursesStore();
+  const { data: ownedCourseIds = [] } = useMyOwnedCourseIds(token, user?._id);
+  const invalidateMyCourses = useInvalidateMyCourses();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const isCourseBought = useMemo(() => {
-    return courses.some((course) => course._id === id);
-  }, [courses, id]);
-
-  useEffect(() => {
-    if (token && user?._id) {
-      getCourses(token, user?._id);
-    }
-  }, [token, user?._id, getCourses]);
+    return ownedCourseIds.includes(id);
+  }, [ownedCourseIds, id]);
 
   const handleFreeCourseEnrollment = async () => {
     if (!token) {
@@ -52,7 +50,7 @@ const BuyCourse = ({
           },
         }
       );
-      await getCourses(token, user?._id || "", true);
+      await invalidateMyCourses();
       router.push(`/dashboard/learn/${id}`);
     } catch (error) {
       if (error) toast.error(text("enrollmentFailed"));

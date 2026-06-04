@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "@/app/lib/utils";
 import { ICategory } from "@/types";
@@ -21,10 +21,10 @@ const fetchCategories = async (): Promise<ICategory[]> => {
 
 export const useCategoryFilter = (
   enableSearch = false,
+  selectFirstCategory = !enableSearch,
 ): UseCategoryFilterReturn => {
-  const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
-    null,
-  );
+  const [selectedCategoryState, setSelectedCategory] =
+    useState<ICategory | null>(null);
 
   const {
     data: categories = [],
@@ -38,18 +38,10 @@ export const useCategoryFilter = (
     gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
   });
 
-  // Auto-select behavior based on search mode
-  useEffect(() => {
-    if (categories.length > 0) {
-      if (enableSearch && selectedCategory === null) {
-        // For search mode, keep "All" (null) as default
-        return;
-      } else if (!enableSearch && !selectedCategory) {
-        // For non-search mode, select first category
-        setSelectedCategory(categories[0]);
-      }
-    }
-  }, [categories, selectedCategory, enableSearch]);
+  const selectedCategory =
+    categories.length > 0 && selectFirstCategory && !selectedCategoryState
+      ? categories[0]
+      : selectedCategoryState;
 
   return {
     categories,

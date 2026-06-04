@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { FaHome, FaRegChartBar, FaUser, FaUsers } from "react-icons/fa";
 import { IoMdChatboxes } from "react-icons/io";
@@ -49,8 +50,14 @@ const Sidebar: React.FC<
   const { user } = useAuth();
   const pathname = usePathname();
   const text = useTranslations("dashboard");
+  const [mounted, setMounted] = useState(false);
 
-  let linkGroups: LinkGroup[] = [
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const linkGroups: LinkGroup[] = useMemo(() => {
+  let groups: LinkGroup[] = [
     // First group - no title (main links)
     {
       title: null,
@@ -155,8 +162,8 @@ const Sidebar: React.FC<
     },
   ];
 
-  if (user && !user.authToReview) {
-    linkGroups = linkGroups
+  if (mounted && user && !user.authToReview) {
+    groups = groups
       .map((group) => ({
         ...group,
         links: group.links.filter((link) => {
@@ -167,13 +174,13 @@ const Sidebar: React.FC<
   }
 
   // Handle marketing section visibility and sublinks
-  if (user) {
+  if (mounted && user) {
     const isMarketer = user.isMarketer;
     const isAffiliateMarketer = user.isAffiliateMarketer;
 
     // Show marketing section if user is either marketer or affiliate marketer
     if (!isMarketer && !isAffiliateMarketer) {
-      linkGroups = linkGroups
+      groups = groups
         .map((group) => ({
           ...group,
           links: group.links.filter((link) => {
@@ -184,7 +191,7 @@ const Sidebar: React.FC<
     }
   }
   if (pathname.includes("instructor-dashboard")) {
-    linkGroups = [
+    groups = [
       {
         title: null,
         links: [
@@ -249,6 +256,9 @@ const Sidebar: React.FC<
       },
     ];
   }
+
+  return groups;
+  }, [mounted, user, pathname]);
 
   return (
     <aside

@@ -2,35 +2,67 @@
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
-import { useMyCoursesStore } from "@/stores/MyCoursesStore";
+import {
+  useMyLearningSummary,
+  useMyOwnedCourseIds,
+} from "@/hooks/useMyCoursesQueries";
+import {
+  collectUnlockableNextCourses,
+  shouldShowNextCoursesOnTab,
+  type NextCoursesShowOn,
+  DEFAULT_NEXT_COURSE_PROGRESS_THRESHOLD,
+} from "@/lib/learnNextCourses";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { PiExam } from "react-icons/pi";
 import { FilterTabs } from "@/components/filters/FilterTabs";
 import { LearnCourseCard, LearnCourseCardSkeleton } from "./LearnCourseCard";
+import { NextCourseSuggestions } from "./NextCourseSuggestions";
+
+/** When to show locked "next course" cards (after all course rows). */
+const NEXT_COURSES_SHOW_ON: NextCoursesShowOn = "both";
+
+const NEXT_COURSE_PROGRESS_THRESHOLD = DEFAULT_NEXT_COURSE_PROGRESS_THRESHOLD;
 
 const DisplayCourses = () => {
   const text = useTranslations("learn");
-  const { getCourses, courses, isLoading } = useMyCoursesStore();
   const { token, user } = useAuth();
+  const { data: courses = [], isLoading } = useMyLearningSummary(
+    token,
+    user?._id,
+  );
+  const { data: ownedIds = [] } = useMyOwnedCourseIds(token, user?._id);
   const [show, setShow] = useState<"completed" | "notCompleted">(
-    "notCompleted"
+    "notCompleted",
   );
 
-  useEffect(() => {
-    getCourses(token, user?._id || "");
-  }, [getCourses, token, user]);
+  const ownedCourseIds = useMemo(() => new Set(ownedIds), [ownedIds]);
+
+  const showNextCourses = shouldShowNextCoursesOnTab(
+    show,
+    NEXT_COURSES_SHOW_ON,
+  );
+
   const toShowCourses = useMemo(() => {
     if (show === "completed") {
       return courses.filter(
-        (course) => course.courseProgress?.status === "Completed"
-      );
-    } else {
-      return courses.filter(
-        (course) => course.courseProgress?.status !== "Completed"
+        (course) => course.courseProgress?.status === "Completed",
       );
     }
+    return courses.filter(
+      (course) => course.courseProgress?.status !== "Completed",
+    );
   }, [show, courses]);
+
+  const suggestedNextCourses = useMemo(
+    () =>
+      collectUnlockableNextCourses(
+        toShowCourses,
+        ownedCourseIds,
+        NEXT_COURSE_PROGRESS_THRESHOLD,
+      ),
+    [toShowCourses, ownedCourseIds],
+  );
   return (
     <section className="space-y-4 max-w-6xl w-full mx-auto">
       <FilterTabs
@@ -67,12 +99,14 @@ const DisplayCourses = () => {
           </Button>
         </div>
       ) : (
-        toShowCourses.map((course) => (
-          <LearnCourseCard
-            key={course._id}
-            course={course}
-          />
-        ))
+        <>
+          {toShowCourses.map((course) => (
+            <LearnCourseCard key={course._id} course={course} />
+          ))}
+          {showNextCourses && (
+            <NextCourseSuggestions courses={suggestedNextCourses} />
+          )}
+        </>
       )}
     </section>
   );

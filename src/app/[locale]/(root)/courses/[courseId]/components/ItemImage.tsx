@@ -9,6 +9,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getDynamicString } from "@/lib/utils";
+import {
+  getYouTubeEmbedUrl,
+  YOUTUBE_IFRAME_ALLOW,
+  YOUTUBE_IFRAME_REFERRER_POLICY,
+} from "@/lib/youtube";
 import { DynamicString } from "@/types";
 
 interface ItemImageProps {
@@ -18,7 +23,9 @@ interface ItemImageProps {
 }
 
 const ItemImage = ({ image, title, promotionVideo }: ItemImageProps) => {
-  if (!promotionVideo) {
+  const embedUrl = promotionVideo ? getYouTubeEmbedUrl(promotionVideo) : null;
+
+  if (!embedUrl) {
     return (
       <div>
         <Image
@@ -54,11 +61,13 @@ const ItemImage = ({ image, title, promotionVideo }: ItemImageProps) => {
         <DialogTitle className="sr-only">Promotion Video</DialogTitle>
         <div className="aspect-video w-full bg-black">
           <iframe
-            src={promotionVideo}
+            src={embedUrl}
+            title="Promotion Video"
             className="w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow={YOUTUBE_IFRAME_ALLOW}
+            referrerPolicy={YOUTUBE_IFRAME_REFERRER_POLICY}
             allowFullScreen
-          ></iframe>
+          />
         </div>
       </DialogContent>
     </Dialog>

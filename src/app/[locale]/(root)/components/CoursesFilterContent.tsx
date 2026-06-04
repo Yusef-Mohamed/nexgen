@@ -36,6 +36,7 @@ const CoursesFilterContent: React.FC = () => {
         return (
           <OurCourses
             enableSearch={true}
+            showAllCategories={false}
             gridClassName="grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6"
           />
         );
@@ -43,6 +44,7 @@ const CoursesFilterContent: React.FC = () => {
         return (
           <OurLearningPaths
             enableSearch={true}
+            showAllCategories={false}
             gridClassName="grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6"
           />
         );
@@ -50,6 +52,7 @@ const CoursesFilterContent: React.FC = () => {
         return (
           <OurServices
             enableSearch={true}
+            showAllCategories={false}
             gridClassName="grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6"
           />
         );
@@ -57,6 +60,7 @@ const CoursesFilterContent: React.FC = () => {
         return (
           <OurCourses
             enableSearch={true}
+            showAllCategories={false}
             gridClassName="grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6"
           />
         );

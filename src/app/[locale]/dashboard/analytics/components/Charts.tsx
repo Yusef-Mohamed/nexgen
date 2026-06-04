@@ -34,7 +34,7 @@ ChartJS.register(
   Legend,
   Filler
 );
-import { ICourse, IUser } from "@/types";
+import { IUser } from "@/types";
 import { useAnalyticsStore } from "@/stores/AnalyticsStore";
 import PracticeChart from "./PracticeChart";
 import { useAuth } from "@/components/auth-provider";
@@ -47,12 +47,12 @@ import { useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/app/lib/utils";
 import { UserFilter } from "@/components/filters/UserFilter";
 import { getDynamicString } from "@/lib/utils";
+import { useAnalyticsLearningSummary } from "@/hooks/useMyCoursesQueries";
 const Charts = () => {
   const inputs = useTranslations("Forms");
   const text = useTranslations("analytics");
   const { user: myAccount, token } = useAuth();
   const [myChildren, setMyChildren] = useState<IUser[]>([]);
-  const [courses, setCourses] = useState<ICourse[]>([]);
   const [userSearchTerm, setUserSearchTerm] = useState("");
   const [isUserFilterOpen, setIsUserFilterOpen] = useState(false);
   const {
@@ -68,6 +68,10 @@ const Charts = () => {
   const searchParams = useSearchParams();
   const selectedUserParam = searchParams.get("selectedUser");
   const selectedCourseParam = searchParams.get("selectedCourse");
+  const { data: courses = [] } = useAnalyticsLearningSummary(
+    token,
+    selectedUser,
+  );
   useEffect(() => {
     if (myAccount) setSelectedUserObject(myAccount);
   }, [myAccount, setSelectedUserObject]);
@@ -89,35 +93,27 @@ const Charts = () => {
       });
   }, [myAccount, selectedUserParam]);
   useEffect(() => {
-    if (!selectedUser) return;
+    if (!courses.length) return;
 
-    const fetchCourses = async () => {
-      try {
-        const res = await axiosInstance.get(
-          `/courses/myCourses/${selectedUser}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setCourses(res.data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
+    const courseFromParam = selectedCourseParam
+      ? courses.find((course) => course._id === selectedCourseParam)
+      : null;
+    const currentCourse = courses.find(
+      (course) => course._id === selectedCourse,
+    );
+    const nextCourse = courseFromParam || currentCourse || courses[0];
 
-    fetchCourses();
-  }, [selectedUser, token]);
-
-  useEffect(() => {
-    if (courses.length && selectedCourse === "") {
-      if (selectedCourseParam) setSelectedCourse(selectedCourseParam);
-      else setSelectedCourse(courses[0]._id);
-
-      setSelectedCourseObject(courses[0]);
+    if (selectedCourse !== nextCourse._id) {
+      setSelectedCourse(nextCourse._id);
     }
-  }, [courses, selectedCourseParam]);
+    setSelectedCourseObject(nextCourse);
+  }, [
+    courses,
+    selectedCourse,
+    selectedCourseParam,
+    setSelectedCourse,
+    setSelectedCourseObject,
+  ]);
   const getCourseDetails = async (courseId: string) => {
     try {
       const courseDetails = await axiosInstance.get(

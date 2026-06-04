@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
 import { FaTelegramPlane } from "react-icons/fa";
-import AiChatWidget from "@/components/AiChatWidget";
+// import AiChatWidget from "@/components/AiChatWidget";
 
 export default function FloatingSupportActions() {
   const [mounted, setMounted] = useState(false);
@@ -18,7 +18,7 @@ export default function FloatingSupportActions() {
 
   return createPortal(
     <div className="fixed bottom-6 end-4 z-[2147483647] flex flex-col items-end gap-4 sm:bottom-10 sm:end-10">
-      <AiChatWidget />
+      {/* <AiChatWidget /> */}
       <a
         target="_blank"
         href="https://t.me/nexgensupport"

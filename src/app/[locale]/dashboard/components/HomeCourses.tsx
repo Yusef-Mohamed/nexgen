@@ -1,8 +1,8 @@
 import { useAuth } from "@/components/auth-provider";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useMyCoursesStore } from "@/stores/MyCoursesStore";
+import { useMyLearningSummary } from "@/hooks/useMyCoursesQueries";
 import { useTranslations } from "next-intl";
-import { useEffect } from "react";
+import { useMemo } from "react";
 import { LearnCourseCard } from "../learn/components/LearnCourseCard";
 
 const CourseSkeleton = () => {
@@ -25,40 +25,32 @@ const CourseSkeleton = () => {
 
 const HomeCourses = () => {
   const { token, user } = useAuth();
-  const {
-    courses,
-    isLoading: isGettingCourses,
-    getCourses,
-  } = useMyCoursesStore();
+  const { data: courses = [], isLoading: isGettingCourses } =
+    useMyLearningSummary(token, user?._id);
   const text = useTranslations("courseHome");
 
-  useEffect(() => {
-    if (token && user) getCourses(token, user._id);
-  }, [token, user]);
+  const newestIncompleteCourse = useMemo(() => {
+    return courses.reduce<(typeof courses)[number] | null>((newest, course) => {
+      if (Number(course.userScore?.totalProgress || course.totalProgress) >= 100) {
+        return newest;
+      }
 
-  const getNewestIncompleteCourse = () => {
-    // Filter for incomplete courses (totalProgress < 100)
-    const incompleteCourses = courses.filter(
-      (course) => course.totalProgress !== 100
-    );
+      const latestAttempt = Math.max(
+        0,
+        ...(course.userScore?.lessonsScores || []).map((score) =>
+          new Date(score.attemptDate).getTime(),
+        ),
+      );
+      const newestAttempt = Math.max(
+        0,
+        ...(newest?.userScore?.lessonsScores || []).map((score) =>
+          new Date(score.attemptDate).getTime(),
+        ),
+      );
 
-    // Sort by newest lesson exam attempt date
-    return incompleteCourses.sort((a, b) => {
-      const aLatestAttempt =
-        a.userScore?.lessonsScores
-          ?.map((score) => new Date(score.attemptDate))
-          .sort((d1, d2) => d2.getTime() - d1.getTime())[0] || new Date(0);
-
-      const bLatestAttempt =
-        b.userScore?.lessonsScores
-          ?.map((score) => new Date(score.attemptDate))
-          .sort((d1, d2) => d2.getTime() - d1.getTime())[0] || new Date(0);
-
-      return bLatestAttempt.getTime() - aLatestAttempt.getTime();
-    })[0];
-  };
-
-  const newestIncompleteCourse = getNewestIncompleteCourse();
+      return latestAttempt > newestAttempt ? course : newest || course;
+    }, null);
+  }, [courses]);
 
   return (
     <div className="space-y-3 mb-6">

@@ -18,6 +18,7 @@ import SectionHeader from "@/components/SectionHeader";
 interface OurCoursesProps {
   enableSearch?: boolean;
   gridClassName?: string;
+  showAllCategories?: boolean;
 }
 
 const fetchCoursesByCategory = async (
@@ -46,6 +47,7 @@ const fetchCoursesByCategory = async (
 const OurCourses: React.FC<OurCoursesProps> = ({
   enableSearch = false,
   gridClassName,
+  showAllCategories = enableSearch,
 }) => {
   const text = useTranslations("popularCourses");
   const searchParams = useSearchParams();
@@ -62,7 +64,7 @@ const OurCourses: React.FC<OurCoursesProps> = ({
     loading: categoriesLoading,
     selectedCategory,
     setSelectedCategory,
-  } = useCategoryFilter(enableSearch);
+  } = useCategoryFilter(enableSearch, !showAllCategories);
 
   // Update URL search params when search keyword changes
   useEffect(() => {
@@ -78,14 +80,16 @@ const OurCourses: React.FC<OurCoursesProps> = ({
     const nextQueryString = params.toString();
     if (nextQueryString === currentQueryString) return;
 
-    const newUrl = nextQueryString ? `${pathname}?${nextQueryString}` : pathname;
+    const newUrl = nextQueryString
+      ? `${pathname}?${nextQueryString}`
+      : pathname;
     router.replace(newUrl, { scroll: false });
   }, [searchKeyword, currentQueryString, pathname, router, enableSearch]);
 
   const { data: courses = [], isLoading: coursesLoading } = useQuery({
     queryKey: ["courses", selectedCategory?._id, searchKeyword],
     queryFn: () => fetchCoursesByCategory(selectedCategory?._id, searchKeyword),
-    enabled: enableSearch ? true : !!selectedCategory, // Always enabled in search mode
+    enabled: showAllCategories && enableSearch ? true : !!selectedCategory,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
   });
@@ -121,9 +125,8 @@ const OurCourses: React.FC<OurCoursesProps> = ({
           categories={categories}
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
-          showAllButton={true}
+          showAllButton={showAllCategories}
           loading={categoriesLoading}
-          enableSearch={enableSearch}
         />
       </div>
       {enableSearch ? (

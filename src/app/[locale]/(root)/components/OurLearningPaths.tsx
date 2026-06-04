@@ -18,6 +18,7 @@ import SectionHeader from "@/components/SectionHeader";
 interface OurLearningPathsProps {
   enableSearch?: boolean;
   gridClassName?: string;
+  showAllCategories?: boolean;
 }
 
 const fetchLearningPathsByCategory = async (
@@ -55,6 +56,7 @@ const fetchLearningPathsByCategory = async (
 const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
   enableSearch = false,
   gridClassName = "",
+  showAllCategories = enableSearch,
 }) => {
   const text = useTranslations("learningPaths");
   const searchParams = useSearchParams();
@@ -71,7 +73,7 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
     loading: categoriesLoading,
     selectedCategory,
     setSelectedCategory,
-  } = useCategoryFilter(enableSearch);
+  } = useCategoryFilter(enableSearch, !showAllCategories);
 
   // Update URL search params when search keyword changes
   useEffect(() => {
@@ -87,7 +89,9 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
     const nextQueryString = params.toString();
     if (nextQueryString === currentQueryString) return;
 
-    const newUrl = nextQueryString ? `${pathname}?${nextQueryString}` : pathname;
+    const newUrl = nextQueryString
+      ? `${pathname}?${nextQueryString}`
+      : pathname;
     router.replace(newUrl, { scroll: false });
   }, [searchKeyword, currentQueryString, pathname, router, enableSearch]);
 
@@ -96,7 +100,7 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
       queryKey: ["learningPaths", selectedCategory?._id, searchKeyword],
       queryFn: () =>
         fetchLearningPathsByCategory(selectedCategory?._id, searchKeyword),
-      enabled: enableSearch ? true : !!selectedCategory,
+      enabled: showAllCategories && enableSearch ? true : !!selectedCategory,
       staleTime: 5 * 60 * 1000, // 5 minutes
       gcTime: 10 * 60 * 1000, // 10 minutes
     });
@@ -133,9 +137,8 @@ const OurLearningPaths: React.FC<OurLearningPathsProps> = ({
           categories={categories}
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
-          showAllButton={true}
+          showAllButton={showAllCategories}
           loading={categoriesLoading}
-          enableSearch={enableSearch}
         />
       </div>
       {enableSearch ? (

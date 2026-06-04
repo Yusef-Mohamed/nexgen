@@ -19,16 +19,15 @@ interface CategoryFilterProps {
   showAllButton?: boolean;
   className?: string;
   loading?: boolean;
-  enableSearch?: boolean;
 }
 
 const CategoryFilter: React.FC<CategoryFilterProps> = ({
   categories,
   selectedCategory,
   onCategoryChange,
+  showAllButton = false,
   className = "",
   loading = false,
-  enableSearch = false,
 }) => {
   const text = useTranslations("common");
 
@@ -42,8 +41,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
         className="w-full"
       >
         <CarouselContent className="-ml-2">
-          {/* All Button - only show when search is enabled */}
-          {enableSearch && (
+          {showAllButton && (
             <CarouselItem className="px-2 basis-auto">
               <Button
                 onClick={() => onCategoryChange(null)}

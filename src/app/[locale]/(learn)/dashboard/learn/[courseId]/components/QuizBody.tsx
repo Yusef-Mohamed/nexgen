@@ -16,12 +16,14 @@ import {
   failedExamMotivationalMessages,
   motivationalMessages,
 } from "@/data/messages";
+import type { DynamicString } from "@/types";
 
 interface QuizBodyProps {
   id: string;
   quizType: string;
+  contextTitle?: DynamicString;
 }
-const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
+const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, contextTitle }) => {
   const text = useTranslations("learn");
   const {
     quiz,
@@ -46,6 +48,20 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
   } = useQuiz({ id, quizType: quizType as QuizType });
 
   const { locale } = useParams();
+
+  const quizTitle = useMemo(() => {
+    const title = getDynamicString(quiz?.title);
+    if (title) return title;
+
+    const fallbackTitle = getDynamicString(contextTitle);
+    if (fallbackTitle) {
+      return quizType === "course"
+        ? `${fallbackTitle} ${text("final_exam")}`
+        : `${fallbackTitle} ${text("quiz")}`;
+    }
+
+    return quizType === "course" ? text("final_exam") : text("quiz");
+  }, [contextTitle, quiz?.title, quizType, text]);
 
   const motivationalMessage = useMemo(() => {
     if (!submitData.totalScore) return null;
@@ -121,7 +137,7 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType }) => {
     <section>
       <div>
         <h1 className="mb-2 text-4xl font-semibold">
-          {getDynamicString(quiz?.title) || "QUIZ STATIC TITLE"}
+          {quizTitle}
         </h1>
         <h3 className="my-2 sm:my-4 text-text-3">
           {text(quizType + "_type")} | {quiz ? quiz.questions?.length : 0}{" "}

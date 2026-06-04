@@ -105,10 +105,18 @@ const Main = () => {
           </div>
         )}
         {selectedLesson && selectedDisplay === "quiz" ? (
-          <QuizBody id={selectedLesson} quizType="lesson" />
+          <QuizBody
+            id={selectedLesson}
+            quizType="lesson"
+            contextTitle={currentLesson?.title}
+          />
         ) : (
           selectedDisplay === "final_exam" && (
-            <QuizBody id={course._id} quizType="course" />
+            <QuizBody
+              id={course._id}
+              quizType="course"
+              contextTitle={course.title}
+            />
           )
         )}
         {!selectedDisplay && !selectedLesson && (

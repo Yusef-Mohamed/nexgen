@@ -410,7 +410,7 @@ export interface IUserScore {
   totalProgress: string;
   completedLessonsPercentage: number;
   completionStatus: string;
-  lessonsScores: IProgress[];
+  lessonsScores: ILessonScore[];
 }
 export interface IPagination {
   numberOfPages: number;
@@ -471,6 +471,13 @@ export interface IProgress {
   attemptDate: string;
   _id: string;
 }
+export interface ILessonScore {
+  lessonId: string;
+  lessonTitle: DynamicString;
+  percentage: string | number;
+  attemptDate: string;
+  modelExam: "A" | "B";
+}
 export interface ISection {
   title: DynamicString;
   section: string;
@@ -487,7 +494,7 @@ export interface ICourseProgress {
   avgLessonsExamsPercentage: number;
   avgCourseExamsPercentage: number;
   totalProgress: string;
-  status: "Completed" | "failed";
+  status: "Completed" | "failed" | "notTaken";
   totalLessonsExamsPercentage: string;
   certificate: {
     file: string;
