@@ -9,6 +9,13 @@ RELEASE_SHA="${3:?RELEASE_SHA is required}"
 PM2_APP_NAME="${4:-nexgen-development-website}"
 PORT="${5:-3333}"
 
+echo "Deploy script started"
+echo "APP_ROOT=$APP_ROOT"
+echo "ARCHIVE_PATH=$ARCHIVE_PATH"
+echo "RELEASE_SHA=$RELEASE_SHA"
+echo "PM2_APP_NAME=$PM2_APP_NAME"
+echo "PORT=$PORT"
+
 load_node_runtime() {
   export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 

@@ -46,7 +46,7 @@ jobs:
             -i ~/.ssh/development_deploy_key \
             -p "${{ secrets.DEV_SERVER_PORT }}" \
             "${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }}" \
-            "mkdir -p '${APP_ROOT}/_deploy/incoming'"
+            "set -eu; mkdir -p '${APP_ROOT}/_deploy/incoming'; echo 'Prepared deploy directory:'; ls -la '${APP_ROOT}'; ls -la '${APP_ROOT}/_deploy'"
 
       - name: Upload deploy script and release archive
         run: |
@@ -68,4 +68,4 @@ jobs:
             -i ~/.ssh/development_deploy_key \
             -p "${{ secrets.DEV_SERVER_PORT }}" \
             "${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }}" \
-            "bash '${APP_ROOT}/_deploy/deploy-development-website.sh' '${APP_ROOT}' '${APP_ROOT}/_deploy/incoming/${GITHUB_SHA}.tgz' '${GITHUB_SHA}' '${PM2_APP_NAME}' '${PORT}'"
+            "set -eu; echo 'Server deploy diagnostics:'; pwd; ls -la '${APP_ROOT}/_deploy'; command -v bash; command -v node || true; command -v npm || true; command -v pm2 || true; bash -lc \"bash '${APP_ROOT}/_deploy/deploy-development-website.sh' '${APP_ROOT}' '${APP_ROOT}/_deploy/incoming/${GITHUB_SHA}.tgz' '${GITHUB_SHA}' '${PM2_APP_NAME}' '${PORT}'\""
