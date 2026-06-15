@@ -28,6 +28,12 @@ From this `Website` folder:
 bash scripts/deploy-development-local.sh
 ```
 
+From Windows PowerShell:
+
+```powershell
+.\scripts\deploy-development-local.ps1
+```
+
 Defaults:
 
 ```text
@@ -43,6 +49,12 @@ If you use an SSH key file locally:
 
 ```bash
 DEV_SERVER_SSH_KEY_PATH=/path/to/key bash scripts/deploy-development-local.sh
+```
+
+PowerShell with an SSH key file:
+
+```powershell
+.\scripts\deploy-development-local.ps1 -SshKeyPath C:\path\to\key
 ```
 
 If your terminal already has SSH access to the server, no extra variable is needed.
