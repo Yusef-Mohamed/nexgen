@@ -39,6 +39,13 @@ $scpArgs = @(
   "-o", "ServerAliveCountMax=2"
 )
 
+if (-not $SshKeyPath) {
+  $defaultKeyPath = Join-Path $env:USERPROFILE ".ssh\nexgen_local_deploy"
+  if (Test-Path $defaultKeyPath) {
+    $SshKeyPath = $defaultKeyPath
+  }
+}
+
 if ($SshKeyPath) {
   $sshArgs += @("-i", $SshKeyPath)
   $scpArgs += @("-i", $SshKeyPath)
