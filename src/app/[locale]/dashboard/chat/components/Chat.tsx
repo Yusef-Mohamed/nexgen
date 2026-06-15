@@ -38,7 +38,7 @@ export function Chat({ selectedChat }: ChatProps) {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       setMessagesPagination(res.data.paginationResult);
       setMessageCurrentPage(1);
@@ -114,7 +114,7 @@ export function Chat({ selectedChat }: ChatProps) {
           ) {
             deleteMessage(data.payload);
           }
-        }
+        },
       );
     }
     return () => {
@@ -130,10 +130,10 @@ export function Chat({ selectedChat }: ChatProps) {
         "flex flex-col relative justify-between flex-1 w-full h-full",
         {
           "max-xl:hidden": !selectedChat,
-        }
+        },
       )}
     >
-      <div className=" w-auto aspect-square h-full bg-secondary/15 opacity-40 top-0 -translate-y-1/3 translate-x-1/3 right-0 absolute rounded-full blur-3xl"></div>
+      <div className=" w-auto aspect-square h-full bg-secondary/15 opacity-40 top-0 -translate-y-1/3 translate-x-1/3 right-0 absolute rounded-full blur-3xl pointer-events-none"></div>
       {selectedChat ? (
         <>
           <ChatTopbar />
