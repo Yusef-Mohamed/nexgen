@@ -1,0 +1,71 @@
+name: Deploy development website
+
+on:
+  push:
+    branches:
+      - development
+
+concurrency:
+  group: development-website-deploy
+  cancel-in-progress: false
+
+env:
+  APP_ROOT: /home/nexgen-academy-development/htdocs/development.nexgen-academy.com
+  PM2_APP_NAME: nexgen-development-website
+  PORT: "3333"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout development branch
+        uses: actions/checkout@v4
+
+      - name: Create release archive
+        run: |
+          tar \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.next' \
+            --exclude='node_modules' \
+            --exclude='Website.rar' \
+            -czf website-release.tgz .
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.DEV_SERVER_SSH_KEY }}" > ~/.ssh/development_deploy_key
+          chmod 600 ~/.ssh/development_deploy_key
+          ssh-keyscan -p "${{ secrets.DEV_SERVER_PORT }}" "${{ secrets.DEV_SERVER_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Prepare server deploy directory
+        run: |
+          ssh \
+            -i ~/.ssh/development_deploy_key \
+            -p "${{ secrets.DEV_SERVER_PORT }}" \
+            "${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }}" \
+            "mkdir -p '${APP_ROOT}/_deploy/incoming'"
+
+      - name: Upload deploy script and release archive
+        run: |
+          scp \
+            -i ~/.ssh/development_deploy_key \
+            -P "${{ secrets.DEV_SERVER_PORT }}" \
+            scripts/deploy-development-website.sh \
+            "${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }}:${APP_ROOT}/_deploy/deploy-development-website.sh"
+
+          scp \
+            -i ~/.ssh/development_deploy_key \
+            -P "${{ secrets.DEV_SERVER_PORT }}" \
+            website-release.tgz \
+            "${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }}:${APP_ROOT}/_deploy/incoming/${GITHUB_SHA}.tgz"
+
+      - name: Deploy on server
+        run: |
+          ssh \
+            -i ~/.ssh/development_deploy_key \
+            -p "${{ secrets.DEV_SERVER_PORT }}" \
+            "${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }}" \
+            "bash '${APP_ROOT}/_deploy/deploy-development-website.sh' '${APP_ROOT}' '${APP_ROOT}/_deploy/incoming/${GITHUB_SHA}.tgz' '${GITHUB_SHA}' '${PM2_APP_NAME}' '${PORT}'"

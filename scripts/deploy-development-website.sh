@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+EXPECTED_APP_ROOT="/home/nexgen-academy-development/htdocs/development.nexgen-academy.com"
+
+APP_ROOT="${1:?APP_ROOT is required}"
+ARCHIVE_PATH="${2:?ARCHIVE_PATH is required}"
+RELEASE_SHA="${3:?RELEASE_SHA is required}"
+PM2_APP_NAME="${4:-nexgen-development-website}"
+PORT="${5:-3333}"
+
+if [ "$APP_ROOT" != "$EXPECTED_APP_ROOT" ]; then
+  echo "Refusing to deploy outside the approved path: $EXPECTED_APP_ROOT"
+  echo "Received: $APP_ROOT"
+  exit 1
+fi
+
+case "$ARCHIVE_PATH" in
+  "$APP_ROOT"/_deploy/incoming/*.tgz) ;;
+  *)
+    echo "Refusing archive outside approved incoming directory: $ARCHIVE_PATH"
+    exit 1
+    ;;
+esac
+
+if [ ! -f "$ARCHIVE_PATH" ]; then
+  echo "Release archive does not exist: $ARCHIVE_PATH"
+  exit 1
+fi
+
+RELEASE_NAME="$(date +%Y%m%d%H%M%S)-${RELEASE_SHA:0:7}"
+RELEASES_DIR="$APP_ROOT/releases"
+SHARED_DIR="$APP_ROOT/shared"
+RELEASE_DIR="$RELEASES_DIR/$RELEASE_NAME"
+
+mkdir -p "$RELEASES_DIR" "$SHARED_DIR" "$APP_ROOT/_deploy/incoming"
+mkdir -p "$RELEASE_DIR"
+
+echo "Extracting release into $RELEASE_DIR"
+tar -xzf "$ARCHIVE_PATH" -C "$RELEASE_DIR"
+
+cd "$RELEASE_DIR"
+
+if [ -f "$SHARED_DIR/.env.local" ]; then
+  cp "$SHARED_DIR/.env.local" "$RELEASE_DIR/.env.local"
+elif [ -f "$APP_ROOT/.env.local" ]; then
+  cp "$APP_ROOT/.env.local" "$RELEASE_DIR/.env.local"
+elif [ -f "$APP_ROOT/.env" ]; then
+  cp "$APP_ROOT/.env" "$RELEASE_DIR/.env.local"
+else
+  echo "No environment file found."
+  echo "Create one at $SHARED_DIR/.env.local before the first real deployment."
+  exit 1
+fi
+
+echo "Installing dependencies"
+npm ci
+
+echo "Building Next.js app"
+npm run build
+
+if [ ! -f "$RELEASE_DIR/.next/BUILD_ID" ]; then
+  echo "Build did not produce .next/BUILD_ID"
+  exit 1
+fi
+
+echo "Switching current symlink"
+ln -sfn "$RELEASE_DIR" "$APP_ROOT/current.new"
+mv -Tf "$APP_ROOT/current.new" "$APP_ROOT/current"
+
+echo "Starting or reloading PM2 app: $PM2_APP_NAME"
+cd "$APP_ROOT/current"
+if pm2 describe "$PM2_APP_NAME" >/dev/null 2>&1; then
+  PORT="$PORT" pm2 reload "$PM2_APP_NAME" --update-env
+else
+  PORT="$PORT" pm2 start node_modules/next/dist/bin/next --name "$PM2_APP_NAME" -- start -p "$PORT"
+fi
+
+pm2 save
+
+echo "Deployment complete: $RELEASE_NAME"
