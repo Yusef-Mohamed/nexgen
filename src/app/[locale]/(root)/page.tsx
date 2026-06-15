@@ -25,6 +25,7 @@ const LandingPage = async (props: { params: Promise<{ locale: string }> }) => {
 
   return (
     <main className="max-w-full overflow-hidden">
+      {/* <Hero /> */}
       <Hero />
       <Features />
       <PopularShowcase />
