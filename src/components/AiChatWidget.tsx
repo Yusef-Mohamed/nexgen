@@ -17,12 +17,15 @@ import {
 import {
   Bot,
   BookOpen,
+  ChevronRight,
   ExternalLink,
   GraduationCap,
   Loader2,
+  MessageCircle,
   Plus,
   Send,
   Sparkles,
+  UserRound,
   X,
 } from "lucide-react";
 import { FaTelegramPlane } from "react-icons/fa";
@@ -196,7 +199,9 @@ export default function AiChatWidget() {
       return;
     }
     const storedChatId = localStorage.getItem(GUEST_CHAT_STORAGE_KEY);
-    const storedGuestKey = localStorage.getItem(GUEST_CHAT_GUEST_KEY_STORAGE_KEY);
+    const storedGuestKey = localStorage.getItem(
+      GUEST_CHAT_GUEST_KEY_STORAGE_KEY,
+    );
 
     if (storedChatId && !storedGuestKey) {
       localStorage.removeItem(GUEST_CHAT_STORAGE_KEY);
@@ -383,7 +388,8 @@ export default function AiChatWidget() {
         });
 
         if (index >= answer.length) {
-          if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
+          if (typingIntervalRef.current)
+            clearInterval(typingIntervalRef.current);
           typingIntervalRef.current = null;
           setTypingMessageId(null);
           setRecommendations(nextRecommendations);
@@ -418,39 +424,68 @@ export default function AiChatWidget() {
       {open && (
         <div
           className={cn(
-            "absolute bottom-16 end-0 z-50 flex h-[min(34rem,calc(100vh-8rem))] w-[calc(100vw-2rem)] max-w-[24rem] flex-col overflow-hidden",
-            "rounded-2xl border border-primary/15 bg-clear-ground shadow-2xl shadow-primary/15",
+            "absolute bottom-20 end-0 z-50 flex h-[min(42rem,calc(100vh-7rem))] w-[calc(100vw-1.5rem)] max-w-[28rem] flex-col overflow-hidden",
+            "rounded-[1.75rem] border border-primary/15 bg-clear-ground/95 cardShadow backdrop-blur-xl",
           )}
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby="nexgen-ai-chat-title"
         >
-          <div className="flex items-center justify-between gap-3 border-b border-primary/10 bg-primary px-4 py-3 text-clear-ground">
-            <div className="flex min-w-0 items-center gap-2">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-clear-ground/15">
-                <Bot className="size-5" />
-              </span>
-              <div className="min-w-0">
-                <h2 className="truncate text-sm font-bold">{text.title}</h2>
-                <p className="truncate text-xs text-clear-ground/80">
-                  {text.subtitle}
-                </p>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-24 -start-24 size-64 rounded-full bg-secondary/25 blur-[100px]"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-28 -end-20 size-72 rounded-full bg-primary/20 blur-[110px]"
+          />
+
+          <div className="relative border-b border-primary/10 bg-primary-faded/80 px-4 py-4">
+            <div className="absolute inset-x-8 top-0 h-1 rounded-b-full bg-primary/80" />
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex min-w-0 items-start gap-3">
+                <span className="relative flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
+                  <Bot className="size-6" />
+                  <span className="absolute -end-1 -top-1 size-4 rounded-full border-2 border-primary-faded bg-green" />
+                </span>
+                <div className="min-w-0 pt-0.5">
+                  <div className="mb-1 inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-clear-ground/80 px-2.5 py-1 text-[11px] font-semibold text-primary cardShadowSm">
+                    <Sparkles className="size-3.5" />
+                    <span>{text.button}</span>
+                  </div>
+                  <h2
+                    id="nexgen-ai-chat-title"
+                    className="truncate text-base font-bold text-text-1"
+                  >
+                    {text.title}
+                  </h2>
+                  <p className="mt-0.5 line-clamp-2 text-xs leading-5 text-text-2">
+                    {text.subtitle}
+                  </p>
+                </div>
               </div>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="flex size-9 shrink-0 items-center justify-center rounded-full border border-primary/10 bg-clear-ground/80 text-text-2 transition hover:-translate-y-0.5 hover:border-primary/30 hover:text-primary"
+                aria-label="Close AI chat"
+              >
+                <X className="size-4" />
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="flex size-8 shrink-0 items-center justify-center rounded-full text-clear-ground/85 transition hover:bg-clear-ground/15 hover:text-clear-ground"
-              aria-label="Close AI chat"
-            >
-              <X className="size-4" />
-            </button>
           </div>
 
           {isLoggedIn && (
-            <div className="flex items-center gap-2 border-b border-primary/10 bg-clear-ground px-3 py-2">
+            <div className="relative flex items-center gap-2 border-b border-primary/10 bg-clear-ground/90 px-3 py-3">
+              <label className="sr-only" htmlFor="nexgen-ai-sessions">
+                {text.previousChats}
+              </label>
               <select
+                id="nexgen-ai-sessions"
                 value={activeChatId || ""}
                 disabled={sessionsLoading || isBusy}
                 onChange={(event) => openSession(event.target.value)}
-                className="min-w-0 flex-1 rounded-lg border border-primary/15 bg-background px-2 py-2 text-xs text-text-1 outline-none focus:border-primary"
+                className="min-w-0 flex-1 rounded-2xl border border-primary/15 bg-background/80 px-3 py-2.5 text-xs font-medium text-text-1 outline-none transition focus:border-primary disabled:cursor-not-allowed disabled:opacity-60"
                 aria-label={text.previousChats}
               >
                 <option value="">{text.previousChats}</option>
@@ -464,7 +499,7 @@ export default function AiChatWidget() {
                 type="button"
                 disabled={isBusy}
                 onClick={startNewChat}
-                className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-primary/15 text-primary transition hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-primary/15 bg-primary/10 text-primary transition hover:-translate-y-0.5 hover:border-primary/35 disabled:cursor-not-allowed disabled:opacity-60"
                 aria-label={text.newChat}
               >
                 <Plus className="size-4" />
@@ -474,69 +509,101 @@ export default function AiChatWidget() {
 
           <div
             ref={panelRef}
-            className="flex-1 space-y-3 overflow-y-auto px-3 py-4"
+            className="relative flex-1 space-y-4 overflow-y-auto px-3 py-4 sm:px-4"
           >
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={cn(
-                  "flex",
-                  message.role === "user" ? "justify-end" : "justify-start",
-                )}
-              >
+            {messages.map((message) => {
+              const isUser = message.role === "user";
+              const isTypingMessage = typingMessageId === message.id;
+
+              return (
                 <div
+                  key={message.id}
                   className={cn(
-                    "max-w-[85%] whitespace-pre-line break-words rounded-2xl px-3 py-2 text-sm leading-6",
-                    message.role === "user"
-                      ? "rounded-ee-sm bg-primary text-clear-ground"
-                      : "rounded-es-sm bg-muted text-text-1",
+                    "flex items-end gap-2",
+                    isUser ? "justify-end" : "justify-start",
                   )}
                 >
-                  {message.content}
+                  {!isUser && (
+                    <span className="mb-1 flex size-8 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-secondary">
+                      <Bot className="size-4" />
+                    </span>
+                  )}
+                  <div
+                    className={cn(
+                      "max-w-[82%] whitespace-pre-line break-words rounded-2xl px-3.5 py-2.5 text-sm leading-6 shadow-sm",
+                      isUser
+                        ? "rounded-ee-md bg-primary text-primary-foreground shadow-primary/15"
+                        : "rounded-es-md border border-primary/10 bg-clear-ground text-text-1",
+                    )}
+                  >
+                    {message.content ? (
+                      message.content
+                    ) : isTypingMessage ? (
+                      <span className="flex items-center gap-1.5 py-1">
+                        <span className="size-1.5 rounded-full bg-current opacity-40 animate-pulse" />
+                        <span className="size-1.5 rounded-full bg-current opacity-50 animate-pulse [animation-delay:120ms]" />
+                        <span className="size-1.5 rounded-full bg-current opacity-60 animate-pulse [animation-delay:240ms]" />
+                      </span>
+                    ) : null}
+                  </div>
+                  {isUser && (
+                    <span className="mb-1 flex size-8 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                      <UserRound className="size-4" />
+                    </span>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             {loading && (
-              <div className="flex justify-start">
-                <div className="flex items-center gap-2 rounded-2xl rounded-es-sm bg-muted px-3 py-2 text-sm text-text-2">
-                  <Loader2 className="size-4 animate-spin" />
+              <div className="flex items-end gap-2">
+                <span className="mb-1 flex size-8 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-secondary">
+                  <Bot className="size-4" />
+                </span>
+                <div className="flex items-center gap-2 rounded-2xl rounded-es-md border border-primary/10 bg-clear-ground px-3.5 py-2.5 text-sm text-text-2 shadow-sm">
+                  <Loader2 className="size-4 animate-spin text-primary" />
                   {text.thinking}
                 </div>
               </div>
             )}
 
             {recommendations.length > 0 && (
-              <div className="space-y-2 rounded-2xl border border-primary/10 bg-primary/5 p-3">
-                <h3 className="text-xs font-bold uppercase text-primary">
-                  {text.recommendations}
-                </h3>
+              <div className="space-y-3 rounded-2xl border border-primary/15 bg-primary-faded/70 p-3">
+                <div className="flex items-center gap-2">
+                  <span className="flex size-8 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                    <Sparkles className="size-4" />
+                  </span>
+                  <h3 className="text-sm font-bold text-text-1">
+                    {text.recommendations}
+                  </h3>
+                </div>
                 {recommendations.map((item) => {
                   const Icon = getRecommendationIcon(item.type);
                   return (
                     <Link
                       key={`${item.type}-${item.id}`}
                       href={getRecommendationHref(locale, item)}
-                      className="block rounded-xl border border-primary/10 bg-clear-ground p-3 transition hover:border-primary/35 hover:shadow-md"
+                      className="group block rounded-2xl border border-primary/10 bg-clear-ground/90 p-3 transition-all duration-300 hover:-translate-y-1 hover:border-primary/35 hover:shadow-lg hover:shadow-text-1/10"
                     >
-                      <div className="flex items-start gap-2">
-                        <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                          <Icon className="size-4" />
+                      <div className="flex items-start gap-3">
+                        <span className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                          <Icon className="size-5" />
                         </span>
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="truncate text-sm font-bold text-text-1">
+                          <div className="flex items-start gap-2">
+                            <span className="min-w-0 flex-1 text-sm font-bold leading-5 text-text-1">
                               {item.title}
                             </span>
-                            <span className="shrink-0 rounded-full bg-secondary/10 px-2 py-0.5 text-[10px] font-semibold text-secondary">
+                            <span className="shrink-0 rounded-full border border-secondary/20 bg-secondary/10 px-2 py-0.5 text-[10px] font-semibold text-secondary">
                               {text[item.type]}
                             </span>
                           </div>
-                          <p className="mt-1 line-clamp-2 text-xs leading-5 text-text-2">
+                          <p className="mt-1.5 line-clamp-2 text-xs leading-5 text-text-2">
                             {item.reason}
                           </p>
-                          <span className="mt-2 inline-flex text-xs font-semibold text-primary">
+                          <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary">
                             {text.open}
+                            <ChevronRight className="size-3.5 rtl:rotate-180" />
                           </span>
                         </div>
                       </div>
@@ -551,21 +618,21 @@ export default function AiChatWidget() {
                 href={handoff.url}
                 target="_blank"
                 rel="noreferrer"
-                className="block rounded-2xl border border-sky-200 bg-sky-50 p-3 text-sky-900 transition hover:border-sky-300 hover:bg-sky-100"
+                className="group block rounded-2xl border border-secondary/20 bg-secondary/10 p-3 text-text-1 transition-all duration-300 hover:-translate-y-1 hover:border-secondary/35 hover:bg-secondary/15"
               >
-                <div className="flex items-center gap-2">
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-sky-500 text-white">
-                    <FaTelegramPlane className="size-4" />
+                <div className="flex items-center gap-3">
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
+                    <FaTelegramPlane className="size-5" />
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-bold">
                       {handoff.label || text.telegramFallback}
                     </p>
-                    <p className="mt-0.5 line-clamp-2 text-xs text-sky-700">
+                    <p className="mt-0.5 line-clamp-2 text-xs leading-5 text-text-2">
                       {text.telegramDescription}
                     </p>
                   </div>
-                  <ExternalLink className="size-4 shrink-0" />
+                  <ExternalLink className="size-4 shrink-0 text-secondary transition-transform group-hover:-translate-y-0.5" />
                 </div>
               </a>
             )}
@@ -573,10 +640,15 @@ export default function AiChatWidget() {
 
           <form
             onSubmit={submitMessage}
-            className="border-t border-primary/10 bg-clear-ground p-3"
+            className="relative border-t border-primary/10 bg-clear-ground/95 p-3"
           >
-            {error && <p className="mb-2 text-xs text-destructive">{error}</p>}
-            <div className="flex items-end gap-2">
+            {error && (
+              <p className="mb-2 rounded-xl border border-destructive/20 bg-destructive/10 px-3 py-2 text-xs font-medium text-destructive">
+                {error}
+              </p>
+            )}
+            <div className="flex items-end gap-2 rounded-2xl border border-primary/15 bg-background/80 p-2 transition focus-within:border-primary/45">
+              <MessageCircle className="mb-2.5 size-4 shrink-0 text-text-3" />
               <textarea
                 value={input}
                 onChange={(event) => {
@@ -586,18 +658,18 @@ export default function AiChatWidget() {
                 onKeyDown={handleKeyDown}
                 placeholder={text.placeholder}
                 rows={2}
-                className="min-h-11 flex-1 resize-none rounded-xl border border-primary/15 bg-background px-3 py-2 text-sm text-text-1 outline-none transition placeholder:text-text-3 focus:border-primary"
+                className="min-h-11 flex-1 resize-none bg-transparent px-1 py-2 text-sm text-text-1 outline-none placeholder:text-text-3"
               />
               <button
                 type="submit"
                 disabled={isBusy}
-                className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-clear-ground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
                 aria-label={text.send}
               >
                 {isBusy ? (
                   <Loader2 className="size-5 animate-spin" />
                 ) : (
-                  <Send className="size-5" />
+                  <Send className="size-5 rtl:rotate-180" />
                 )}
               </button>
             </div>
@@ -608,13 +680,30 @@ export default function AiChatWidget() {
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className="relative flex size-12 items-center justify-center rounded-full bg-primary text-clear-ground shadow-lg shadow-primary/25 transition hover:-translate-y-0.5 hover:bg-primary/90"
+        className={cn(
+          "group relative flex min-h-14 items-center gap-3 overflow-hidden rounded-2xl border border-primary/20 bg-clear-ground/95 px-3 py-2 text-start cardShadowSm backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-primary/40",
+          open && "border-primary/35 bg-primary-faded",
+        )}
         aria-label={text.button}
       >
-        <Bot className="z-10 size-6" />
-        {!open && (
-          <span className="absolute inset-0 rounded-full bg-primary opacity-40 animate-ping" />
-        )}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -end-8 -top-8 size-20 rounded-full bg-secondary/20 blur-2xl transition group-hover:bg-primary/25"
+        />
+        <span className="relative flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
+          <Bot className="size-5" />
+          {!open && (
+            <span className="absolute inset-0 rounded-xl bg-primary opacity-30 animate-ping" />
+          )}
+        </span>
+        <span className="relative hidden min-w-0 sm:block">
+          <span className="block text-sm font-bold leading-none text-text-1">
+            {text.title}
+          </span>
+          <span className="mt-1 block max-w-36 truncate text-xs text-text-3">
+            {text.button}
+          </span>
+        </span>
       </button>
     </div>
   );

@@ -492,3 +492,27 @@ What was changed when this doc was first written, kept here so you can see
 7. **Run `npx tsc --noEmit`** before declaring done.
 8. **Append a changelog entry** to the redesign changelog section so the next
    redesign has a precedent.
+
+---
+
+## 13. AI chat widget redesign - 2026-06-15 changelog
+
+**`src/components/AiChatWidget.tsx`**
+
+- Reframed the floating AI assistant as a premium token-based support surface:
+  rounded panel, primary/secondary blurred accents, top accent bar, and a
+  glassy launcher that matches the landing page language.
+- Preserved the existing AI chat API, guest session storage, logged-in session
+  picker, recommendation links, and handoff behavior.
+- Upgraded message bubbles with assistant/user icon chips, clearer loading and
+  typing states, token-only error treatment, and RTL-safe send icon handling.
+- Rebuilt recommendation cards with tone-aware icon tiles, type badges,
+  hover-lift behavior, and explicit open affordances.
+- Replaced hard-coded Telegram sky colors in the handoff card with the
+  primary/secondary design-system palette.
+
+**`src/components/FloatingSupportActions.tsx`**
+
+- Re-enabled `AiChatWidget` in the global floating support dock.
+- Restyled the Telegram support shortcut as a secondary rounded action so it
+  complements the AI assistant instead of competing with it.
