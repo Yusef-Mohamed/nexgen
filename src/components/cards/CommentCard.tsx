@@ -58,7 +58,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
   };
   if (isEditing) {
     return (
-      <li className="relative mt-2">
+      <li className="relative">
         <CommentAction
           parentComment={comment}
           type="edit"
@@ -70,46 +70,52 @@ const CommentCard: React.FC<CommentCardProps> = ({
     );
   }
   return (
-    <li className="relative mt-2">
-      <div className="flex items-start gap-2 z-[2] relative">
+    <li className="relative">
+      <div className="relative z-[2] flex items-start gap-3">
         <div className="relative">
-          <UserAvatar className="relative z-[4]" user={comment.user} />
+          <UserAvatar className="relative z-[4] size-10" user={comment.user} />
           {isChild && (
             <div
-              style={
-                isEn
-                  ? {
-                      left: "-21px",
-                      zIndex: "3",
-                    }
-                  : { right: "-19px", zIndex: "3" }
-              }
-              className="border-muted border-b-[2px] border-s-[2px]   h-[20px] w-[21px] absolute aspect-square top-0 "
+              style={{
+                insetInlineStart: isEn ? "-21px" : "-19px",
+                zIndex: "3",
+              }}
+              className="absolute top-0 aspect-square h-[20px] w-[21px] border-b-[2px] border-s-[2px] border-primary/10"
             />
           )}
         </div>
-        <div className="p-2 w-full rounded-md bg-muted">
-          <h3 className="font-semibold !text-xs">{comment.user?.name}</h3>
-          <p className="text-sm my-0.5">
+        <div className="w-full rounded-2xl border border-primary/10 bg-background-2 p-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-bold !text-sm text-text-1">
+              {comment.user?.name}
+            </h3>
+            <span className="text-[11px] font-medium text-text-3">
+              {new Date(comment.createdAt).toLocaleDateString()}
+            </span>
+          </div>
+          <p className="my-1 text-sm leading-6 text-text-2">
             {formatContentWithLinks(comment.content)}
           </p>
           {comment.image && (
-            <Image
-              src={comment.image}
-              alt="comment"
-              width={400}
-              height={400}
-              className="mt-2 mb-0.5 max-h-64 rounded-md"
-            />
+            <div className="mt-3 overflow-hidden rounded-xl border border-primary/10 bg-clear-ground">
+              <Image
+                src={comment.image}
+                alt="comment"
+                width={520}
+                height={360}
+                className="max-h-72 w-full object-cover"
+              />
+            </div>
           )}
         </div>
       </div>
-      <div className="flex gap-4 items-center mt-1 text-xs text-muted-foreground ms-14">
+      <div className="ms-14 mt-3 flex flex-wrap items-center gap-2 ps-1 text-xs text-text-3">
         <button
           onClick={() => {
             setIsReplying((prev) => !prev);
           }}
-          className=""
+          className="cursor-pointer rounded-full px-2 py-1 font-semibold transition-colors hover:bg-primary/10 hover:text-primary"
+          type="button"
         >
           {text("reply")}
         </button>
@@ -117,7 +123,8 @@ const CommentCard: React.FC<CommentCardProps> = ({
           onClick={() => {
             getReplies();
           }}
-          className=""
+          className="cursor-pointer rounded-full px-2 py-1 font-semibold transition-colors hover:bg-primary/10 hover:text-primary"
+          type="button"
         >
           {text("showReplies")}
         </button>
@@ -126,7 +133,8 @@ const CommentCard: React.FC<CommentCardProps> = ({
             onClick={() => {
               setIsEditing((prev) => !prev);
             }}
-            className=""
+            className="cursor-pointer rounded-full px-2 py-1 font-semibold transition-colors hover:bg-primary/10 hover:text-primary"
+            type="button"
           >
             {text("edit")}
           </button>
@@ -137,7 +145,8 @@ const CommentCard: React.FC<CommentCardProps> = ({
             onClick={() => {
               setIsDeleting(true);
             }}
-            className=""
+            className="cursor-pointer rounded-full px-2 py-1 font-semibold transition-colors hover:bg-destructive/10 hover:text-destructive"
+            type="button"
           >
             {text("delete")}
           </button>
@@ -145,26 +154,22 @@ const CommentCard: React.FC<CommentCardProps> = ({
       </div>
       {replies.length !== 0 && (
         <div className="absolute flex justify-end h-full px-[20px] top-0 z-[1]">
-          <div className="w-0.5 bg-muted h-full -translate-x-1/2"></div>
+          <div className="h-full w-0.5 -translate-x-1/2 bg-primary/10"></div>
         </div>
       )}
       {isChild && isLast && (
         <div
-          style={
-            isEn
-              ? {
-                  left: "-40px",
-                  height: "calc(100% - 20px)",
-                }
-              : { right: "-40px", height: "calc(100% - 20px)" }
-          }
+          style={{
+            insetInlineStart: "-40px",
+            height: "calc(100% - 20px)",
+          }}
           className="absolute flex justify-end  px-[20px] bottom-0 z-[2]"
         >
-          <div className="w-0.5 bg-background h-full -translate-x-1/2"></div>
+          <div className="h-full w-0.5 -translate-x-1/2 bg-clear-ground"></div>
         </div>
       )}
       {isFetchingReplies && (
-        <ul className="ps-10 mt-2 mb-3">
+        <ul className="mb-4 mt-4 flex flex-col gap-4 ps-10">
           {[1, 2].map((index) => (
             <CommentSkeleton key={index} isChild={true} />
           ))}
@@ -172,7 +177,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
       )}
       {isRepliesFetched && replies.length === 0 && !isFetchingReplies && (
         <p
-          className="mt-2 mb-3 text-center"
+          className="mb-4 mt-4 rounded-xl bg-background-2 p-3 text-center text-sm text-text-3"
           onClick={(e) => {
             (e.target as HTMLElement).classList.add("hidden");
           }}
@@ -181,7 +186,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
         </p>
       )}
       {replies?.length !== 0 && (
-        <ul className="ps-10">
+        <ul className="mt-4 flex flex-col gap-4 ps-10">
           {replies?.map((item, index) => (
             <CommentCard
               key={index}
@@ -235,7 +240,7 @@ const CommentAction: React.FC<{
   const [isLoading, setIsLoading] = useState(false);
   const [media, setMedia] = useState<File | null>(null);
   const [comment, setComment] = useState(
-    type === "edit" ? parentComment.content : ""
+    type === "edit" ? parentComment.content : "",
   );
   const inputRef = useRef(null);
   const { user, token } = useAuth();
@@ -269,13 +274,13 @@ const CommentAction: React.FC<{
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         if (setReplies)
           setReplies((prev) =>
             prev.map((item) =>
-              item._id === newReply._id ? res.data.data : item
-            )
+              item._id === newReply._id ? res.data.data : item,
+            ),
           );
         if (setIsReplying) setIsReplying(false);
       } else if (type === "edit") {
@@ -288,13 +293,13 @@ const CommentAction: React.FC<{
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         if (setComments) {
           setComments((prev) =>
             prev.map((item) =>
-              item._id === parentComment._id ? res.data.data : item
-            )
+              item._id === parentComment._id ? res.data.data : item,
+            ),
           );
         }
         if (setIsEditing) setIsEditing(false);
@@ -310,7 +315,13 @@ const CommentAction: React.FC<{
 
   return (
     <div
-      className={cn("", { "ms-14": type === "reply", "ms-2": type === "edit" })}
+      className={cn(
+        "rounded-2xl border border-primary/10 bg-clear-ground p-3",
+        {
+          "ms-14 mt-3": type === "reply",
+          "ms-2": type === "edit",
+        },
+      )}
     >
       <TextWithEmojiBox
         handleSend={handleSend}
@@ -321,7 +332,8 @@ const CommentAction: React.FC<{
         setText={setComment}
         text={comment}
         placeholder={text("writeComment")}
-        className="px-0 border-none"
+        className="border-none px-0"
+        textClassName="min-h-14 rounded-2xl border-primary/10 bg-background-2 pb-9"
       />
     </div>
   );
@@ -356,7 +368,7 @@ const DeleteComment: React.FC<{
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
     } catch (err) {
       console.log(err);
@@ -442,20 +454,20 @@ const formatContentWithLinks = (content: string) => {
 
 const CommentSkeleton: React.FC<{ isChild?: boolean }> = () => {
   return (
-    <li className="relative mt-2">
-      <div className="flex items-start gap-2 z-[2] relative">
+    <li className="relative">
+      <div className="relative z-[2] flex items-start gap-3">
         <div className="relative">
-          <Skeleton className="w-10 h-10 rounded-full" />
+          <Skeleton className="size-10 rounded-full" />
         </div>
-        <div className="p-2 w-full rounded-md bg-muted">
-          <Skeleton className="h-4 w-24 mb-2" />
-          <Skeleton className="h-4 w-full mb-1" />
+        <div className="w-full rounded-2xl bg-background-2 p-3">
+          <Skeleton className="mb-2 h-4 w-24" />
+          <Skeleton className="mb-1 h-4 w-full" />
           <Skeleton className="h-4 w-3/4" />
         </div>
       </div>
-      <div className="flex gap-4 items-center mt-1 text-xs ms-14">
-        <Skeleton className="h-3 w-12" />
-        <Skeleton className="h-3 w-16" />
+      <div className="ms-14 mt-2 flex items-center gap-3 text-xs">
+        <Skeleton className="h-3 w-12 rounded-full" />
+        <Skeleton className="h-3 w-16 rounded-full" />
       </div>
     </li>
   );

@@ -15,7 +15,7 @@ const SidebarFollowing = () => {
   const { token, user } = useAuth();
   const [users, setUsers] = useState<
     {
-      postCount: number;
+      postsCount: number;
       user: IUser;
     }[]
   >([]);
@@ -126,7 +126,7 @@ const SidebarFollowing = () => {
               ))}
           </ul>
           {users.filter(
-            (thisUser) => thisUser && thisUser.user._id !== user?._id
+            (thisUser) => thisUser && thisUser.user._id !== user?._id,
           ).length > 3 &&
             !showAll && (
               <button

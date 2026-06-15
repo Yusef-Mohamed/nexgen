@@ -1,6 +1,6 @@
 import { IPost } from "@/types";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { emojis } from "@/constants";
 import { cn } from "@/lib/utils";
 import { axiosInstance } from "@/app/lib/utils";
@@ -21,10 +21,33 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
   const text = useTranslations("post");
   const [isReacting, setIsReacting] = useState(false);
   const [reaction, setReaction] = useState<string | null>(
-    post.loggedUserReaction?.type || null
+    post.loggedUserReaction?.type || null,
   );
   const [isFocused, setIsFocused] = useState(false);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { user, token } = useAuth();
+
+  const openReactions = () => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+    setIsFocused(true);
+  };
+
+  const scheduleCloseReactions = () => {
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = setTimeout(() => {
+      setIsFocused(false);
+      closeTimerRef.current = null;
+    }, 240);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    };
+  }, []);
 
   const addReactToPost = async (type: keyof typeof emojis) => {
     if (!user?.authToReview && !user?.isInstructor) {
@@ -51,7 +74,7 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (onReactionUpdate) {
@@ -76,18 +99,24 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
   };
 
   return (
-    <div className="relative w-full " onMouseLeave={() => setIsFocused(false)}>
+    <div
+      className="relative w-full"
+      onFocus={openReactions}
+      onMouseEnter={openReactions}
+      onMouseLeave={scheduleCloseReactions}
+    >
       <div
         className={cn(
-          "absolute items-center justify-center gap-2 py-1 px-2 translate-x-1/2 border rounded-full bg-background bottom-full right-1/2 flex opacity-0 scale-90 transition-all w-fit",
+          "absolute bottom-full start-1/2 z-20 mb-2 flex w-fit -translate-x-1/2 translate-y-1 items-center justify-center gap-1 rounded-2xl border border-primary/10 bg-clear-ground px-2 py-2 opacity-0 shadow-xl shadow-text-1/10 ring-1 ring-primary/5 transition-all duration-200 rtl:translate-x-1/2",
           {
-            "opacity-100 scale-100": isFocused,
-          }
+            "pointer-events-auto -translate-y-2 opacity-100": isFocused,
+            "pointer-events-none": !isFocused,
+          },
         )}
       >
         {Object.entries(emojis).map(([key, value]) => (
           <button
-            className="relative size-8 hover:scale-[1.4] group transition-transform"
+            className="group relative size-9 cursor-pointer transition-transform hover:scale-110 disabled:cursor-not-allowed disabled:opacity-60"
             key={key}
             disabled={isReacting}
             onClick={
@@ -98,24 +127,24 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
                   }
             }
           >
-            <span className="absolute hidden py-0.5 px-1.5 text-2xs font-semibold scale-90 translate-x-1/2 rounded bg-background -top-1 -translate-y-full right-1/2 group-hover:block">
+            <span className="absolute -top-1 start-1/2 hidden -translate-x-1/2 -translate-y-full scale-90 rounded bg-background px-1.5 py-0.5 text-2xs font-semibold group-hover:block rtl:translate-x-1/2">
               {text(key)}
             </span>
             <Image
               width={64}
               height={64}
               src={`/reactions/${value}.png`}
-              className="size-8"
+              className="size-8 transition-transform group-hover:scale-125"
               alt={value}
             />
           </button>
         ))}
       </div>
       <button
-        onMouseEnter={() => setIsFocused(true)}
         className={cn(
-          "flex hover:bg-muted transition-all h-7 w-full items-center justify-center gap-2 text-sm py-1 rounded"
+          "flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-xl py-1 text-sm font-semibold text-text-3 transition-all hover:bg-primary/10 hover:text-primary",
         )}
+        type="button"
       >
         {reaction ? (
           <Image

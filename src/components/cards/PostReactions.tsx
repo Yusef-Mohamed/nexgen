@@ -18,32 +18,42 @@ const PostReactions: React.FC<PostReactionsProps> = ({ post }) => {
     Array.isArray(post.reactionTypes) ||
     Object.keys(post.reactionTypes).length === 0
   ) {
-    return null;
+    return (
+      <div className="inline-flex min-h-8 items-center rounded-full border border-primary/10 bg-background-2 px-3 text-xs font-semibold text-text-3">
+        {getReactionText(post.reactionsCount, false, locale)}
+      </div>
+    );
   }
 
   return (
-    <div className="flex items-center gap-1">
-      {Object.entries(post.reactionTypes as unknown as Record<string, number>)
-        .sort(([, a], [, b]) => b - a)
-        .map(([reactionType], index) => (
-          <Image
-            key={reactionType}
-            width={20}
-            height={20}
-            src={`/reactions/${
-              emojis[reactionType as keyof typeof emojis]
-            }.png`}
-            alt={reactionType}
-            className={cn("size-5 bg-background rounded-full", {
-              "-ms-2": index !== 0,
-            })}
-          />
-        ))}
-      <span className="px-1 text-sm text-muted-foreground">
+    <div className="inline-flex min-h-8 items-center gap-2 rounded-full border border-primary/10 bg-background-2 px-3 py-1">
+      <span className="flex items-center">
+        {Object.entries(post.reactionTypes as unknown as Record<string, number>)
+          .sort(([, a], [, b]) => b - a)
+          .slice(0, 4)
+          .map(([reactionType], index) => (
+            <Image
+              key={reactionType}
+              width={24}
+              height={24}
+              src={`/reactions/${
+                emojis[reactionType as keyof typeof emojis]
+              }.png`}
+              alt={reactionType}
+              className={cn(
+                "size-6 rounded-full border border-clear-ground bg-background",
+                {
+                  "-ms-2": index !== 0,
+                },
+              )}
+            />
+          ))}
+      </span>
+      <span className="text-xs font-semibold text-text-3">
         {getReactionText(
           post.reactionsCount,
           !!post.loggedUserReaction,
-          locale
+          locale,
         )}
       </span>
     </div>

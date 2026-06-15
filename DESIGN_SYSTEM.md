@@ -417,7 +417,66 @@ What was changed when this doc was first written, kept here so you can see
 
 ---
 
-## 11. How to use this doc when redesigning a new page
+## 11. Dashboard community shell redesign - 2026-06-10 changelog
+
+**Shared dashboard shell**
+
+- Preserved the existing dashboard routes and availability rules, but restyled
+  the sidebar as a quieter product rail with rounded active states, semantic
+  token colors, and the existing Nexgen logo/profile affordances.
+- Reworked the sticky top bar to match the community workspace structure:
+  token-based white/clear surface, dashboard search, create action, mobile menu,
+  and the existing chat, notification, and profile dropdown behavior.
+- Dashboard page backgrounds now use `bg-background-2` for the app-canvas
+  feel, while panels use `bg-clear-ground` so light and dark themes continue to
+  swap through tokens.
+- Sidebar bottom controls should stay functional: no promo/user-level block in
+  the dashboard rail. Use token-based language and light/dark toggles, with
+  compact icon controls for the collapsed rail.
+
+**Community page**
+
+- Adopted the screenshot's structure without copying unavailable routes:
+  centered feed column, right activity rail, and the current `Home` /
+  `Course Discussion` community tabs.
+- Feed composer and post cards now use the dashboard panel language:
+  `rounded-2xl`, `border-primary/10`, `bg-clear-ground`, soft shadows, and
+  token-based hover states.
+- Right rail uses the existing top-poster and event APIs when available, with
+  polished empty/demo rows for local states. Pinned Discussions is intentionally
+  hidden until a real pinned-post source exists.
+- Post media uses a responsive gallery grid in the feed and a two-column focused
+  detail view on desktop, with token-based thumbnail selection and comment
+  tooling.
+- Reactions and comments use rounded dashboard controls, stacked reaction
+  badges, bordered comment bubbles, attachment frames, and token-only hover
+  states.
+- Admin post actions should sit at `end-4` so they do not compete with the
+  publisher avatar in LTR or RTL. Use a compact round trigger and real dropdown
+  menu items, not labels masquerading as actions.
+- Reaction pickers need a short hover close delay so users can move from the
+  reaction button into the popover without it collapsing. Post, reaction,
+  comment, media, and thumbnail actions should use `cursor-pointer`.
+- Comment previews and detail-thread comments need clear separation from the
+  reaction/action row: use border dividers, `mt-4`/`pt-4`, and `gap-4` spacing
+  for comment lists.
+- Community right-rail events and live sessions are different surfaces. Events
+  come from `/events` and should use a larger highlighted image card because
+  they are rare platform moments. Live sessions come from `/lives` and should
+  stay as compact recurring session rows.
+- The top community posters rail uses `/posts/topPosters`, so show only honest
+  community contribution signals such as post counts. Do not invent levels,
+  ranks, or online-presence dots unless the backend provides that data. Poster
+  rows should be full-row links to the profile with a subtle hover background
+  and lift.
+- The create-post flow now uses the approved hybrid collapsible composer. The
+  collapsed row opens the composer, while the expanded body keeps real post
+  creation logic, polished course/service targeting, media previews, and
+  floating emoji/image/send controls at the text area's bottom end.
+
+---
+
+## 12. How to use this doc when redesigning a new page
 
 1. **Read the current page.** Note which patterns are missing (eyebrow,
    blobs, tone rotation, list-item cards, sticky aside, etc.).
