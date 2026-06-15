@@ -11,7 +11,11 @@ type AnalyticsStore = {
   selectedUserObject: IUser | null;
   setSelectedUserObject: (selectedUserObject: IUser) => void;
   courseProgress: {
-    certificate: string;
+    certificate: {
+      file: string;
+      _id: string;
+      isTake: boolean;
+    };
     progress: {
       attemptDate: string;
       examScore: number;
@@ -20,7 +24,11 @@ type AnalyticsStore = {
     }[];
   };
   setCourseProgress: (courseProgress: {
-    certificate: string;
+    certificate: {
+      file: string;
+      _id: string;
+      isTake: boolean;
+    };
     progress: {
       attemptDate: string;
       examScore: number;
@@ -44,7 +52,11 @@ export const useAnalyticsStore = create<AnalyticsStore>((set) => ({
   setSelectedCourseObject: (selectedCourseObject) =>
     set({ selectedCourseObject }),
   courseProgress: {
-    certificate: "",
+    certificate: {
+      file: "",
+      _id: "",
+      isTake: false,
+    },
     progress: [],
   },
   setCourseProgress: (courseProgress) => set({ courseProgress }),

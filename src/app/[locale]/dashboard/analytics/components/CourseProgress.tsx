@@ -40,7 +40,6 @@ const CourseProgress = () => {
   // grades.png
   // time.png
   // progress.png
-  console.log(selectedCourseProgress);
   return (
     <div>
       {courseProgress?.certificate && (
@@ -52,7 +51,7 @@ const CourseProgress = () => {
           </p>
 
           <a
-            href={courseProgress.certificate}
+            href={courseProgress.certificate.file}
             download
             className="underline text-primary"
           >
