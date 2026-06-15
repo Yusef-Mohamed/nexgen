@@ -48,9 +48,11 @@ elif [ -f "$APP_ROOT/.env.local" ]; then
 elif [ -f "$APP_ROOT/.env" ]; then
   cp "$APP_ROOT/.env" "$RELEASE_DIR/.env.local"
 else
-  echo "No environment file found."
-  echo "Create one at $SHARED_DIR/.env.local before the first real deployment."
-  exit 1
+  echo "No environment file found. Creating default public development environment."
+  cat > "$RELEASE_DIR/.env.local" <<'EOF'
+NEXT_PUBLIC_API_URL=https://api.nexgen-academy.com/api/v1
+NEXT_PUBLIC_SOCKET_URL=https://api.nexgen-academy.com
+EOF
 fi
 
 echo "Installing dependencies"
