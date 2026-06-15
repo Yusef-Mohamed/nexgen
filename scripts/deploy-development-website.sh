@@ -97,7 +97,7 @@ EOF
 fi
 
 echo "Installing dependencies"
-npm ci
+npm ci --legacy-peer-deps
 
 echo "Building Next.js app"
 npm run build
