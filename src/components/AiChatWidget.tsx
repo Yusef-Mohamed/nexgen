@@ -104,6 +104,14 @@ const copy = {
     thinking: "Thinking...",
     recommendations: "Recommended for you",
     newChat: "New chat",
+    newChatShort: "New chat",
+    chatsLabel: "Chats",
+    chatsHint: "Switch between your saved AI conversations.",
+    selectChat: "Select a saved chat",
+    currentChat: "Current chat",
+    loadingChats: "Loading chats...",
+    noSavedChats: "No saved chats yet",
+    untitledChat: "Saved chat",
     previousChats: "Previous chats",
     telegramFallback: "Chat with us on Telegram",
     telegramDescription: "You can contact technical support on Telegram.",
@@ -125,6 +133,14 @@ const copy = {
     thinking: "جاري التفكير...",
     recommendations: "اقتراحات مناسبة لك",
     newChat: "محادثة جديدة",
+    newChatShort: "محادثة جديدة",
+    chatsLabel: "المحادثات",
+    chatsHint: "انتقل بين محادثاتك المحفوظة مع المساعد.",
+    selectChat: "اختر محادثة محفوظة",
+    currentChat: "المحادثة الحالية",
+    loadingChats: "جاري تحميل المحادثات...",
+    noSavedChats: "لا توجد محادثات محفوظة بعد",
+    untitledChat: "محادثة محفوظة",
     previousChats: "المحادثات السابقة",
     telegramFallback: "فتح شات الدعم على تيليجرام",
     telegramDescription: "يمكنك التواصل مع الدعم الفني من التيليجرام",
@@ -198,6 +214,17 @@ export default function AiChatWidget() {
     messages[0]?.role === "assistant" &&
     !loading &&
     !typingMessageId;
+  const activeSessionIsListed = Boolean(
+    activeChatId && sessions.some((session) => session._id === activeChatId),
+  );
+  const showCurrentChatFallback = Boolean(
+    activeChatId && !activeSessionIsListed,
+  );
+  const chatSelectPlaceholder = sessionsLoading
+    ? text.loadingChats
+    : sessions.length > 0
+      ? text.selectChat
+      : text.noSavedChats;
 
   useEffect(() => {
     return () => {
@@ -477,34 +504,53 @@ export default function AiChatWidget() {
           </div>
 
           {isLoggedIn && (
-            <div className="flex items-center gap-2 border-b border-primary/10 bg-background/70 px-3 py-2.5">
-              <label className="sr-only" htmlFor="nexgen-ai-sessions">
-                {text.previousChats}
-              </label>
+            <div className="border-b border-primary/10 bg-background/70 px-3 py-3">
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <label
+                    className="block text-xs font-bold text-text-1"
+                    htmlFor="nexgen-ai-sessions"
+                  >
+                    {text.chatsLabel}
+                  </label>
+                  <p className="mt-0.5 truncate text-[11px] text-text-3">
+                    {text.chatsHint}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  disabled={isBusy}
+                  onClick={startNewChat}
+                  className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-xl border border-primary/10 bg-clear-ground px-2.5 text-xs font-semibold text-primary transition hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+                  aria-label={text.newChat}
+                  title={text.newChat}
+                >
+                  <Plus className="size-3.5" />
+                  <span>{text.newChatShort}</span>
+                </button>
+              </div>
               <select
                 id="nexgen-ai-sessions"
                 value={activeChatId || ""}
-                disabled={sessionsLoading || isBusy}
+                disabled={
+                  sessionsLoading ||
+                  isBusy ||
+                  (!activeChatId && sessions.length === 0)
+                }
                 onChange={(event) => openSession(event.target.value)}
-                className="min-w-0 flex-1 rounded-xl border border-primary/10 bg-clear-ground px-3 py-2 text-xs font-medium text-text-1 outline-none transition focus:border-primary disabled:cursor-not-allowed disabled:opacity-60"
-                aria-label={text.previousChats}
+                className="w-full min-w-0 rounded-xl border border-primary/10 bg-clear-ground px-3 py-2 text-xs font-medium text-text-1 outline-none transition focus:border-primary disabled:cursor-not-allowed disabled:opacity-60"
+                aria-label={text.selectChat}
               >
-                <option value="">{text.previousChats}</option>
+                <option value="">{chatSelectPlaceholder}</option>
+                {showCurrentChatFallback && (
+                  <option value={activeChatId || ""}>{text.currentChat}</option>
+                )}
                 {sessions.map((session) => (
                   <option key={session._id} value={session._id}>
-                    {session.title || text.previousChats}
+                    {session.title || text.untitledChat}
                   </option>
                 ))}
               </select>
-              <button
-                type="button"
-                disabled={isBusy}
-                onClick={startNewChat}
-                className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-primary/10 bg-clear-ground text-primary transition hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
-                aria-label={text.newChat}
-              >
-                <Plus className="size-4" />
-              </button>
             </div>
           )}
 
