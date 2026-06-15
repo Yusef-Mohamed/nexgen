@@ -121,4 +121,11 @@ fi
 
 pm2 save
 
+echo "Cleaning old releases"
+cd "$RELEASES_DIR"
+ls -1dt */ 2>/dev/null | tail -n +4 | xargs -r rm -rf
+
+echo "Cleaning old uploaded archives"
+find "$APP_ROOT/_deploy/incoming" -type f -name "*.tgz" -mtime +3 -delete
+
 echo "Deployment complete: $RELEASE_NAME"

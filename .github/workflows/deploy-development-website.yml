@@ -42,9 +42,21 @@ jobs:
 
       - name: Prepare server deploy directory
         run: |
-          ssh \
+          retry() {
+            for attempt in 1 2 3 4 5; do
+              "$@" && return 0
+              echo "Attempt $attempt failed; retrying in 15 seconds..."
+              sleep 15
+            done
+            "$@"
+          }
+
+          retry ssh \
             -o StrictHostKeyChecking=accept-new \
             -o UserKnownHostsFile=~/.ssh/known_hosts \
+            -o ConnectTimeout=20 \
+            -o ServerAliveInterval=15 \
+            -o ServerAliveCountMax=2 \
             -i ~/.ssh/development_deploy_key \
             -p "${{ secrets.DEV_SERVER_PORT }}" \
             "${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }}" \
@@ -52,17 +64,32 @@ jobs:
 
       - name: Upload deploy script and release archive
         run: |
-          scp \
+          retry() {
+            for attempt in 1 2 3 4 5; do
+              "$@" && return 0
+              echo "Attempt $attempt failed; retrying in 15 seconds..."
+              sleep 15
+            done
+            "$@"
+          }
+
+          retry scp \
             -o StrictHostKeyChecking=accept-new \
             -o UserKnownHostsFile=~/.ssh/known_hosts \
+            -o ConnectTimeout=20 \
+            -o ServerAliveInterval=15 \
+            -o ServerAliveCountMax=2 \
             -i ~/.ssh/development_deploy_key \
             -P "${{ secrets.DEV_SERVER_PORT }}" \
             scripts/deploy-development-website.sh \
             "${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }}:${APP_ROOT}/_deploy/deploy-development-website.sh"
 
-          scp \
+          retry scp \
             -o StrictHostKeyChecking=accept-new \
             -o UserKnownHostsFile=~/.ssh/known_hosts \
+            -o ConnectTimeout=20 \
+            -o ServerAliveInterval=15 \
+            -o ServerAliveCountMax=2 \
             -i ~/.ssh/development_deploy_key \
             -P "${{ secrets.DEV_SERVER_PORT }}" \
             "$RUNNER_TEMP/website-release.tgz" \
@@ -70,9 +97,21 @@ jobs:
 
       - name: Deploy on server
         run: |
-          ssh \
+          retry() {
+            for attempt in 1 2 3 4 5; do
+              "$@" && return 0
+              echo "Attempt $attempt failed; retrying in 15 seconds..."
+              sleep 15
+            done
+            "$@"
+          }
+
+          retry ssh \
             -o StrictHostKeyChecking=accept-new \
             -o UserKnownHostsFile=~/.ssh/known_hosts \
+            -o ConnectTimeout=20 \
+            -o ServerAliveInterval=15 \
+            -o ServerAliveCountMax=2 \
             -i ~/.ssh/development_deploy_key \
             -p "${{ secrets.DEV_SERVER_PORT }}" \
             "${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }}" \
