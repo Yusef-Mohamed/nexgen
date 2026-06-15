@@ -38,11 +38,13 @@ jobs:
           chmod 700 ~/.ssh
           printf '%s\n' "${{ secrets.DEV_SERVER_SSH_KEY }}" > ~/.ssh/development_deploy_key
           chmod 600 ~/.ssh/development_deploy_key
-          ssh-keyscan -p "${{ secrets.DEV_SERVER_PORT }}" "${{ secrets.DEV_SERVER_HOST }}" >> ~/.ssh/known_hosts
+          grep -q "BEGIN OPENSSH PRIVATE KEY" ~/.ssh/development_deploy_key
 
       - name: Prepare server deploy directory
         run: |
           ssh \
+            -o StrictHostKeyChecking=accept-new \
+            -o UserKnownHostsFile=~/.ssh/known_hosts \
             -i ~/.ssh/development_deploy_key \
             -p "${{ secrets.DEV_SERVER_PORT }}" \
             "${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }}" \
@@ -51,12 +53,16 @@ jobs:
       - name: Upload deploy script and release archive
         run: |
           scp \
+            -o StrictHostKeyChecking=accept-new \
+            -o UserKnownHostsFile=~/.ssh/known_hosts \
             -i ~/.ssh/development_deploy_key \
             -P "${{ secrets.DEV_SERVER_PORT }}" \
             scripts/deploy-development-website.sh \
             "${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }}:${APP_ROOT}/_deploy/deploy-development-website.sh"
 
           scp \
+            -o StrictHostKeyChecking=accept-new \
+            -o UserKnownHostsFile=~/.ssh/known_hosts \
             -i ~/.ssh/development_deploy_key \
             -P "${{ secrets.DEV_SERVER_PORT }}" \
             "$RUNNER_TEMP/website-release.tgz" \
@@ -65,6 +71,8 @@ jobs:
       - name: Deploy on server
         run: |
           ssh \
+            -o StrictHostKeyChecking=accept-new \
+            -o UserKnownHostsFile=~/.ssh/known_hosts \
             -i ~/.ssh/development_deploy_key \
             -p "${{ secrets.DEV_SERVER_PORT }}" \
             "${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }}" \
