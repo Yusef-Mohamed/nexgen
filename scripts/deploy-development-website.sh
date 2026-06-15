@@ -20,9 +20,11 @@ load_node_runtime() {
   export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
   if [ -s "$HOME/.nvm/nvm.sh" ]; then
+    set +e
     # shellcheck disable=SC1091
     . "$HOME/.nvm/nvm.sh"
     nvm use --lts >/dev/null 2>&1 || nvm use default >/dev/null 2>&1 || true
+    set -e
   fi
 
   for node_bin in "$HOME"/.nvm/versions/node/*/bin /usr/local/node*/bin /opt/node*/bin; do
@@ -58,9 +60,13 @@ RELEASE_DIR="$RELEASES_DIR/$RELEASE_NAME"
 
 load_node_runtime
 
+echo "Resolved node path: $(command -v node || echo missing)"
+echo "Resolved npm path: $(command -v npm || echo missing)"
+echo "Resolved pm2 path: $(command -v pm2 || echo missing)"
+
 if ! command -v npm >/dev/null 2>&1; then
   echo "npm was not found in this SSH deploy environment."
-  echo "Install Node.js/npm for root, or install Node with nvm at /root/.nvm."
+  echo "Install npm for root, or install Node.js with npm using nvm at /root/.nvm."
   echo "Current PATH: $PATH"
   exit 127
 fi
