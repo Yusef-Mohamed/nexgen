@@ -12,7 +12,7 @@ concurrency:
 env:
   APP_ROOT: /home/nexgen-academy-development/htdocs/development.nexgen-academy.com
   PM2_APP_NAME: nexgen-development-website
-  PORT: "3334"
+  PORT: "6060"
 
 jobs:
   deploy:
