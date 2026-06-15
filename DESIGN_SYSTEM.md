@@ -499,15 +499,16 @@ What was changed when this doc was first written, kept here so you can see
 
 **`src/components/AiChatWidget.tsx`**
 
-- Reframed the floating AI assistant as a premium token-based support surface:
-  rounded panel, primary/secondary blurred accents, top accent bar, and a
-  glassy launcher that matches the landing page language.
+- Reframed the floating AI assistant as a compact Chatbase-inspired support
+  surface: small circular launcher, clean header, tight panel sizing, and
+  token-only colors from the Nexgen system.
 - Preserved the existing AI chat API, guest session storage, logged-in session
   picker, recommendation links, and handoff behavior.
-- Upgraded message bubbles with assistant/user icon chips, clearer loading and
-  typing states, token-only error treatment, and RTL-safe send icon handling.
-- Rebuilt recommendation cards with tone-aware icon tiles, type badges,
-  hover-lift behavior, and explicit open affordances.
+- Upgraded the conversation with neutral assistant bubbles, primary user
+  bubbles, starter prompt chips, clearer loading and typing states, token-only
+  error treatment, and RTL-safe send icon handling.
+- Rebuilt recommendation cards as compact link rows with tone-aware icons, type
+  badges, and explicit open affordances.
 - Replaced hard-coded Telegram sky colors in the handoff card with the
   primary/secondary design-system palette.
 
