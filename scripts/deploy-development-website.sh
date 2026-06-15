@@ -20,11 +20,11 @@ load_node_runtime() {
   export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
   if [ -s "$HOME/.nvm/nvm.sh" ]; then
-    set +e
+    set +eu
     # shellcheck disable=SC1091
     . "$HOME/.nvm/nvm.sh"
     nvm use --lts >/dev/null 2>&1 || nvm use default >/dev/null 2>&1 || true
-    set -e
+    set -eu
   fi
 
   for node_bin in "$HOME"/.nvm/versions/node/*/bin /usr/local/node*/bin /opt/node*/bin; do
