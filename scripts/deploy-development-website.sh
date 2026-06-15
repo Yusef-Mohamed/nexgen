@@ -9,6 +9,22 @@ RELEASE_SHA="${3:?RELEASE_SHA is required}"
 PM2_APP_NAME="${4:-nexgen-development-website}"
 PORT="${5:-3333}"
 
+load_node_runtime() {
+  export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+
+  if [ -s "$HOME/.nvm/nvm.sh" ]; then
+    # shellcheck disable=SC1091
+    . "$HOME/.nvm/nvm.sh"
+    nvm use --lts >/dev/null 2>&1 || nvm use default >/dev/null 2>&1 || true
+  fi
+
+  for node_bin in "$HOME"/.nvm/versions/node/*/bin /usr/local/node*/bin /opt/node*/bin; do
+    if [ -d "$node_bin" ]; then
+      export PATH="$node_bin:$PATH"
+    fi
+  done
+}
+
 if [ "$APP_ROOT" != "$EXPECTED_APP_ROOT" ]; then
   echo "Refusing to deploy outside the approved path: $EXPECTED_APP_ROOT"
   echo "Received: $APP_ROOT"
@@ -32,6 +48,18 @@ RELEASE_NAME="$(date +%Y%m%d%H%M%S)-${RELEASE_SHA:0:7}"
 RELEASES_DIR="$APP_ROOT/releases"
 SHARED_DIR="$APP_ROOT/shared"
 RELEASE_DIR="$RELEASES_DIR/$RELEASE_NAME"
+
+load_node_runtime
+
+if ! command -v npm >/dev/null 2>&1; then
+  echo "npm was not found in this SSH deploy environment."
+  echo "Install Node.js/npm for root, or install Node with nvm at /root/.nvm."
+  echo "Current PATH: $PATH"
+  exit 127
+fi
+
+echo "Node: $(node --version 2>/dev/null || echo unavailable)"
+echo "npm: $(npm --version 2>/dev/null || echo unavailable)"
 
 mkdir -p "$RELEASES_DIR" "$SHARED_DIR" "$APP_ROOT/_deploy/incoming"
 mkdir -p "$RELEASE_DIR"
