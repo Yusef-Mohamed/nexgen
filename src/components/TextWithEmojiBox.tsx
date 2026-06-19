@@ -139,7 +139,7 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
           className={cn(
             "absolute bottom-2 flex items-center gap-2",
             toolsPosition === "end"
-              ? "end-2 rounded-full border border-primary/10 bg-clear-ground/95 p-1 shadow-sm backdrop-blur-sm"
+              ? "end-2 rounded-full border border-primary/10 bg-clear-ground/95 p-1 backdrop-blur-sm"
               : "w-full justify-between px-2",
           )}
         >

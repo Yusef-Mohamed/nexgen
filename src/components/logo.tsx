@@ -17,59 +17,45 @@ const Logo = ({
     sm: {
       width: 65,
       height: 68,
-      textSize: "text-2xl",
+      textSize: "text-xl sm:text-2xl",
+      imageClassName: "h-[52px] w-[50px] sm:h-[68px] sm:w-[65px]",
     },
     md: {
       width: 82,
       height: 85,
-      textSize: "text-3xl",
+      textSize: "text-2xl sm:text-3xl",
+      imageClassName: "h-[68px] w-[65px] sm:h-[85px] sm:w-[82px]",
     },
     lg: {
       width: 98,
       height: 102,
-      textSize: "text-4xl",
+      textSize: "text-3xl sm:text-4xl",
+      imageClassName: "h-[85px] w-[82px] sm:h-[102px] sm:w-[98px]",
     },
   };
-  const responsiveSizes = {
-    sm: {
-      width: 50,
-      height: 52,
-      textSize: "text-xl",
-    },
-    md: {
-      width: 65,
-      height: 68,
-      textSize: "text-2xl",
-    },
-    lg: {
-      width: 82,
-      height: 85,
-      textSize: "text-3xl",
-    },
-  };
+  const imageClassName =
+    isIconic && size === "sm"
+      ? "size-9 sm:size-10"
+      : sizes[size].imageClassName;
+
   return (
     <Link
       href={"/"}
       className={cn(
         `flex gap-px items-center font-semibold whitespace-nowrap  `,
-        className
+        className,
       )}
     >
       <Image
         src="/logos/logo.svg"
         alt={text("alt")}
-        className={cn(
-          `sm:w-${sizes[size].width} w-${responsiveSizes[size].width} sm:h-${sizes[size].height} h-${responsiveSizes[size].height}`
-        )}
+        className={cn("shrink-0 object-contain", imageClassName)}
         width={sizes[size].width}
         height={sizes[size].height}
       />
       {!isIconic && (
-        <div
-          className={`${responsiveSizes[size].textSize} sm:${sizes[size].textSize} flex flex-col`}
-        >
+        <div className={`${sizes[size].textSize} flex flex-col`}>
           <span>NexGen</span>
-          <span className="h-1 text-xs text-text-3">{text("beta")}</span>
         </div>
       )}
     </Link>

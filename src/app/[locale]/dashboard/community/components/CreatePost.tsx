@@ -195,7 +195,7 @@ const CreatePost = ({
   };
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm transition-all duration-300 hover:border-primary/20 hover:shadow-lg hover:shadow-text-1/5">
+    <section className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground transition-all duration-300 hover:border-primary/20">
       <button
         type="button"
         onClick={() => setIsExpanded((value) => !value)}
@@ -228,7 +228,7 @@ const CreatePost = ({
             {isInstructor && (
               <div className="mb-4 rounded-2xl border border-primary/10 bg-background-2 p-3">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-2 rounded-full bg-clear-ground px-3 py-2 text-xs font-bold text-text-2 shadow-sm">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-primary/10 bg-clear-ground px-3 py-2 text-xs font-bold text-text-2">
                     <Layers3 className="size-4 text-primary" />
                     {text("createPostAudience")}
                   </span>
@@ -241,7 +241,7 @@ const CreatePost = ({
                       className={cn(
                         "inline-flex h-10 cursor-pointer items-center rounded-full border px-4 text-xs font-bold transition-all duration-200 hover:-translate-y-0.5",
                         postType === option.value
-                          ? "border-primary bg-primary text-primary-foreground shadow-sm shadow-primary/20"
+                          ? "border-primary bg-primary text-primary-foreground"
                           : "border-primary/10 bg-clear-ground text-text-3 hover:border-primary/30 hover:text-primary",
                       )}
                     >
@@ -334,7 +334,7 @@ const CreatePost = ({
                       className={cn(
                         "group relative overflow-hidden rounded-xl border bg-clear-ground transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30",
                         coverImageIndex === index
-                          ? "border-primary shadow-sm shadow-primary/20"
+                          ? "border-primary"
                           : "border-primary/10",
                       )}
                     >
@@ -347,7 +347,7 @@ const CreatePost = ({
                       />
                       <button
                         type="button"
-                        className="absolute end-2 top-2 inline-flex size-9 cursor-pointer items-center justify-center rounded-full border border-primary/10 bg-clear-ground/95 text-text-3 shadow-sm backdrop-blur-sm transition hover:scale-105 hover:text-primary"
+                        className="absolute end-2 top-2 inline-flex size-9 cursor-pointer items-center justify-center rounded-full border border-primary/10 bg-clear-ground/95 text-text-3 backdrop-blur-sm transition hover:scale-105 hover:text-primary"
                         title="Set as cover image"
                         onClick={() => setCoverImageIndex(index)}
                       >

@@ -49,6 +49,8 @@ const fallbackLearners = [
 ];
 
 const CommunitySidebar = (_props?: { layoutVariant?: unknown }) => {
+  void _props;
+
   const pathname = usePathname();
   const isInstructorDashboard = pathname.includes("instructor-dashboard");
   const { token, user } = useAuth();
@@ -270,7 +272,7 @@ const RailPanel: React.FC<{
   title: string;
 }> = ({ action, actionHref, children, icon, title }) => {
   return (
-    <section className="rounded-2xl border border-primary/10 bg-clear-ground p-5 shadow-sm">
+    <section className="rounded-2xl border border-primary/10 bg-clear-ground p-5">
       <div className="mb-5 flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
           <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -306,7 +308,7 @@ const FeaturedEventCard: React.FC<{ event: IEvent }> = ({ event }) => {
   const day = date.toLocaleString(undefined, { day: "2-digit" });
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-primary/10 bg-background-2 shadow-sm">
+    <article className="overflow-hidden rounded-2xl border border-primary/10 bg-background-2">
       <div className="relative aspect-[16/10] overflow-hidden bg-primary/10">
         {event.image ? (
           <Image
@@ -322,7 +324,7 @@ const FeaturedEventCard: React.FC<{ event: IEvent }> = ({ event }) => {
           </div>
         )}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/60 via-foreground/10 to-transparent" />
-        <div className="absolute start-4 top-4 flex size-16 flex-col items-center justify-center rounded-2xl border border-clear-ground/70 bg-clear-ground/95 text-primary shadow-sm backdrop-blur-sm">
+        <div className="absolute start-4 top-4 flex size-16 flex-col items-center justify-center rounded-2xl border border-clear-ground/70 bg-clear-ground/95 text-primary backdrop-blur-sm">
           <span className="text-[10px] font-black uppercase">{month}</span>
           <span className="text-2xl font-black leading-none">{day}</span>
         </div>
@@ -387,7 +389,7 @@ const LearnerRow: React.FC<{
   );
 
   const className =
-    "flex items-center gap-3 rounded-xl p-2 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/10 hover:shadow-sm hover:shadow-text-1/5";
+    "flex items-center gap-3 rounded-xl p-2 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/10";
 
   if (href) {
     return (

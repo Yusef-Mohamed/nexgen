@@ -46,14 +46,15 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
   const pathname = usePathname();
   const isInstructorDashboard = pathname.includes("instructor-dashboard");
   const allImages = [post.imageCover, ...post.images].filter(Boolean);
+  const hasMedia = allImages.length > 0;
 
   return (
     <>
-      <div className="relative w-full overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+      <div className="relative w-full overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground">
         <PostAction post={post} />
-        <div className="p-5 pb-3">
+        <div className={cn("p-5", hasMedia ? "pb-4" : "pb-3")}>
           {inCommunity ? (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3 pe-12">
               <Link
                 href={`${
                   isInstructorDashboard ? "/instructor-dashboard" : "/dashboard"
@@ -79,7 +80,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3 pe-12">
               <UserAvatar user={post.user} />
               <div className="flex flex-col">
                 <h4 className="text-sm font-bold text-text-1">
@@ -92,7 +93,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
             </div>
           )}
 
-          <p className="mt-4 text-sm leading-6 text-text-2">
+          <p className="mt-4 break-words text-[15px] leading-7 text-text-2">
             {post.content.split("\n").map((line, index) => (
               <span key={index}>
                 {line}
@@ -107,14 +108,20 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
             setIsOpen(true);
           }}
         />
-        <div className="p-5 pt-4">
-          <div className="flex items-center justify-between">
+        <div className={cn("px-5 pb-5", hasMedia ? "pt-4" : "pt-2")}>
+          <div className="flex min-h-9 items-center justify-between gap-3">
             <PostReactions post={post} />
-            <div className="flex gap-1 items-center text-muted-foreground text-sm">
+            <button
+              className="inline-flex min-h-8 cursor-pointer items-center rounded-full border border-transparent px-3 text-sm font-semibold text-text-3 transition-colors hover:border-primary/10 hover:bg-primary/10 hover:text-primary"
+              onClick={() => {
+                setIsOpen(true);
+              }}
+              type="button"
+            >
               {getCommentText(post.commentsCount ?? 0, locale)}
-            </div>
+            </button>
           </div>
-          <div className="mt-4 grid grid-cols-2 border-t border-primary/10 pt-3">
+          <div className="mt-3 grid grid-cols-2 gap-2 border-y border-primary/10 py-2">
             <ReactionComponent post={post} />
             <button
               onClick={() => {
@@ -127,7 +134,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
             </button>
           </div>
           {post.lastComment && (
-            <ul className="mt-4 border-t border-primary/10 pt-4">
+            <ul className="mt-3 rounded-xl border border-primary/10 bg-background-2/50 p-3">
               <CommentCard
                 comment={post.lastComment}
                 setComments={() => {}}
@@ -155,11 +162,15 @@ const PostMediaGrid: React.FC<{
   if (images.length === 0) return null;
 
   const visibleImages = images.slice(0, 4);
+  const hiddenCount = images.length - visibleImages.length;
+  const isTwoUp = images.length === 2;
+  const isHeroLayout = images.length === 3;
 
   if (images.length === 1) {
     return (
       <button
-        className="mx-5 block w-[calc(100%-2.5rem)] cursor-pointer overflow-hidden rounded-2xl border border-primary/10 bg-background-2"
+        aria-label="Open post media"
+        className="mx-5 block max-h-[34rem] w-[calc(100%-2.5rem)] cursor-pointer overflow-hidden rounded-2xl border border-primary/10 bg-background-2"
         onClick={onOpen}
         type="button"
       >
@@ -168,7 +179,7 @@ const PostMediaGrid: React.FC<{
           height={540}
           src={images[0]}
           alt=""
-          className="max-h-[32rem] w-full object-cover"
+          className="max-h-[34rem] w-full object-contain transition-transform duration-500 hover:scale-[1.01]"
         />
       </button>
     );
@@ -176,26 +187,26 @@ const PostMediaGrid: React.FC<{
 
   return (
     <button
+      aria-label={`Open ${images.length} post photos`}
       className={cn(
         "mx-5 grid w-[calc(100%-2.5rem)] cursor-pointer overflow-hidden rounded-2xl border border-primary/10 bg-background-2",
-        images.length === 2
-          ? "grid-cols-2 gap-1"
-          : "grid-cols-2 grid-rows-2 gap-1",
+        isTwoUp
+          ? "aspect-[16/9] grid-cols-2 gap-1"
+          : "aspect-[16/10] grid-cols-2 grid-rows-2 gap-1",
       )}
       onClick={onOpen}
       type="button"
     >
       {visibleImages.map((image, index) => {
-        const isPrimary = images.length >= 3 && index === 0;
-        const hiddenCount = images.length - visibleImages.length;
-        const showOverlay =
-          hiddenCount > 0 && index === visibleImages.length - 1;
+        const isPrimary = isHeroLayout && index === 0;
+        const showOverlay = hiddenCount > 0 && index === 3;
 
         return (
           <span
-            className={cn("relative block overflow-hidden bg-muted", {
-              "row-span-2": isPrimary,
-            })}
+            className={cn(
+              "relative block min-h-0 overflow-hidden bg-muted",
+              isPrimary && "row-span-2",
+            )}
             key={`${image}-${index}`}
           >
             <Image
@@ -203,13 +214,10 @@ const PostMediaGrid: React.FC<{
               height={720}
               src={image}
               alt=""
-              className={cn(
-                "h-full min-h-44 w-full object-cover transition-transform duration-500 hover:scale-105",
-                isPrimary ? "max-h-[29rem]" : "max-h-56",
-              )}
+              className="size-full object-cover transition-transform duration-500 hover:scale-105"
             />
             {showOverlay && (
-              <span className="absolute inset-0 flex items-center justify-center bg-foreground/50 text-3xl font-bold text-primary-foreground">
+              <span className="absolute inset-0 flex items-center justify-center bg-foreground/55 text-3xl font-black text-primary-foreground backdrop-blur-[2px]">
                 +{hiddenCount}
               </span>
             )}
@@ -287,24 +295,24 @@ const PostAction: React.FC<{
             size={"sm"}
             variant="outline"
             aria-label={text("delete")}
-            className="absolute end-4 top-4 z-10 size-10 rounded-full border-primary/10 bg-clear-ground/90 p-0 text-text-3 shadow-sm backdrop-blur-sm transition-all hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
+            className="absolute end-4 top-4 z-10 size-9 rounded-full border-primary/10 bg-clear-ground/90 p-0 text-text-3 backdrop-blur-sm transition-all hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
           >
-            <BsThreeDots className="size-5" />
+            <BsThreeDots className="size-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
-          sideOffset={10}
-          className="w-52 rounded-2xl border-primary/10 bg-clear-ground p-2 shadow-xl shadow-text-1/10"
+          sideOffset={8}
+          className="w-40 rounded-xl border-primary/10 bg-clear-ground p-1 shadow-none"
         >
           <DropdownMenuItem
             onClick={() => {
               setIsDeleting(true);
             }}
-            className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-destructive transition-colors focus:bg-destructive/10 focus:text-destructive"
+            className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold text-destructive transition-colors focus:bg-destructive/10 focus:text-destructive"
           >
-            <span className="flex size-8 items-center justify-center rounded-full bg-destructive/10 text-destructive">
-              <AiFillDelete size={17} />
+            <span className="flex size-7 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+              <AiFillDelete size={15} />
             </span>
             <span>{text("delete")}</span>
           </DropdownMenuItem>

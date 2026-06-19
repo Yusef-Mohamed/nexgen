@@ -156,7 +156,7 @@ const VariantPanel: React.FC<{
   return (
     <div
       className={cn(
-        "pointer-events-auto rounded-2xl border border-primary/15 bg-clear-ground/90 p-2 cardShadowSm backdrop-blur-xl",
+        "pointer-events-auto rounded-2xl border border-primary/15 bg-clear-ground/90 p-2 backdrop-blur-xl",
         className,
       )}
     >
@@ -184,7 +184,7 @@ const VariantButton: React.FC<{
       className={cn(
         "group inline-flex min-w-0 items-center justify-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold transition-all duration-300",
         active
-          ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+          ? "border-primary bg-primary text-primary-foreground"
           : "border-transparent bg-background hover:border-primary/30 hover:bg-primary/10 hover:text-primary",
         compact && "px-2",
       )}

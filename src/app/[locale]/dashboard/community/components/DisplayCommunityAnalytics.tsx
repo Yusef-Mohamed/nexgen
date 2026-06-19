@@ -1,9 +1,8 @@
 "use client";
 import PostCard, { SkeletonPostCard } from "@/components/cards/PostCard";
 import useCustomSearchParams from "@/hooks/useSearchParams";
-import { IPost } from "@/types";
+import { IPagination, IPost } from "@/types";
 import { useCallback, useEffect, useState } from "react";
-import CommunityFilters from "./CommunityFilters";
 import { axiosInstance } from "@/app/lib/utils";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useTranslations } from "next-intl";
@@ -16,8 +15,17 @@ const DisplayCommunityAnalytics = () => {
   const communityText = useTranslations("community");
   const [haveError, setHaveError] = useState(false);
   const { searchParams } = useCustomSearchParams();
+  const searchKey = searchParams.toString();
   const fetchPosts = useCallback(
-    async (page: number): Promise<IPost[]> => {
+    async (
+      page: number,
+      _search?: string,
+      helpers?: {
+        setPaginationData: React.Dispatch<
+          React.SetStateAction<IPagination | null>
+        >;
+      },
+    ): Promise<IPost[]> => {
       try {
         if (haveError) {
           return [];
@@ -51,7 +59,7 @@ const DisplayCommunityAnalytics = () => {
           },
         });
         const data = res.data.data as IPost[];
-        setPaginationData(res.data.paginationResult);
+        helpers?.setPaginationData(res.data.paginationResult);
         return data;
       } catch (e) {
         console.log(e);
@@ -59,22 +67,21 @@ const DisplayCommunityAnalytics = () => {
         return [];
       }
     },
-    [token, setHaveError, haveError, searchParams]
+    [token, setHaveError, haveError, searchParams],
   );
   const {
     data: posts,
     isLoading,
     observerRef,
-    setPaginationData,
     setData,
   } = useInfiniteScroll<IPost>({
     fetchData: fetchPosts,
-    search: searchParams.toString(),
+    search: searchKey,
   });
 
   useEffect(() => {
     setData([]); // Reset data when filters change
-  }, [searchParams.toString(), setData]);
+  }, [searchKey, setData]);
 
   // Show welcome message for users without review access
   if (user && !user.authToReview && !user.isInstructor) {
@@ -91,7 +98,7 @@ const DisplayCommunityAnalytics = () => {
           </div>
           <Link
             href="/dashboard"
-            className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200 shadow-lg hover:shadow-xl"
+            className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200"
           >
             {communityText("goToCourseList")}
           </Link>
@@ -102,7 +109,6 @@ const DisplayCommunityAnalytics = () => {
 
   return (
     <section className="flex-1 w-full space-y-3 sm:space-y-6">
-      <CommunityFilters />
       <CreatePost setData={setData} />
       {haveError && (
         <p className="text-center text-destructive">

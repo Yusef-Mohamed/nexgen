@@ -42,21 +42,22 @@ const NotificationDropDownMenu = () => {
     };
   }, [disconnectSocket, getUnReadCount, setupSocket, user?._id, token]);
   useEffect(() => {
-    if (!observerRef.current) return;
+    const observerElement = observerRef.current;
+    if (!observerElement) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
           fetchNotifications();
         }
       },
-      { threshold: 1.0 }
+      { threshold: 1.0 },
     );
-    if (observerRef.current) observer.observe(observerRef.current);
+    observer.observe(observerElement);
     return () => {
-      if (observerRef.current) observer.unobserve(observerRef.current);
       observer.disconnect();
     };
-  }, [fetchNotifications, observerRef.current, observerRef]);
+  }, [fetchNotifications]);
 
   useEffect(() => {
     if (isOpened && unReadCount > 0) {
@@ -67,18 +68,21 @@ const NotificationDropDownMenu = () => {
   return (
     <DropdownMenu onOpenChange={setIsOpened}>
       <DropdownMenuTrigger asChild>
-        <Button className="relative rounded-full" size="icon" variant="outline">
-          <NotificationIcon className="size-4 text-muted-foreground" />{" "}
-          {/* {unReadCount > 0 && ( */}
+        <Button
+          className="relative size-10 rounded-xl border-primary/10 bg-clear-ground text-text-3 shadow-none transition-colors hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
+          size="icon"
+          variant="outline"
+        >
+          <NotificationIcon className="size-4" /> {/* {unReadCount > 0 && ( */}
           {unReadCount ? (
             <>
-              <div className="absolute z-10 flex items-center justify-center size-3 text-xs rounded-full -top-1 -end-1 bg-primary border"></div>
-              <div className="absolute flex items-center justify-center size-3 text-xs rounded-full animate-ping -top-1 -end-1 bg-primary "></div>
+              <div className="absolute end-1.5 top-1.5 z-10 size-2.5 rounded-full border border-clear-ground bg-primary" />
+              <div className="absolute end-1.5 top-1.5 size-2.5 animate-ping rounded-full bg-primary" />
             </>
           ) : null}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="max-w-[90vw] sm:w-[450px] w-full max-h-[60vh] overflow-auto">
+      <DropdownMenuContent className="max-h-[60vh] w-full max-w-[90vw] overflow-auto rounded-2xl border-primary/10 shadow-xl shadow-text-1/10 sm:w-[450px]">
         {notifications.map((n) => (
           <NotificationCard
             key={n._id}
@@ -92,7 +96,7 @@ const NotificationDropDownMenu = () => {
                 router.push(`/dashboard/chat?selectedChat=${n.chat._id}`);
               else if (n.type === "follow" && n.followedUser)
                 router.push(
-                  `/dashboard/community/profile/${n.followedUser._id}`
+                  `/dashboard/community/profile/${n.followedUser._id}`,
                 );
               else if (n.type === "post" && n.post)
                 router.push(`/dashboard?focusedPost=${n.post._id}`);

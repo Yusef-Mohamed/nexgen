@@ -1,18 +1,20 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import UserDropDownMenu from "../UserDropDownMenu";
 import NotificationDropDownMenu from "../NotificationDropDownMenu";
 import { ChatPopover } from "./ChatPopover";
 
 const UserHeader = () => {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isMounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+
   if (!isMounted) return null;
 
   return (
-    <div className="flex items-center gap-2 sm:gap-3">
+    <div className="flex items-center gap-1.5">
       <ChatPopover />
       <NotificationDropDownMenu />
       <UserDropDownMenu />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -8,6 +8,7 @@ import { useAuth } from "@/components/auth-provider";
 import { reqAuthToReview } from "@/constants";
 import Logo from "@/components/logo";
 import { useTheme } from "next-themes";
+import Image from "next/image";
 import {
   Award,
   BarChart3,
@@ -51,18 +52,20 @@ const Sidebar: React.FC<
   collapsed = false,
   onToggle,
   isCollapsable = false,
+  style,
   ...props
 }) => {
   const { user } = useAuth();
   const pathname = usePathname();
   const locale = useLocale();
   const text = useTranslations("dashboard");
+  const logoText = useTranslations("logo");
   const { setTheme, theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   const linkGroups = useMemo<LinkGroup[]>(() => {
     let groups: LinkGroup[] = [
@@ -263,20 +266,46 @@ const Sidebar: React.FC<
   return (
     <aside
       {...props}
+      style={{
+        ...style,
+        ...(isCollapsable ? { width: collapsed ? 76 : 292 } : {}),
+      }}
       className={cn(
         "sticky top-0 flex h-screen max-h-screen flex-col border-e border-primary/10 bg-clear-ground transition-all duration-300",
-        collapsed ? "w-20 px-3 py-4" : "w-[292px] px-4 py-6",
         className,
       )}
     >
       <div
-        className={cn("flex min-h-14 items-center", {
-          "justify-center": collapsed,
-          "justify-between gap-3": !collapsed,
-        })}
+        className={cn(
+          "relative flex h-[76px] shrink-0 items-center border-b border-primary/10",
+          {
+            "px-3": collapsed,
+            "px-4": !collapsed,
+            "justify-center": collapsed,
+            "justify-between gap-3": !collapsed,
+          },
+        )}
       >
-        <Logo size="sm" isIconic={collapsed} className="min-w-0" />
-        {isCollapsable && (
+        {collapsed && isCollapsable ? (
+          <button
+            aria-label={text("toggleSidebar")}
+            className="inline-flex size-12 items-center justify-center rounded-2xl  transition-colors hover:bg-primary/10"
+            onClick={onToggle}
+            title={text("toggleSidebar")}
+            type="button"
+          >
+            <Image
+              src="/logos/logo.svg"
+              alt={logoText("alt")}
+              width={40}
+              height={40}
+              className="size-10 object-contain"
+            />
+          </button>
+        ) : (
+          <Logo size="sm" className="min-w-0" />
+        )}
+        {isCollapsable && !collapsed && (
           <button
             aria-label={text("toggleSidebar")}
             className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-primary/10 bg-background-2 text-text-3 transition-colors hover:border-primary/30 hover:text-primary"
@@ -288,7 +317,9 @@ const Sidebar: React.FC<
         )}
       </div>
 
-      <nav className="mt-8 flex-1 overflow-auto">
+      <nav
+        className={cn("flex-1 overflow-auto py-5", collapsed ? "px-3" : "px-4")}
+      >
         <ul className="flex flex-col gap-4">
           {linkGroups.map((group, groupIndex) => (
             <li className="flex flex-col gap-2" key={groupIndex}>
@@ -337,7 +368,7 @@ const SidebarControls: React.FC<{
 
   if (collapsed) {
     return (
-      <div className="flex flex-col items-center gap-2 border-t border-primary/10 pt-5">
+      <div className="flex flex-col items-center gap-2 border-t border-primary/10 px-3 py-5">
         <button
           className="inline-flex size-11 items-center justify-center rounded-xl border border-primary/10 bg-background-2 text-text-3 transition-colors hover:border-primary/30 hover:text-primary"
           onClick={() => setTheme(isDark ? "light" : "dark")}
@@ -359,7 +390,7 @@ const SidebarControls: React.FC<{
   }
 
   return (
-    <div className="flex flex-col gap-3 border-t border-primary/10 pt-5">
+    <div className="flex flex-col gap-3 border-t border-primary/10 px-4 py-5">
       <div className="rounded-2xl border border-primary/10 bg-background-2 p-2">
         <div className="grid grid-cols-2 gap-2">
           <button
@@ -426,6 +457,44 @@ const SidebarNavLink: React.FC<{
     itemPath === "/dashboard"
       ? pathname === itemPath
       : pathname.startsWith(itemPath);
+
+  if (collapsed && link.links) {
+    return (
+      <li className="flex flex-col items-center gap-1.5">
+        <Link
+          className={cn(
+            "group flex h-12 w-full items-center justify-center rounded-xl text-sm font-semibold text-text-3 transition-all duration-300 hover:bg-primary/10 hover:text-primary",
+            isActive && "bg-primary/10 text-primary shadow-sm",
+          )}
+          href={link.href}
+          title={text(link.label)}
+        >
+          <span className="shrink-0">{link.icon}</span>
+        </Link>
+        <ul className="flex w-full flex-col items-center gap-1 rounded-2xl border border-primary/10 bg-background-2/60 p-1">
+          {link.links.map((sublink) => {
+            const subPath = sublink.href.split("?")[0];
+            const isSubActive = pathname.startsWith(subPath);
+
+            return (
+              <li className="w-full" key={sublink.href}>
+                <Link
+                  className={cn(
+                    "flex h-10 w-full items-center justify-center rounded-xl text-text-3 transition-colors hover:bg-primary/10 hover:text-primary",
+                    isSubActive && "bg-primary/10 text-primary",
+                  )}
+                  href={sublink.href}
+                  title={text(sublink.label)}
+                >
+                  <span className="shrink-0">{sublink.icon}</span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </li>
+    );
+  }
 
   return (
     <li>

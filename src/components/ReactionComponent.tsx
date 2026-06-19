@@ -107,7 +107,7 @@ const ReactionComponent: React.FC<ReactionComponentProps> = ({
     >
       <div
         className={cn(
-          "absolute bottom-full start-1/2 z-20 mb-2 flex w-fit -translate-x-1/2 translate-y-1 items-center justify-center gap-1 rounded-2xl border border-primary/10 bg-clear-ground px-2 py-2 opacity-0 shadow-xl shadow-text-1/10 ring-1 ring-primary/5 transition-all duration-200 rtl:translate-x-1/2",
+          "absolute bottom-full start-1/2 z-20 mb-2 flex w-fit -translate-x-1/2 translate-y-1 items-center justify-center gap-1 rounded-2xl border border-primary/10 bg-clear-ground px-2 py-2 opacity-0 ring-1 ring-primary/5 transition-all duration-200 rtl:translate-x-1/2",
           {
             "pointer-events-auto -translate-y-2 opacity-100": isFocused,
             "pointer-events-none": !isFocused,

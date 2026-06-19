@@ -473,6 +473,13 @@ What was changed when this doc was first written, kept here so you can see
   collapsed row opens the composer, while the expanded body keeps real post
   creation logic, polished course/service targeting, media previews, and
   floating emoji/image/send controls at the text area's bottom end.
+- Advanced community filters live behind the filter dialog. Keep the dialog
+  compact: use stacked selectable rows, deferred Save/Cancel actions, and only
+  show the course/service selector after that filter type is chosen.
+- Feed media should use predictable social-gallery patterns: one image as a
+  contained hero, two images split evenly, three images as a hero plus stacked
+  thumbnails, four images as a balanced grid, and additional images hidden
+  behind a `+N` overlay.
 
 ---
 

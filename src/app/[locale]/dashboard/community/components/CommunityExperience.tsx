@@ -11,7 +11,12 @@ import {
   resolveCommunityContent,
   resolveCommunityLayout,
 } from "@/components/community/communityViewVariants";
-import { BookOpenCheck, CalendarDays, MessageSquareText, Users } from "lucide-react";
+import {
+  BookOpenCheck,
+  CalendarDays,
+  MessageSquareText,
+  Users,
+} from "lucide-react";
 
 const layoutFrameClasses: Record<CommunityLayoutVariant, string> = {
   hub: "xl:grid-cols-[minmax(0,780px)_20rem] 2xl:grid-cols-[minmax(0,820px)_22rem] 2xl:max-w-[1260px] [@media(min-width:2200px)]:max-w-[1360px]",
@@ -96,7 +101,7 @@ const CommunityRoomsRail: React.FC<{
 
   return (
     <aside className="xl:sticky xl:top-[92px] xl:h-[calc(100vh-116px)]">
-      <div className="rounded-2xl border border-primary/15 bg-clear-ground/80 p-3 cardShadowSm backdrop-blur-sm xl:h-full">
+      <div className="rounded-2xl border border-primary/15 bg-clear-ground/80 p-3 backdrop-blur-sm xl:h-full">
         <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
           <span className="size-1.5 rounded-full bg-primary" />
           {t("roomRail")}

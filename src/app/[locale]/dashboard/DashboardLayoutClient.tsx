@@ -8,7 +8,8 @@ import { useTranslations } from "next-intl";
 import SearchInput from "@/components/SearchInput";
 import { useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
-import { Menu, Plus, ChevronDown } from "lucide-react";
+import { Menu } from "lucide-react";
+import DashboardContainer from "./components/DashboardContainer";
 
 const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -30,9 +31,16 @@ const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
           onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
           isCollapsable={true}
         />
-        <div className="relative flex-1 w-full dashboardMain">
+        <div
+          className="relative flex-1 w-full dashboardMain"
+          style={
+            {
+              "--dashboard-sidebar-width": sidebarCollapsed ? "96px" : "292px",
+            } as React.CSSProperties
+          }
+        >
           <header className="sticky top-0 z-50 w-full border-b border-primary/10 bg-clear-ground/95 px-3 backdrop-blur-sm sm:px-6">
-            <div className="mx-auto flex h-[76px] max-w-[1320px] items-center justify-between gap-3 py-1">
+            <DashboardContainer className="flex h-[76px] items-center justify-between gap-3 py-1">
               <div className="flex min-w-0 flex-1 items-center gap-4">
                 <Logo className="lg:hidden" size="sm" />
                 <form
@@ -46,21 +54,12 @@ const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
                     value={search}
                     onChange={setSearch}
                     containerClassName="mb-0"
-                    className="h-12 rounded-2xl border-primary/10 bg-background-2 text-sm shadow-sm"
+                    className="!h-11 !min-w-0 rounded-full border-primary/10 bg-background-2/80 !py-0 text-sm shadow-none transition-colors focus-visible:ring-primary/20 md:!h-11 md:!text-sm"
                     placeholder={text("searchNexgenAcademy")}
                   />
                 </form>
               </div>
-              <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-                <Button
-                  type="button"
-                  variant="primaryOutline"
-                  className="hidden h-11 min-w-0 gap-2 rounded-xl border-primary/10 bg-clear-ground px-4 text-sm shadow-sm sm:inline-flex"
-                >
-                  <Plus className="size-4" />
-                  {text("create")}
-                  <ChevronDown className="size-4 text-text-3" />
-                </Button>
+              <div className="flex shrink-0 items-center gap-2">
                 <Sheet>
                   <SheetTrigger asChild>
                     <Button
@@ -78,9 +77,21 @@ const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
                 </Sheet>
                 <UserHeader />
               </div>
-            </div>
+            </DashboardContainer>
           </header>
-          <div className="bg-background-2">{children}</div>
+          <div className="relative overflow-hidden bg-background-2">
+            <div
+              aria-hidden
+              data-dashboard-ambient-layer=""
+              className="pointer-events-none fixed bottom-0 end-0 start-0 top-[76px] z-0 overflow-hidden lg:start-[var(--dashboard-sidebar-width)]"
+            >
+              <div className="absolute -top-24 end-12 size-72 rounded-full bg-primary/10 blur-[110px]" />
+              <div className="absolute top-72 start-8 size-64 rounded-full bg-secondary/10 blur-[110px]" />
+            </div>
+            <div className="relative z-10 [&>main]:!bg-transparent">
+              {children}
+            </div>
+          </div>
         </div>
       </div>
     </div>
