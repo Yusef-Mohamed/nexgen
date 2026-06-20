@@ -9,6 +9,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getDynamicString } from "@/lib/utils";
+import {
+  getYouTubeEmbedUrl,
+  YOUTUBE_IFRAME_ALLOW,
+  YOUTUBE_IFRAME_REFERRER_POLICY,
+} from "@/lib/youtube";
 import { ICourse } from "@/types";
 
 interface CourseImageProps {
@@ -16,7 +21,11 @@ interface CourseImageProps {
 }
 
 const CourseImage = ({ courseData }: CourseImageProps) => {
-  if (!courseData.promotionVideo) {
+  const embedUrl = courseData.promotionVideo
+    ? getYouTubeEmbedUrl(courseData.promotionVideo)
+    : null;
+
+  if (!embedUrl) {
     return (
       <div>
         <Image
@@ -52,11 +61,13 @@ const CourseImage = ({ courseData }: CourseImageProps) => {
         <DialogTitle className="sr-only">Promotion Video</DialogTitle>
         <div className="aspect-video w-full bg-black">
           <iframe
-            src={courseData.promotionVideo}
+            src={embedUrl}
+            title="Promotion Video"
             className="w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow={YOUTUBE_IFRAME_ALLOW}
+            referrerPolicy={YOUTUBE_IFRAME_REFERRER_POLICY}
             allowFullScreen
-          ></iframe>
+          />
         </div>
       </DialogContent>
     </Dialog>
