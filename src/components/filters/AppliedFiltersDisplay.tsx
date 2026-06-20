@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { ICategory } from "@/types";
 import {
   FilterType,
@@ -34,6 +35,7 @@ interface AppliedFiltersDisplayProps {
   }>;
   onRemoveFilter: (filterType: string) => void;
   text: (key: string) => string;
+  variant?: "panel" | "inline";
 }
 
 export const AppliedFiltersDisplay: React.FC<AppliedFiltersDisplayProps> = ({
@@ -43,6 +45,7 @@ export const AppliedFiltersDisplay: React.FC<AppliedFiltersDisplayProps> = ({
   instructors,
   onRemoveFilter,
   text,
+  variant = "panel",
 }) => {
   // Create applied filters from current filter state
   const getAppliedFilters = (): AppliedFilter[] => {
@@ -90,7 +93,7 @@ export const AppliedFiltersDisplay: React.FC<AppliedFiltersDisplayProps> = ({
 
     if (filterState.instructor && filterState.instructor !== "all") {
       const instructor = instructors.find(
-        (i) => i._id === filterState.instructor
+        (i) => i._id === filterState.instructor,
       );
       if (instructor) {
         appliedFilters.push({
@@ -120,11 +123,16 @@ export const AppliedFiltersDisplay: React.FC<AppliedFiltersDisplayProps> = ({
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div
+      className={cn(
+        "flex flex-wrap gap-2",
+        variant === "panel" && "mt-3 border-t border-primary/10 pt-3",
+      )}
+    >
       {appliedFilters.map((filter, index) => (
         <div
           key={`${filter.type}-${index}`}
-          className="flex items-center border rounded-full border-primary text-primary bg-primary/10 gap-2 px-3 py-2"
+          className="flex min-h-9 items-center gap-2 rounded-full border border-primary/10 bg-clear-ground px-3 py-1.5 text-primary"
         >
           {filter.avatar && (
             <Image
@@ -132,17 +140,17 @@ export const AppliedFiltersDisplay: React.FC<AppliedFiltersDisplayProps> = ({
               alt={filter.label}
               width={16}
               height={16}
-              className="w-4 h-4 rounded-full object-cover"
+              className="size-4 rounded-full object-cover"
             />
           )}
-          <span className="text-xs">{filter.label}</span>
+          <span className="text-xs font-bold">{filter.label}</span>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onRemoveFilter(filter.type)}
-            className="h-auto text-foreground p-0 ml-1 hover:bg-transparent"
+            className="ms-1 size-5 rounded-full p-0 text-text-3 hover:bg-primary/10 hover:text-primary"
           >
-            <X className="w-3 h-3" />
+            <X className="size-3" />
           </Button>
         </div>
       ))}

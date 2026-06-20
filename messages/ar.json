@@ -1273,6 +1273,11 @@
   "courseHome": {
     "continueYourLearningJourney": "تابع رحلتك التعليمية",
     "continueLearning": "تابع التعلم",
+    "nextLecture": "المحاضرة التالية",
+    "resumeLesson": "تابع الدرس",
+    "openCourse": "افتح الدورة",
+    "noNextLecture": "افتح الدورة لاختيار الدرس التالي",
+    "min": "دقيقة",
     "completedPercentage": "نسبة الانتهاء"
   },
   "salesManagement": {

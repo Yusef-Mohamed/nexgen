@@ -1279,6 +1279,11 @@
   "courseHome": {
     "continueYourLearningJourney": "Continue your learning journey",
     "continueLearning": "Continue Learning",
+    "nextLecture": "Next lecture",
+    "resumeLesson": "Resume lesson",
+    "openCourse": "Open course",
+    "noNextLecture": "Open the course to choose your next lesson",
+    "min": "min",
     "completedPercentage": "Completion Percentage"
   },
   "salesManagement": {

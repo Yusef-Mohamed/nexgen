@@ -47,7 +47,7 @@ export const LevelFilter: React.FC<LevelFilterProps> = ({
 
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-fit gap-4 bg-muted text-muted-foreground border-none !h-12">
+      <SelectTrigger className="h-12 w-full rounded-xl border-primary/10 bg-clear-ground px-4 text-sm font-semibold text-text-2 shadow-none">
         <SelectValue placeholder={label} />
       </SelectTrigger>
       <SelectContent>

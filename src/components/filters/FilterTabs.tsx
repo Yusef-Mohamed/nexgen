@@ -18,14 +18,15 @@ const FilterTab: React.FC<FilterTabProps> = ({
   <button
     onClick={onClick}
     className={cn(
-      "px-6 py-3 rounded-full font-medium grow border transition-all duration-300",
+      "min-h-11 grow rounded-xl border px-5 py-2.5 text-sm font-bold transition-all duration-300",
       isActive
         ? cn(
-            "bg-primary text-primary-foreground border-primary",
-            !flat && "shadow-lg",
+            "border-primary bg-primary text-primary-foreground",
+            !flat && "shadow-lg shadow-primary/10",
           )
-        : "dark:bg-background bg-clear-ground text-foreground  border-transparent hover:border-primary hover:text-primary",
+        : "border-transparent bg-clear-ground text-text-3 hover:border-primary/30 hover:bg-primary/10 hover:text-primary",
     )}
+    type="button"
   >
     {label}
   </button>
@@ -52,7 +53,7 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
   return (
     <div
       className={cn(
-        "flex flex-wrap gap-2 bg-background-2 p-2 rounded-[24px]",
+        "flex flex-wrap gap-2 rounded-2xl bg-background-2 p-1.5",
         !flat && "cardShadow",
         flat && "border border-primary/10",
       )}

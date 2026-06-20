@@ -42,7 +42,7 @@ export const InstructorFilter: React.FC<InstructorFilterProps> = ({
 }) => {
   // Find the selected instructor
   const selectedInstructor = instructors.find(
-    (instructor) => instructor._id === value
+    (instructor) => instructor._id === value,
   );
 
   // Determine what to display in the button
@@ -50,15 +50,15 @@ export const InstructorFilter: React.FC<InstructorFilterProps> = ({
     value === "all"
       ? allInstructorsLabel
       : selectedInstructor
-      ? selectedInstructor.name
-      : label;
+        ? selectedInstructor.name
+        : label;
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="w-fit gap-4 justify-between bg-muted text-muted-foreground border-none !h-12"
+          className="h-12 w-full justify-between gap-4 rounded-xl border-primary/10 bg-clear-ground px-4 text-sm font-semibold text-text-2 shadow-none hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
         >
           <div className="flex items-center gap-2">
             {selectedInstructor && selectedInstructor.profileImg ? (
@@ -67,13 +67,13 @@ export const InstructorFilter: React.FC<InstructorFilterProps> = ({
             <span className="truncate">{displayText}</span>
           </div>
           {isOpen ? (
-            <ChevronUp className="w-4 h-4" />
+            <ChevronUp className="size-4" />
           ) : (
-            <ChevronDown className="w-4 h-4" />
+            <ChevronDown className="size-4" />
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-auto overflow-hidden p-0">
+      <DropdownMenuContent className="w-72 overflow-hidden p-1">
         <div className="space-y-1 h-64 overflow-y-auto overflow-x-hidden">
           <div className="p-2">
             <div className="relative">
@@ -82,7 +82,7 @@ export const InstructorFilter: React.FC<InstructorFilterProps> = ({
                 placeholder={searchForInstructorLabel}
                 value={instructorSearchTerm}
                 onChange={(e) => onSearchTermChange(e.target.value)}
-                className="!ps-8 !text-sm !h-10"
+                className="h-10 rounded-xl border-primary/10 bg-background-2 ps-8 text-sm shadow-none"
               />
             </div>
           </div>
@@ -93,8 +93,8 @@ export const InstructorFilter: React.FC<InstructorFilterProps> = ({
               value === "all" ? "bg-primary/10" : ""
             }`}
           >
-            <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center dark:bg-background">
-              <User className="w-3 h-3" />
+            <div className="flex size-6 items-center justify-center rounded-full bg-background-2">
+              <User className="size-3" />
             </div>
             {allInstructorsLabel}
           </DropdownMenuItem>
