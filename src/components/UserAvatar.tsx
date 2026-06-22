@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { cn } from "@/lib/utils";
+import type { CSSProperties } from "react";
 
 interface UserAvatarProps {
   user?: {
@@ -9,15 +10,20 @@ interface UserAvatarProps {
   size?: "sm" | "md" | "lg";
   className?: string;
   innerClassName?: string;
+  style?: CSSProperties;
+  innerStyle?: CSSProperties;
 }
 const UserAvatar: React.FC<UserAvatarProps> = ({
   user,
   size = "md",
   className,
   innerClassName,
+  style,
+  innerStyle,
 }) => {
   return (
     <Avatar
+      style={style}
       className={cn(
         "avatar",
         {
@@ -32,6 +38,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
         src={user?.profileImg ?? "/images/user-placeholder.jpeg"}
         alt={user?.name}
         className={cn("object-cover ", innerClassName)}
+        style={innerStyle}
       />
       <AvatarFallback
         className={cn(innerClassName, {
@@ -39,6 +46,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
           "text-[12px]": size === "md",
           "text-[14px]": size === "lg",
         })}
+        style={innerStyle}
       >
         {user?.name?.slice(0, 2).toUpperCase()}
       </AvatarFallback>

@@ -10,13 +10,14 @@ import {
 import { Link } from "@/i18n/navigation";
 import { useState } from "react";
 import { useAuth } from "./auth-provider";
-import { ChevronDown } from "lucide-react";
 
 const UserDropDownMenu = () => {
   const { user, logout } = useAuth();
   const text = useTranslations("header");
   const [isOpen, setIsOpen] = useState(false);
   const locale = useLocale();
+  const headerAvatarStyle = { borderRadius: "10px" };
+
   return (
     <DropdownMenu
       dir={locale === "ar" ? "rtl" : "ltr"}
@@ -25,21 +26,21 @@ const UserDropDownMenu = () => {
     >
       <DropdownMenuTrigger asChild>
         <button
-          className="flex h-10 items-center gap-2 rounded-xl border border-primary/10 bg-clear-ground py-1 ps-1 pe-2 text-text-2 shadow-none transition-colors hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
+          aria-label={user?.name ? `${user.name} menu` : "User menu"}
+          className="inline-flex size-10 items-center justify-center rounded-xl border border-primary/10 bg-clear-ground p-1 text-text-2 shadow-none transition-colors hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
           onClick={() => {
             setIsOpen((prev) => !prev);
           }}
+          title={user?.name || "User menu"}
           type="button"
         >
           <UserAvatar
-            className="h-8 w-8"
+            className="h-8 w-8 !rounded-[10px]"
             user={user || undefined}
-            innerClassName="text-[11px]"
+            innerClassName="!rounded-[10px] text-[11px]"
+            style={headerAvatarStyle}
+            innerStyle={headerAvatarStyle}
           />
-          <span className="hidden max-w-36 truncate text-xs font-bold xl:block">
-            {user?.name}
-          </span>
-          <ChevronDown className="hidden size-4 text-text-3 sm:block" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
