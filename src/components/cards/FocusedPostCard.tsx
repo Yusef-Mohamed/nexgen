@@ -35,7 +35,6 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
   post,
   isOpen,
   setIsOpen,
-  inCommunity,
 }) => {
   const text = useTranslations("post");
   const locale = useLocale();
@@ -223,7 +222,6 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
           <section className="flex min-h-0 flex-col border-s border-primary/10">
             <div className="border-b border-primary/10 p-5">
               <PostAuthor
-                inCommunity={inCommunity}
                 isInstructorDashboard={isInstructorDashboard}
                 post={post}
               />
@@ -305,10 +303,9 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
 };
 
 const PostAuthor: React.FC<{
-  inCommunity?: boolean;
   isInstructorDashboard: boolean;
   post: IPost;
-}> = ({ inCommunity, isInstructorDashboard, post }) => {
+}> = ({ isInstructorDashboard, post }) => {
   const profileHref = `${
     isInstructorDashboard ? "/instructor-dashboard" : "/dashboard"
   }/community/profile/${post.user._id}`;
@@ -327,12 +324,11 @@ const PostAuthor: React.FC<{
     </>
   );
 
-  if (!inCommunity) {
-    return <div className="flex items-center gap-3">{content}</div>;
-  }
-
   return (
-    <Link className="flex items-center gap-3" href={profileHref}>
+    <Link
+      className="flex items-center gap-3 rounded-xl transition-colors hover:text-primary"
+      href={profileHref}
+    >
       {content}
     </Link>
   );

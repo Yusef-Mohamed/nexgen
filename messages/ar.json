@@ -709,6 +709,7 @@
   "dashboard": {
     "home": "الرئيسية",
     "profile": "الملف الشخصي",
+    "profileBioFallback": "لم تتم إضافة نبذة بعد.",
     "my_courses": "دوراتي",
     "myCourses": "دوراتي",
     "blogs": "المدونات",

@@ -45,6 +45,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
   const locale = useLocale();
   const pathname = usePathname();
   const isInstructorDashboard = pathname.includes("instructor-dashboard");
+  const profileHref = `${
+    isInstructorDashboard ? "/instructor-dashboard" : "/dashboard"
+  }/community/profile/${post.user._id}`;
   const allImages = [post.imageCover, ...post.images].filter(Boolean);
   const hasMedia = allImages.length > 0;
 
@@ -53,45 +56,25 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
       <div className="relative w-full overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground">
         <PostAction post={post} />
         <div className={cn("p-5", hasMedia ? "pb-4" : "pb-3")}>
-          {inCommunity ? (
-            <div className="flex items-center gap-3 pe-12">
-              <Link
-                href={`${
-                  isInstructorDashboard ? "/instructor-dashboard" : "/dashboard"
-                }/community/profile/${post.user._id}`}
-              >
-                <UserAvatar user={post.user} />
-              </Link>
-              <div className="flex flex-col">
-                <Link
-                  href={`${
-                    isInstructorDashboard
-                      ? "/instructor-dashboard"
-                      : "/dashboard"
-                  }/community/profile/${post.user._id}`}
-                >
-                  <h4 className="text-sm font-bold text-text-1">
-                    {post.user.name}
-                  </h4>
-                </Link>
-                <span className="text-xs text-muted-foreground">
-                  {new Date(post.createdAt).toLocaleDateString()}
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center gap-3 pe-12">
+          <div className="flex items-center gap-3 pe-12">
+            <Link
+              href={profileHref}
+              className="shrink-0 rounded-full transition-transform hover:-translate-y-0.5"
+              aria-label={post.user.name}
+            >
               <UserAvatar user={post.user} />
-              <div className="flex flex-col">
-                <h4 className="text-sm font-bold text-text-1">
+            </Link>
+            <div className="flex min-w-0 flex-col">
+              <Link href={profileHref} className="group min-w-0">
+                <h4 className="truncate text-sm font-bold text-text-1 transition-colors group-hover:text-primary">
                   {post.user.name}
                 </h4>
-                <span className="text-xs text-muted-foreground">
-                  {new Date(post.createdAt).toLocaleDateString()}
-                </span>
-              </div>
+              </Link>
+              <span className="text-xs text-muted-foreground">
+                {new Date(post.createdAt).toLocaleDateString()}
+              </span>
             </div>
-          )}
+          </div>
 
           <p className="mt-4 break-words text-[15px] leading-7 text-text-2">
             {post.content.split("\n").map((line, index) => (

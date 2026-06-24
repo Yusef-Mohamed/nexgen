@@ -712,6 +712,7 @@
   "dashboard": {
     "home": "Home",
     "profile": "Profile",
+    "profileBioFallback": "No bio has been added yet.",
     "my_courses": "My Courses",
     "myCourses": "My Courses",
     "lives": "Live Streams",

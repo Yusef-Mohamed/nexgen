@@ -1,5 +1,6 @@
 "use client";
 import { useLocale, useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import UserAvatar from "../UserAvatar";
 import { IComment } from "@/types";
 import Image from "next/image";
@@ -34,6 +35,13 @@ const CommentCard: React.FC<CommentCardProps> = ({
 }) => {
   const locale = useLocale();
   const isEn = locale === "en";
+  const pathname = usePathname();
+  const isInstructorDashboard = pathname.includes("instructor-dashboard");
+  const profileHref = comment.user?._id
+    ? `${
+        isInstructorDashboard ? "/instructor-dashboard" : "/dashboard"
+      }/community/profile/${comment.user._id}`
+    : null;
   const text = useTranslations("post");
   const [replies, setReplies] = useState<IComment[]>([]);
   const [isReplying, setIsReplying] = useState(false);
@@ -73,7 +81,20 @@ const CommentCard: React.FC<CommentCardProps> = ({
     <li className="relative">
       <div className="relative z-[2] flex items-start gap-3">
         <div className="relative">
-          <UserAvatar className="relative z-[4] size-10" user={comment.user} />
+          {profileHref ? (
+            <Link
+              href={profileHref}
+              className="relative z-[4] block rounded-full transition-transform hover:-translate-y-0.5"
+              aria-label={comment.user?.name}
+            >
+              <UserAvatar className="size-10" user={comment.user} />
+            </Link>
+          ) : (
+            <UserAvatar
+              className="relative z-[4] size-10"
+              user={comment.user}
+            />
+          )}
           {isChild && (
             <div
               style={{
@@ -86,9 +107,18 @@ const CommentCard: React.FC<CommentCardProps> = ({
         </div>
         <div className="w-full rounded-2xl border border-primary/10 bg-background-2 p-3">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-bold !text-sm text-text-1">
-              {comment.user?.name}
-            </h3>
+            {profileHref ? (
+              <Link
+                href={profileHref}
+                className="font-bold !text-sm text-text-1 transition-colors hover:text-primary"
+              >
+                {comment.user?.name}
+              </Link>
+            ) : (
+              <h3 className="font-bold !text-sm text-text-1">
+                {comment.user?.name}
+              </h3>
+            )}
             <span className="text-[11px] font-medium text-text-3">
               {new Date(comment.createdAt).toLocaleDateString()}
             </span>
