@@ -15,9 +15,9 @@ const CourseSidebarSkeleton: React.FC<CourseSidebarSkeletonProps> = ({
   return (
     <aside
       className={cn(
-        "py-4 pt-0 flex flex-col bg-background-2 h-screen overflow-auto max-h-screen top-0 sticky transition-all duration-300",
-        collapsed ? "w-16 px-2 pt-4" : "w-md px-3 sm:px-6",
-        className
+        "sticky top-0 flex h-screen max-h-screen flex-col overflow-auto border-e border-primary/10 bg-clear-ground py-4 pt-0 shadow-sm transition-all duration-300",
+        collapsed ? "w-16 px-2 pt-4" : "w-[25rem] max-w-[92vw] px-3 sm:px-5",
+        className,
       )}
     >
       <div className="flex flex-col h-full">
@@ -36,11 +36,11 @@ const CourseSidebarSkeleton: React.FC<CourseSidebarSkeletonProps> = ({
 
             {/* Course Sections skeleton */}
             <nav className="flex-1 overflow-y-auto pr-1">
-              <ul className="space-y-6">
+              <ul className="space-y-4">
                 {Array.from({ length: 3 }).map((_, sectionIndex) => (
                   <li
                     key={sectionIndex}
-                    className="space-y-4 p-4 border bg-primary/5 border-primary/30 rounded-2xl"
+                    className="space-y-4 rounded-2xl border border-primary/10 bg-background-2 p-4"
                   >
                     {/* Section Header skeleton */}
                     <div className="w-full flex items-center justify-between">
@@ -60,7 +60,7 @@ const CourseSidebarSkeleton: React.FC<CourseSidebarSkeletonProps> = ({
                         {Array.from({ length: 2 }).map((_, lessonIndex) => (
                           <li
                             key={lessonIndex}
-                            className="space-y-5 bg-background p-3 rounded-2xl shadow-sm"
+                            className="space-y-3 rounded-2xl border border-primary/10 bg-clear-ground p-3 shadow-sm"
                           >
                             {/* Lesson Card skeleton */}
                             <div className="w-full flex items-center justify-between gap-4">

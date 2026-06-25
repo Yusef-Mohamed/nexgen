@@ -9,8 +9,6 @@ import UserAvatar from "@/components/UserAvatar";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FaRegTrashAlt } from "react-icons/fa";
-import { MdOutlinePublishedWithChanges } from "react-icons/md";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +16,7 @@ import * as z from "zod";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { CountryInput } from "@/components/ui/country-input";
 import { Form } from "@/components/ui/form";
+import { Camera, Trash2 } from "lucide-react";
 
 const Main = () => {
   const { user, token, updateUser } = useAuth();
@@ -115,63 +114,77 @@ const Main = () => {
   };
 
   return (
-    <>
-      <div className="relative w-full overflow-hidden rounded-md h-64 bg-muted">
+    <div className="space-y-6">
+      <div className="relative h-48 w-full overflow-hidden rounded-2xl border border-primary/10 bg-background-2 sm:h-60">
         <button
           onClick={() => coverImageRef.current?.click()}
           disabled={isLoading}
-          className="absolute flex items-center justify-center w-8 h-8 rounded-full top-2 right-2 bg-primary text-primary-foreground"
+          className="absolute end-3 top-3 z-10 flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm transition-transform hover:scale-105"
         >
-          <MdOutlinePublishedWithChanges />
+          <Camera className="size-4" />
         </button>
         {coverImage && (
           <button
             onClick={() => setCoverImage(null)}
-            className="absolute flex items-center justify-center w-8 h-8 rounded-full top-12 right-2 bg-destructive text-destructive-foreground"
+            className="absolute end-3 top-14 z-10 flex size-9 items-center justify-center rounded-xl bg-destructive text-destructive-foreground shadow-sm transition-transform hover:scale-105"
           >
-            <FaRegTrashAlt />
+            <Trash2 className="size-4" />
           </button>
         )}
 
-        {coverImageLink && (
+        {coverImageLink ? (
           <Image
             src={coverImageLink}
             alt="cover"
-            className="object-cover w-full h-full"
+            className="h-full w-full object-cover"
             width={1920}
             height={1080}
           />
+        ) : (
+          <>
+            <Image
+              src="/images/community/profile-cover-light.png"
+              alt=""
+              fill
+              sizes="(min-width: 1280px) 768px, 100vw"
+              className="object-cover dark:hidden"
+            />
+            <Image
+              src="/images/community/profile-cover-dark.png"
+              alt=""
+              fill
+              sizes="(min-width: 1280px) 768px, 100vw"
+              className="hidden object-cover dark:block"
+            />
+          </>
         )}
       </div>
-      <div className="relative mx-auto -mt-16 sm:-mt-20 md:-mt-24 w-fit">
+      <div className="relative mx-auto -mt-16 w-fit sm:-mt-20 md:-mt-24">
         <UserAvatar
           user={{
             profileImg: profileImageLink,
             name: form.getValues("name"),
           }}
-          className="block mx-auto border-4 border-clear-ground sm:w-40 sm:h-40 w-36 h-36 md:w-48 md:h-48"
+          className="mx-auto block size-32 border-[6px] border-clear-ground shadow-sm sm:size-40 md:size-44"
         />
         <button
           onClick={() => profileImageRef.current?.click()}
           disabled={isLoading}
-          className="absolute flex items-center justify-center w-8 h-8 rounded-full top-2 right-2 bg-primary text-primary-foreground"
+          className="absolute end-3 top-3 z-10 flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm transition-transform hover:scale-105"
         >
-          <MdOutlinePublishedWithChanges />
+          <Camera className="size-4" />
         </button>
         {profileImage && (
           <button
             onClick={() => setProfileImage(null)}
-            className="absolute flex items-center justify-center w-8 h-8 rounded-full top-12 right-2 bg-destructive text-destructive-foreground"
+            className="absolute end-3 top-14 z-10 flex size-9 items-center justify-center rounded-xl bg-destructive text-destructive-foreground shadow-sm transition-transform hover:scale-105"
           >
-            <FaRegTrashAlt />
+            <Trash2 className="size-4" />
           </button>
         )}
       </div>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(handleSubmit)}
-          className="space-y-4"
-        >
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
           <input
             type="file"
             disabled={isLoading}
@@ -205,7 +218,7 @@ const Main = () => {
               setSignatureImage(file);
             }}
           />
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="name">{text("name")} :</Label>
               <Input
@@ -272,7 +285,7 @@ const Main = () => {
                 </p>
                 <div className="flex items-center gap-4">
                   {signatureImageLink && (
-                    <div className="relative w-32 h-20 border rounded-md overflow-hidden bg-muted">
+                    <div className="relative h-20 w-32 overflow-hidden rounded-xl border border-primary/10 bg-background-2">
                       <Image
                         src={signatureImageLink}
                         alt="signature"
@@ -283,9 +296,9 @@ const Main = () => {
                       <button
                         type="button"
                         onClick={() => setSignatureImage(null)}
-                        className="absolute flex items-center justify-center w-6 h-6 rounded-full top-1 right-1 bg-destructive text-destructive-foreground"
+                        className="absolute end-1 top-1 flex size-7 items-center justify-center rounded-lg bg-destructive text-destructive-foreground"
                       >
-                        <FaRegTrashAlt className="w-3 h-3" />
+                        <Trash2 className="size-3" />
                       </button>
                     </div>
                   )}
@@ -303,16 +316,13 @@ const Main = () => {
               </div>
             )}
 
-            <Button
-              className="ms-auto w-fit"
-              isLoading={isLoading}
-            >
+            <Button className="ms-auto w-fit rounded-xl" isLoading={isLoading}>
               {text("save")}
             </Button>
           </div>
         </form>
       </Form>
-    </>
+    </div>
   );
 };
 

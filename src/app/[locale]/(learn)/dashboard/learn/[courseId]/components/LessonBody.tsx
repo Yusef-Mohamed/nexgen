@@ -1,9 +1,8 @@
 import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
-import { Button } from "@/components/ui/button";
 import { FilterTabs, type FilterOption } from "@/components/filters/FilterTabs";
 import { ILesson } from "@/types";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import VideoPlayer from "./VideoPlayer";
 import CreateCourseReview from "./CourseReview";
@@ -12,7 +11,7 @@ import { useCourseContext } from "../context/CourseContext";
 import useCustomSearchParams from "@/hooks/useSearchParams";
 import { toast } from "react-toastify";
 import ImageWithZoom from "@/components/ImageWithZoom";
-import { FaFileDownload } from "react-icons/fa";
+import { Download, ShieldAlert } from "lucide-react";
 
 const LessonBody = ({
   lessonId,
@@ -106,7 +105,7 @@ const LessonBody = ({
     const updatedSections = sections.map((section) => ({
       ...section,
       lessons: section.lessons.map((l) =>
-        l._id === lessonId ? { ...l, lessonWatched: true } : l
+        l._id === lessonId ? { ...l, lessonWatched: true } : l,
       ),
     }));
 
@@ -143,14 +142,14 @@ const LessonBody = ({
       toast.success(
         `${text("lessonCompleted") || "Lesson completed!"} ${
           messages[nextContent.type]
-        }`
+        }`,
       );
     } else {
       toast.success(
         `${text("lessonCompleted") || "Lesson completed!"} ${
           text("allLessonsCompleted") ||
           "You've completed all lessons in this section!"
-        }`
+        }`,
       );
     }
   }, [getNextContent, setSearchParams, text]);
@@ -166,7 +165,7 @@ const LessonBody = ({
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         // Update local state to mark lesson as watched
         markLessonAsWatched();
@@ -184,15 +183,12 @@ const LessonBody = ({
     markLessonAsWatched,
     navigateToNext,
   ]);
-
-  const locale = useLocale();
   return (
     <div>
-      <p className="mb-6 text-center text-destructive">
-        {locale === "ar"
-          ? "تسريب اي فيديو يعرضك للمسائلة القانونية"
-          : "Any video leak will expose you to legal accountability"}
-      </p>
+      <div className="mb-5 flex items-center justify-center gap-2 rounded-2xl border border-destructive/15 bg-destructive/10 px-4 py-3 text-center text-sm font-bold text-destructive">
+        <ShieldAlert className="size-4 shrink-0" />
+        <span>{text("videoLeakWarning")}</span>
+      </div>
       {data?.otp ? (
         <VideoPlayer
           otp={data.otp}
@@ -200,18 +196,20 @@ const LessonBody = ({
           onVideoEnd={handleVideoEnd}
         />
       ) : (
-        <div className="w-full animate-pulse bg-input aspect-video" />
+        <div className="aspect-video w-full animate-pulse rounded-2xl border border-primary/10 bg-background-2" />
       )}
-      <div className="mt-6">
+      <div className="mt-6 space-y-5">
         <FilterTabs
           options={tabOptions}
           activeValue={activeTab}
           onChange={setActiveTab}
         />
         {activeTab === "about" && (
-          <div className="my-6">
-            <h2 className="font-semibold">{getDynamicString(lesson?.title)}</h2>
-            <p className="mt-4 mb-4 text-lg text-text-3">
+          <div className="rounded-2xl border border-primary/10 bg-background-2 p-4 sm:p-5">
+            <h2 className="text-xl font-black text-text-1">
+              {getDynamicString(lesson?.title)}
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-text-3 sm:text-base">
               {getDynamicString(lesson?.description)}
             </p>
             {Array.isArray(lesson?.attachments) &&
@@ -219,7 +217,7 @@ const LessonBody = ({
                 <div key={ind} className="mt-4">
                   {isImageFile(attachment) ? (
                     <div className="space-y-2">
-                      <div className="relative w-full max-w-2xl rounded-lg overflow-hidden border">
+                      <div className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground">
                         <ImageWithZoom
                           src={attachment}
                           alt={`${text("attachment")} ${ind + 1}`}
@@ -230,13 +228,13 @@ const LessonBody = ({
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2">
-                      <FaFileDownload className="w-5 h-5 text-primary" />
+                    <div className="flex items-center gap-2 rounded-xl border border-primary/10 bg-clear-ground p-3">
+                      <Download className="size-5 text-primary" />
                       <a
                         href={attachment}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary hover:underline font-medium"
+                        className="font-bold text-primary underline-offset-4 hover:underline"
                       >
                         {text("attachment")} {ind + 1}
                       </a>

@@ -11,7 +11,7 @@ import { IReview } from "@/types";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { FaStar } from "react-icons/fa";
+import { Star } from "lucide-react";
 import { toast } from "react-toastify";
 
 const SystemReview = () => {
@@ -76,7 +76,7 @@ const SystemReview = () => {
         toast.success(
           idToEdit
             ? text("reviewUpdatedSuccessfully")
-            : text("reviewCreatedSuccessfully")
+            : text("reviewCreatedSuccessfully"),
         );
         router.refresh();
       } catch (error) {
@@ -112,15 +112,15 @@ const SystemReview = () => {
   };
 
   return (
-    <div>
+    <div className="space-y-6">
       <Image
         src="/images/system_reviews.png"
         width={220}
         height={220}
         alt="feedback"
-        className="object-cover mx-auto aspect-square rounded-3xl"
+        className="mx-auto aspect-square rounded-2xl object-cover"
       />
-      <h2 className="mt-6 mb-8 text-center">
+      <h2 className="mx-auto mt-6 mb-8 max-w-xl text-center text-lg font-black leading-7 text-text-1">
         {text("yourExperienceMattersToUsTellUsHowCanWeImproves")}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -128,7 +128,7 @@ const SystemReview = () => {
           <Label htmlFor="title">
             {text("shareWithUsYourOpinionAndHelpUsImprove")}
           </Label>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 rounded-xl border border-primary/10 bg-background-2 p-3">
             {Array.from({ length: 5 }).map((_, index) => (
               <button
                 key={index}
@@ -137,13 +137,16 @@ const SystemReview = () => {
                   setData((prev) => ({ ...prev, ratings: index + 1 }))
                 }
                 disabled={isLoading}
-                className={cn(`text-2xl`, {
-                  "text-primary": index < data.ratings,
-                  "text-input": !(index < data.ratings),
-                  "opacity-50": isLoading,
-                })}
+                className={cn(
+                  "rounded-lg p-1 text-2xl transition-transform hover:scale-110",
+                  {
+                    "text-primary": index < data.ratings,
+                    "text-input": !(index < data.ratings),
+                    "opacity-50": isLoading,
+                  },
+                )}
               >
-                <FaStar />
+                <Star className="size-7 fill-current" />
               </button>
             ))}
           </div>
@@ -153,7 +156,7 @@ const SystemReview = () => {
             name="title"
             value={data.title}
             placeholder={text("writeYourFeedbackExample")}
-            className="min-h-20"
+            className="min-h-28 rounded-xl"
             required
             onChange={(e) =>
               setData((prev) => ({ ...prev, title: e.target.value }))
@@ -161,13 +164,13 @@ const SystemReview = () => {
           />
         </div>
 
-        <div className="flex items-center justify-end gap-4">
+        <div className="flex flex-col-reverse items-stretch justify-end gap-3 sm:flex-row sm:items-center">
           {idToEdit && (
             <Button
               onClick={handleDelete}
               isLoading={isLoading}
               variant="destructive"
-              className="w-[200px]"
+              className="w-full rounded-xl sm:w-[200px]"
             >
               {text("delete")}
             </Button>
@@ -175,7 +178,7 @@ const SystemReview = () => {
           <Button
             isLoading={isLoading}
             type="submit"
-            className="w-[200px] flex items-center justify-center"
+            className="flex w-full items-center justify-center rounded-xl sm:w-[200px]"
           >
             {text("saveMyReview")}
           </Button>

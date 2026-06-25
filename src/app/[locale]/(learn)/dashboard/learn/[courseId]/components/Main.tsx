@@ -6,8 +6,8 @@ import QuizBody from "./QuizBody";
 import CreatePractice from "../../../../../dashboard/practice/components/CreatePractice";
 import { useCourseContext } from "../context/CourseContext";
 import MainSkeleton from "./MainSkeleton";
-import { useLocale, useTranslations } from "next-intl";
-import { FaFileDownload } from "react-icons/fa";
+import { useTranslations } from "next-intl";
+import { Download } from "lucide-react";
 import ImageWithZoom from "@/components/ImageWithZoom";
 import { getDynamicString, isImageFile } from "@/lib/utils";
 // import CreateCourseReview from "./CourseReview";
@@ -16,7 +16,6 @@ const Main = () => {
   const { sections, course, isLoading } = useCourseContext();
   const { searchParams } = useCustomSearchParams();
   const text = useTranslations("learn");
-  const locale = useLocale();
   const selectedLesson = searchParams.get("lesson");
   const selectedDisplay = searchParams.get("display");
 
@@ -32,14 +31,14 @@ const Main = () => {
     (Array.isArray(sections) &&
       sections
         .flatMap((section) =>
-          Array.isArray(section.lessons) ? section.lessons : []
+          Array.isArray(section.lessons) ? section.lessons : [],
         )
         .find((lesson) => lesson?._id === selectedLesson)) ||
     undefined;
 
   return (
-    <main className="flex flex-col px-2 py-6 lg:px-6 sm:px-4 bg-background">
-      <div className="cardShadow container bg-clear-ground rounded-xl lg:p-12 md:p-8 p-6">
+    <main className="flex flex-col bg-background px-3 py-6 sm:px-5 lg:px-6">
+      <div className="container overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground p-5 shadow-sm sm:p-6 md:p-8 lg:p-10">
         {selectedLesson && selectedDisplay === "lesson" && (
           <LessonBody lessonId={selectedLesson} lesson={currentLesson} />
         )}
@@ -49,17 +48,17 @@ const Main = () => {
               (currentLesson.assignmentTitle ||
                 currentLesson.assignmentDescription ||
                 currentLesson.assignmentFile) && (
-                <div className="mb-6 space-y-4">
+                <div className="mb-6 rounded-2xl border border-primary/10 bg-background-2 p-4 sm:p-5">
                   {currentLesson.assignmentTitle && (
                     <div>
-                      <h2 className="text-2xl font-bold text-foreground mb-2">
+                      <h2 className="mb-2 text-xl font-black text-text-1 sm:text-2xl">
                         {getDynamicString(currentLesson.assignmentTitle)}
                       </h2>
                     </div>
                   )}
                   {currentLesson.assignmentDescription && (
                     <div>
-                      <p className="text-muted-foreground whitespace-pre-wrap">
+                      <p className="whitespace-pre-wrap leading-7 text-text-3">
                         {getDynamicString(currentLesson.assignmentDescription)}
                       </p>
                     </div>
@@ -68,12 +67,12 @@ const Main = () => {
                     <div className="pt-2">
                       {isImageFile(currentLesson.assignmentFile) ? (
                         <div className="space-y-2">
-                          <div className="relative w-full max-w-2xl rounded-lg overflow-hidden border">
+                          <div className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground">
                             <ImageWithZoom
                               src={currentLesson.assignmentFile}
                               alt={
                                 getDynamicString(
-                                  currentLesson.assignmentTitle
+                                  currentLesson.assignmentTitle,
                                 ) || "Assignment image"
                               }
                               width={800}
@@ -84,16 +83,14 @@ const Main = () => {
                         </div>
                       ) : (
                         <div className="flex items-center gap-2">
-                          <FaFileDownload className="w-5 h-5 text-primary" />
+                          <Download className="size-5 text-primary" />
                           <a
                             href={currentLesson.assignmentFile}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-primary hover:underline font-medium"
+                            className="font-bold text-primary underline-offset-4 hover:underline"
                           >
-                            {locale === "ar"
-                              ? "تحميل ملف الواجب"
-                              : "Download Assignment File"}
+                            {text("downloadAssignmentFile")}
                           </a>
                         </div>
                       )}
@@ -120,11 +117,11 @@ const Main = () => {
           )
         )}
         {!selectedDisplay && !selectedLesson && (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <h1 className="text-foreground">
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-primary/20 bg-background-2 px-6 py-16 text-center">
+            <h1 className="text-2xl font-black text-text-1">
               {text("welcomeTo")} &quot;{getDynamicString(course.title)}&quot;
             </h1>
-            <p className="mt-2 text-muted-foreground">
+            <p className="mt-2 max-w-md text-sm leading-6 text-text-3">
               {text("pleaseSelectLessonToKeepLearning")}
             </p>
           </div>

@@ -7,7 +7,7 @@ import CourseSidebar from "./components/CourseSidebar";
 import Logo from "@/components/logo";
 import SearchInput from "@/components/SearchInput";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { FaBars } from "react-icons/fa";
+import { Menu } from "lucide-react";
 import UserHeader from "@/components/layout/UserHeader";
 import Footer from "@/components/layout/Footer";
 import Main from "./components/Main";
@@ -23,7 +23,7 @@ const LearnLayoutClient: React.FC = () => {
         style={{
           minHeight: "calc(100vh)",
         }}
-        className="flex bg-dash-ground"
+        className="flex bg-background"
       >
         <CourseSidebar
           className="hidden lg:flex"
@@ -31,9 +31,9 @@ const LearnLayoutClient: React.FC = () => {
           onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
           isCollapsable={true}
         />
-        <div className="relative flex-1 w-full dashboardMain">
-          <header className="sticky top-0 z-50 w-full px-3 sm:px-6 bg-background-2">
-            <div className="flex items-center h-[76px] py-1 justify-between gap-10">
+        <div className="relative min-w-0 flex-1 w-full dashboardMain">
+          <header className="sticky top-0 z-50 w-full border-b border-primary/10 bg-clear-ground/95 px-3 backdrop-blur sm:px-6">
+            <div className="flex h-[76px] items-center justify-between gap-4 py-1">
               <div>
                 <Logo className="lg:hidden" size="sm" />
                 <form
@@ -54,11 +54,11 @@ const LearnLayoutClient: React.FC = () => {
               <div className="flex items-center gap-4">
                 <Sheet>
                   <SheetTrigger asChild>
-                    <button className="flex items-center justify-center w-[2.5rem] h-[2.5rem] rounded-full bg-primary-faded aspect-square lg:hidden">
-                      <FaBars />
+                    <button className="flex size-10 items-center justify-center rounded-xl border border-primary/10 bg-primary/10 text-primary lg:hidden">
+                      <Menu className="size-5" />
                     </button>
                   </SheetTrigger>
-                  <SheetContent className="p-0">
+                  <SheetContent className="border-primary/10 p-0">
                     <CourseSidebar className="w-full h-full" />
                   </SheetContent>
                 </Sheet>

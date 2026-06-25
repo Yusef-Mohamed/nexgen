@@ -24,6 +24,7 @@ import OrdersDialog from "./OrdersDialog";
 import { format } from "date-fns";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 import * as XLSX from "xlsx";
 import { getDynamicString } from "@/lib/utils";
 import { useFilterCourses } from "@/hooks/useFilterCourses";
@@ -65,7 +66,7 @@ const TeamTable = ({ data }: { data: TeamData }) => {
     }
     if (resaleFilter) {
       filteredUsers = filteredUsers.filter((member) =>
-        member.orders?.some((order) => order.isResale)
+        member.orders?.some((order) => order.isResale),
       );
     }
     if (selectedItem) {
@@ -112,30 +113,16 @@ const TeamTable = ({ data }: { data: TeamData }) => {
   };
 
   return (
-    <Card className="mb-4 border-none cardShadow bg-background">
-      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4">
+    <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4 border-b border-primary/10 p-4 sm:p-5">
         <div className="flex items-center gap-4">
           <CardTitle>{t("myTeamMembers")}</CardTitle>
           <Button
             onClick={handleExportToExcel}
             variant="outline"
-            className="flex items-center gap-2"
+            className="flex items-center gap-3 rounded-xl"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
+            <Download className="size-4" />
             {t("exportToExcel")}
           </Button>
         </div>
@@ -202,8 +189,8 @@ const TeamTable = ({ data }: { data: TeamData }) => {
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="relative w-full overflow-x-auto whitespace-nowrap">
+      <CardContent className="p-4 sm:p-5">
+        <div className="relative w-full overflow-x-auto whitespace-nowrap rounded-2xl border border-primary/10">
           <Table>
             <TableHeader>
               <TableRow>
@@ -225,17 +212,17 @@ const TeamTable = ({ data }: { data: TeamData }) => {
                 ))}
               {filteredUsers.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} className="py-8 text-center">
+                  <TableCell colSpan={8} className="py-8 text-center">
                     {t("noResults")}
                   </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
-          <div className="flex justify-center mt-4">
+          <div className="mt-4 flex justify-center">
             <Button
               onClick={() => setIsShowAll((prev) => !prev)}
-              variant={"outline"}
+              variant="outline"
             >
               {isShowAll ? t("showLess") : t("showAll")}
             </Button>
@@ -254,7 +241,7 @@ const UserRow = ({ member, index }: { member: User; index: number }) => {
       items: member.orders.length,
       totalOrdersPrice: member.orders.reduce(
         (sum, order) => sum + order.totalOrderPrice,
-        0
+        0,
       ),
       resale: member.orders.filter((order) => order.isResale).length,
     };
@@ -267,7 +254,7 @@ const UserRow = ({ member, index }: { member: User; index: number }) => {
         <Link
           target="_blank"
           href={`/dashboard/community/profile/${member._id}`}
-          className="flex items-center gap-2"
+          className="flex items-center gap-3 rounded-xl"
         >
           <UserAvatar
             user={{
@@ -295,7 +282,7 @@ const UserRow = ({ member, index }: { member: User; index: number }) => {
         <Link
           target="_blank"
           href={`/dashboard/analytics?selectedUser=${member._id}`}
-          className="underline text-primary"
+          className="font-bold text-primary underline-offset-4 hover:underline"
         >
           {t("showHisAnalytics")}
         </Link>

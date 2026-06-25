@@ -71,7 +71,7 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, contextTitle }) => {
     const seed = `${submitData.passed}-${submitData.totalScore}`;
     const hash = [...seed].reduce(
       (acc, c) => (Math.imul(31, acc) + c.charCodeAt(0)) | 0,
-      0
+      0,
     );
     const index = Math.abs(hash) % messages.length;
     return messages[index];
@@ -79,8 +79,8 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, contextTitle }) => {
   // Add early return if quiz data is not ready
   if (!quiz && isLoading) {
     return (
-      <section>
-        <div>
+      <section className="space-y-5">
+        <div className="space-y-5">
           {/* Title skeleton */}
           <Skeleton className="mb-2 h-10 w-64" />
 
@@ -126,7 +126,7 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, contextTitle }) => {
   if (!quiz && !isLoading) {
     return (
       <section className="py-16">
-        <div>
+        <div className="space-y-5">
           <p>{text("quiz_not_found")}</p>
         </div>
       </section>
@@ -134,48 +134,50 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, contextTitle }) => {
   }
 
   return (
-    <section>
-      <div>
-        <h1 className="mb-2 text-4xl font-semibold">
+    <section className="space-y-5">
+      <div className="space-y-5">
+        <h1 className="mb-2 text-2xl font-black text-text-1 sm:text-3xl">
           {quizTitle}
         </h1>
-        <h3 className="my-2 sm:my-4 text-text-3">
+        <h3 className="my-2 text-sm font-semibold text-text-3 sm:my-4">
           {text(quizType + "_type")} | {quiz ? quiz.questions?.length : 0}{" "}
           {text("questions")}
         </h3>
         {submitData.totalScore ? (
-          <div>
+          <div className="space-y-5">
             {/* Header row */}
-            <div className="flex items-center justify-between gap-4">
-              <div>
+            <div className="flex flex-col gap-4 rounded-2xl border border-primary/10 bg-background-2 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+              <div className="space-y-5">
                 <div className="flex items-center gap-2">
                   {" "}
                   <span
                     className={cn(
-                      submitData.passed ? "text-success" : "text-destructive"
+                      submitData.passed ? "text-success" : "text-destructive",
                     )}
                   >
                     {submitData.passed ? <CorrectIcon /> : <InCorrectIcon />}
                   </span>
-                  <span className="text-xl font-medium">
+                  <span className="text-lg font-black text-text-1">
                     {text("receiveGrade")}
                   </span>
                 </div>
-                <p className="text-lg font-medium">
+                <p className="text-sm font-semibold text-text-3">
                   {text("toPassOrHigher", { score: quiz?.passingScore ?? 0 })}
                 </p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-center">
-                  <p className="text-xl font-medium">{text("yourGrade")}</p>
+                  <p className="text-lg font-black text-text-1">
+                    {text("yourGrade")}
+                  </p>
                   <p
                     className={cn(
                       "text-2xl font-semibold",
-                      submitData.passed ? "text-success" : "text-destructive"
+                      submitData.passed ? "text-success" : "text-destructive",
                     )}
                   >
                     {((submitData.score / submitData.totalScore) * 100).toFixed(
-                      1
+                      1,
                     )}
                     %
                   </p>
@@ -205,15 +207,12 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, contextTitle }) => {
                 <div className="flex justify-center py-8">
                   <div className="text-6xl select-none">👍</div>
                 </div>
-                <p
-                  className="cardShadowSecondary w-fit mx-auto
-                 p-4 rounded-md font-semibold text-center text-xl"
-                >
+                <p className="mx-auto w-fit rounded-2xl border border-primary/10 bg-background-2 p-4 text-center text-lg font-black text-text-1 shadow-sm">
                   {locale === "ar"
                     ? motivationalMessage?.ar
                     : motivationalMessage?.en}
                 </p>
-                <p className="mt-3 text-text-3 text-center">
+                <p className="mt-3 text-center text-sm leading-6 text-text-3">
                   {text("resultSuccessTitle")}
                 </p>
               </>
@@ -222,15 +221,12 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, contextTitle }) => {
                 <div className="flex justify-center py-8">
                   <div className="text-6xl select-none">📈</div>
                 </div>
-                <p
-                  className="cardShadowSecondary w-fit mx-auto
-                 p-4 rounded-md font-semibold text-center text-xl"
-                >
+                <p className="mx-auto w-fit rounded-2xl border border-primary/10 bg-background-2 p-4 text-center text-lg font-black text-text-1 shadow-sm">
                   {locale === "ar"
                     ? motivationalMessage?.ar
                     : motivationalMessage?.en}
                 </p>
-                <p className="mt-3 text-text-3 text-center">
+                <p className="mt-3 text-center text-sm leading-6 text-text-3">
                   {text("resultFailTitle")}
                 </p>
                 <div className="mt-6 flex justify-center">
@@ -258,8 +254,8 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, contextTitle }) => {
                     setIsStarted(true);
                   }}
                   disabled={isLoading}
-                  className="mt-2 sm:mt-4"
-                  size={"lg"}
+                  className="mt-2 rounded-xl sm:mt-4"
+                  size="lg"
                   isLoading={isLoading}
                 >
                   {text("start")}
@@ -275,10 +271,10 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, contextTitle }) => {
                     }
                     return (
                       <div
-                        className="space-y-4 sm:space-y-6"
+                        className="rounded-2xl border border-primary/10 bg-background-2 p-4 sm:p-5"
                         key={question._id}
                       >
-                        <h2 className="flex gap-2 items-start text-2xl font-semibold text-text-2">
+                        <h2 className="flex items-start gap-3 text-base font-black leading-7 text-text-1 sm:text-lg">
                           <span>{index + 1}. </span>{" "}
                           <p>{getDynamicString(question?.question)}</p>
                         </h2>
@@ -288,7 +284,7 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, contextTitle }) => {
                             height={600}
                             src={question?.questionImage || ""}
                             alt=""
-                            className="object-contain w-auto h-40 rounded-md"
+                            className="h-48 w-full rounded-2xl border border-primary/10 bg-clear-ground object-contain"
                           />
                         )}
                         <div className="mt-4">
@@ -317,7 +313,7 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, contextTitle }) => {
                                         "border-primary":
                                           answers[question._id] ===
                                           optionIndex + 1,
-                                      }
+                                      },
                                     )}
                                   >
                                     <div
@@ -330,11 +326,11 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, contextTitle }) => {
                                           "bg-primary":
                                             answers[question._id] ===
                                             optionIndex + 1,
-                                        }
+                                        },
                                       )}
                                     />
                                     {option.startsWith("http") ? (
-                                      <div className="relative h-32 aspect-video">
+                                      <div className="relative h-32 aspect-video overflow-hidden rounded-xl border border-primary/10 bg-background-2">
                                         <Image
                                           src={option}
                                           alt="question"
@@ -342,13 +338,13 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, contextTitle }) => {
                                         />
                                       </div>
                                     ) : (
-                                      <span className="text-text-2">
+                                      <span className="break-words text-text-2">
                                         {getDynamicString(option)}
                                       </span>
                                     )}
                                   </button>
                                 );
-                              }
+                              },
                             )}
                         </div>
                       </div>
@@ -360,7 +356,7 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, contextTitle }) => {
                     {error}
                   </p>
                 )}
-                <div className="flex justify-between mt-8">
+                <div className="mt-8 flex justify-end">
                   <Button
                     onClick={() => {
                       handleSubmit();
@@ -375,10 +371,10 @@ const QuizBody: React.FC<QuizBodyProps> = ({ id, quizType, contextTitle }) => {
           </>
         )}
         {submitError && (
-          <div className="flex flex-col gap-4 justify-center items-center mt-4">
+          <div className="mt-4 flex flex-col items-center justify-center gap-4 rounded-2xl border border-destructive/20 bg-destructive/10 p-4 text-center">
             <p className="font-semibold text-destructive">
               {text(
-                "there_is_error_please_click_the_button_below_to_copy_the_error_and_send_it_to_support"
+                "there_is_error_please_click_the_button_below_to_copy_the_error_and_send_it_to_support",
               )}
             </p>
             <Button

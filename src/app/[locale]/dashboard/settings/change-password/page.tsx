@@ -1,19 +1,5 @@
-
 import ChangePassword from "../components/ChangePassowrd";
 
-const ChangePasswordPage = async (
-  props: {
-    params: Promise<{ locale: string }>;
-  }
-) => {
-  const params = await props.params;
-
-  const {
-    locale
-  } = params;
-
-  
-  return <ChangePassword />;
-};
+const ChangePasswordPage = () => <ChangePassword />;
 
 export default ChangePasswordPage;

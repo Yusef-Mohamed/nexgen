@@ -15,7 +15,7 @@ import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import { IUser } from "@/types";
 import { Button } from "@/components/ui/button";
-import { AiFillDelete } from "react-icons/ai";
+import { Copy, Trash2 } from "lucide-react";
 import ConfirmationDialog from "@/components/ui/confirmation-dialog";
 import { AxiosError } from "axios";
 
@@ -49,9 +49,9 @@ const LinksTable = ({
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
-        console.log(res.data);
+
         setData(res.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -62,12 +62,12 @@ const LinksTable = ({
     if (token) fetchData();
   }, [token, user?._id, t]);
   return (
-    <Card className="mb-4 border-none cardShadow bg-background">
-      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4">
+    <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4 border-b border-primary/10 p-4 sm:p-5">
         <CardTitle>{t("inviteLinks")}</CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="relative overflow-x-auto whitespace-nowrap">
+      <CardContent className="p-4 sm:p-5">
+        <div className="relative overflow-x-auto whitespace-nowrap rounded-2xl border border-primary/10">
           <Table>
             <TableHeader>
               <TableRow>
@@ -133,13 +133,13 @@ const LinkRow = ({
   const clicksCount = useMemo(
     () =>
       data?.clicksDetails?.clicksDetails?.find(
-        (item) => item.invitationKey === link
+        (item) => item.invitationKey === link,
       )?.clicks,
-    [data, link]
+    [data, link],
   );
   const registerCount = useMemo(
     () => data?.registeredUsersCounter[link]?.length,
-    [data, link]
+    [data, link],
   );
 
   const handleDelete = async () => {
@@ -175,22 +175,26 @@ const LinkRow = ({
         <TableCell>
           <div className="flex items-center gap-2">
             <Button
-              size={"sm"}
+              size="sm"
+              className="rounded-xl"
               onClick={() => {
                 const finLink = `${window.location.origin}/${locale}/sign-up/${link}`;
                 navigator.clipboard.writeText(finLink);
                 toast.success(t("linkCopied"));
               }}
             >
+              <Copy className="me-1 size-3.5" />
               {t("copy")}
             </Button>
             {onDelete && (
               <Button
-                size={"sm"}
+                size="sm"
                 variant="destructive"
+                className="rounded-xl"
+                aria-label={postActionText("delete")}
                 onClick={() => setIsDeleteDialogOpen(true)}
               >
-                <AiFillDelete className="w-4 h-4" />
+                <Trash2 className="size-4" />
               </Button>
             )}
           </div>

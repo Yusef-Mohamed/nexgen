@@ -1,9 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Lock, ChevronUp, ChevronDown } from "lucide-react";
-import { MdOutlineErrorOutline } from "react-icons/md";
-import { type ComponentType } from "react";
+import { ChevronDown, ChevronUp, CircleAlert, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
@@ -43,23 +41,26 @@ const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
       disabled={disabled}
       variant={isPrimary ? "default" : "none"}
       className={cn(
-        "w-full flex items-center !h-auto justify-between gap-2 py-4 px-4 rounded-2xl text-start transition-all duration-300 cursor-pointer",
+        "flex !h-auto w-full cursor-pointer items-center justify-between gap-2 rounded-2xl px-4 py-4 text-start transition-all duration-300",
         {
           "hover:bg-primary/10": variant !== "primary",
-          "border border-primary bg-primary/5": isOutline,
-        }
+          "border border-primary/30 bg-primary/10": isOutline,
+          "bg-primary/5 ring-1 ring-primary/20": isFocused && !isPrimary,
+        },
       )}
     >
-      <div className="flex items-center gap-4 flex-1 min-w-0">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
         <Image width={40} height={40} alt="section" src={icon} />
 
-        <div className="w-full flex-1 overflow-hidden space-y-1">
+        <div className="w-full flex-1 space-y-1 overflow-hidden">
           <div className="flex items-center gap-2">
             {badge && (
               <span
                 className={cn(
                   "px-2 py-0.5 text-xs font-bold rounded-md shrink-0",
-                  isPrimary ? "bg-white/20 text-white" : "bg-primary/10 text-primary"
+                  isPrimary
+                    ? "bg-white/20 text-white"
+                    : "bg-primary/10 text-primary",
                 )}
               >
                 {badge}
@@ -68,7 +69,7 @@ const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
             <h5
               className={cn(
                 "overflow-hidden line-clamp-1 font-bold text-base whitespace-break-spaces",
-                isPrimary ? "text-white" : "text-gray-900 dark:text-gray-100"
+                isPrimary ? "text-white" : "text-text-1",
               )}
             >
               {title}
@@ -77,7 +78,7 @@ const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
           <span
             className={cn(
               "text-sm line-clamp-1 whitespace-break-spaces font-medium",
-              isPrimary ? "text-white/80" : "text-gray-500 dark:text-gray-400"
+              isPrimary ? "text-white/80" : "text-text-3",
             )}
           >
             {subtitle}
@@ -87,7 +88,7 @@ const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
 
       <div className="flex items-center gap-2">
         {!disabled && isDone === false && (
-          <MdOutlineErrorOutline className="w-5 h-5 text-destructive shrink-0" />
+          <CircleAlert className="size-5 shrink-0 text-destructive" />
         )}
 
         {onToggle ? (
@@ -105,16 +106,22 @@ const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
               <Lock
                 className={cn(
                   "w-4 h-4 shrink-0",
-                  isPrimary ? "text-white/60" : "text-gray-400 dark:text-gray-500"
+                  isPrimary ? "text-white/60" : "text-text-3",
                 )}
               />
             ) : isExpanded ? (
               <ChevronUp
-                className={cn("w-5 h-5", isPrimary ? "text-white" : "text-gray-400 dark:text-gray-500")}
+                className={cn(
+                  "w-5 h-5",
+                  isPrimary ? "text-white" : "text-text-3",
+                )}
               />
             ) : (
               <ChevronDown
-                className={cn("w-5 h-5", isPrimary ? "text-white" : "text-gray-400 dark:text-gray-500")}
+                className={cn(
+                  "w-5 h-5",
+                  isPrimary ? "text-white" : "text-text-3",
+                )}
               />
             )}
           </div>
@@ -123,7 +130,7 @@ const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
             <Lock
               className={cn(
                 "w-4 h-4 shrink-0",
-                isPrimary ? "text-white/60" : "text-gray-400 dark:text-gray-500"
+                isPrimary ? "text-white/60" : "text-text-3",
               )}
             />
           )

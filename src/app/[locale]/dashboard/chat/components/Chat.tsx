@@ -6,7 +6,7 @@ import { axiosInstance } from "@/app/lib/utils";
 import ChatTopbar from "./ChatTopbar";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/components/auth-provider";
-import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 
 interface ChatProps {
   selectedChat?: string;
@@ -123,7 +123,7 @@ export function Chat({ selectedChat }: ChatProps) {
       }
     };
   }, [socket, messages]);
-  const locale = useLocale();
+  const text = useTranslations("chat");
   return (
     <div
       className={cn(
@@ -133,19 +133,23 @@ export function Chat({ selectedChat }: ChatProps) {
         },
       )}
     >
-      <div className=" w-auto aspect-square h-full bg-secondary/15 opacity-40 top-0 -translate-y-1/3 translate-x-1/3 right-0 absolute rounded-full blur-3xl pointer-events-none"></div>
+      <div className="pointer-events-none absolute end-0 top-0 h-full w-auto aspect-square -translate-y-1/3 translate-x-1/3 rounded-full bg-secondary/15 opacity-40 blur-3xl" />
       {selectedChat ? (
         <>
           <ChatTopbar />
           <ChatList />
         </>
       ) : (
-        <div className="flex flex-col items-center justify-center h-full">
-          <h1 className="text-xl font-bold">
-            {locale === "ar"
-              ? "اختر المحادثة التي تريدها"
-              : "Select the chat you want"}
+        <div className="relative flex h-full flex-col items-center justify-center px-6 text-center">
+          <div className="mb-4 inline-flex size-14 items-center justify-center rounded-2xl border border-primary/10 bg-primary/10 text-primary">
+            <span className="text-2xl">#</span>
+          </div>
+          <h1 className="text-xl font-black text-text-1">
+            {text("selectChat")}
           </h1>
+          <p className="mt-2 max-w-sm text-sm leading-6 text-text-3">
+            {text("selectChatDescription")}
+          </p>
         </div>
       )}
     </div>

@@ -16,21 +16,24 @@ export function Sidebar({ selectedChat }: SidebarProps) {
         maxHeight: "calc(100vh - 124px)",
         height: "calc(100vh - 124px)",
       }}
-      className={cn("relative w-full flex flex-col xl:w-80 border-e group", {
-        "max-xl:hidden": selectedChat,
-      })}
+      className={cn(
+        "group relative flex w-full flex-col border-e border-primary/10 bg-clear-ground xl:w-80",
+        {
+          "max-xl:hidden": selectedChat,
+        },
+      )}
     >
-      <div className="flex items-center justify-between h-20 px-6 border-b">
-        <h1 className="flex items-center gap-2 h2">
+      <div className="flex h-20 items-center justify-between border-b border-primary/10 px-5">
+        <h1 className="flex items-center gap-2 text-base font-black text-text-1">
           <p className="font-medium">{text("chats")}</p>
-          <span className="bg-primary-faded text-xs h-6 min-w-6 rounded-full flex items-center justify-center">
+          <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-primary/10 px-2 text-xs font-bold text-primary">
             {chats.length}
           </span>
         </h1>
       </div>
-      <nav className="flex-1 flex-grow gap-1 px-4 py-4 overflow-auto">
+      <nav className="flex-1 flex-grow gap-1 overflow-auto px-3 py-3">
         {chats.map((chat, index) => (
-          <div key={index} className="py-2 border-b border-b-primary/10 ">
+          <div key={index} className="py-1">
             <ChatCard key={index} chat={chat} selectedChat={selectedChat} />
           </div>
         ))}

@@ -1,7 +1,10 @@
 "use client";
+
 import ImageWithZoom from "@/components/ImageWithZoom";
 import { cn, getDynamicString } from "@/lib/utils";
 import { IQuestion } from "@/types";
+import { CheckCircle2, HelpCircle, XCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 interface QuestionsListProps {
@@ -9,88 +12,105 @@ interface QuestionsListProps {
 }
 
 const QuestionsList = ({ questions }: QuestionsListProps) => {
-  // const text = useTranslations("learn");
-  console.log(questions);
+  const text = useTranslations("learn");
+
   return (
-    <div className="mt-8 space-y-6 sm:space-y-8">
+    <div className="space-y-4 sm:space-y-5">
       {questions.map((question, index) => (
-        <div className="space-y-4 sm:space-y-6" key={question._id}>
-          <h2 className="flex items-start gap-2 text-2xl font-semibold text-text-2">
-            <span>{index + 1}. </span>{" "}
-            <p>{getDynamicString(question?.question)}</p>
-          </h2>
-          {question?.questionImage && (
-            <ImageWithZoom
-              width={600}
-              height={600}
-              src={question?.questionImage || ""}
-              alt=""
-              className="object-contain w-auto h-40 rounded-md"
-            />
-          )}
-          <div className="mt-4">
-            {question?.options.map((option: string, optionIndex: number) => (
-              <>
+        <article
+          className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm"
+          key={question._id}
+        >
+          <div className="border-b border-primary/10 p-4 sm:p-5">
+            <div className="flex items-start gap-3">
+              <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl border border-primary/10 bg-primary/10 text-sm font-black text-primary">
+                {index + 1}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-black uppercase tracking-wide text-text-3">
+                  {text("question")}
+                </p>
+                <h2 className="mt-1 text-base font-black leading-7 text-text-1 sm:text-lg">
+                  {getDynamicString(question.question)}
+                </h2>
+              </div>
+            </div>
+
+            {question.questionImage && (
+              <ImageWithZoom
+                width={720}
+                height={420}
+                src={question.questionImage}
+                alt=""
+                className="mt-4 h-48 w-full rounded-2xl border border-primary/10 bg-background-2 object-contain sm:h-64"
+              />
+            )}
+          </div>
+
+          <div className="space-y-3 p-4 sm:p-5">
+            {question.options.map((option: string, optionIndex: number) => {
+              const optionNumber = optionIndex + 1;
+              const isCorrect = question.correctOption === optionNumber;
+              const isWrongSelection =
+                Number(question.wrongAnswer) === optionNumber;
+
+              return (
                 <div
-                  key={optionIndex}
+                  key={`${question._id}-${optionIndex}`}
                   className={cn(
-                    "flex focus:outline-none disabled:opacity-75 items-center mt-2 border p-4 w-full rounded-md gap-4",
-                    {
-                      "border-success":
-                        question.correctOption === optionIndex + 1,
-                      "border-destructive":
-                        Number(question.wrongAnswer) === optionIndex + 1,
-                    }
+                    "flex w-full items-center gap-3 rounded-2xl border bg-background-2 p-3 text-sm font-semibold text-text-2 transition-colors sm:p-4",
+                    isCorrect && "border-success/40 bg-success/10 text-success",
+                    isWrongSelection &&
+                      "border-destructive/40 bg-destructive/10 text-destructive",
+                    !isCorrect && !isWrongSelection && "border-primary/10",
                   )}
                 >
-                  <div
+                  <span
                     className={cn(
-                      "w-4 h-4 border border-foreground transition-all rounded-full",
-                      {
-                        "bg-success border-success":
-                          question.correctOption === optionIndex + 1 &&
-                          !question.wrongAnswer,
-                        "bg-destructive border-destructive":
-                          Number(question.wrongAnswer) === optionIndex + 1,
-                      }
+                      "inline-flex size-8 shrink-0 items-center justify-center rounded-xl border border-primary/10 bg-clear-ground text-text-3",
+                      isCorrect &&
+                        "border-success/30 bg-success/15 text-success",
+                      isWrongSelection &&
+                        "border-destructive/30 bg-destructive/15 text-destructive",
                     )}
-                  />
-                  {option.startsWith("http") ? (
-                    <div className="relative h-32 aspect-video">
-                      <Image src={option} alt="question" fill />
-                    </div>
-                  ) : (
-                    <span className="text-text-2">{option}</span>
-                  )}
-                </div>
+                  >
+                    {isCorrect ? (
+                      <CheckCircle2 className="size-4" />
+                    ) : isWrongSelection ? (
+                      <XCircle className="size-4" />
+                    ) : (
+                      <HelpCircle className="size-4" />
+                    )}
+                  </span>
 
-                {/* Feedback message under the chosen option */}
-                {/* {question.correctOption === optionIndex + 1 && (
-                  <div className="mt-2 rounded-md border px-3 py-2 text-success bg-success/10 border-success/20">
-                    <div className="flex items-center text-xl gap-2 font-semibold">
-                      <span>
-                        <CorrectIcon />
-                      </span>
-                      <span>{text("correctAnswer")}</span>
-                    </div>
-                    <p className="mt-1 text-lg">STATIC</p>
+                  <div className="min-w-0 flex-1">
+                    {option.startsWith("http") ? (
+                      <div className="relative h-32 w-full max-w-sm overflow-hidden rounded-xl border border-primary/10 bg-clear-ground">
+                        <Image
+                          src={option}
+                          alt=""
+                          fill
+                          sizes="(min-width: 768px) 384px, 100vw"
+                          className="object-contain p-2"
+                        />
+                      </div>
+                    ) : (
+                      <span className="break-words leading-6">{option}</span>
+                    )}
+
+                    {(isCorrect || isWrongSelection) && (
+                      <p className="mt-1 text-xs font-black uppercase tracking-wide">
+                        {isCorrect
+                          ? text("correctAnswer")
+                          : text("incorrectAnswer")}
+                      </p>
+                    )}
                   </div>
-                )} */}
-                {/* {Number(question.wrongAnswer) === optionIndex + 1 && (
-                  <div className="mt-2 rounded-md border px-3 py-2 text-destructive bg-destructive/10 border-destructive/20">
-                    <div className="flex items-center text-xl gap-2 font-semibold">
-                      <span>
-                        <InCorrectIcon />
-                      </span>
-                      <span>{text("incorrectAnswer")}</span>
-                    </div>
-                    <p className="mt-1 text-lg">STATIC</p>
-                  </div>
-                )} */}
-              </>
-            ))}
+                </div>
+              );
+            })}
           </div>
-        </div>
+        </article>
       ))}
     </div>
   );

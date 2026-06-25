@@ -4,7 +4,12 @@ import { cn, getDynamicString } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { useState, useEffect } from "react";
-import { ChevronDown, ChevronUp, ArrowLeft } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronDown,
+  ChevronUp,
+  PanelLeftClose,
+} from "lucide-react";
 import Logo from "@/components/logo";
 // Button import removed; replaced lesson items with SidebarItemButton
 import SidebarItemButton from "./SidebarItemButton";
@@ -164,8 +169,8 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
   return (
     <aside
       className={cn(
-        "py-4 pt-0 flex flex-col bg-background-2 overflow-auto max-h-screen top-0 sticky transition-all duration-300",
-        collapsed ? "w-16 px-2 pt-4" : "w-[28rem] px-3 sm:px-6",
+        "sticky top-0 flex max-h-screen flex-col overflow-auto border-e border-primary/10 bg-clear-ground py-4 pt-0 shadow-sm transition-all duration-300",
+        collapsed ? "w-16 px-2 pt-4" : "w-[25rem] max-w-[92vw] px-3 sm:px-5",
         className,
       )}
     >
@@ -177,32 +182,9 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
           {isCollapsable && (
             <button
               onClick={onToggle}
-              className="w-12 h-12 p-0 flex items-center justify-center rounded-full"
+              className="flex size-10 items-center justify-center rounded-xl border border-primary/10 bg-primary/10 text-primary transition-colors hover:bg-primary/15"
             >
-              <svg
-                width="44"
-                height="44"
-                viewBox="0 0 44 44"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect
-                  x="0.5"
-                  y="0.5"
-                  width="43"
-                  height="43"
-                  rx="21.5"
-                  stroke="currentColor"
-                  className="stroke-primary"
-                />
-                <path
-                  d="M13 22H31M13 16H31M19 28H31"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <PanelLeftClose className="size-5" />
             </button>
           )}
         </div>
@@ -212,19 +194,17 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
             {/* Back to Learning Button */}
             <button
               onClick={() => router.push("/dashboard/learn")}
-              className="flex items-center gap-3 px-4 py-3 mb-6 text-foreground hover:bg-white dark:hover:bg-gray-800 hover:shadow-sm rounded-2xl transition-all cursor-pointer"
+              className="mb-5 flex cursor-pointer items-center gap-3 rounded-2xl border border-primary/10 bg-background-2 px-4 py-3 text-text-2 transition-colors hover:bg-primary/10 hover:text-primary"
             >
-              <div className="flex items-center justify-center size-10 border-gray-200 dark:border-gray-700 rounded-full border bg-white dark:bg-gray-800 shadow-sm">
-                <ArrowLeft className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+              <div className="flex size-10 items-center justify-center rounded-xl border border-primary/10 bg-clear-ground shadow-sm">
+                <ArrowLeft className="size-4" />
               </div>
-              <span className="font-bold text-gray-700 dark:text-gray-300">
-                {text("backToMyLearning")}
-              </span>
+              <span className="font-bold">{text("backToMyLearning")}</span>
             </button>
 
             {/* Course Sections */}
             <nav className="flex-1 overflow-y-auto pr-1 custom-scrollbar">
-              <ul className="space-y-6">
+              <ul className="space-y-4">
                 {sections.map((section, sectionIndex) => {
                   const isExpanded = expandedSections.includes(section.section);
 
@@ -233,7 +213,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                       key={section.section}
                       onClick={() => openSection(section.section)}
                       className={cn(
-                        "space-y-4 p-4 border bg-primary/5 border-primary/30 rounded-2xl",
+                        "space-y-4 rounded-2xl border border-primary/10 bg-background-2 p-4",
                         {
                           "cursor-pointer": !isExpanded,
                         },
@@ -303,7 +283,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                             return (
                               <li
                                 key={lesson._id}
-                                className="space-y-5 bg-background p-3 rounded-2xl"
+                                className="space-y-3 rounded-2xl border border-primary/10 bg-clear-ground p-3"
                               >
                                 {/* Video Lesson (Main Header) */}
                                 <SidebarItemButton
@@ -413,7 +393,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
 
                       {/* Final Exam (Only in last section expanded content) */}
                       {isExpanded && sectionIndex === sections.length - 1 && (
-                        <div className="space-y-5 bg-background p-3 rounded-2xl">
+                        <div className="space-y-3 rounded-2xl border border-primary/10 bg-clear-ground p-3">
                           <SidebarItemButton
                             variant={
                               selectedDisplay === "final_exam"

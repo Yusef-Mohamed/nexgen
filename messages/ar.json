@@ -56,7 +56,9 @@
       "testimonials_description": "اقرأ ما يقوله طلابنا عن تجربتهم.",
       "success_stories_title": "فيديو قصص النجاح",
       "success_stories_description": "شاهد قصص نجاح طلابنا."
-    }
+    },
+    "loading": "جاري التحميل...",
+    "termsOfService": "شروط الخدمة"
   },
   "badges": {
     "new": "جديد",
@@ -195,9 +197,9 @@
     "highlight_cannot_be_empty": "لا يمكن أن تكون النقطة البارزة فارغة",
     "empty_highlight_error": "هذه النقطة البارزة فارغة",
     "validation": {
-      "price_required": "السعر مطلوب",
-      "price_after_discount_invalid": "يجب أن يكون السعر بعد الخصم أقل من السعر الأصلي",
-      "highlight_cannot_be_empty": "لا يمكن أن تكون النقطة البارزة فارغة"
+      "highlight_cannot_be_empty": "لا يمكن أن تكون النقطة البارزة فارغة",
+      "image_invalid": "يرجى اختيار ملف صورة صحيح (JPG, PNG, GIF)",
+      "image_size": "يجب أن يكون حجم الصورة أقل من 5 ميجابايت"
     },
     "price": "السعر",
     "price_after_discount": "السعر بعد الخصم",
@@ -248,12 +250,7 @@
     "learning_path_image_guideline_size": "الحد الأقصى لحجم الملف: 5 ميجابايت",
     "learning_path_image_guideline_format": "الصيغ المقبولة: JPG, PNG, GIF",
     "upload_file": "تحميل الملف",
-    "no_file_selected": "لم يتم اختيار ملف",
-    "validation": {
-      "highlight_cannot_be_empty": "لا يمكن أن تكون النقطة البارزة فارغة",
-      "image_invalid": "يرجى اختيار ملف صورة صحيح (JPG, PNG, GIF)",
-      "image_size": "يجب أن يكون حجم الصورة أقل من 5 ميجابايت"
-    }
+    "no_file_selected": "لم يتم اختيار ملف"
   },
   "whyChooseUs": {
     "heading": "لماذا تختار أكاديمية NexGen",
@@ -569,7 +566,8 @@
       "maxFileSize": "الحد الأقصى لحجم الملف: ",
       "fileSelected": "ملف محدد",
       "filesSelected": "ملفات محددة"
-    }
+    },
+    "passwords_dont_match": "كلمتا المرور غير متطابقتين"
   },
   "reviewsSectionAboutPage": {
     "heading": "أراء المتعلمين.",
@@ -620,8 +618,8 @@
     "requirements": "المتطلبات",
     "noExperienceRequired": "لا حاجة لخبرة سابقة",
     "recommendedToSee": "يُنصح بمشاهدة",
-    "whatIsNext": "\u0645\u0627 \u0627\u0644\u062e\u0637\u0648\u0629 \u0627\u0644\u062a\u0627\u0644\u064a\u0629",
-    "viewCourse": "\u0639\u0631\u0636 \u0627\u0644\u062f\u0648\u0631\u0629",
+    "whatIsNext": "ما الخطوة التالية",
+    "viewCourse": "عرض الدورة",
     "studentsReviews": "تقييمات الطلاب",
     "courseContent": "محتوى الدورة",
     "displayMore": "عرض المزيد",
@@ -713,6 +711,7 @@
     "my_courses": "دوراتي",
     "myCourses": "دوراتي",
     "blogs": "المدونات",
+    "blogsDescription": "اقرأ تحديثات المنصة، وأفكار التعلم، وقصص المجتمع من داخل لوحة التحكم.",
     "lives": "البث المباشر",
     "wallet": "المحفظة",
     "logout": "تسجيل الخروج",
@@ -722,6 +721,7 @@
     "createPost": "إنشاء منشور",
     "analytics": "التحليلات",
     "chat": "الدردشة",
+    "chatDescription": "تابع محادثات الدورات ورسائل المجتمع دون مغادرة مساحة العمل.",
     "settings": "الإعدادات",
     "toggleSidebar": "تبديل الشريط الجانبي",
     "marketing": "لوحة القيادة",
@@ -799,7 +799,12 @@
     "clearAll": "مسح الكل",
     "beginnerToIntermediate": "مبتدئ إلى متوسط",
     "intermediateToAdvanced": "متوسط إلى متقدم",
-    "beginnerToAdvanced": "مبتدئ إلى متقدم"
+    "beginnerToAdvanced": "مبتدئ إلى متقدم",
+    "salesAnalyticsDescription": "تابع الإيرادات والتسجيلات وأداء التسويق بالعمولة في لوحة واحدة.",
+    "invoicesDescription": "راجع الرصيد والسحوبات والعمولات وسجل المدفوعات.",
+    "couponsDescription": "أنشئ كوبونات خصم موجهة وتابع حالة استخدامها.",
+    "myTeamDescription": "افهم فريق الإحالات وروابط الدعوة ونشاط المشترين.",
+    "noUsersFound": "لا يوجد مستخدمون"
   },
   "post": {
     "like": "إعجاب",
@@ -833,6 +838,8 @@
   },
   "chat": {
     "chats": "الدردشات",
+    "selectChat": "اختر محادثة",
+    "selectChatDescription": "اختر محادثة من القائمة الجانبية لقراءة الرسائل ومتابعة الحديث.",
     "edit": "تعديل",
     "delete": "حذف",
     "send": "إرسال",
@@ -860,6 +867,7 @@
   },
   "lives": {
     "livesNow": "البثوث المباشرة الآن",
+    "dashboardDescription": "تابع بثوث هذا الأسبوع، والغرف القادمة، وتقويم الدورات من عرض واحد مركز.",
     "no_instructor": "لا يوجد مدرب",
     "go_to_meeting_room": "الذهاب إلى غرفة الاجتماع",
     "upcomingLives": "البثوث المباشرة القادمة",
@@ -937,7 +945,13 @@
     "clickOrDragImageToUpload": "انقر أو اسحب الصورة للتحميل",
     "welcomeToNexgenAcademy": "مرحباً بك في أكاديمية Nexgen! 🎉",
     "welcomeMessage": "تصفح وافتح دوراتنا حتى تتمكن من بدء مناقشات الدورة والانضمام إلى المجتمع!",
-    "goToCourseList": "الذهاب إلى قائمة الدورات"
+    "goToCourseList": "الذهاب إلى قائمة الدورات",
+    "advancedFilters": "فلاتر متقدمة",
+    "layout": "التخطيط",
+    "content": "المحتوى",
+    "learn": "التعلم",
+    "lives": "البثوث",
+    "roomRail": "الغرف"
   },
   "checkout": {
     "title": "الدفع",
@@ -981,6 +995,8 @@
   },
   "learn": {
     "retry": "إعادة",
+    "myLearning": "تعلمي",
+    "myLearningDescription": "تابع دوراتك النشطة، وإنجازاتك المكتملة، والخطوة التالية في مسارك.",
     "backToMyLearning": "العودة إلى تعلمي",
     "welcomeTo": "مرحباً بك في",
     "pleaseSelectLessonToKeepLearning": "يرجى اختيار درس للاستمرار في التعلم",
@@ -1026,6 +1042,8 @@
     "score": "الدرجة",
     "viewExamDetails": "عرض تفاصيل الامتحان",
     "examDetails": "تفاصيل الامتحان",
+    "noExamAttempts": "لا توجد محاولات امتحان بعد",
+    "noExamAttemptsDescription": "عند إكمال اختبارات الدروس، ستظهر نتائجك هنا.",
     "congratsOnFinishingTheCourse": "تهانينا على إنهاء الدورة 🎉",
     "checkYourCertificate": "تحقق من شهادتك 🌟",
     "yourCertificateDosnotAvailableYet": "شهادتك غير متوفرة بعد",
@@ -1078,7 +1096,11 @@
     "movingToQuiz": "الانتقال إلى الاختبار...",
     "movingToPractice": "الانتقال إلى التدريب...",
     "movingToNextLesson": "الانتقال إلى الدرس التالي...",
-    "allLessonsCompleted": "لقد أكملت جميع الدروس في هذا القسم!"
+    "allLessonsCompleted": "لقد أكملت جميع الدروس في هذا القسم!",
+    "failedToLoadExams": "فشل تحميل تفاصيل الامتحان",
+    "videoLeakWarning": "تسريب أو مشاركة فيديوهات الدروس قد يعرضك للمساءلة القانونية.",
+    "downloadAssignmentFile": "تحميل ملف الواجب",
+    "question": "السؤال"
   },
   "settings": {
     "myProfile": "الملف الشخصي",
@@ -1100,7 +1122,8 @@
     "pleaseReSendItAgain": "يرجى إعادة إرساله مرة أخرى",
     "verificationDone": "تم التحقق من الهوية",
     "verificationDoneP": "تم التحقق من الهوية بنجاح شكرا لك",
-    "acceptedFormats": "الصيغ المقبولة: "
+    "acceptedFormats": "الصيغ المقبولة: ",
+    "agreeToTerms": "أوافق على"
   },
   "couponManagement": {
     "createCoupon": {
@@ -1239,6 +1262,8 @@
   },
   "practice": {
     "completed": "مكتمل",
+    "title": "التدريب",
+    "description": "أرسل تدريباتك، وراجع الملاحظات، وصف مهامك المكتملة أو قيد التقدم حسب الدورة.",
     "onProgress": "قيد التقدم",
     "addNew": "إضافة جديد",
     "somethingWentWrong": "حدث خطأ ما",
@@ -1419,10 +1444,13 @@
     "allItems": "جميع العناصر",
     "course": "دورة",
     "service": "خدمة",
-    "path": "مسار"
+    "path": "مسار",
+    "delete": "حذف",
+    "areYouSure": "هل أنت متأكد؟"
   },
   "analytics": {
     "outTopStudentsInThisCourse": "أفضل الطلاب في هذه الدورة",
+    "overviewDescription": "راجع تقدم الدورة، وجودة التدريب، ونشاط الامتحانات، والتفاعل مع الفيديوهات من لوحة واحدة مركزة.",
     "gradesAverage": "متوسط الدرجات",
     "timeSpent": "الوقت المستغرق",
     "totalProgress": "التقدم الكلي",
@@ -1497,10 +1525,9 @@
     "title": "الدورات",
     "search": "بحث",
     "all": "الكل",
-    "active": "منشور",
+    "active": "نشط",
     "under_review": "قيد المراجعة",
     "draft": "مسودة",
-    "active": "نشط",
     "inactive": "غير نشط",
     "pending": "قيد الانتظار",
     "add_new_course": "إضافة دورة جديدة",
@@ -1615,16 +1642,16 @@
     "goodbye_message": "رسالة الوداع",
     "course_messages": "رسائل الدورة",
     "course_messages_description": "تكوين رسائل الترحيب والتهنئة لدورتك",
-    "what_is_next": "\u0645\u0627 \u0627\u0644\u062e\u0637\u0648\u0629 \u0627\u0644\u062a\u0627\u0644\u064a\u0629",
-    "what_is_next_description": "\u062d\u062f\u062f \u0627\u0644\u062f\u0648\u0631\u0627\u062a \u0627\u0644\u062a\u064a \u064a\u0646\u0628\u063a\u064a \u0639\u0644\u0649 \u0627\u0644\u0637\u0644\u0627\u0628 \u062f\u0631\u0627\u0633\u062a\u0647\u0627 \u0628\u0639\u062f \u0647\u0630\u0647 \u0627\u0644\u062f\u0648\u0631\u0629",
-    "what_is_next_title": "\u0639\u0646\u0648\u0627\u0646 \u0645\u0627 \u0628\u0639\u062f \u0627\u0644\u062f\u0648\u0631\u0629",
-    "what_is_next_description_label": "\u0648\u0635\u0641 \u0645\u0627 \u0628\u0639\u062f \u0627\u0644\u062f\u0648\u0631\u0629",
-    "enter_what_is_next_title_english": "\u0623\u062f\u062e\u0644 \u0639\u0646\u0648\u0627\u0646 \u0645\u0627 \u0628\u0639\u062f \u0627\u0644\u062f\u0648\u0631\u0629 \u0628\u0627\u0644\u0625\u0646\u062c\u0644\u064a\u0632\u064a\u0629",
-    "enter_what_is_next_title_arabic": "\u0623\u062f\u062e\u0644 \u0639\u0646\u0648\u0627\u0646 \u0645\u0627 \u0628\u0639\u062f \u0627\u0644\u062f\u0648\u0631\u0629 \u0628\u0627\u0644\u0639\u0631\u0628\u064a\u0629",
-    "enter_what_is_next_description_english": "\u0623\u062f\u062e\u0644 \u0648\u0635\u0641 \u0645\u0627 \u0628\u0639\u062f \u0627\u0644\u062f\u0648\u0631\u0629 \u0628\u0627\u0644\u0625\u0646\u062c\u0644\u064a\u0632\u064a\u0629",
-    "enter_what_is_next_description_arabic": "\u0623\u062f\u062e\u0644 \u0648\u0635\u0641 \u0645\u0627 \u0628\u0639\u062f \u0627\u0644\u062f\u0648\u0631\u0629 \u0628\u0627\u0644\u0639\u0631\u0628\u064a\u0629",
-    "next_courses": "\u0627\u0644\u062f\u0648\u0631\u0627\u062a \u0627\u0644\u062a\u0627\u0644\u064a\u0629",
-    "select_next_courses": "\u0627\u062e\u062a\u0631 \u0627\u0644\u062f\u0648\u0631\u0627\u062a \u0627\u0644\u062a\u0627\u0644\u064a\u0629",
+    "what_is_next": "ما الخطوة التالية",
+    "what_is_next_description": "حدد الدورات التي ينبغي على الطلاب دراستها بعد هذه الدورة",
+    "what_is_next_title": "عنوان ما بعد الدورة",
+    "what_is_next_description_label": "وصف ما بعد الدورة",
+    "enter_what_is_next_title_english": "أدخل عنوان ما بعد الدورة بالإنجليزية",
+    "enter_what_is_next_title_arabic": "أدخل عنوان ما بعد الدورة بالعربية",
+    "enter_what_is_next_description_english": "أدخل وصف ما بعد الدورة بالإنجليزية",
+    "enter_what_is_next_description_arabic": "أدخل وصف ما بعد الدورة بالعربية",
+    "next_courses": "الدورات التالية",
+    "select_next_courses": "اختر الدورات التالية",
     "enter_welcome_message_english": "أدخل رسالة الترحيب باللغة الإنجليزية",
     "enter_welcome_message_arabic": "أدخل رسالة الترحيب باللغة العربية",
     "enter_goodbye_message_english": "أدخل رسالة الوداع باللغة الإنجليزية",

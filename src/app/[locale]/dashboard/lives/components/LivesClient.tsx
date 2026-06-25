@@ -10,32 +10,95 @@ import LiveFilters from "./LiveFilters";
 import useCustomSearchParams from "@/hooks/useSearchParams";
 import { Skeleton } from "@/components/ui/skeleton";
 import LivesCalendar from "@/components/LivesCalendar";
+import DashboardContainer from "../../components/DashboardContainer";
+import { CalendarDays, Radio } from "lucide-react";
 
 const LiveCardSkeleton = () => (
-  <div className="flex flex-col justify-between w-full gap-4 p-4 border rounded-md">
+  <div className="flex w-full flex-col justify-between gap-4 rounded-2xl border border-primary/10 bg-clear-ground p-4 shadow-sm">
     <div>
-      <div className="flex flex-wrap items-center justify-start gap-2 mb-4">
-        <Skeleton className="h-6 w-20 rounded" />
-        <Skeleton className="h-6 w-24 rounded" />
+      <div className="mb-4 flex flex-wrap items-center justify-start gap-2">
+        <Skeleton className="h-6 w-20 rounded-full" />
+        <Skeleton className="h-6 w-24 rounded-full" />
       </div>
-      <div className="flex items-center justify-between mt-4 mb-4">
+      <div className="mb-4 mt-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Skeleton className="w-10 h-10 rounded-full" />
+          <Skeleton className="size-10 rounded-full" />
           <Skeleton className="h-4 w-24" />
         </div>
       </div>
-      <Skeleton className="h-5 w-full mb-3" />
+      <Skeleton className="mb-3 h-5 w-full" />
       <div className="space-y-2">
         <Skeleton className="h-4 w-32" />
         <Skeleton className="h-4 w-28" />
       </div>
     </div>
-    <Skeleton className="w-full h-10 rounded-lg" />
+    <Skeleton className="h-10 w-full rounded-xl" />
+  </div>
+);
+
+const LivesPageShell = ({
+  children,
+  description,
+  title,
+}: {
+  children: React.ReactNode;
+  description: string;
+  title: string;
+}) => {
+  return (
+    <main className="w-full !bg-transparent px-3 py-6 sm:px-5 sm:py-8 lg:px-6">
+      <DashboardContainer className="space-y-5">
+        <section className="relative overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground p-5 shadow-sm sm:p-6">
+          <div className="pointer-events-none absolute inset-0 opacity-50 [background-image:linear-gradient(hsl(var(--primary)/0.08)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--primary)/0.08)_1px,transparent_1px)] [background-size:28px_28px]" />
+          <div className="relative flex min-w-0 items-center gap-3">
+            <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl border border-primary/10 bg-primary/10 text-primary">
+              <Radio className="size-5" />
+            </span>
+            <div className="min-w-0">
+              <h1 className="text-lg font-black text-text-1 sm:text-xl">
+                {title}
+              </h1>
+              <p className="mt-1 max-w-2xl text-sm leading-6 text-text-3">
+                {description}
+              </p>
+            </div>
+          </div>
+        </section>
+        {children}
+      </DashboardContainer>
+    </main>
+  );
+};
+
+const LivePanel = ({
+  children,
+  title,
+}: {
+  children: React.ReactNode;
+  title: string;
+}) => {
+  return (
+    <section className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+      <div className="flex items-center gap-3 border-b border-primary/10 p-4 sm:p-5">
+        <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <CalendarDays className="size-4" />
+        </span>
+        <h2 className="font-black text-text-1">{title}</h2>
+      </div>
+      <div className="p-4 sm:p-5">{children}</div>
+    </section>
+  );
+};
+
+const EmptyLives = ({ children }: { children: React.ReactNode }) => (
+  <div className="rounded-2xl border border-primary/10 bg-background-2 px-4 py-12 text-center text-sm font-bold text-text-3">
+    {children}
   </div>
 );
 
 const LivesClient = () => {
   const text = useTranslations("lives");
+  const dashboardText = useTranslations("dashboard");
   const locale = useLocale();
   const isArabic = locale === "ar";
   const { getSearchParam } = useCustomSearchParams();
@@ -45,7 +108,6 @@ const LivesClient = () => {
   const selectedDate = getSearchParam("date") || "";
   const selectedCourse = getSearchParam("course") || "all";
 
-  // Fetch all lives once with limit=1000
   useEffect(() => {
     const fetchLives = async () => {
       try {
@@ -63,12 +125,11 @@ const LivesClient = () => {
     fetchLives();
   }, []);
 
-  // Group lives by time (this week vs upcoming)
   const groupLivesByTime = (livesToGroup: ILive[]) => {
     const now = new Date();
     const startOfThisWeek = new Date(now);
     startOfThisWeek.setHours(0, 0, 0, 0);
-    startOfThisWeek.setDate(now.getDate() - now.getDay()); // Set to Sunday
+    startOfThisWeek.setDate(now.getDate() - now.getDay());
 
     const startOfNextWeek = new Date(startOfThisWeek);
     startOfNextWeek.setDate(startOfThisWeek.getDate() + 7);
@@ -85,133 +146,112 @@ const LivesClient = () => {
     };
   };
 
-  // Client-side filtering
   const filteredLives = useMemo(() => {
     let filtered = [...lives];
 
-    // Filter by course
     if (selectedCourse && selectedCourse !== "all") {
       filtered = filtered.filter((live) =>
-        live.package.some((pkg) => pkg._id === selectedCourse)
+        live.package.some((pkg) => pkg._id === selectedCourse),
       );
     }
 
-    // Filter by date if selected
     if (selectedDate) {
       filtered = filtered.filter(
-        (live) => format(new Date(live.date), "yyyy-MM-dd") === selectedDate
+        (live) => format(new Date(live.date), "yyyy-MM-dd") === selectedDate,
       );
     }
 
     return filtered;
   }, [lives, selectedCourse, selectedDate]);
 
-  // Group filtered lives by time
   const { thisWeek, upcoming } = useMemo(
     () => groupLivesByTime(filteredLives),
-    [filteredLives]
+    [filteredLives],
   );
+
+  const title = dashboardText("lives");
+  const description = text("dashboardDescription");
 
   if (loading) {
     return (
-      <main className="flex bg-background flex-col-reverse justify-center w-full gap-8 p-8 lg:flex-row lg:gap-10 lg:p-10">
-        <div className="flex-1 w-full  max-w-4xl">
-          <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
-            <Skeleton className="h-6 w-32 mb-6" />
-            <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <LiveCardSkeleton key={i} />
-              ))}
+      <LivesPageShell description={description} title={title}>
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
+          <div className="space-y-5">
+            {[text("thisWeek"), text("upcomingWeeks")].map((panelTitle) => (
+              <LivePanel key={panelTitle} title={panelTitle}>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <LiveCardSkeleton key={i} />
+                  ))}
+                </div>
+              </LivePanel>
+            ))}
+          </div>
+          <aside className="space-y-5">
+            <LiveFilters />
+            <div className="rounded-2xl border border-primary/10 bg-clear-ground p-4 shadow-sm">
+              <Skeleton className="mx-auto mb-6 h-6 w-24" />
+              <Skeleton className="h-48 w-full" />
             </div>
-          </div>
-          <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
-            <Skeleton className="h-6 w-32 mb-6" />
-            <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <LiveCardSkeleton key={i} />
-              ))}
-            </div>
-          </div>
+          </aside>
         </div>
-        <div className="xl:w-[25rem] lg:w-[20rem]">
-          <LiveFilters />
-          <div className="w-full cardShadow rounded-xl h-fit p-4">
-            <Skeleton className="h-6 w-24 mx-auto mb-6" />
-            <Skeleton className="h-48 w-full" />
-          </div>
-        </div>
-      </main>
+      </LivesPageShell>
     );
   }
 
   return (
-    <main className="flex bg-background flex-col-reverse justify-center w-full gap-8 p-8 lg:flex-row lg:gap-10 lg:p-10">
-      <div className="flex-1 w-full max-w-4xl">
-        {selectedDate ? (
-          <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
-            <h2 className="mb-4 font-medium md:mb-6">
-              {format(new Date(selectedDate), "EEEE, MMMM d, yyyy", {
+    <LivesPageShell description={description} title={title}>
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <div className="space-y-5">
+          {selectedDate ? (
+            <LivePanel
+              title={format(new Date(selectedDate), "EEEE, MMMM d, yyyy", {
                 locale: isArabic ? arSA : enUS,
               })}
-            </h2>
-            {filteredLives.length !== 0 ? (
-              <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
-                {filteredLives.map((live) => (
-                  <LiveCard key={live._id} live={live} />
-                ))}
-              </div>
-            ) : (
-              <div>
-                <p className="text-lg font-medium text-center text-text-3">
-                  {text("noLivesThisDay")}
-                </p>
-              </div>
-            )}
-          </div>
-        ) : (
-          <>
-            <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
-              <h2 className="mb-4 font-medium md:mb-6">{text("thisWeek")}</h2>
-              {thisWeek.length !== 0 ? (
-                <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
-                  {thisWeek.map((live) => (
+            >
+              {filteredLives.length !== 0 ? (
+                <div className="grid gap-4 md:grid-cols-2">
+                  {filteredLives.map((live) => (
                     <LiveCard key={live._id} live={live} />
                   ))}
                 </div>
               ) : (
-                <div>
-                  <p className="text-lg font-medium text-center text-text-3">
-                    {text("noLivesThisWeek")}
-                  </p>
-                </div>
+                <EmptyLives>{text("noLivesThisDay")}</EmptyLives>
               )}
-            </div>
-            <div className="px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
-              <h2 className="mb-4 font-medium md:mb-6">
-                {text("upcomingWeeks")}
-              </h2>
-              {upcoming.length !== 0 ? (
-                <div className="grid gap-4 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
-                  {upcoming.map((live) => (
-                    <LiveCard key={live._id} live={live} />
-                  ))}
-                </div>
-              ) : (
-                <div>
-                  <p className="text-lg font-medium text-center text-text-3">
-                    {text("noUpcomingLives")}
-                  </p>
-                </div>
-              )}
-            </div>
-          </>
-        )}
+            </LivePanel>
+          ) : (
+            <>
+              <LivePanel title={text("thisWeek")}>
+                {thisWeek.length !== 0 ? (
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {thisWeek.map((live) => (
+                      <LiveCard key={live._id} live={live} />
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyLives>{text("noLivesThisWeek")}</EmptyLives>
+                )}
+              </LivePanel>
+              <LivePanel title={text("upcomingWeeks")}>
+                {upcoming.length !== 0 ? (
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {upcoming.map((live) => (
+                      <LiveCard key={live._id} live={live} />
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyLives>{text("noUpcomingLives")}</EmptyLives>
+                )}
+              </LivePanel>
+            </>
+          )}
+        </div>
+        <aside className="space-y-5">
+          <LiveFilters />
+          <LivesCalendar lives={lives} />
+        </aside>
       </div>
-      <div className="xl:w-[25rem] lg:w-[20rem]">
-        <LiveFilters />
-        <LivesCalendar lives={lives} />
-      </div>
-    </main>
+    </LivesPageShell>
   );
 };
 

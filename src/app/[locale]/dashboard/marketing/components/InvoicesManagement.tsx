@@ -13,7 +13,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/components/auth-provider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import TrendBadge from "@/components/TrendBadge";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -65,7 +64,7 @@ const InvoicesManagement = () => {
         year: "numeric",
         month: "long",
         day: "numeric",
-      }
+      },
     );
   };
 
@@ -84,12 +83,8 @@ const InvoicesManagement = () => {
     return <LoadingState />;
   }
   return (
-    <div className="space-y-8">
-      <StatsCards
-        marketLog={marketLog}
-        locale={locale}
-        t={t}
-      />
+    <div className="space-y-5">
+      <StatsCards marketLog={marketLog} locale={locale} t={t} />
       <MarketingTabs
         marketLog={marketLog}
         t={t}
@@ -109,26 +104,26 @@ const InvoicesManagement = () => {
 };
 
 const LoadingState = () => (
-  <div className="space-y-8">
+  <div className="space-y-5">
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
       {Array.from({ length: 4 }).map((_, i) => (
-        <Card key={i}>
-          <CardContent className="p-4">
+        <Card
+          key={i}
+          className="rounded-2xl border border-primary/10 bg-clear-ground shadow-sm"
+        >
+          <CardContent className="p-4 sm:p-5">
             <Skeleton className="mb-2 w-24 h-4" />
             <Skeleton className="w-32 h-8" />
           </CardContent>
         </Card>
       ))}
     </div>
-    <Card>
-      <CardContent className="p-4">
+    <Card className="rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+      <CardContent className="p-4 sm:p-5">
         <Skeleton className="mb-4 w-48 h-8" />
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton
-              key={i}
-              className="w-full h-12"
-            />
+            <Skeleton key={i} className="w-full h-12" />
           ))}
         </div>
       </CardContent>
@@ -145,42 +140,42 @@ const StatsCards = ({
   t: (key: string) => string;
   locale: string;
 }) => (
-  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-    <div className="lg:col-span-3 grid grid-cols-6 gap-4">
+  <div className="grid grid-cols-1 gap-4 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:col-span-3 xl:grid-cols-6">
       <StatCard
         title={t("stats.totalSales")}
         value={marketLog?.totalSalesMoney || 0}
         difference={marketLog?.salesMoneyDifference || 0}
         total={marketLog?.totalSalesMoney || 0}
-        className="col-span-2"
+        className="xl:col-span-2"
       />
       <StatCard
         title={t("stats.profit")}
         value={marketLog?.profits || 0}
         difference={marketLog?.profitsDifference || 0}
         total={marketLog?.profits || 0}
-        className="col-span-2"
+        className="xl:col-span-2"
       />
       <StatCard
         title={t("stats.withdrawals")}
         value={marketLog?.withdrawals || 0}
         difference={0}
         total={marketLog?.withdrawals || 0}
-        className="col-span-2"
-      />{" "}
+        className="xl:col-span-2"
+      />
       <StatCard
         title={t("stats.totalProfits")}
         value={marketLog?.totalProfits || 0}
         difference={0}
         total={marketLog?.totalProfits || 0}
-        className="col-span-3"
+        className="xl:col-span-3"
       />
       <StatCard
         title={t("stats.commissionsProfits")}
         value={marketLog?.commissionsProfits || 0}
         difference={0}
         total={marketLog?.commissionsProfits || 0}
-        className="col-span-3"
+        className="xl:col-span-3"
       />
     </div>
     <BalanceCard
@@ -204,23 +199,19 @@ const StatCard = ({
   total: number;
   className?: string;
 }) => (
-  <Card className={cn("cardShadow bg-background", className)}>
-    <CardContent className="p-4">
+  <Card
+    className={cn(
+      "overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm",
+      className,
+    )}
+  >
+    <CardContent className="p-4 sm:p-5">
       <div>
         <p className="text-sm text-muted-foreground">{title}</p>
         <h3 className="mt-1 mb-2 font-semibold h1-5">
           ${value?.toLocaleString()}
         </h3>
       </div>
-      {/* {difference && total ? (
-        <>
-          <TrendBadge
-            percentage={Math.abs((difference / total) * 100).toFixed(1)}
-            positive={difference > 0}
-          />
-          <RenderFakeChart positive={difference > 0} />
-        </>
-      ) : null} */}
     </CardContent>
   </Card>
 );
@@ -252,7 +243,7 @@ const BalanceCard = ({
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       setIsOpen(false);
       setAmount("");
@@ -269,7 +260,7 @@ const BalanceCard = ({
   };
 
   return (
-    <Card className="cardShadow bg-background">
+    <Card className="rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
       <CardContent className="flex flex-col justify-center items-center p-4 h-full">
         <div className="relative">
           <Image
@@ -278,7 +269,7 @@ const BalanceCard = ({
             width={500}
             height={500}
             className={cn(
-              "hidden w-full rounded-md aspect-[340/176] dark:block"
+              "hidden w-full rounded-md aspect-[340/176] dark:block",
             )}
           />
           <Image
@@ -298,15 +289,9 @@ const BalanceCard = ({
           </div>
         </div>
 
-        <Dialog
-          open={isOpen}
-          onOpenChange={setIsOpen}
-        >
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button
-              className="mt-4 w-full"
-              variant="outline"
-            >
+            <Button className="mt-4 w-full rounded-xl" variant="outline">
               {t("stats.withdraw")}
             </Button>
           </DialogTrigger>
@@ -354,7 +339,7 @@ const MarketingTabs = ({
   getStatusColor: (status: string) => string;
   locale: string;
 }) => (
-  <Card className="cardShadow bg-background">
+  <Card className="rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
     <Tabs
       defaultValue="commission"
       dir={locale === "ar" ? "rtl" : "ltr"}
@@ -419,7 +404,7 @@ const InvoicesTabs = ({
   all?: boolean;
   locale: string;
 }) => (
-  <Card className="cardShadow bg-background">
+  <Card className="rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
     <Tabs
       defaultValue="regular"
       dir={locale === "ar" ? "rtl" : "ltr"}
@@ -656,15 +641,12 @@ const TableWithModal = ({
 }) => {
   return (
     <>
-      <CardHeader className="flex flex-row justify-between items-center">
+      <CardHeader className="flex flex-row items-center justify-between gap-3 border-b border-primary/10 p-4 sm:p-5">
         <div className="flex-1">{header}</div>
         {!hideModal && (
           <Dialog>
             <DialogTrigger asChild>
-              <Button
-                variant="ghost"
-                className="gap-2 text-text-3"
-              >
+              <Button variant="ghost" className="gap-2 rounded-xl text-text-3">
                 {t("common.showAll")}
                 <ArrowRight
                   className={cn("w-4 h-4", {
@@ -673,7 +655,7 @@ const TableWithModal = ({
                 />
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-h-[80vh] max-w-[95vw] sm:max-w-[95vw] md:max-w-[95vw] lg:max-w-[95vw] overflow-y-auto">
+            <DialogContent className="max-h-[80vh] max-w-[95vw] overflow-y-auto rounded-2xl sm:max-w-[95vw] md:max-w-[95vw] lg:max-w-[95vw]">
               <DialogHeader>
                 <DialogTitle>{header}</DialogTitle>
               </DialogHeader>
@@ -682,19 +664,11 @@ const TableWithModal = ({
           </Dialog>
         )}
       </CardHeader>
-      <CardContent>{children}</CardContent>
+      <CardContent className="overflow-x-auto p-4 sm:p-5">
+        {children}
+      </CardContent>
     </>
   );
 };
-
-const RenderFakeChart = ({ positive }: { positive: boolean }) => (
-  <Image
-    src={`/images/invoices_${positive ? "up" : "down"}_chart.svg`}
-    alt="chart"
-    width={500}
-    height={500}
-    className="w-full aspect-[189/120] mt-4 object-cover"
-  />
-);
 
 export default InvoicesManagement;

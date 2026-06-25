@@ -56,7 +56,9 @@
       "testimonials_description": "Read what our learners say about their experience.",
       "success_stories_title": "Success Story Video",
       "success_stories_description": "Watch our learners' success stories."
-    }
+    },
+    "loading": "Loading...",
+    "termsOfService": "Terms of Service"
   },
   "badges": {
     "new": "New",
@@ -144,7 +146,6 @@
     "categoryTitle": "{categoryName}'s Courses",
     "noCourses": "No courses found for this category"
   },
-
   "learningPaths": {
     "popularEyebrow": "Structured journeys",
     "heading": "Advance Your Forex Trading Career",
@@ -196,8 +197,9 @@
     "highlight_cannot_be_empty": "Highlight cannot be empty",
     "empty_highlight_error": "This highlight is empty",
     "validation": {
-      "price_required": "Price is required",
-      "price_after_discount_invalid": "Price after discount must be less than original price"
+      "highlight_cannot_be_empty": "Highlight cannot be empty",
+      "image_invalid": "Please select a valid image file (JPG, PNG, GIF)",
+      "image_size": "Image size must be less than 5MB"
     },
     "learning_path_created_successfully": "Learning path created successfully",
     "learning_path_updated_successfully": "Learning path updated successfully",
@@ -251,12 +253,7 @@
     "learning_path_image_guideline_size": "Maximum file size: 5MB",
     "learning_path_image_guideline_format": "Accepted formats: JPG, PNG, GIF",
     "upload_file": "Upload file",
-    "no_file_selected": "No file selected",
-    "validation": {
-      "highlight_cannot_be_empty": "Highlight cannot be empty",
-      "image_invalid": "Please select a valid image file (JPG, PNG, GIF)",
-      "image_size": "Image size must be less than 5MB"
-    }
+    "no_file_selected": "No file selected"
   },
   "whyChooseUs": {
     "heading": "Why Choose NexGen Academy",
@@ -572,7 +569,8 @@
       "maxFileSize": "Max file size: ",
       "fileSelected": "file selected",
       "filesSelected": "files selected"
-    }
+    },
+    "passwords_dont_match": "Passwords don't match"
   },
   "reviewsSectionAboutPage": {
     "heading": "Learner Reviews",
@@ -717,6 +715,7 @@
     "myCourses": "My Courses",
     "lives": "Live Streams",
     "blogs": "Blogs",
+    "blogsDescription": "Read platform updates, learning ideas, and community stories inside your dashboard.",
     "wallet": "Wallet",
     "logout": "Logout",
     "searchAboutCourses": "Search about courses...",
@@ -725,6 +724,7 @@
     "createPost": "Create Post",
     "analytics": "Analytics",
     "chat": "Chat",
+    "chatDescription": "Continue your course conversations and community messages without leaving the workspace.",
     "settings": "Settings",
     "toggleSidebar": "Toggle sidebar",
     "marketing": "Leader board",
@@ -802,7 +802,12 @@
     "clearAll": "Clear All",
     "beginnerToIntermediate": "Beginner to Intermediate",
     "intermediateToAdvanced": "Intermediate to Advanced",
-    "beginnerToAdvanced": "Beginner to Advanced"
+    "beginnerToAdvanced": "Beginner to Advanced",
+    "salesAnalyticsDescription": "Track revenue, registrations, and affiliate performance in one dashboard.",
+    "invoicesDescription": "Review balances, withdrawals, commissions, and payout history.",
+    "couponsDescription": "Create focused discount coupons and monitor their usage status.",
+    "myTeamDescription": "Understand your referral team, invitation links, and buyer activity.",
+    "noUsersFound": "No users found"
   },
   "post": {
     "like": "Like",
@@ -836,6 +841,8 @@
   },
   "chat": {
     "chats": "Chats",
+    "selectChat": "Select a conversation",
+    "selectChatDescription": "Choose a chat from the sidebar to read messages and continue the conversation.",
     "edit": "Edit",
     "delete": "Delete",
     "send": "Send",
@@ -863,6 +870,7 @@
   },
   "lives": {
     "livesNow": "Live Streams Now",
+    "dashboardDescription": "Keep track of this week’s live sessions, upcoming rooms, and the course calendar in one focused view.",
     "no_instructor": "No instructor",
     "go_to_meeting_room": "Go to meeting room",
     "upcomingLives": "Upcoming Live Streams",
@@ -940,7 +948,13 @@
     "clickOrDragImageToUpload": "Click or drag image to upload",
     "welcomeToNexgenAcademy": "Welcome to Nexgen Academy! 🎉",
     "welcomeMessage": "Browse and unlock our courses so you can start course discussions and join the community!",
-    "goToCourseList": "Go to Course List"
+    "goToCourseList": "Go to Course List",
+    "advancedFilters": "Advanced filters",
+    "layout": "Layout",
+    "content": "Content",
+    "learn": "Learn",
+    "lives": "Lives",
+    "roomRail": "Rooms"
   },
   "checkout": {
     "title": "Checkout",
@@ -984,6 +998,8 @@
   },
   "learn": {
     "retry": "Retry",
+    "myLearning": "My learning",
+    "myLearningDescription": "Track your active courses, completed work, and the next step in your path.",
     "backToMyLearning": "Back to my learning",
     "welcomeTo": "Welcome to",
     "pleaseSelectLessonToKeepLearning": "Please select lesson to keep learning",
@@ -1029,6 +1045,8 @@
     "score": "Score",
     "viewExamDetails": "View Exam Details",
     "examDetails": "Exam Details",
+    "noExamAttempts": "No exam attempts yet",
+    "noExamAttemptsDescription": "Once you complete lesson quizzes, your results will appear here.",
     "congratsOnFinishingTheCourse": "Congratulations on finishing the course 🎉",
     "checkYourCertificate": "Check your certificate 🌟",
     "yourCertificateDosnotAvailableYet": "Your certificate is not available yet",
@@ -1081,7 +1099,11 @@
     "movingToQuiz": "Moving to quiz...",
     "movingToPractice": "Moving to practice...",
     "movingToNextLesson": "Moving to next lesson...",
-    "allLessonsCompleted": "You've completed all lessons in this section!"
+    "allLessonsCompleted": "You've completed all lessons in this section!",
+    "failedToLoadExams": "Failed to load exam details",
+    "videoLeakWarning": "Sharing or leaking lesson videos may expose you to legal accountability.",
+    "downloadAssignmentFile": "Download assignment file",
+    "question": "Question"
   },
   "learn_extra": {},
   "settings": {
@@ -1104,7 +1126,8 @@
     "pleaseReSendItAgain": "Please send it again",
     "verificationDone": "Identity verification completed",
     "verificationDoneP": "Identity verification completed successfully, thank you",
-    "acceptedFormats": "Accepted formats: "
+    "acceptedFormats": "Accepted formats: ",
+    "agreeToTerms": "I agree to the"
   },
   "couponManagement": {
     "createCoupon": {
@@ -1243,6 +1266,8 @@
   },
   "practice": {
     "completed": "Completed",
+    "title": "Practice",
+    "description": "Submit practice work, review feedback, and filter your completed or in-progress tasks by course.",
     "onProgress": "In Progress",
     "addNew": "Add New",
     "somethingWentWrong": "Something went wrong",
@@ -1425,10 +1450,13 @@
     "allItems": "All Items",
     "course": "Course",
     "service": "Service",
-    "path": "Path"
+    "path": "Path",
+    "delete": "Delete",
+    "areYouSure": "Are you sure?"
   },
   "analytics": {
     "outTopStudentsInThisCourse": "Our Top Students in This Course",
+    "overviewDescription": "Review course progress, practice quality, exam activity, and video engagement from one focused dashboard.",
     "gradesAverage": "Grades Average",
     "timeSpent": "Time Spent",
     "totalProgress": "Total Progress",
@@ -1464,7 +1492,8 @@
     "thisMonthWrongPracticeNumber": "This Month's Wrong Practices",
     "noPracticeForThisMonth": "No practices for this month",
     "selectMonth": "Select Month",
-    "month": "Month"
+    "month": "Month",
+    "noVideosForThisMonth": "No videos for this month"
   },
   "reviews": {
     "reply": "Reply",
@@ -1499,10 +1528,9 @@
     "title": "Courses",
     "search": "Search",
     "all": "All",
-    "active": "active",
+    "active": "Active",
     "under_review": "Under Review",
     "draft": "Draft",
-    "active": "Active",
     "inactive": "Inactive",
     "pending": "Pending",
     "add_new_course": "Add new course",
@@ -1529,16 +1557,12 @@
     "courses": "Courses",
     "learning_paths": "Learning Paths",
     "services": "Services",
-    "my_courses": "My Courses",
     "my_learning_paths": "My Learning Paths",
     "my_services": "My Services",
-    "add_new_course": "Add new course",
     "add_new_learning_path": "Add new learning path",
     "add_new_service": "Add new service",
-    "no_courses_found": "No courses found",
     "no_learning_paths_found": "No learning paths found",
     "no_services_found": "No services found",
-    "course_details": "Course Details",
     "learning_path_details": "Learning Path Details",
     "service_details": "Service Details",
     "days": "days",

@@ -1,16 +1,12 @@
+import DashboardContainer from "../components/DashboardContainer";
 import DisplayCourses from "./components/DisplayCourses";
 
-const Dashboard = async (props: { params: Promise<{ locale: string }> }) => {
-  const params = await props.params;
-
+const Dashboard = async () => {
   return (
-    <main
-      style={{
-        minHeight: "calc(100vh - 76px)",
-      }}
-      className="flex flex-col px-2 py-6 lg:px-6 sm:px-4 bg-dash-ground"
-    >
-      <DisplayCourses />
+    <main className="min-h-[calc(100vh-76px)] !bg-transparent px-3 py-6 sm:px-5 sm:py-8 lg:px-6">
+      <DashboardContainer>
+        <DisplayCourses />
+      </DashboardContainer>
     </main>
   );
 };

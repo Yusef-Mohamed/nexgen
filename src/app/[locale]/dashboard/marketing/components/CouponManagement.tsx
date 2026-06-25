@@ -49,11 +49,11 @@ const createCouponSchema = (t: (key: string) => string) =>
       .min(1, t("createCoupon.form.validation.percentageRequired"))
       .refine(
         (val) => !isNaN(Number(val)) && Number(val) > 0,
-        t("createCoupon.form.validation.percentageInvalid")
+        t("createCoupon.form.validation.percentageInvalid"),
       )
       .refine(
         (val) => Number(val) < 100,
-        t("createCoupon.form.validation.percentageMax")
+        t("createCoupon.form.validation.percentageMax"),
       ),
     maxUses: z.string().optional(),
     reason: z
@@ -137,7 +137,7 @@ const CouponManagement = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       setCoupons([res.data.data, ...coupons]);
       toast.success(t("createCoupon.success"));
@@ -199,14 +199,14 @@ const CouponManagement = () => {
   );
 
   return (
-    <section>
+    <section className="space-y-5">
       {/* Create Coupon Form */}
-      <Card className="mb-4 border-none cardShadow bg-background">
-        <CardHeader>
+      <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+        <CardHeader className="border-b border-primary/10 p-4 sm:p-5">
           <CardTitle>{t("createCoupon.title")}</CardTitle>
           <CardDescription>{t("createCoupon.description")}</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 sm:p-5">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -222,7 +222,7 @@ const CouponManagement = () => {
                         <Input
                           {...field}
                           placeholder={t(
-                            "createCoupon.form.couponName.placeholder"
+                            "createCoupon.form.couponName.placeholder",
                           )}
                           disabled={isLoading}
                         />
@@ -244,7 +244,7 @@ const CouponManagement = () => {
                           {...field}
                           type="number"
                           placeholder={t(
-                            "createCoupon.form.discountPercentage.placeholder"
+                            "createCoupon.form.discountPercentage.placeholder",
                           )}
                           disabled={isLoading}
                         />
@@ -266,7 +266,7 @@ const CouponManagement = () => {
                           {...field}
                           type="number"
                           placeholder={t(
-                            "createCoupon.form.maxUses.placeholder"
+                            "createCoupon.form.maxUses.placeholder",
                           )}
                           disabled={isLoading}
                         />
@@ -287,7 +287,7 @@ const CouponManagement = () => {
                         <Input
                           {...field}
                           placeholder={t(
-                            "createCoupon.form.reason.placeholder"
+                            "createCoupon.form.reason.placeholder",
                           )}
                           disabled={isLoading}
                         />
@@ -299,7 +299,7 @@ const CouponManagement = () => {
               </div>
 
               {/* Selection Section */}
-              <div className="space-y-4 border-t pt-4 mt-4">
+              <div className="mt-5 space-y-4 border-t border-primary/10 pt-5">
                 <Label className="text-base font-semibold">
                   {t("createCoupon.form.appliesTo.label")}
                 </Label>
@@ -341,7 +341,11 @@ const CouponManagement = () => {
                 />
               </div>
 
-              <Button isLoading={isLoading} type="submit" className="mt-4">
+              <Button
+                isLoading={isLoading}
+                type="submit"
+                className="mt-4 rounded-xl"
+              >
                 {t("createCoupon.form.submitButton")}
               </Button>
             </form>
@@ -350,57 +354,61 @@ const CouponManagement = () => {
       </Card>
 
       {/* Coupons Table */}
-      <Card className="border-none cardShadow bg-background">
-        <CardHeader>
+      <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+        <CardHeader className="border-b border-primary/10 p-4 sm:p-5">
           <CardTitle>{t("couponsList.title")}</CardTitle>
           <CardDescription>{t("couponsList.description")}</CardDescription>
         </CardHeader>
-        <CardContent>
-          <Table className="whitespace-nowrap">
-            <TableHeader>
-              <TableRow>
-                <TableHead>
-                  {t("couponsList.table.headers.couponName")}
-                </TableHead>
-                <TableHead>{t("couponsList.table.headers.discount")}</TableHead>
-                <TableHead>{t("couponsList.table.headers.usage")}</TableHead>
-                <TableHead>{t("couponsList.table.headers.reason")}</TableHead>
-                <TableHead>{t("couponsList.table.headers.status")}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isFetching ? (
-                // Show skeleton loading rows
-                <>
-                  <TableRowSkeleton />
-                  <TableRowSkeleton />
-                  <TableRowSkeleton />
-                </>
-              ) : coupons.length === 0 ? (
-                // Show empty state
-                <EmptyState />
-              ) : (
-                // Show actual data
-                coupons.map((coupon) => (
-                  <TableRow className="text-center" key={coupon._id}>
-                    <TableCell className="font-medium">
-                      {coupon.couponName}
-                    </TableCell>
-                    <TableCell>{coupon.discount}%</TableCell>
-                    <TableCell>
-                      {coupon.usedTimes} / {coupon.maxUsageTimes}
-                    </TableCell>
-                    <TableCell>{coupon.reason}</TableCell>
-                    <TableCell>
-                      <Badge className={`${getStatusColor(coupon.status)}`}>
-                        {t(`couponsList.table.status.${coupon.status}`)}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+        <CardContent className="p-4 sm:p-5">
+          <div className="overflow-x-auto">
+            <Table className="whitespace-nowrap">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>
+                    {t("couponsList.table.headers.couponName")}
+                  </TableHead>
+                  <TableHead>
+                    {t("couponsList.table.headers.discount")}
+                  </TableHead>
+                  <TableHead>{t("couponsList.table.headers.usage")}</TableHead>
+                  <TableHead>{t("couponsList.table.headers.reason")}</TableHead>
+                  <TableHead>{t("couponsList.table.headers.status")}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isFetching ? (
+                  // Show skeleton loading rows
+                  <>
+                    <TableRowSkeleton />
+                    <TableRowSkeleton />
+                    <TableRowSkeleton />
+                  </>
+                ) : coupons.length === 0 ? (
+                  // Show empty state
+                  <EmptyState />
+                ) : (
+                  // Show actual data
+                  coupons.map((coupon) => (
+                    <TableRow className="text-center" key={coupon._id}>
+                      <TableCell className="font-medium">
+                        {coupon.couponName}
+                      </TableCell>
+                      <TableCell>{coupon.discount}%</TableCell>
+                      <TableCell>
+                        {coupon.usedTimes} / {coupon.maxUsageTimes}
+                      </TableCell>
+                      <TableCell>{coupon.reason}</TableCell>
+                      <TableCell>
+                        <Badge className={`${getStatusColor(coupon.status)}`}>
+                          {t(`couponsList.table.status.${coupon.status}`)}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </section>

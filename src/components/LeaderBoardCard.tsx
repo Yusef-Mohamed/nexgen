@@ -27,9 +27,9 @@ const LeaderBoardCard = ({
 }) => {
   const locale = useLocale();
   return (
-    <Card className="p-4 bg-background cardShadow">
-      <CardHeader className="p-0 mb-6">
-        <CardTitle className="flex items-center gap-2 h3">
+    <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground p-4 shadow-sm">
+      <CardHeader className="mb-4 p-0">
+        <CardTitle className="flex items-center gap-2 text-base font-black text-text-1">
           <FaMedal className="text-xl" />
           {title}
         </CardTitle>
@@ -43,19 +43,18 @@ const LeaderBoardCard = ({
                 <li
                   key={i}
                   style={{
-                    [locale === "ar"
-                      ? "borderRight"
-                      : "borderLeft"]: `4px solid ${
-                      i === 0
-                        ? "hsl(var(--primary))"
-                        : i === 1
-                          ? "hsl(var(--secondary))"
-                          : "hsl(var(--primary) / 0.45)"
-                    }`,
+                    [locale === "ar" ? "borderRight" : "borderLeft"]:
+                      `4px solid ${
+                        i === 0
+                          ? "hsl(var(--primary))"
+                          : i === 1
+                            ? "hsl(var(--secondary))"
+                            : "hsl(var(--primary) / 0.45)"
+                      }`,
                   }}
-                  className={`flex items-center justify-between px-6 py-2 rounded-sm`}
+                  className="flex items-center justify-between rounded-xl bg-background-2 px-4 py-3"
                 >
-                  <div className="flex items-center gap-4">
+                  <div className="flex min-w-0 items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-input animate-pulse"></div>
                     <div className="w-32 h-4 rounded-full bg-input animate-pulse"></div>
                   </div>
@@ -72,25 +71,26 @@ const LeaderBoardCard = ({
                 <li
                   key={user._id}
                   style={{
-                    [locale === "ar"
-                      ? "borderRight"
-                      : "borderLeft"]: `4px solid ${
-                      i === 0
-                        ? "hsl(var(--primary))"
-                        : i === 1
-                          ? "hsl(var(--secondary))"
-                          : "hsl(var(--primary) / 0.45)"
-                    }`,
+                    [locale === "ar" ? "borderRight" : "borderLeft"]:
+                      `4px solid ${
+                        i === 0
+                          ? "hsl(var(--primary))"
+                          : i === 1
+                            ? "hsl(var(--secondary))"
+                            : "hsl(var(--primary) / 0.45)"
+                      }`,
                   }}
-                  className={`flex items-center justify-between px-6 py-2 rounded-sm`}
+                  className="flex items-center justify-between rounded-xl bg-background-2 px-4 py-3"
                 >
                   <Link
                     href={`/dashboard/community/profile/${user._id}`}
                     target="_blank"
-                    className="flex items-center gap-4"
+                    className="flex min-w-0 items-center gap-3"
                   >
                     <UserAvatar user={user} />
-                    <span>{user.name}</span>
+                    <span className="truncate text-sm font-bold text-text-1">
+                      {user.name}
+                    </span>
                   </Link>
                   <FaMedal className={medalClassName(i)} />
                 </li>

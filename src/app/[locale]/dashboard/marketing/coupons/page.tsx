@@ -1,39 +1,31 @@
-
 import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { getMetadataDashboardPage } from "@/getMetaData";
 import CouponManagement from "../components/CouponManagement";
-export async function generateMetadata(
-  props: {
-    params: Promise<{ locale: string }>;
-  }
-): Promise<Metadata> {
+import MarketingPageShell from "../components/MarketingPageShell";
+import { TicketPercent } from "lucide-react";
+
+export async function generateMetadata(props: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
   const params = await props.params;
   return getMetadataDashboardPage({
     params,
   });
 }
-const SalesAnalyticsPage = async (
-  props: {
-    params: Promise<{ locale: string }>;
-  }
-) => {
-  const params = await props.params;
 
-  const {
-    locale
-  } = params;
+const CouponsPage = async () => {
+  const dashboardText = await getTranslations("dashboard");
 
-  
   return (
-    <main
-      style={{
-        minHeight: "calc(100vh - 76px)",
-      }}
-      className="w-full max-w-full px-2 py-6 overflow-hidden lg:px-6 sm:px-4 bg-dash-ground"
+    <MarketingPageShell
+      description={dashboardText("couponsDescription")}
+      icon={<TicketPercent className="size-5" />}
+      title={dashboardText("coupons")}
     >
       <CouponManagement />
-    </main>
+    </MarketingPageShell>
   );
 };
 
-export default SalesAnalyticsPage;
+export default CouponsPage;

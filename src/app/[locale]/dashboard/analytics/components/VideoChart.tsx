@@ -26,6 +26,32 @@ interface TooltipProps {
     };
   }>;
 }
+interface VideoTooltipProps extends TooltipProps {
+  videosCountLabel: string;
+}
+
+const VideoTooltip = ({
+  active,
+  payload,
+  videosCountLabel,
+}: VideoTooltipProps) => {
+  if (active && payload && payload.length) {
+    const data = payload[0]?.payload;
+    return (
+      <div className="rounded-xl border border-primary/10 bg-clear-ground p-4 shadow-sm">
+        <p className="mb-2 text-center font-medium">
+          {new Date(data?.date ?? "").toLocaleDateString()}
+        </p>
+        <div className="flex flex-col gap-2">
+          <span className="font-bold">
+            {videosCountLabel}: {data?.count}
+          </span>
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
 
 const VideoChart = () => {
   const { selectedUserObject, courseProgress } = useAnalyticsStore();
@@ -78,28 +104,9 @@ const VideoChart = () => {
     },
   } satisfies ChartConfig;
 
-  const CustomTooltip = ({ active, payload }: TooltipProps) => {
-    if (active && payload && payload.length) {
-      const data = payload[0]?.payload;
-      return (
-        <div className="p-4 border rounded-lg shadow-lg bg-background">
-          <p className="mb-2 font-medium text-center">
-            {new Date(data?.date ?? "").toLocaleDateString()}
-          </p>
-          <div className="flex flex-col gap-2">
-            <span className="font-bold">
-              {text("videosCount")}: {data?.count}
-            </span>
-          </div>
-        </div>
-      );
-    }
-    return null;
-  };
-
   return (
-    <Card className="bg-background cardShadow">
-      <CardHeader>
+    <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+      <CardHeader className="border-b border-primary/10 p-4 sm:p-5">
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="h3">{text("courseVideos")}</CardTitle>
@@ -111,7 +118,7 @@ const VideoChart = () => {
           />
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 sm:p-5">
         {chartData.length === 0 ? (
           <p className="py-8 text-center">{text("noVideosForThisMonth")}</p>
         ) : (
@@ -132,7 +139,11 @@ const VideoChart = () => {
                   tickMargin={20}
                   allowDecimals={false}
                 />
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip
+                  content={
+                    <VideoTooltip videosCountLabel={text("videosCount")} />
+                  }
+                />
                 <Bar
                   dataKey="count"
                   fill="var(--color-count)"

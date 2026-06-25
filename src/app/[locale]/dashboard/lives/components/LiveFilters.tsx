@@ -29,8 +29,11 @@ const LiveFilters = () => {
       });
   }, []);
   return (
-    <div className="w-full px-6 py-4 mb-4 cardShadow rounded-xl h-fit">
-      <Label htmlFor={"course"} className="block mb-2">
+    <div className="h-fit w-full rounded-2xl border border-primary/10 bg-clear-ground p-4 shadow-sm">
+      <Label
+        htmlFor={"course"}
+        className="mb-2 block text-sm font-bold text-text-2"
+      >
         {inputs("course")} :
       </Label>
       <Select
@@ -39,7 +42,7 @@ const LiveFilters = () => {
           setSearchParams({ course: value });
         }}
       >
-        <SelectTrigger className="w-full border-2 border-transparent border-s-primary">
+        <SelectTrigger className="h-11 w-full rounded-xl border-primary/10 bg-background-2 shadow-none">
           <SelectValue placeholder={inputs("select_course")} />
         </SelectTrigger>
         <SelectContent>

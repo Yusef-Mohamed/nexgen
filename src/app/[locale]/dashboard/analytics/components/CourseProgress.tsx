@@ -61,7 +61,7 @@ const CourseProgress = () => {
           </a>
         </div>
       )}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <CircleCell
           title="gradesAverage"
           icon={"/images/grades.png"}
@@ -70,13 +70,13 @@ const CourseProgress = () => {
             Number(selectedCourseProgress?.avgLessonsExamsPercentage) ||
             0
           }
-          color="#1B7DF5"
+          color="hsl(var(--primary))"
           isFetching={isFetching}
         />
         <CircleCell
           icon={"/images/time.png"}
           title="timeSpent"
-          color="#9747FF"
+          color="hsl(var(--secondary))"
           value={Number(
             Math.min(
               ((selectedUserObject?.timeSpent?.totalTimeSpent || 0) /
@@ -91,7 +91,7 @@ const CourseProgress = () => {
         <CircleCell
           icon={"/images/progress.png"}
           title="totalProgress"
-          color="#5DD5D5"
+          color="hsl(var(--green))"
           value={Number(selectedCourseProgress?.totalProgress) || 0}
           isFetching={isFetching}
           className="md:col-span-2 lg:col-span-1"
@@ -137,7 +137,7 @@ const CircleCell = ({
   return (
     <div
       className={cn(
-        "p-4 rounded-md bg-background cardShadowSecondary relative",
+        "relative overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground p-4 shadow-sm",
         className,
       )}
     >

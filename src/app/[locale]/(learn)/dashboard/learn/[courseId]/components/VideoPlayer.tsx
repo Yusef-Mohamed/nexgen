@@ -94,7 +94,7 @@ const VideoPlayer = ({ otp, playbackInfo }: VideoPlayerProps) => {
   return (
     <iframe
       ref={iframeRef}
-      className="w-full aspect-video"
+      className="aspect-video w-full rounded-2xl border border-primary/10 bg-black shadow-sm"
       src={`https://player.vdocipher.com/v2/?otp=${otp}&playbackInfo=${playbackInfo}`}
       allow="encrypted-media"
       allowFullScreen

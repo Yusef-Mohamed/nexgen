@@ -20,6 +20,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { getDynamicString } from "@/lib/utils";
 import { useFilterPackages } from "@/hooks/useFilterPackages";
+import { ClipboardCheck, SlidersHorizontal } from "lucide-react";
 
 type ForceRole = "student" | "marketer";
 
@@ -90,20 +91,19 @@ const DisplayPosts = ({ forceRole }: { forceRole?: ForceRole }) => {
     observerRef,
   } = useInfiniteScroll<IAnalytic>({
     fetchData: fetchPosts,
-    dependencies: [show, selectedCourse], // Add show and selectedCourse as dependencies to trigger reset
+    dependencies: [show, selectedCourse],
   });
   const handleShowChange = (newShow: typeof show) => {
     setHaveError(false);
     setShow(newShow);
-    resetData(); // Reset the data when show changes
+    resetData();
   };
   const handleCourseChange = (courseId: string) => {
     setHaveError(false);
     setSelectedCourse(courseId);
-    resetData(); // Reset the data when course changes
+    resetData();
   };
 
-  // Filter tabs configuration
   const filterOptions: FilterOption[] = user?.isMarketer
     ? [
         { value: "completed", label: text("completed") },
@@ -121,77 +121,111 @@ const DisplayPosts = ({ forceRole }: { forceRole?: ForceRole }) => {
     }
   }, [packages]);
   return (
-    <section className="mx-auto space-y-4 w-full max-w-6xl">
-      {/* Course Filter */}{" "}
-      <FilterTabs
-        options={filterOptions}
-        activeValue={show}
-        onChange={(value) => handleShowChange(value as typeof show)}
-      />
-      <div className="flex items-center gap-4 p-3 rounded-md cardShadow bg-background">
-        <div>
-          <Label htmlFor="course" className="text-sm sr-only">
-            {inputs("course")}:
-          </Label>
-          <Select
-            value={selectedCourse}
-            onValueChange={handleCourseChange}
-            disabled={isLoadingPackages}
-          >
-            <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs !h-10">
-              <SelectValue
-                placeholder={
-                  isLoadingPackages ? text("loading") : inputs("SelectCourse")
-                }
-              />
-            </SelectTrigger>
-            <SelectContent>
-              {packages.map((pkg) => (
-                <SelectItem value={pkg.course._id} key={pkg.course._id}>
-                  {getDynamicString(pkg.course.title)}
-                </SelectItem>
+    <section className="mx-auto w-full max-w-6xl space-y-4">
+      <div className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+        <div className="border-b border-primary/10 p-4 sm:p-5">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex min-w-0 items-center gap-3">
+              <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl border border-primary/10 bg-primary/10 text-primary">
+                <ClipboardCheck className="size-5" />
+              </span>
+              <div className="min-w-0">
+                <h1 className="text-base font-black text-text-1 sm:text-lg">
+                  {text("title")}
+                </h1>
+                <p className="mt-1 text-sm leading-6 text-text-3">
+                  {text("description")}
+                </p>
+              </div>
+            </div>
+
+            <FilterTabs
+              flat
+              options={filterOptions}
+              activeValue={show}
+              onChange={(value) => handleShowChange(value as typeof show)}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-4 p-4 sm:p-5">
+          <div className="flex flex-col gap-3 rounded-2xl border border-primary/10 bg-background-2 p-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2 text-sm font-bold text-text-2">
+              <span className="inline-flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <SlidersHorizontal className="size-4" />
+              </span>
+              {inputs("course")}
+            </div>
+            <div>
+              <Label htmlFor="course" className="sr-only text-sm">
+                {inputs("course")}:
+              </Label>
+              <Select
+                value={selectedCourse}
+                onValueChange={handleCourseChange}
+                disabled={isLoadingPackages}
+              >
+                <SelectTrigger className="h-10 w-full rounded-xl border-primary/10 bg-clear-ground text-xs font-bold text-text-2 shadow-none sm:w-fit sm:min-w-56">
+                  <SelectValue
+                    placeholder={
+                      isLoadingPackages
+                        ? text("loading")
+                        : inputs("SelectCourse")
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {packages.map((pkg) => (
+                    <SelectItem value={pkg.course._id} key={pkg.course._id}>
+                      {getDynamicString(pkg.course.title)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {show === "addNew" ? (
+            <div className="rounded-2xl border border-primary/10 bg-clear-ground p-4 shadow-sm">
+              <CreatePractice />
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {posts.map((post) => (
+                <AnalyticCard
+                  key={post._id}
+                  analytic={post}
+                  setAnalytics={setData}
+                />
               ))}
-            </SelectContent>
-          </Select>
+              {!isLoading && posts.length === 0 && !haveError && (
+                <div className="rounded-2xl border border-primary/10 bg-background-2 p-8 text-center text-sm font-bold text-text-3">
+                  {text("noPostsFound")}
+                </div>
+              )}
+              {haveError && (
+                <div className="rounded-2xl border border-destructive/20 bg-destructive/10 p-8 text-center text-sm font-bold text-destructive">
+                  {text("errorLoadingPosts")}
+                </div>
+              )}
+              {isLoading &&
+                Array.from({ length: 4 }).map((_, i) => (
+                  <AnalyticCardSkeleton key={i} />
+                ))}
+              {!haveError && (
+                <div
+                  ref={observerRef}
+                  className="my-8 h-24 w-full"
+                  style={{
+                    visibility: posts.length > 0 ? "visible" : "hidden",
+                  }}
+                  data-testid="scroll-observer"
+                />
+              )}
+            </div>
+          )}
         </div>
       </div>
-      {show === "addNew" ? (
-        <div className="p-4 cardShadow bg-background rounded-md">
-          <CreatePractice />
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {posts.map((post) => (
-            <AnalyticCard
-              key={post._id}
-              analytic={post}
-              setAnalytics={setData}
-            />
-          ))}
-          {!isLoading && posts.length === 0 && !haveError && (
-            <div className="p-4 text-center text-muted-foreground">
-              {text("noPostsFound")}
-            </div>
-          )}
-          {haveError && (
-            <div className="p-4 text-center text-destructive">
-              {text("errorLoadingPosts")}
-            </div>
-          )}
-          {isLoading &&
-            Array.from({ length: 4 }).map((_, i) => (
-              <AnalyticCardSkeleton key={i} />
-            ))}
-          {!haveError && (
-            <div
-              ref={observerRef}
-              className="h-24 w-full my-8"
-              style={{ visibility: posts.length > 0 ? "visible" : "hidden" }}
-              data-testid="scroll-observer"
-            />
-          )}
-        </div>
-      )}
     </section>
   );
 };

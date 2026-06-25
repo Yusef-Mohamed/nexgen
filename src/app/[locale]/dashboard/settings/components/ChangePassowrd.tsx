@@ -68,7 +68,7 @@ const ChangePassword = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       const user = res.data.data;
       const newToken = res.data.token;
@@ -91,8 +91,8 @@ const ChangePassword = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="space-y-5">
         <div className="space-y-2">
           <Label htmlFor="currentPassword">{text("currentPassword")} :</Label>
           <Input
@@ -141,10 +141,7 @@ const ChangePassword = () => {
           />
         </div>
 
-        <Button
-          className="ms-auto w-fit"
-          isLoading={isLoading}
-        >
+        <Button className="ms-auto w-fit rounded-xl" isLoading={isLoading}>
           {text("changePassword")}
         </Button>
       </div>

@@ -88,7 +88,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
   const text = useTranslations("analytics");
   if (!active || !payload || !payload.length) return null;
   return (
-    <div className="p-4 border rounded-lg shadow-lg bg-clear-ground">
+    <div className="rounded-xl border border-primary/10 bg-clear-ground p-4 shadow-sm">
       <p className="mb-2 font-medium text-center">
         {new Date(payload[0]?.payload.fullDate).toLocaleDateString()}
       </p>
@@ -154,7 +154,7 @@ const StatBlock: React.FC<StatBlockProps> = ({
 
 const processAnalyticsData = (
   analyticsDocs: IAnalytic[],
-  selectedMonth: string
+  selectedMonth: string,
 ): ChartDataPoint[] => {
   const monthDays = getMonthDays(selectedMonth);
   const initialData: Record<string, ChartDataPoint> = {};
@@ -189,7 +189,7 @@ const processAnalyticsData = (
     })
     .filter((item): item is ChartDataPoint => item !== undefined)
     .sort(
-      (a, b) => new Date(a.fullDate).getTime() - new Date(b.fullDate).getTime()
+      (a, b) => new Date(a.fullDate).getTime() - new Date(b.fullDate).getTime(),
     );
 };
 
@@ -222,7 +222,7 @@ const Practice: React.FC = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         setData(res.data);
 
@@ -233,7 +233,7 @@ const Practice: React.FC = () => {
         // Process analytics data for chart with selected month
         const processedData = processAnalyticsData(
           res.data?.analyticsDocs || [],
-          selectedMonth
+          selectedMonth,
         );
         setChartData(processedData);
       } catch (err) {
@@ -246,8 +246,8 @@ const Practice: React.FC = () => {
     if (selectedUser && selectedMonth) getData();
   }, [selectedUser, token, selectedMonth]);
   return (
-    <Card className="bg-background cardShadow">
-      <CardHeader>
+    <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+      <CardHeader className="border-b border-primary/10 p-4 sm:p-5">
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="h3">{text("practice")}</CardTitle>
@@ -259,7 +259,7 @@ const Practice: React.FC = () => {
           />
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 sm:p-5">
         <div className="grid grid-cols-1 gap-4 mb-8 md:grid-cols-3">
           {isLoading ? (
             Array.from({ length: 3 }).map((_, index) => (
@@ -307,7 +307,7 @@ const Practice: React.FC = () => {
                   </th>
                   <th className="p-2">
                     <div className="w-1/2 h-4 rounded-full bg-muted"></div>
-                  </th>{" "}
+                  </th>
                   <th className="p-2">
                     <div className="w-1/2 h-4 rounded-full bg-muted"></div>
                   </th>
@@ -344,7 +344,7 @@ const Practice: React.FC = () => {
                     tickFormatter={(value) => {
                       if (value) {
                         const dayIndex = monthDays.findIndex(
-                          (d) => d.toISOString() === value
+                          (d) => d.toISOString() === value,
                         );
                         return `${dayIndex + 1}`;
                       }
@@ -411,14 +411,14 @@ const Practice: React.FC = () => {
                                 !analytic.isPassed && !analytic.isSeen,
                               "bg-primary text-primary-foreground":
                                 analytic.isPassed,
-                            }
+                            },
                           )}
                         >
                           {analytic.isPassed
                             ? text("correct")
                             : analytic.isSeen
-                            ? text("wrong")
-                            : text("pending")}
+                              ? text("wrong")
+                              : text("pending")}
                         </span>
                       </td>
                     </tr>

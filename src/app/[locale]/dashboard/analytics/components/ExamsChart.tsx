@@ -65,7 +65,7 @@ const ExamsChart = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         setCourseProgress(res.data.data);
         setExams(
@@ -80,8 +80,8 @@ const ExamsChart = () => {
               examScore: exam.examScore,
               title: exam.lesson.title,
               status: exam.status,
-            })
-          ) || []
+            }),
+          ) || [],
         );
       } catch (err) {
         console.error("Error fetching exams:", err);
@@ -127,7 +127,7 @@ const ExamsChart = () => {
         (day) =>
           day.date.getDate() === examDate.getDate() &&
           day.date.getMonth() === examDate.getMonth() &&
-          day.date.getFullYear() === examDate.getFullYear()
+          day.date.getFullYear() === examDate.getFullYear(),
       );
 
       if (dayIndex !== -1) {
@@ -158,7 +158,7 @@ const ExamsChart = () => {
     if (active && payload && payload.length) {
       const dayData = payload[0]?.payload as DayData;
       return (
-        <div className="p-2 border rounded-lg shadow-sm bg-background">
+        <div className="rounded-xl border border-primary/10 bg-clear-ground p-3 shadow-sm">
           <div className="flex flex-col gap-2">
             <span className="font-medium text-center text-muted-foreground">
               ({dayData.fullDate})
@@ -194,8 +194,8 @@ const ExamsChart = () => {
   };
 
   return (
-    <Card className="bg-background cardShadow">
-      <CardHeader>
+    <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+      <CardHeader className="border-b border-primary/10 p-4 sm:p-5">
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="h3">{text("examsPerformance")}</CardTitle>
@@ -207,7 +207,7 @@ const ExamsChart = () => {
           />
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 sm:p-5">
         {isCourseProgressLoading ? (
           <div
             className="w-full rounded-md bg-muted animate-pulse"

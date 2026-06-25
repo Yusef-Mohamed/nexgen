@@ -1,12 +1,15 @@
 "use client";
+
 import { useAuth } from "@/components/auth-provider";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import {
+  BadgeCheck,
+  KeyRound,
+  MessageSquareText,
+  UserRound,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
-import { BsChatLeftDots } from "react-icons/bs";
-import { FaKey } from "react-icons/fa";
-import { LuBadgeCheck } from "react-icons/lu";
-import { RiUser3Line } from "react-icons/ri";
 
 const Sidebar = () => {
   const text = useTranslations("settings");
@@ -15,45 +18,56 @@ const Sidebar = () => {
   const links = [
     {
       label: "myProfile",
-      icon: <RiUser3Line className="w-5 h-5" />,
+      icon: <UserRound className="size-4" />,
       link: "/dashboard/settings",
     },
     {
       label: "changePassword",
-      icon: <FaKey />,
+      icon: <KeyRound className="size-4" />,
       link: "/dashboard/settings/change-password",
     },
     {
       label: "identityVerification",
-      icon: <LuBadgeCheck className="w-5 h-5" />,
+      icon: <BadgeCheck className="size-4" />,
       link: "/dashboard/settings/identity-verification",
     },
   ];
+
   if (user?.authToReview) {
     links.push({
       label: "systemReview",
-      icon: <BsChatLeftDots />,
+      icon: <MessageSquareText className="size-4" />,
       link: "/dashboard/settings/system-review",
     });
   }
+
   return (
-    <aside className="xl:w-[18rem] w-full ">
-      <nav className="space-y-2">
-        {links.map(({ label, icon, link }) => (
-          <Link
-            className={cn(
-              "flex items-center gap-2 px-4 py-2 hover:border hover:border-primary hover:bg-primary/10 rounded-md",
-              {
-                "border-primary border bg-primary/10": pathname === link,
-              }
-            )}
-            key={label}
-            href={link}
-          >
-            <div className="w-6">{icon}</div>
-            {text(label)}
-          </Link>
-        ))}
+    <aside className="w-full xl:sticky xl:top-24 xl:h-fit">
+      <nav className="space-y-2 rounded-2xl border border-primary/10 bg-clear-ground p-2 shadow-sm">
+        {links.map(({ label, icon, link }) => {
+          const isActive = pathname === link;
+
+          return (
+            <Link
+              className={cn(
+                "flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-bold text-text-3 transition-colors hover:bg-primary/10 hover:text-primary",
+                isActive && "bg-primary/10 text-primary",
+              )}
+              key={label}
+              href={link}
+            >
+              <span
+                className={cn(
+                  "inline-flex size-9 shrink-0 items-center justify-center rounded-xl border border-primary/10 bg-background-2",
+                  isActive && "border-primary/20 bg-primary/15",
+                )}
+              >
+                {icon}
+              </span>
+              <span className="min-w-0 truncate">{text(label)}</span>
+            </Link>
+          );
+        })}
       </nav>
     </aside>
   );

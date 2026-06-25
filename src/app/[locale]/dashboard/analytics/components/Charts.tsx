@@ -32,7 +32,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 );
 import { IUser } from "@/types";
 import { useAnalyticsStore } from "@/stores/AnalyticsStore";
@@ -48,9 +48,12 @@ import { axiosInstance } from "@/app/lib/utils";
 import { UserFilter } from "@/components/filters/UserFilter";
 import { getDynamicString } from "@/lib/utils";
 import { useAnalyticsLearningSummary } from "@/hooks/useMyCoursesQueries";
+import DashboardContainer from "../../components/DashboardContainer";
+import { BarChart3, BookOpenCheck, UsersRound } from "lucide-react";
 const Charts = () => {
   const inputs = useTranslations("Forms");
   const text = useTranslations("analytics");
+  const dashboardText = useTranslations("dashboard");
   const { user: myAccount, token } = useAuth();
   const [myChildren, setMyChildren] = useState<IUser[]>([]);
   const [userSearchTerm, setUserSearchTerm] = useState("");
@@ -122,7 +125,7 @@ const Charts = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       const users = courseDetails.data.data.users.slice(0, 3);
       setTopUsers(users);
@@ -144,20 +147,49 @@ const Charts = () => {
   const filteredUsers = useMemo(() => {
     if (!userSearchTerm) return children;
     return children.filter((user) =>
-      user.name?.toLowerCase().includes(userSearchTerm?.toLowerCase())
+      user.name?.toLowerCase().includes(userSearchTerm?.toLowerCase()),
     );
   }, [children, userSearchTerm]);
   return (
-    <>
-      <main className="flex w-full px-2 py-6 bg-background lg:px-6 sm:px-4">
-        <div className="grid w-full gap-8 xl:grid-cols-3 mx-auto">
-          <div className="w-full space-y-8 max-lg:order-2 xl:col-span-2 ">
+    <main className="w-full !bg-transparent px-3 py-6 sm:px-5 sm:py-8 lg:px-6">
+      <DashboardContainer className="space-y-5">
+        <section className="relative overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground p-5 shadow-sm sm:p-6">
+          <div className="pointer-events-none absolute inset-0 opacity-50 [background-image:linear-gradient(hsl(var(--primary)/0.08)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--primary)/0.08)_1px,transparent_1px)] [background-size:28px_28px]" />
+          <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex min-w-0 items-center gap-3">
+              <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl border border-primary/10 bg-primary/10 text-primary">
+                <BarChart3 className="size-5" />
+              </span>
+              <div className="min-w-0">
+                <h1 className="text-lg font-black text-text-1 sm:text-xl">
+                  {dashboardText("analytics")}
+                </h1>
+                <p className="mt-1 max-w-2xl text-sm leading-6 text-text-3">
+                  {text("overviewDescription")}
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-xs font-bold text-text-2 sm:flex">
+              <span className="inline-flex items-center gap-2 rounded-full border border-primary/10 bg-primary/10 px-3 py-1.5 text-primary">
+                <BookOpenCheck className="size-3.5" />
+                {inputs("course")}
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-secondary/20 bg-secondary/10 px-3 py-1.5 text-secondary">
+                <UsersRound className="size-3.5" />
+                {inputs("user")}
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <div className="grid w-full gap-5 xl:grid-cols-[minmax(0,1fr)_22rem]">
+          <div className="w-full space-y-5 max-xl:order-2">
             <CourseProgress />
             <ExamsChart />
             <PracticeChart />
           </div>
-          <div className="w-full space-y-8 lg:col-span-1 ">
-            <div className="w-full p-4 mb-8 space-y-4 rounded-xl bg-background cardShadow">
+          <aside className="w-full space-y-5">
+            <div className="w-full space-y-4 rounded-2xl border border-primary/10 bg-clear-ground p-4 shadow-sm">
               <ProgressCircle />
               <Select
                 value={selectedCourse}
@@ -170,16 +202,13 @@ const Charts = () => {
                   }
                 }}
               >
-                <SelectTrigger className="w-full border-2 border-transparent border-s-primary">
+                <SelectTrigger className="h-11 w-full rounded-xl border-primary/10 bg-background-2 shadow-none">
                   <SelectValue placeholder={inputs("course")} />
                 </SelectTrigger>
                 <SelectContent>
                   {courses.map((course) => {
                     return (
-                      <SelectItem
-                        value={course._id}
-                        key={course._id}
-                      >
+                      <SelectItem value={course._id} key={course._id}>
                         {getDynamicString(course.title)}
                       </SelectItem>
                     );
@@ -215,10 +244,10 @@ const Charts = () => {
               title={text("outTopStudentsInThisCourse")}
             />
             <VideoChart />
-          </div>
+          </aside>
         </div>
-      </main>
-    </>
+      </DashboardContainer>
+    </main>
   );
 };
 
