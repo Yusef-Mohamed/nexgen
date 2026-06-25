@@ -12,6 +12,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import LivesCalendar from "@/components/LivesCalendar";
 import DashboardContainer from "../../components/DashboardContainer";
 import { CalendarDays, Radio } from "lucide-react";
+import {
+  getStaticDashboardLives,
+  staticDashboardLivePackages,
+} from "./staticLives";
+
+const USE_STATIC_LIVES = true;
 
 const LiveCardSkeleton = () => (
   <div className="flex w-full flex-col justify-between gap-4 rounded-2xl border border-primary/10 bg-clear-ground p-4 shadow-sm">
@@ -102,21 +108,28 @@ const LivesClient = () => {
   const locale = useLocale();
   const isArabic = locale === "ar";
   const { getSearchParam } = useCustomSearchParams();
-  const [lives, setLives] = useState<ILive[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [lives, setLives] = useState<ILive[]>(() =>
+    getStaticDashboardLives(),
+  );
+  const [loading, setLoading] = useState(!USE_STATIC_LIVES);
 
   const selectedDate = getSearchParam("date") || "";
   const selectedCourse = getSearchParam("course") || "all";
 
   useEffect(() => {
+    if (USE_STATIC_LIVES) return;
+
     const fetchLives = async () => {
       try {
         setLoading(true);
         const response = await axiosInstance.get(`/lives?limit=1000`);
-        setLives(response.data.data || []);
+        const apiLives = Array.isArray(response.data.data)
+          ? response.data.data
+          : [];
+        setLives(apiLives.length > 0 ? apiLives : getStaticDashboardLives());
       } catch (error) {
         console.error("Error fetching lives:", error);
-        setLives([]);
+        setLives(getStaticDashboardLives());
       } finally {
         setLoading(false);
       }
@@ -188,7 +201,7 @@ const LivesClient = () => {
             ))}
           </div>
           <aside className="space-y-5">
-            <LiveFilters />
+            <LiveFilters fallbackPackages={staticDashboardLivePackages} />
             <div className="rounded-2xl border border-primary/10 bg-clear-ground p-4 shadow-sm">
               <Skeleton className="mx-auto mb-6 h-6 w-24" />
               <Skeleton className="h-48 w-full" />
@@ -247,7 +260,7 @@ const LivesClient = () => {
           )}
         </div>
         <aside className="space-y-5">
-          <LiveFilters />
+          <LiveFilters fallbackPackages={staticDashboardLivePackages} />
           <LivesCalendar lives={lives} />
         </aside>
       </div>
@@ -256,3 +269,4 @@ const LivesClient = () => {
 };
 
 export default LivesClient;
+

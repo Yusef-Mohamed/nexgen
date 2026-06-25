@@ -94,7 +94,7 @@ const ChangePassword = () => {
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="space-y-5">
         <div className="space-y-2">
-          <Label htmlFor="currentPassword">{text("currentPassword")} :</Label>
+          <Label htmlFor="currentPassword">{text("currentPassword")}</Label>
           <Input
             id="currentPassword"
             type="password"
@@ -110,7 +110,7 @@ const ChangePassword = () => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="newPassword">{text("newPassword")} :</Label>
+          <Label htmlFor="newPassword">{text("newPassword")}</Label>
           <Input
             id="newPassword"
             type="password"
@@ -126,7 +126,7 @@ const ChangePassword = () => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="confirmPassword">{text("passwordConfirm")} :</Label>
+          <Label htmlFor="confirmPassword">{text("passwordConfirm")}</Label>
           <Input
             id="confirmPassword"
             type="password"

@@ -4,6 +4,7 @@ import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import UserAvatar from "@/components/UserAvatar";
 import { useTranslations } from "next-intl";
@@ -220,7 +221,7 @@ const Main = () => {
           />
           <div className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="name">{text("name")} :</Label>
+              <Label htmlFor="name">{text("name")}</Label>
               <Input
                 id="name"
                 disabled={isLoading}
@@ -229,7 +230,7 @@ const Main = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">{text("email")} :</Label>
+              <Label htmlFor="email">{text("email")}</Label>
               <Input
                 id="email"
                 disabled={isLoading}
@@ -266,20 +267,19 @@ const Main = () => {
             />
 
             <div className="space-y-2">
-              <Label htmlFor="bio">{text("bio")} :</Label>
-              <Input
+              <Label htmlFor="bio">{text("bio")}</Label>
+              <Textarea
                 id="bio"
                 placeholder={text("enterBio")}
                 disabled={isLoading}
+                className="min-h-36"
                 {...form.register("bio")}
               />
             </div>
 
             {isInstructor && (
               <div className="space-y-2">
-                <Label htmlFor="signatureImage">
-                  {text("signatureImage")} :
-                </Label>
+                <Label htmlFor="signatureImage">{text("signatureImage")}</Label>
                 <p className="text-sm text-muted-foreground">
                   {text("signatureImageHint")}
                 </p>

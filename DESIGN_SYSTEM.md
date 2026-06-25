@@ -524,3 +524,17 @@ What was changed when this doc was first written, kept here so you can see
 - Re-enabled `AiChatWidget` in the global floating support dock.
 - Restyled the Telegram support shortcut as a secondary rounded action so it
   complements the AI assistant instead of competing with it.
+
+---
+
+## 14. Dashboard chat page redesign - 2026-06-25 changelog
+
+**Dashboard chat workspace**
+
+- Reframed `/dashboard/chat` as a community-inspired workspace with token-based page blobs, a rounded clear-ground chat shell, a primary top accent bar, and `bg-background` canvas treatment.
+- Restyled the conversation rail with the dashboard panel language: eyebrow pill, icon tile, count badge, rounded chat rows, selected-state accent bars, group participant chips, and token-only hover states.
+- Updated the empty conversation state with the shared heroicon/eyebrow treatment instead of the bare placeholder mark.
+- Polished the chat topbar with rounded avatars, clearer group metadata, participant count, and compact bordered action buttons while preserving existing info/leave behavior.
+- Rebuilt the message stream visuals with refined incoming/outgoing bubbles, visible timestamps, rounded reply previews, media frames, and compact hover action controls.
+- Reworked the composer to mirror the community composer controls: rounded surface, tokenized emoji/attachment/send buttons, selected-media pill, reply/edit preview card, and the shared `Textarea` control.
+- Preserved the existing chat APIs, socket events, participant admin flows, external-link warning, media upload path, and RTL-safe icon handling.

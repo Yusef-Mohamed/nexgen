@@ -160,7 +160,10 @@ const Sidebar: React.FC<
         title: null,
         links: [
           {
-            href: `/dashboard/community/profile/${user?._id}`,
+            href:
+              mounted && user?._id
+                ? "/dashboard/community/profile/" + user._id
+                : "/dashboard/settings",
             label: "profile",
             icon: <Users className="size-5" />,
           },
@@ -332,7 +335,7 @@ const Sidebar: React.FC<
                 {group.links.map((link) => (
                   <SidebarNavLink
                     collapsed={collapsed}
-                    key={link.href}
+                    key={`${link.label}:${link.href}`}
                     link={link}
                   />
                 ))}

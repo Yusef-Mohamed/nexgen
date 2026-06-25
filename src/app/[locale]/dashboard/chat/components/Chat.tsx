@@ -1,16 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
+import {
+  HiOutlineChatBubbleLeftRight,
+  HiOutlineSparkles,
+} from "react-icons/hi2";
+
 import { useChatStore } from "@/stores/ChatStore";
 import { ChatList } from "./ChatList";
-import { IMessage } from "@/types";
 import { axiosInstance } from "@/app/lib/utils";
 import ChatTopbar from "./ChatTopbar";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { useTranslations } from "next-intl";
+import { IMessage } from "@/types";
 
 interface ChatProps {
   selectedChat?: string;
 }
+
+type SocketMessageEvent = {
+  senderId?: string;
+  action: "sendMessage" | "editMessage" | "deleteMessage";
+  payload: IMessage | string;
+};
 
 export function Chat({ selectedChat }: ChatProps) {
   const {
@@ -18,58 +29,71 @@ export function Chat({ selectedChat }: ChatProps) {
     setIsFetchingMessages,
     setThisChat,
     setIsFetchingThisChat,
+    setMessagesPagination,
+    setMessageCurrentPage,
     socket,
-    messages,
+    selectedChatId,
+    setSelectedChatId,
     addMessage,
     updateMessage,
     deleteMessage,
-    setMessagesPagination,
-    setMessageCurrentPage,
-    selectedChatId,
-    setSelectedChatId,
   } = useChatStore();
   const { token, user } = useAuth();
-  const getMessages = async () => {
-    setIsFetchingMessages(true);
-    try {
-      const res = await axiosInstance(
-        `/messages/${selectedChatId}?limit=10&sort=-createdAt`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      setMessagesPagination(res.data.paginationResult);
-      setMessageCurrentPage(1);
-      const sortedMessages = res.data.data.reverse();
-      setMessages(sortedMessages);
-    } catch (e) {
-      console.log(e);
+
+  const getThisChat = useCallback(async () => {
+    if (!selectedChatId || !token) {
+      setThisChat(null);
+      setIsFetchingThisChat(false);
+      return;
     }
-    setIsFetchingMessages(false);
-  };
-  const getThisChat = async () => {
+
     setIsFetchingThisChat(true);
 
-    const res = await axiosInstance(`/chats/${selectedChatId}/details`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    setThisChat(res.data.data);
-    setIsFetchingThisChat(false);
-  };
-  useEffect(() => {
-    if (selectedChatId) {
-      getMessages();
-      getThisChat();
+    try {
+      const res = await axiosInstance(`/chats/${selectedChatId}/details`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setThisChat(res.data.data);
+    } catch (error) {
+      console.error("Error fetching chat details:", error);
+    } finally {
+      setIsFetchingThisChat(false);
     }
+  }, [selectedChatId, token, setIsFetchingThisChat, setThisChat]);
+
+  useEffect(() => {
+    if (!selectedChatId) {
+      setMessages([]);
+      setThisChat(null);
+      setMessagesPagination(null);
+      setMessageCurrentPage(1);
+      setIsFetchingMessages(false);
+      return;
+    }
+
+    setMessages([]);
+    setMessagesPagination(null);
+    setMessageCurrentPage(1);
+    getThisChat();
+
     return () => {
       setMessages([]);
       setThisChat(null);
+      setMessagesPagination(null);
+      setMessageCurrentPage(1);
     };
-  }, [selectedChatId]);
+  }, [
+    selectedChatId,
+    getThisChat,
+    setIsFetchingMessages,
+    setMessageCurrentPage,
+    setMessages,
+    setMessagesPagination,
+    setThisChat,
+  ]);
+
   useEffect(() => {
     if (socket && selectedChatId) {
       socket.emit("joinRoom", {
@@ -85,55 +109,60 @@ export function Chat({ selectedChat }: ChatProps) {
         });
       }
     };
-  }, [socket, selectedChatId]);
+  }, [socket, selectedChatId, user?._id]);
+
   useEffect(() => {
-    if (selectedChat) setSelectedChatId(selectedChat);
-  }, [selectedChat, setSelectedChatId]);
-  useEffect(() => {
-    if (socket) {
-      socket.on(
-        "receiveMessage",
-        (data: {
-          senderId: "sendMessage" | "editMessage";
-          action: string;
-          payload: IMessage | string;
-        }) => {
-          if (
-            data.action === "sendMessage" &&
-            typeof data.payload !== "string"
-          ) {
-            addMessage(data.payload);
-          } else if (
-            data.action === "editMessage" &&
-            typeof data.payload !== "string"
-          ) {
-            updateMessage(data.payload);
-          } else if (
-            data.action === "deleteMessage" &&
-            typeof data.payload === "string"
-          ) {
-            deleteMessage(data.payload);
-          }
-        },
-      );
-    }
-    return () => {
-      if (socket) {
-        socket.off("receiveMessage");
+    if (!socket) return;
+
+    const handleReceiveMessage = (data: SocketMessageEvent) => {
+      if (data.action === "sendMessage" && typeof data.payload !== "string") {
+        addMessage(data.payload);
+        return;
+      }
+
+      if (data.action === "editMessage" && typeof data.payload !== "string") {
+        updateMessage(data.payload);
+        return;
+      }
+
+      if (data.action === "deleteMessage" && typeof data.payload === "string") {
+        deleteMessage(data.payload);
       }
     };
-  }, [socket, messages]);
+
+    socket.on("receiveMessage", handleReceiveMessage);
+
+    return () => {
+      socket.off("receiveMessage", handleReceiveMessage);
+    };
+  }, [socket, addMessage, updateMessage, deleteMessage]);
+
+  useEffect(() => {
+    if (selectedChat) {
+      setSelectedChatId(selectedChat);
+    } else {
+      setSelectedChatId("");
+    }
+  }, [selectedChat, setSelectedChatId]);
+
   const text = useTranslations("chat");
   return (
     <div
       className={cn(
-        "flex flex-col relative justify-between flex-1 w-full h-full",
+        "relative z-10 flex h-full min-h-0 w-full flex-1 flex-col justify-between overflow-hidden bg-background/60",
         {
           "max-xl:hidden": !selectedChat,
         },
       )}
     >
-      <div className="pointer-events-none absolute end-0 top-0 h-full w-auto aspect-square -translate-y-1/3 translate-x-1/3 rounded-full bg-secondary/15 opacity-40 blur-3xl" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-28 end-0 size-72 translate-x-1/3 rounded-full bg-secondary/15 opacity-70 blur-[110px] rtl:-translate-x-1/3"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-16 start-1/4 size-56 rounded-full bg-primary/10 blur-[95px]"
+      />
       {selectedChat ? (
         <>
           <ChatTopbar />
@@ -141,10 +170,18 @@ export function Chat({ selectedChat }: ChatProps) {
         </>
       ) : (
         <div className="relative flex h-full flex-col items-center justify-center px-6 text-center">
-          <div className="mb-4 inline-flex size-14 items-center justify-center rounded-2xl border border-primary/10 bg-primary/10 text-primary">
-            <span className="text-2xl">#</span>
+          <div className="relative mb-5 inline-flex size-20 items-center justify-center rounded-3xl border border-primary/15 bg-clear-ground text-primary cardShadowSm">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -end-6 -top-6 size-16 rounded-full bg-secondary/20 blur-2xl"
+            />
+            <HiOutlineChatBubbleLeftRight className="relative z-10 size-9" />
           </div>
-          <h1 className="text-xl font-black text-text-1">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
+            <HiOutlineSparkles className="size-3.5" />
+            {text("chats")}
+          </div>
+          <h1 className="text-2xl font-black text-text-1">
             {text("selectChat")}
           </h1>
           <p className="mt-2 max-w-sm text-sm leading-6 text-text-3">

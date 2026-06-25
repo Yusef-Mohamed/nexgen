@@ -42,7 +42,7 @@ const Sidebar = () => {
   }
 
   return (
-    <aside className="w-full xl:sticky xl:top-24 xl:h-fit">
+    <aside className="w-full ">
       <nav className="space-y-2 rounded-2xl border border-primary/10 bg-clear-ground p-2 shadow-sm">
         {links.map(({ label, icon, link }) => {
           const isActive = pathname === link;

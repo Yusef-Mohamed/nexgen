@@ -1,62 +1,94 @@
 "use client";
 import { axiosInstance } from "@/app/lib/utils";
-import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  CommandSelect,
+  CommandSelectOption,
+} from "@/components/ui/command-select";
+import { Label } from "@/components/ui/label";
 import useCustomSearchParams from "@/hooks/useSearchParams";
 import { IPackage } from "@/types";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getDynamicString } from "@/lib/utils";
 
-const LiveFilters = () => {
+type LiveFiltersProps = {
+  fallbackPackages?: IPackage[];
+};
+
+const EMPTY_PACKAGES: IPackage[] = [];
+
+const LiveFilters = ({
+  fallbackPackages = EMPTY_PACKAGES,
+}: LiveFiltersProps) => {
   const inputs = useTranslations("Forms");
-  const [packages, setPackages] = useState<IPackage[]>([]);
+  const [packages, setPackages] = useState<IPackage[]>(fallbackPackages);
   const { getSearchParam, setSearchParams } = useCustomSearchParams();
+  const selectedCourse = getSearchParam("course") || "all";
+
   useEffect(() => {
     axiosInstance
       .get("/packages")
       .then((res) => {
-        setPackages(res.data.data);
+        const apiPackages = Array.isArray(res.data.data) ? res.data.data : [];
+        setPackages(apiPackages.length > 0 ? apiPackages : fallbackPackages);
       })
       .catch((err) => {
         console.log(err);
+        setPackages(fallbackPackages);
       });
-  }, []);
+  }, [fallbackPackages]);
+
+  const packageOptions = useMemo(() => {
+    const mergedPackages = new Map<string, IPackage>();
+
+    fallbackPackages.forEach((packageItem) => {
+      mergedPackages.set(packageItem._id, packageItem);
+    });
+
+    packages.forEach((packageItem) => {
+      mergedPackages.set(packageItem._id, packageItem);
+    });
+
+    return Array.from(mergedPackages.values()).filter(
+      (packageItem) => packageItem.course,
+    );
+  }, [fallbackPackages, packages]);
+
+  const options = useMemo<CommandSelectOption[]>(
+    () => [
+      {
+        value: "all",
+        label: inputs("all_courses"),
+        searchLabel: inputs("all_courses"),
+      },
+      ...packageOptions.map((packageItem) => ({
+        value: packageItem._id,
+        label: getDynamicString(packageItem.course.title),
+        searchLabel: getDynamicString(packageItem.course.title),
+      })),
+    ],
+    [inputs, packageOptions],
+  );
+
   return (
     <div className="h-fit w-full rounded-2xl border border-primary/10 bg-clear-ground p-4 shadow-sm">
       <Label
-        htmlFor={"course"}
+        htmlFor="course"
         className="mb-2 block text-sm font-bold text-text-2"
       >
         {inputs("course")} :
       </Label>
-      <Select
-        value={getSearchParam("course") || ""}
+      <CommandSelect
+        value={selectedCourse}
         onValueChange={(value) => {
           setSearchParams({ course: value });
         }}
-      >
-        <SelectTrigger className="h-11 w-full rounded-xl border-primary/10 bg-background-2 shadow-none">
-          <SelectValue placeholder={inputs("select_course")} />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">{inputs("all_courses")}</SelectItem>
-          {packages.map((packageItem) => {
-            if (!packageItem.course) return null;
-            return (
-              <SelectItem value={packageItem._id} key={packageItem._id}>
-                {getDynamicString(packageItem.course?.title || "")}
-              </SelectItem>
-            );
-          })}
-        </SelectContent>
-      </Select>
+        options={options}
+        placeholder={inputs("select_course")}
+        searchPlaceholder={inputs("select_course")}
+        emptyText="No courses found"
+        triggerClassName="bg-background-2 shadow-none"
+      />
     </div>
   );
 };

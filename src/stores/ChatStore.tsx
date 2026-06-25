@@ -7,6 +7,10 @@ type ChatStore = {
   setChats: (chat: IChat[]) => void;
   isFetchingChats: boolean;
   setIsFetchingChats: (isFetching: boolean) => void;
+  chatsPagination: IPagination | null;
+  setChatsPagination: (pagination: IPagination | null) => void;
+  chatCurrentPage: number;
+  setChatCurrentPage: (page: number) => void;
   selectedChatId: string;
   setSelectedChatId: (selectedChatId: string) => void;
   messages: IMessage[];
@@ -24,10 +28,10 @@ type ChatStore = {
   deleteMessage: (messageId: string) => void;
   actionOnMessage: { action: "edit" | "reply"; message: IMessage } | null;
   setActionOnMessage: (
-    actionOnMessage: { action: "edit" | "reply"; message: IMessage } | null
+    actionOnMessage: { action: "edit" | "reply"; message: IMessage } | null,
   ) => void;
   messagesPagination: IPagination | null;
-  setMessagesPagination: (pagination: IPagination) => void;
+  setMessagesPagination: (pagination: IPagination | null) => void;
   messageCurrentPage: number;
   setMessageCurrentPage: (page: number) => void;
 };
@@ -37,6 +41,10 @@ export const useChatStore = create<ChatStore>((set) => ({
   setChats: (chats) => set({ chats }),
   isFetchingChats: true,
   setIsFetchingChats: (isFetchingChats) => set({ isFetchingChats }),
+  chatsPagination: null,
+  setChatsPagination: (chatsPagination) => set({ chatsPagination }),
+  chatCurrentPage: 1,
+  setChatCurrentPage: (chatCurrentPage) => set({ chatCurrentPage }),
   selectedChatId: "",
   setSelectedChatId: (selectedChatId) => set({ selectedChatId }),
   messages: [],
@@ -50,14 +58,14 @@ export const useChatStore = create<ChatStore>((set) => ({
   socket: null,
   setSocket: (socket) => set({ socket }),
   addMessage: (message) =>
-    set((state) => ({
-      messages: [...state.messages, message],
-      chats: state.chats
-        .sort((a, b) => {
-          if (a._id === message.chat) return -1;
-          if (b._id === message.chat) return 1;
-          return 0;
-        })
+    set((state) => {
+      const messageExists = state.messages.some(
+        (existingMessage) => existingMessage._id === message._id,
+      );
+      const messages = messageExists
+        ? state.messages
+        : [...state.messages, message];
+      const chats = state.chats
         .map((chat) => {
           if (chat._id === message.chat) {
             return {
@@ -66,23 +74,43 @@ export const useChatStore = create<ChatStore>((set) => ({
             };
           }
           return chat;
-        }),
-    })),
+        })
+        .sort((a, b) => {
+          if (a._id === message.chat) return -1;
+          if (b._id === message.chat) return 1;
+          return 0;
+        });
+
+      return { messages, chats };
+    }),
   updateMessage: (message) =>
     set((state) => ({
       messages: state.messages.map((msg) =>
-        msg._id === message._id ? message : msg
+        msg._id === message._id ? message : msg,
       ),
+      chats: state.chats.map((chat) => {
+        const lastMessage = chat.lastMessage?.[0];
+        if (lastMessage?._id === message._id) {
+          return { ...chat, lastMessage: [message] };
+        }
+        return chat;
+      }),
     })),
   deleteMessage: (messageId) =>
     set((state) => ({
       messages: state.messages.filter((msg) => msg._id !== messageId),
+      chats: state.chats.map((chat) => {
+        const lastMessage = chat.lastMessage?.[0];
+        if (lastMessage?._id === messageId) {
+          return { ...chat, lastMessage: [] };
+        }
+        return chat;
+      }),
     })),
   actionOnMessage: null,
   setActionOnMessage: (actionOnMessage) => set({ actionOnMessage }),
   messagesPagination: null,
-  setMessagesPagination: (pagination) =>
-    set({ messagesPagination: pagination }),
+  setMessagesPagination: (messagesPagination) => set({ messagesPagination }),
   messageCurrentPage: 1,
-  setMessageCurrentPage: (page) => set({ messageCurrentPage: page }),
+  setMessageCurrentPage: (messageCurrentPage) => set({ messageCurrentPage }),
 }));
