@@ -236,6 +236,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       router.refresh();
     }, 500);
   };
+  // Catch 405/406 from any authenticated API call (getMe skips protect middleware)
+  useEffect(() => {
+    const interceptorId = axiosInstance.interceptors.response.use(
+      (response) => response,
+      (error: unknown) => {
+        const typedError = error as AxiosError;
+        const responseStatus = typedError.response?.status;
+        if (responseStatus === 406) {
+          setShowIdVerificationModal(true);
+          setStatus(406);
+        } else if (responseStatus === 405) {
+          setStatus(405);
+        }
+        return Promise.reject(error);
+      }
+    );
+    return () => {
+      axiosInstance.interceptors.response.eject(interceptorId);
+    };
+  }, []);
+
   useEffect(() => {
     if (
       status === 405 &&
