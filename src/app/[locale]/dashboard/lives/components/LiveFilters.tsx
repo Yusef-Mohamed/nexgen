@@ -11,17 +11,9 @@ import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { getDynamicString } from "@/lib/utils";
 
-type LiveFiltersProps = {
-  fallbackPackages?: IPackage[];
-};
-
-const EMPTY_PACKAGES: IPackage[] = [];
-
-const LiveFilters = ({
-  fallbackPackages = EMPTY_PACKAGES,
-}: LiveFiltersProps) => {
+const LiveFilters = () => {
   const inputs = useTranslations("Forms");
-  const [packages, setPackages] = useState<IPackage[]>(fallbackPackages);
+  const [packages, setPackages] = useState<IPackage[]>([]);
   const { getSearchParam, setSearchParams } = useCustomSearchParams();
   const selectedCourse = getSearchParam("course") || "all";
 
@@ -30,29 +22,17 @@ const LiveFilters = ({
       .get("/packages")
       .then((res) => {
         const apiPackages = Array.isArray(res.data.data) ? res.data.data : [];
-        setPackages(apiPackages.length > 0 ? apiPackages : fallbackPackages);
+        setPackages(apiPackages);
       })
       .catch((err) => {
         console.log(err);
-        setPackages(fallbackPackages);
+        setPackages([]);
       });
-  }, [fallbackPackages]);
+  }, []);
 
   const packageOptions = useMemo(() => {
-    const mergedPackages = new Map<string, IPackage>();
-
-    fallbackPackages.forEach((packageItem) => {
-      mergedPackages.set(packageItem._id, packageItem);
-    });
-
-    packages.forEach((packageItem) => {
-      mergedPackages.set(packageItem._id, packageItem);
-    });
-
-    return Array.from(mergedPackages.values()).filter(
-      (packageItem) => packageItem.course,
-    );
-  }, [fallbackPackages, packages]);
+    return packages.filter((packageItem) => packageItem.course);
+  }, [packages]);
 
   const options = useMemo<CommandSelectOption[]>(
     () => [

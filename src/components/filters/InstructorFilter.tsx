@@ -73,16 +73,21 @@ export const InstructorFilter: React.FC<InstructorFilterProps> = ({
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-72 overflow-hidden p-1">
+      <DropdownMenuContent
+        style={{
+          width: "var(--radix-dropdown-menu-trigger-width )",
+        }}
+        className="w-auto overflow-hidden p-1"
+      >
         <div className="space-y-1 h-64 overflow-y-auto overflow-x-hidden">
           <div className="p-2">
             <div className="relative">
-              <Search className="absolute start-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder={searchForInstructorLabel}
                 value={instructorSearchTerm}
                 onChange={(e) => onSearchTermChange(e.target.value)}
-                className="h-10 rounded-xl border-primary/10 bg-background-2 ps-8 text-sm shadow-none"
+                className="h-10 rounded-xl border-primary/10 bg-background-2 ps-10! text-sm shadow-none"
               />
             </div>
           </div>

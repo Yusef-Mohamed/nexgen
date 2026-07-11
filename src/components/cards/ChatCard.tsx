@@ -3,6 +3,8 @@ import UserAvatar from "@/components/UserAvatar";
 import { cn } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "../auth-provider";
+import { formatMessageTime } from "@/lib/dateTime";
+import { useLocale } from "next-intl";
 interface ChatCardProps {
   chat: IChat;
   selectedChat?: string;
@@ -10,6 +12,7 @@ interface ChatCardProps {
 }
 const ChatCard: React.FC<ChatCardProps> = ({ chat, selectedChat, onClick }) => {
   const { user: myAccount } = useAuth();
+  const locale = useLocale();
   const anotherUser = chat?.participants.find(
     (user) => user.user !== myAccount?._id,
   );
@@ -53,10 +56,7 @@ const ChatCard: React.FC<ChatCardProps> = ({ chat, selectedChat, onClick }) => {
       </div>
       {lastMessage?.createdAt && (
         <time className="relative z-10 ms-auto hidden shrink-0 text-[10px] font-semibold text-text-3 sm:block">
-          {new Date(lastMessage.createdAt).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {formatMessageTime(lastMessage.createdAt, locale)}
         </time>
       )}
     </>

@@ -120,6 +120,7 @@ const DisplayPosts = ({ forceRole }: { forceRole?: ForceRole }) => {
       setSelectedCourse(packages[0].course._id);
     }
   }, [packages]);
+
   return (
     <section className="mx-auto w-full max-w-6xl space-y-4">
       <div className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">

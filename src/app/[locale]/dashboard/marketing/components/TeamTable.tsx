@@ -26,10 +26,15 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import * as XLSX from "xlsx";
-import { getDynamicString } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import { useFilterCourses } from "@/hooks/useFilterCourses";
 import { useFilterCoursePackages } from "@/hooks/useFilterCoursePackages";
 import { useFilterPackages } from "@/hooks/useFilterPackages";
+import {
+  marketingFilterControlClassName,
+  marketingNestedBorderClassName,
+  marketingOutlineButtonClassName,
+} from "./filterStyles";
 const formatDate = (date: Date) => {
   return format(date, "yyyy MM dd").split(" ").join("-");
 };
@@ -120,7 +125,10 @@ const TeamTable = ({ data }: { data: TeamData }) => {
           <Button
             onClick={handleExportToExcel}
             variant="outline"
-            className="flex items-center gap-3 rounded-xl"
+            className={cn(
+              "flex items-center gap-3",
+              marketingOutlineButtonClassName,
+            )}
           >
             <Download className="size-4" />
             {t("exportToExcel")}
@@ -131,7 +139,9 @@ const TeamTable = ({ data }: { data: TeamData }) => {
             value={selectedItem}
             onValueChange={(value) => setSelectedItem(value)}
           >
-            <SelectTrigger className="w-40 h-10 md:w-48 lg:h-12 md:h-10 md:text-sm">
+            <SelectTrigger
+              className={cn("w-40 md:w-48", marketingFilterControlClassName)}
+            >
               <SelectValue placeholder={t("allItems")} />
             </SelectTrigger>
             <SelectContent>
@@ -161,7 +171,9 @@ const TeamTable = ({ data }: { data: TeamData }) => {
               setPurchaseFilter(value)
             }
           >
-            <SelectTrigger className="w-40 h-10 md:w-48 lg:h-12 md:h-10 md:text-sm">
+            <SelectTrigger
+              className={cn("w-40 md:w-48", marketingFilterControlClassName)}
+            >
               <SelectValue placeholder={t("filterByPurchase")} />
             </SelectTrigger>
             <SelectContent>
@@ -175,7 +187,9 @@ const TeamTable = ({ data }: { data: TeamData }) => {
             value={resaleFilter.toString()}
             onValueChange={(value) => setResaleFilter(value === "true")}
           >
-            <SelectTrigger className="w-40 h-10 md:w-48 lg:h-12 md:h-10 md:text-sm">
+            <SelectTrigger
+              className={cn("w-40 md:w-48", marketingFilterControlClassName)}
+            >
               <SelectValue placeholder={t("resaleFilter")} />
             </SelectTrigger>
             <SelectContent>
@@ -185,12 +199,21 @@ const TeamTable = ({ data }: { data: TeamData }) => {
           </Select>
 
           <div className="relative">
-            <DatePickerWithRange date={date} setDate={setDate} />
+            <DatePickerWithRange
+              date={date}
+              setDate={setDate}
+              buttonClassName={marketingFilterControlClassName}
+            />
           </div>
         </div>
       </CardHeader>
       <CardContent className="p-4 sm:p-5">
-        <div className="relative w-full overflow-x-auto whitespace-nowrap rounded-2xl border border-primary/10">
+        <div
+          className={cn(
+            "relative w-full overflow-x-auto whitespace-nowrap",
+            marketingNestedBorderClassName,
+          )}
+        >
           <Table>
             <TableHeader>
               <TableRow>
@@ -223,6 +246,7 @@ const TeamTable = ({ data }: { data: TeamData }) => {
             <Button
               onClick={() => setIsShowAll((prev) => !prev)}
               variant="outline"
+              className={marketingOutlineButtonClassName}
             >
               {isShowAll ? t("showLess") : t("showAll")}
             </Button>

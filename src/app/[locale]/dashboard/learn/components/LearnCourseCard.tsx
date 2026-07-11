@@ -3,7 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { PiExam } from "react-icons/pi";
-import { Lock } from "lucide-react";
+import { Award, FileText, Lock } from "lucide-react";
 import { PlayIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { getDynamicString } from "@/lib/utils";
@@ -32,6 +32,8 @@ export const LearnCourseCard = ({
   const courseId = course._id || course.id;
   const learnHref = `/dashboard/learn/${courseId}`;
   const coursePageHref = `/courses/${course.slug || courseId}`;
+  const certificateFile = course.courseProgress?.certificate?.file;
+  const isCertificatePdf = certificateFile?.toLowerCase().endsWith(".pdf");
 
   if (locked) {
     return (
@@ -102,9 +104,9 @@ export const LearnCourseCard = ({
                 <p className="text-sm text-text-2">
                   {text("congratsOnFinishingTheCourse")}
                 </p>
-                {course.courseProgress.certificate?.file ? (
+                {certificateFile ? (
                   <a
-                    href={course.courseProgress.certificate.file}
+                    href={certificateFile}
                     target="_blank"
                     rel="noreferrer"
                     className="mt-1 inline-flex text-sm font-bold text-primary underline-offset-4 hover:underline"
@@ -145,36 +147,48 @@ export const LearnCourseCard = ({
           </div>
         </div>
         {!minimal && (
-          <div className="flex rounded-xl border-primary/10 md:border-s md:px-5">
-            {course.courseProgress?.certificate?.file ? (
+          <div className="flex rounded-xl border-primary/10 md:min-w-64 md:border-s md:px-5 lg:min-w-72">
+            {certificateFile ? (
               <a
-                className="hidden h-32 w-auto overflow-hidden rounded-xl md:block"
-                href={course.courseProgress.certificate.file}
+                className="group flex w-full items-center gap-3 self-center rounded-xl border border-primary/10 bg-primary/5 p-3 transition-colors hover:border-primary/30 hover:bg-primary/10 md:h-36 md:w-64 lg:w-72"
+                href={certificateFile}
                 target="_blank"
                 rel="noreferrer"
               >
-                {!course.courseProgress.certificate.file?.endsWith(".pdf") && (
-                  <Image
-                    loading="lazy"
-                    src={course.courseProgress.certificate.file}
-                    alt={getDynamicString(course.title)}
-                    width={600}
-                    height={600}
-                    className="h-full w-full object-cover"
-                  />
-                )}
+                <span className="flex size-14 shrink-0 overflow-hidden rounded-xl border border-primary/10 bg-clear-ground text-primary shadow-sm">
+                  {isCertificatePdf ? (
+                    <span className="flex size-full items-center justify-center">
+                      <FileText className="size-7" strokeWidth={1.8} />
+                    </span>
+                  ) : (
+                    <Image
+                      loading="lazy"
+                      src={certificateFile}
+                      alt={getDynamicString(course.title)}
+                      width={160}
+                      height={160}
+                      className="size-full object-cover"
+                    />
+                  )}
+                </span>
+                <div className="min-w-0">
+                  <Award className="mb-2 size-5 text-primary" />
+                  <h3 className="line-clamp-2 text-sm font-bold leading-5 text-text-1 transition-colors group-hover:text-primary group-hover:underline">
+                    {text("checkYourCertificate")}
+                  </h3>
+                </div>
               </a>
             ) : course.lastLesson ? (
               <Link
                 href={`${learnHref}?display=lesson&lesson=${course.lastLesson._id}`}
-                className="group flex items-center gap-3 self-center rounded-xl border border-primary/10 bg-background-2 p-3 transition-colors hover:border-primary/30 hover:bg-primary/10 md:h-32 md:w-56"
+                className="group flex w-full items-center gap-3 self-center rounded-xl border border-primary/10 bg-background-2 p-4 transition-colors hover:border-primary/30 hover:bg-primary/10 md:h-36 md:w-64 lg:w-72"
               >
                 <PlayIcon />
                 <div className="min-w-0">
-                  <h3 className="line-clamp-2 font-bold text-primary group-hover:underline">
+                  <h3 className="line-clamp-3 text-sm font-bold leading-5 text-primary group-hover:underline">
                     {getDynamicString(course.lastLesson.title)}
                   </h3>
-                  <p className="line-clamp-1 text-sm text-text-3">
+                  <p className="mt-1 line-clamp-2 text-xs leading-5 text-text-3">
                     {getDynamicString(course.lastLesson.section.title)} |{" "}
                     {course.lastLesson.lessonDuration} {text("min")}
                   </p>

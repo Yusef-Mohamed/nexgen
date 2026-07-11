@@ -17,7 +17,9 @@ import { IUser } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Copy, Trash2 } from "lucide-react";
 import ConfirmationDialog from "@/components/ui/confirmation-dialog";
+import { cn } from "@/lib/utils";
 import { AxiosError } from "axios";
+import { marketingNestedBorderClassName } from "./filterStyles";
 
 const LinksTable = ({
   links,
@@ -67,7 +69,12 @@ const LinksTable = ({
         <CardTitle>{t("inviteLinks")}</CardTitle>
       </CardHeader>
       <CardContent className="p-4 sm:p-5">
-        <div className="relative overflow-x-auto whitespace-nowrap rounded-2xl border border-primary/10">
+        <div
+          className={cn(
+            "relative overflow-x-auto whitespace-nowrap",
+            marketingNestedBorderClassName,
+          )}
+        >
           <Table>
             <TableHeader>
               <TableRow>

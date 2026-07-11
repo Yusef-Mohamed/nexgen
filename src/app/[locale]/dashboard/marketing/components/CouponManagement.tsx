@@ -28,7 +28,9 @@ import { useFilterCourses } from "@/hooks/useFilterCourses";
 import { useFilterPackages } from "@/hooks/useFilterPackages";
 import { useFilterCoursePackages } from "@/hooks/useFilterCoursePackages";
 import CouponAppliesToSelector from "./CouponAppliesToSelector";
+import { marketingTableBorderClassName } from "./filterStyles";
 import { useForm } from "react-hook-form";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -201,7 +203,7 @@ const CouponManagement = () => {
   return (
     <section className="space-y-5">
       {/* Create Coupon Form */}
-      <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+      <Card className={cn("overflow-hidden", marketingTableBorderClassName)}>
         <CardHeader className="border-b border-primary/10 p-4 sm:p-5">
           <CardTitle>{t("createCoupon.title")}</CardTitle>
           <CardDescription>{t("createCoupon.description")}</CardDescription>
@@ -354,7 +356,7 @@ const CouponManagement = () => {
       </Card>
 
       {/* Coupons Table */}
-      <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+      <Card className={cn("overflow-hidden", marketingTableBorderClassName)}>
         <CardHeader className="border-b border-primary/10 p-4 sm:p-5">
           <CardTitle>{t("couponsList.title")}</CardTitle>
           <CardDescription>{t("couponsList.description")}</CardDescription>

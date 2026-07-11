@@ -195,7 +195,7 @@ const DashboardHomeClient: React.FC = () => {
               <Search className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-text-3" />
               <Input
                 value={draftFilterState.searchKeyword}
-                className="h-12 w-full rounded-xl border-primary/10 bg-background-2 ps-10 text-sm font-semibold text-text-2 shadow-none placeholder:text-text-3"
+                className="h-12 w-full rounded-xl border-primary/10 bg-background-2 ps-10! text-sm font-semibold text-text-2 shadow-none placeholder:text-text-3"
                 onChange={(e) =>
                   handleDraftFilterChange("searchKeyword", e.target.value)
                 }

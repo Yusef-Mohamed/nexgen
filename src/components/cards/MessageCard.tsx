@@ -24,10 +24,10 @@ import { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { axiosInstance } from "@/app/lib/utils";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "../auth-provider";
 import ImageWithZoom from "../ImageWithZoom";
-
+import { formatMessageTime } from "@/lib/dateTime";
 interface MessageCardProps {
   message: IMessage;
   isMine: boolean;
@@ -48,12 +48,8 @@ const MessageCard: React.FC<MessageCardProps> = ({
   const messageDiv = useRef(null);
   const { user: myAccount, token } = useAuth();
   const text = useTranslations("chat");
-  const sentAt = new Date(message.createdAt)
-    .toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-    ?.toLowerCase();
+  const locale = useLocale();
+  const sentAt = formatMessageTime(message.createdAt, locale).toLowerCase();
 
   const deleteMessageAction = async () => {
     try {

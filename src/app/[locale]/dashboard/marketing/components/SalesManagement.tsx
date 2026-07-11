@@ -39,7 +39,12 @@ import {
 } from "recharts";
 import { DateRange } from "react-day-picker";
 import { DatePickerWithRange } from "@/components/DatePickerWithRange";
-import { getDynamicString } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
+import {
+  marketingFilterControlClassName,
+  marketingNestedBorderClassName,
+  marketingOutlineButtonClassName,
+} from "./filterStyles";
 const SalesManagement = () => {
   const t = useTranslations("salesManagement");
   const { token } = useAuth();
@@ -221,7 +226,12 @@ const MainComponent = ({
             value={item.toString()}
             onValueChange={(value) => setItem(value)}
           >
-            <SelectTrigger className="w-auto h-10 md:w-auto lg:h-12 md:h-10 md:text-sm">
+            <SelectTrigger
+              className={cn(
+                "w-auto md:w-auto",
+                marketingFilterControlClassName,
+              )}
+            >
               <SelectValue placeholder={t("resaleFilter")} />
             </SelectTrigger>
             <SelectContent>
@@ -245,7 +255,11 @@ const MainComponent = ({
               ))}
             </SelectContent>
           </Select>{" "}
-          <DatePickerWithRange date={date} setDate={setDate} />
+          <DatePickerWithRange
+            date={date}
+            setDate={setDate}
+            buttonClassName={marketingFilterControlClassName}
+          />
         </div>
       </CardHeader>
       <CardContent className="p-4 sm:p-5">
@@ -287,7 +301,12 @@ const MainComponent = ({
             <div className="relative overflow-x-auto whitespace-nowrap">
               <div className="mt-8">
                 <h3 className="mb-4">{t("topCoursesSell")}</h3>
-                <div className="max-w-full overflow-auto rounded-2xl border border-primary/10">
+                <div
+                  className={cn(
+                    "max-w-full overflow-auto",
+                    marketingNestedBorderClassName,
+                  )}
+                >
                   <table className="w-full whitespace-nowrap text-text-2">
                     <thead>
                       <tr>
@@ -589,7 +608,11 @@ const AffiliateMarketing = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <Button className="mb-2 w-full rounded-xl" variant="outline" asChild>
+        <Button
+          className={cn("mb-2 w-full", marketingOutlineButtonClassName)}
+          variant="outline"
+          asChild
+        >
           <Link href="/dashboard/marketing/coupons">{text("coupons")}</Link>
         </Button>
         <Button className="w-full rounded-xl" asChild>

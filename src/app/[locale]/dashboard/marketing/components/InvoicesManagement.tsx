@@ -30,6 +30,10 @@ import { IMarketLog } from "@/types";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import {
+  marketingOutlineButtonClassName,
+  marketingTableBorderClassName,
+} from "./filterStyles";
 
 const InvoicesManagement = () => {
   const t = useTranslations("invoicesManagement");
@@ -107,10 +111,7 @@ const LoadingState = () => (
   <div className="space-y-5">
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
       {Array.from({ length: 4 }).map((_, i) => (
-        <Card
-          key={i}
-          className="rounded-2xl border border-primary/10 bg-clear-ground shadow-sm"
-        >
+        <Card key={i} className={marketingTableBorderClassName}>
           <CardContent className="p-4 sm:p-5">
             <Skeleton className="mb-2 w-24 h-4" />
             <Skeleton className="w-32 h-8" />
@@ -118,7 +119,7 @@ const LoadingState = () => (
         </Card>
       ))}
     </div>
-    <Card className="rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+    <Card className={marketingTableBorderClassName}>
       <CardContent className="p-4 sm:p-5">
         <Skeleton className="mb-4 w-48 h-8" />
         <div className="space-y-2">
@@ -260,7 +261,7 @@ const BalanceCard = ({
   };
 
   return (
-    <Card className="rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+    <Card className={marketingTableBorderClassName}>
       <CardContent className="flex flex-col justify-center items-center p-4 h-full">
         <div className="relative">
           <Image
@@ -291,7 +292,10 @@ const BalanceCard = ({
 
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button className="mt-4 w-full rounded-xl" variant="outline">
+            <Button
+              className={cn("mt-4 w-full", marketingOutlineButtonClassName)}
+              variant="outline"
+            >
               {t("stats.withdraw")}
             </Button>
           </DialogTrigger>
@@ -339,7 +343,7 @@ const MarketingTabs = ({
   getStatusColor: (status: string) => string;
   locale: string;
 }) => (
-  <Card className="rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+  <Card className={marketingTableBorderClassName}>
     <Tabs
       defaultValue="commission"
       dir={locale === "ar" ? "rtl" : "ltr"}
@@ -404,7 +408,7 @@ const InvoicesTabs = ({
   all?: boolean;
   locale: string;
 }) => (
-  <Card className="rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+  <Card className={marketingTableBorderClassName}>
     <Tabs
       defaultValue="regular"
       dir={locale === "ar" ? "rtl" : "ltr"}
@@ -646,7 +650,13 @@ const TableWithModal = ({
         {!hideModal && (
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="ghost" className="gap-2 rounded-xl text-text-3">
+              <Button
+                variant="outline"
+                className={cn(
+                  "gap-2 text-text-3",
+                  marketingOutlineButtonClassName,
+                )}
+              >
                 {t("common.showAll")}
                 <ArrowRight
                   className={cn("w-4 h-4", {

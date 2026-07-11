@@ -12,7 +12,7 @@ export async function generateMetadata(props: {
 }
 const Dashboard = async () => {
   return (
-    <main className="relative flex flex-col overflow-hidden !bg-transparent xl:flex-row">
+    <main className="relative flex flex-col overflow-hidden px-3 sm:px-6 !bg-transparent xl:flex-row">
       <DashboardHomeClient />
     </main>
   );

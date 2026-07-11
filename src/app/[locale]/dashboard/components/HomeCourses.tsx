@@ -5,9 +5,20 @@ import { Link } from "@/i18n/navigation";
 import { getDynamicString } from "@/lib/utils";
 import { ICourse } from "@/types";
 import { useTranslations } from "next-intl";
-import { useMemo } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import { LearnCourseCard } from "../learn/components/LearnCourseCard";
 import { BookOpenCheck, Clock3, PlayCircle } from "lucide-react";
+
+const emptySubscribe = () => () => {};
+const getHydratedSnapshot = () => true;
+const getServerSnapshot = () => false;
+
+const useIsHydrated = () =>
+  useSyncExternalStore(
+    emptySubscribe,
+    getHydratedSnapshot,
+    getServerSnapshot,
+  );
 
 const CourseSkeleton = () => {
   return (
@@ -32,6 +43,7 @@ const HomeCourses = () => {
   const { data: courses = [], isLoading: isGettingCourses } =
     useMyLearningSummary(token, user?._id);
   const text = useTranslations("courseHome");
+  const isHydrated = useIsHydrated();
 
   const newestIncompleteCourse = useMemo(() => {
     return courses.reduce<(typeof courses)[number] | null>((newest, course) => {
@@ -57,6 +69,8 @@ const HomeCourses = () => {
       return latestAttempt > newestAttempt ? course : newest || course;
     }, null);
   }, [courses]);
+
+  if (!isHydrated) return null;
 
   return (
     <section className="space-y-4">
