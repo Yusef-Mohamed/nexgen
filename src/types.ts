@@ -1,7 +1,6 @@
 import { emojis } from "./constants";
 export type DynamicString =
-  | string
-  | { ar: string; en: string; localized: string };
+  string | { ar: string; en: string; localized: string };
 export interface ICategory {
   title: DynamicString;
   _id: string;
@@ -44,6 +43,7 @@ export interface ICourse {
   slug: string;
   rating: number;
   type: string;
+  hasQuiz?: boolean;
   highlights: DynamicString[];
   image: string;
   price: number;
@@ -75,6 +75,8 @@ export interface ICourse {
     lessonDuration: number;
   };
   examTitle?: DynamicString;
+  examAvailable?: boolean;
+  examPassingScore?: number;
 }
 export interface ILesson {
   course: ICourse;
@@ -99,8 +101,11 @@ export interface ILesson {
   //
   assignmentDone?: boolean;
   lessonWatched?: boolean;
-  quizTitle?: string;
+  quizTitle?: DynamicString;
+  examTitle?: DynamicString;
   examQuestionsNumber?: number;
+  examAvailable?: boolean;
+  examPassingScore?: number;
 }
 
 export interface IUser {
@@ -168,6 +173,12 @@ export interface IExam {
   createdAt: string;
   updatedAt: string;
 }
+export interface IExamMetadata {
+  available: boolean;
+  title?: DynamicString;
+  questionsCount: number;
+  passingScore?: number;
+}
 export interface IQuestion {
   _id: string;
   question: DynamicString;
@@ -209,9 +220,7 @@ export interface ICoursePackage {
   priceAfterDiscount?: number;
   courses: ICourse[];
   type:
-    | "beginnerToIntermediate"
-    | "intermediateToAdvanced"
-    | "beginnerToAdvanced";
+    "beginnerToIntermediate" | "intermediateToAdvanced" | "beginnerToAdvanced";
   _id: string;
   slug: string;
   createdAt: string;

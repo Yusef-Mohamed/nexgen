@@ -12,6 +12,7 @@ import {
   TooltipProps,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table } from "@/components/ui/table";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { useAuth } from "@/components/auth-provider";
 import { useAnalyticsStore } from "@/stores/AnalyticsStore";
@@ -299,7 +300,7 @@ const Practice: React.FC = () => {
               className="w-full rounded-md animate-pulse bg-muted"
               style={{ height: "400px" }}
             />
-            <table className="w-full mt-2 animate-pulse">
+            <Table className="mt-2 w-full animate-pulse">
               <thead>
                 <tr>
                   <th className="p-2">
@@ -328,7 +329,7 @@ const Practice: React.FC = () => {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </Table>
           </>
         ) : data?.analyticsDocs.length ? (
           <>
@@ -377,7 +378,7 @@ const Practice: React.FC = () => {
               </ResponsiveContainer>
             </ChartContainer>
             <div className="max-w-full mt-4 overflow-auto">
-              <table className="w-full whitespace-normal">
+              <Table className="w-full whitespace-normal">
                 <thead>
                   <tr>
                     <th className="p-2 font-medium text-start">
@@ -424,7 +425,7 @@ const Practice: React.FC = () => {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              </Table>
             </div>
           </>
         ) : (

@@ -9,6 +9,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Table } from "@/components/ui/table";
+import {
+  DataTable,
+  DataTableContent,
+  DataTableDescription,
+  DataTableHeader,
+  DataTableHeading,
+  DataTableIcon,
+  DataTableTitle,
+  DataTableToolbar,
+} from "@/components/ui/data-table";
+import { ChartNoAxesCombined } from "lucide-react";
 
 import { useAuth } from "@/components/auth-provider";
 import TrendBadge from "@/components/TrendBadge";
@@ -42,7 +54,6 @@ import { DatePickerWithRange } from "@/components/DatePickerWithRange";
 import { cn, getDynamicString } from "@/lib/utils";
 import {
   marketingFilterControlClassName,
-  marketingNestedBorderClassName,
   marketingOutlineButtonClassName,
 } from "./filterStyles";
 const SalesManagement = () => {
@@ -218,19 +229,28 @@ const MainComponent = ({
     if (item && token) fetchData();
   }, [item, token, date]);
   return (
-    <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
-      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4 border-b border-primary/10 p-4 sm:p-5">
-        <CardTitle className="h2">{t("salesAnalytics")}</CardTitle>
-        <div className="flex flex-wrap gap-4">
+    <DataTable variant="striped">
+      <DataTableHeader>
+        <DataTableHeading>
+          <DataTableIcon>
+            <ChartNoAxesCombined aria-hidden className="size-5" />
+          </DataTableIcon>
+          <div className="min-w-0">
+            <DataTableTitle>{t("salesAnalytics")}</DataTableTitle>
+            <DataTableDescription>
+              {t("selectItemToViewAnalytics")}
+            </DataTableDescription>
+          </div>
+        </DataTableHeading>
+      </DataTableHeader>
+      <DataTableToolbar>
+        <div className="grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
           <Select
             value={item.toString()}
             onValueChange={(value) => setItem(value)}
           >
             <SelectTrigger
-              className={cn(
-                "w-auto md:w-auto",
-                marketingFilterControlClassName,
-              )}
+              className={cn("w-full", marketingFilterControlClassName)}
             >
               <SelectValue placeholder={t("resaleFilter")} />
             </SelectTrigger>
@@ -258,11 +278,15 @@ const MainComponent = ({
           <DatePickerWithRange
             date={date}
             setDate={setDate}
-            buttonClassName={marketingFilterControlClassName}
+            className="min-w-0"
+            buttonClassName={cn(
+              "w-full min-w-0",
+              marketingFilterControlClassName,
+            )}
           />
         </div>
-      </CardHeader>
-      <CardContent className="p-4 sm:p-5">
+      </DataTableToolbar>
+      <DataTableContent className="p-4 sm:p-5">
         {!item ? (
           <p className="py-8 text-center text-muted-foreground">
             {t("selectItemToViewAnalytics")}
@@ -301,13 +325,8 @@ const MainComponent = ({
             <div className="relative overflow-x-auto whitespace-nowrap">
               <div className="mt-8">
                 <h3 className="mb-4">{t("topCoursesSell")}</h3>
-                <div
-                  className={cn(
-                    "max-w-full overflow-auto",
-                    marketingNestedBorderClassName,
-                  )}
-                >
-                  <table className="w-full whitespace-nowrap text-text-2">
+                <div className="max-w-full overflow-auto rounded-xl border border-primary/10">
+                  <Table className="w-full whitespace-nowrap text-text-2">
                     <thead>
                       <tr>
                         <th className="py-2 font-normal text-start">#</th>
@@ -336,14 +355,14 @@ const MainComponent = ({
                         </tr>
                       ))}
                     </tbody>
-                  </table>
+                  </Table>
                 </div>
               </div>
             </div>
           </>
         )}
-      </CardContent>
-    </Card>
+      </DataTableContent>
+    </DataTable>
   );
 };
 const OrdersChart = ({

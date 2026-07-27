@@ -1,22 +1,41 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { axiosInstance } from "@/app/lib/utils";
-import { ICourse, ILesson } from "@/types";
+import { ICourse, IExamMetadata, ILesson } from "@/types";
 import { useAuth } from "@/components/auth-provider";
 
+export interface CourseSection {
+  section: string;
+  sectionId?: string;
+  lessons: ILesson[];
+}
+
+export interface LearningSummary {
+  sectionsCount: number;
+  lessonsCount: number;
+  totalDuration: number;
+  quizCount: number;
+  assignmentCount: number;
+}
+
 interface CourseContextType {
-  sections: {
-    section: string;
-    lessons: ILesson[];
-  }[];
+  sections: CourseSection[];
   course: ICourse | null;
+  courseExam: IExamMetadata;
+  learningSummary: LearningSummary;
+  canTakeFinalExam: boolean;
+  passedFinalExam: boolean;
   isLoading: boolean;
   error: string | null;
   refetch: () => void;
-  updateSections: (
-    newSections: { section: string; lessons: ILesson[] }[],
-  ) => void;
+  updateSections: (newSections: CourseSection[]) => void;
 }
 
 const CourseContext = createContext<CourseContextType | undefined>(undefined);
@@ -30,19 +49,31 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({
   children,
   courseId,
 }) => {
-  const [sections, setSections] = useState<
-    {
-      section: string;
-      lessons: ILesson[];
-    }[]
-  >([]);
+  const [sections, setSections] = useState<CourseSection[]>([]);
   const [course, setCourse] = useState<ICourse | null>(null);
+  const [courseExam, setCourseExam] = useState<IExamMetadata>({
+    available: false,
+    questionsCount: 0,
+  });
+  const [learningSummary, setLearningSummary] = useState<LearningSummary>({
+    sectionsCount: 0,
+    lessonsCount: 0,
+    totalDuration: 0,
+    quizCount: 0,
+    assignmentCount: 0,
+  });
+  const [canTakeFinalExam, setCanTakeFinalExam] = useState(false);
+  const [passedFinalExam, setPassedFinalExam] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { token } = useAuth();
 
-  const fetchCourseData = async () => {
-    if (!token || !courseId) return;
+  const fetchCourseData = useCallback(async () => {
+    if (!courseId) return;
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
 
     try {
       setIsLoading(true);
@@ -58,33 +89,102 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({
         }),
       ]);
 
-      setCourse(courseRes.data.data as ICourse);
-      setSections(sectionsRes.data.data);
+      const courseData = courseRes.data?.data as ICourse;
+      const rawSections = sectionsRes.data?.data;
+      const normalizedSections: CourseSection[] = Array.isArray(rawSections)
+        ? rawSections.map((section) => ({
+            section:
+              typeof section?.section === "string" ? section.section : "",
+            sectionId:
+              typeof section?.sectionId === "string"
+                ? section.sectionId
+                : undefined,
+            lessons: Array.isArray(section?.lessons) ? section.lessons : [],
+          }))
+        : [];
+      const allLessons = normalizedSections.flatMap(
+        (section) => section.lessons,
+      );
+      const responseExam = sectionsRes.data?.courseExam;
+      const normalizedCourseExam: IExamMetadata = {
+        available:
+          typeof responseExam?.available === "boolean"
+            ? responseExam.available
+            : Boolean(
+                courseData?.hasQuiz ||
+                courseData?.examTitle ||
+                courseData?.examQuestionsNumber,
+              ),
+        title: responseExam?.title || courseData?.examTitle,
+        questionsCount: Number.isFinite(Number(responseExam?.questionsCount))
+          ? Number(responseExam.questionsCount)
+          : Number(courseData?.examQuestionsNumber) || 0,
+        passingScore: Number(responseExam?.passingScore) || undefined,
+      };
+      const responseSummary = sectionsRes.data?.learningSummary;
+
+      setCourse({
+        ...courseData,
+        examTitle: normalizedCourseExam.title || courseData?.examTitle,
+        examQuestionsNumber: normalizedCourseExam.questionsCount,
+        examAvailable: normalizedCourseExam.available,
+        examPassingScore: normalizedCourseExam.passingScore,
+      });
+      setSections(normalizedSections);
+      setCourseExam(normalizedCourseExam);
+      setCanTakeFinalExam(
+        typeof sectionsRes.data?.canTakeFinalExam === "boolean"
+          ? sectionsRes.data.canTakeFinalExam
+          : normalizedCourseExam.available,
+      );
+      setPassedFinalExam(
+        typeof sectionsRes.data?.passedFinalExam === "boolean"
+          ? sectionsRes.data.passedFinalExam
+          : courseData?.courseProgress?.status === "Completed",
+      );
+      setLearningSummary({
+        sectionsCount:
+          Number(responseSummary?.sectionsCount) || normalizedSections.length,
+        lessonsCount:
+          Number(responseSummary?.lessonsCount) || allLessons.length,
+        totalDuration:
+          Number(responseSummary?.totalDuration) ||
+          allLessons.reduce(
+            (total, lesson) => total + (Number(lesson.lessonDuration) || 0),
+            0,
+          ),
+        quizCount:
+          Number(responseSummary?.quizCount) ||
+          allLessons.filter((lesson) => lesson.hasQuiz).length,
+        assignmentCount:
+          Number(responseSummary?.assignmentCount) ||
+          allLessons.filter((lesson) => lesson.isRequireAnalytic).length,
+      });
     } catch (err) {
       console.error("Error fetching course data:", err);
       setError("Failed to load course data");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [courseId, token]);
 
   useEffect(() => {
     fetchCourseData();
-  }, [courseId, token]);
+  }, [fetchCourseData]);
 
-  const refetch = () => {
-    fetchCourseData();
-  };
+  const refetch = fetchCourseData;
 
-  const updateSections = (
-    newSections: { section: string; lessons: ILesson[] }[],
-  ) => {
+  const updateSections = (newSections: CourseSection[]) => {
     setSections(newSections);
   };
 
   const value: CourseContextType = {
     sections,
     course,
+    courseExam,
+    learningSummary,
+    canTakeFinalExam,
+    passedFinalExam,
     isLoading,
     error,
     refetch,

@@ -6,8 +6,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DataTable,
+  DataTableContent,
+  DataTableDescription,
+  DataTableEmpty,
+  DataTableHeader,
+  DataTableHeading,
+  DataTableIcon,
+  DataTableTitle,
+} from "@/components/ui/data-table";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/auth-provider";
@@ -15,11 +24,9 @@ import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import { IUser } from "@/types";
 import { Button } from "@/components/ui/button";
-import { Copy, Trash2 } from "lucide-react";
+import { Copy, Link2, Trash2 } from "lucide-react";
 import ConfirmationDialog from "@/components/ui/confirmation-dialog";
-import { cn } from "@/lib/utils";
 import { AxiosError } from "axios";
-import { marketingNestedBorderClassName } from "./filterStyles";
 
 const LinksTable = ({
   links,
@@ -64,51 +71,50 @@ const LinksTable = ({
     if (token) fetchData();
   }, [token, user?._id, t]);
   return (
-    <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
-      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4 border-b border-primary/10 p-4 sm:p-5">
-        <CardTitle>{t("inviteLinks")}</CardTitle>
-      </CardHeader>
-      <CardContent className="p-4 sm:p-5">
-        <div
-          className={cn(
-            "relative overflow-x-auto whitespace-nowrap",
-            marketingNestedBorderClassName,
-          )}
-        >
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>#</TableHead>
-                <TableHead>{t("link")}</TableHead>
-                <TableHead>{t("clicksCount")}</TableHead>
-                <TableHead>{t("registerCount")}</TableHead>
-                <TableHead>{t("month")}</TableHead>
-                <TableHead>{t("year")}</TableHead>
-                <TableHead>{t("actions") || "Actions"}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {links?.map((link, index) => (
-                <LinkRow
-                  data={data}
-                  link={link}
-                  index={index}
-                  key={index}
-                  onDelete={onDelete}
-                />
-              ))}
-              {links.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={8} className="py-8 text-center">
-                    {t("noResults")}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </CardContent>
-    </Card>
+    <DataTable variant="striped">
+      <DataTableHeader>
+        <DataTableHeading>
+          <DataTableIcon>
+            <Link2 aria-hidden className="size-5" />
+          </DataTableIcon>
+          <div className="min-w-0">
+            <DataTableTitle>{t("inviteLinks")}</DataTableTitle>
+            <DataTableDescription>
+              {t("createLink.description")}
+            </DataTableDescription>
+          </div>
+        </DataTableHeading>
+      </DataTableHeader>
+      <DataTableContent className="whitespace-nowrap">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>#</TableHead>
+              <TableHead>{t("link")}</TableHead>
+              <TableHead>{t("clicksCount")}</TableHead>
+              <TableHead>{t("registerCount")}</TableHead>
+              <TableHead>{t("month")}</TableHead>
+              <TableHead>{t("year")}</TableHead>
+              <TableHead>{t("actions") || "Actions"}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {links?.map((link, index) => (
+              <LinkRow
+                data={data}
+                link={link}
+                index={index}
+                key={index}
+                onDelete={onDelete}
+              />
+            ))}
+            {links.length === 0 && (
+              <DataTableEmpty colSpan={8} title={t("noResults")} />
+            )}
+          </TableBody>
+        </Table>
+      </DataTableContent>
+    </DataTable>
   );
 };
 const LinkRow = ({

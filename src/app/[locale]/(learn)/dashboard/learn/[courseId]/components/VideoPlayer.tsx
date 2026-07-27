@@ -4,6 +4,7 @@ interface VideoPlayerProps {
   otp: string;
   playbackInfo: string;
   onVideoEnd?: () => void;
+  title?: string;
 }
 
 interface VdoPlayerVideo {
@@ -26,7 +27,12 @@ declare global {
   }
 }
 
-const VideoPlayer = ({ otp, playbackInfo }: VideoPlayerProps) => {
+const VideoPlayer = ({
+  otp,
+  playbackInfo,
+  onVideoEnd,
+  title,
+}: VideoPlayerProps) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   // Using a ref to track completion status across different events
   const isMarkedDone = useRef(false);
@@ -35,9 +41,9 @@ const VideoPlayer = ({ otp, playbackInfo }: VideoPlayerProps) => {
   const handleVideoComplete = useCallback(() => {
     if (!isMarkedDone.current) {
       isMarkedDone.current = true;
-      // if (onVideoEnd) onVideoEnd();
+      onVideoEnd?.();
     }
-  }, []);
+  }, [onVideoEnd]);
 
   useEffect(() => {
     // 1. Load the VdoCipher API script
@@ -94,6 +100,7 @@ const VideoPlayer = ({ otp, playbackInfo }: VideoPlayerProps) => {
   return (
     <iframe
       ref={iframeRef}
+      title={title}
       className="aspect-video w-full rounded-2xl border border-primary/10 bg-black shadow-sm"
       src={`https://player.vdocipher.com/v2/?otp=${otp}&playbackInfo=${playbackInfo}`}
       allow="encrypted-media"

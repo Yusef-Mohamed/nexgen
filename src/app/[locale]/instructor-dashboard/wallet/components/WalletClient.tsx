@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -10,13 +10,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DataTable,
+  DataTableContent,
+  DataTableDescription,
+  DataTableHeader,
+  DataTableHeading,
+  DataTableIcon,
+  DataTableTitle,
+} from "@/components/ui/data-table";
+
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/components/auth-provider";
 import TrendBadge from "@/components/TrendBadge";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Info } from "lucide-react";
+import { BadgeDollarSign, Info, ReceiptText } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -85,7 +95,7 @@ const WalletClient = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         setMarketLog(res.data);
       } catch (err) {
@@ -320,7 +330,7 @@ const BalanceCard = ({
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       setIsOpen(false);
       setAmount("");
@@ -346,7 +356,7 @@ const BalanceCard = ({
             width={500}
             height={500}
             className={cn(
-              "hidden w-full rounded-md aspect-[340/176] dark:block"
+              "hidden w-full rounded-md aspect-[340/176] dark:block",
             )}
           />
           <Image
@@ -452,7 +462,7 @@ const CommissionsTable = ({
         year: "numeric",
         month: "long",
         day: "numeric",
-      }
+      },
     );
   };
 
@@ -476,95 +486,103 @@ const CommissionsTable = ({
   const commissions = marketLog.commissions || [];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("tabs.commission")}</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <DataTable variant="striped">
+      <DataTableHeader>
+        <DataTableHeading>
+          <DataTableIcon>
+            <BadgeDollarSign aria-hidden className="size-5" />
+          </DataTableIcon>
+          <div className="min-w-0">
+            <DataTableTitle>{t("tabs.commission")}</DataTableTitle>
+            <DataTableDescription>
+              {commissions.length.toLocaleString()} {t("tabs.commission")}
+            </DataTableDescription>
+          </div>
+        </DataTableHeading>
+      </DataTableHeader>
+      <DataTableContent>
         {commissions.length === 0 ? (
           <p className="text-center text-muted-foreground py-8">
             {t("common.noData") || "No commissions found"}
           </p>
         ) : (
-          <div className="relative overflow-x-auto whitespace-nowrap">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t("commission.user") || "User"}</TableHead>
-                  <TableHead>{t("commission.order") || "Order"}</TableHead>
-                  <TableHead>{t("commission.type") || "Type"}</TableHead>
-                  <TableHead>{t("commission.amount") || "Amount"}</TableHead>
-                  <TableHead>
-                    {t("commission.percentage") || "Percentage"}
-                  </TableHead>
-                  <TableHead>{t("commission.profit")}</TableHead>
-                  <TableHead>{t("commission.date") || "Date"}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {commissions.map((commission, index) => (
-                  <TableRow key={`${commission.order}-${index}`}>
-                    <TableCell>
-                      {commission.user ? (
-                        <div className="flex items-center gap-3">
-                          <UserAvatar
-                            user={{
-                              name: commission.user.name,
-                              profileImg: commission.user.profileImg,
-                            }}
-                            size="sm"
-                          />
-                          <div className="flex flex-col">
-                            <span className="font-medium">
-                              {commission.user.name}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t("commission.user") || "User"}</TableHead>
+                <TableHead>{t("commission.order") || "Order"}</TableHead>
+                <TableHead>{t("commission.type") || "Type"}</TableHead>
+                <TableHead>{t("commission.amount") || "Amount"}</TableHead>
+                <TableHead>
+                  {t("commission.percentage") || "Percentage"}
+                </TableHead>
+                <TableHead>{t("commission.profit")}</TableHead>
+                <TableHead>{t("commission.date") || "Date"}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {commissions.map((commission, index) => (
+                <TableRow key={`${commission.order}-${index}`}>
+                  <TableCell>
+                    {commission.user ? (
+                      <div className="flex items-center gap-3">
+                        <UserAvatar
+                          user={{
+                            name: commission.user.name,
+                            profileImg: commission.user.profileImg,
+                          }}
+                          size="sm"
+                        />
+                        <div className="flex flex-col">
+                          <span className="font-medium">
+                            {commission.user.name}
+                          </span>
+                          <span className="text-sm text-muted-foreground">
+                            {commission.user.email}
+                          </span>
+                          {commission.user.phone && (
+                            <span
+                              className="text-xs text-muted-foreground w-fit"
+                              dir="ltr"
+                            >
+                              {commission.user.phone}
                             </span>
-                            <span className="text-sm text-muted-foreground">
-                              {commission.user.email}
-                            </span>
-                            {commission.user.phone && (
-                              <span
-                                className="text-xs text-muted-foreground w-fit"
-                                dir="ltr"
-                              >
-                                {commission.user.phone}
-                              </span>
-                            )}
-                          </div>
+                          )}
                         </div>
-                      ) : (
-                        <span className="text-muted-foreground">-</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-xs font-mono">
-                        {commission.order ? commission.order.slice(-8) : "-"}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">
-                        {getTranslatedType(commission.type)}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      ${(commission.amount ?? 0).toLocaleString()}
-                    </TableCell>
-                    <TableCell>
-                      {commission.percentage != null
-                        ? `${commission.percentage}%`
-                        : "-"}
-                    </TableCell>
-                    <TableCell className="font-semibold">
-                      ${(commission.profit ?? 0).toLocaleString()}
-                    </TableCell>
-                    <TableCell>{formatDate(commission.createdAt)}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground">-</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-xs font-mono">
+                      {commission.order ? commission.order.slice(-8) : "-"}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline">
+                      {getTranslatedType(commission.type)}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    ${(commission.amount ?? 0).toLocaleString()}
+                  </TableCell>
+                  <TableCell>
+                    {commission.percentage != null
+                      ? `${commission.percentage}%`
+                      : "-"}
+                  </TableCell>
+                  <TableCell className="font-semibold">
+                    ${(commission.profit ?? 0).toLocaleString()}
+                  </TableCell>
+                  <TableCell>{formatDate(commission.createdAt)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         )}
-      </CardContent>
-    </Card>
+      </DataTableContent>
+    </DataTable>
   );
 };
 
@@ -595,7 +613,7 @@ const InvoicesTable = ({
         year: "numeric",
         month: "long",
         day: "numeric",
-      }
+      },
     );
   };
 
@@ -616,49 +634,57 @@ const InvoicesTable = ({
   const invoices = marketLog.invoices || [];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("invoices.title") || "Invoices"}</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <DataTable variant="striped">
+      <DataTableHeader>
+        <DataTableHeading>
+          <DataTableIcon>
+            <ReceiptText aria-hidden className="size-5" />
+          </DataTableIcon>
+          <div className="min-w-0">
+            <DataTableTitle>{t("invoices.title") || "Invoices"}</DataTableTitle>
+            <DataTableDescription>
+              {invoices.length.toLocaleString()} {t("invoices.title")}
+            </DataTableDescription>
+          </div>
+        </DataTableHeading>
+      </DataTableHeader>
+      <DataTableContent>
         {invoices.length === 0 ? (
           <p className="text-center text-muted-foreground py-8">
             {t("common.noData") || "No invoices found"}
           </p>
         ) : (
-          <div className="relative overflow-x-auto whitespace-nowrap">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t("invoices.period")}</TableHead>
-                  <TableHead>{t("invoices.profit")}</TableHead>
-                  <TableHead>{t("invoices.status")}</TableHead>
-                  <TableHead>{t("invoices.date")}</TableHead>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t("invoices.period")}</TableHead>
+                <TableHead>{t("invoices.profit")}</TableHead>
+                <TableHead>{t("invoices.status")}</TableHead>
+                <TableHead>{t("invoices.date")}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {invoices.map((invoice) => (
+                <TableRow key={invoice._id}>
+                  <TableCell className="max-w-md">
+                    <div className="truncate">{invoice.desc || "-"}</div>
+                  </TableCell>
+                  <TableCell className="font-semibold">
+                    ${(invoice.profits ?? 0).toLocaleString()}
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={getStatusColor(invoice.status)}>
+                      {invoice.status ? t(invoice.status) : "-"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{formatDate(invoice.createdAt)}</TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {invoices.map((invoice) => (
-                  <TableRow key={invoice._id}>
-                    <TableCell className="max-w-md">
-                      <div className="truncate">{invoice.desc || "-"}</div>
-                    </TableCell>
-                    <TableCell className="font-semibold">
-                      ${(invoice.profits ?? 0).toLocaleString()}
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={getStatusColor(invoice.status)}>
-                        {invoice.status ? t(invoice.status) : "-"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{formatDate(invoice.createdAt)}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+              ))}
+            </TableBody>
+          </Table>
         )}
-      </CardContent>
-    </Card>
+      </DataTableContent>
+    </DataTable>
   );
 };
 

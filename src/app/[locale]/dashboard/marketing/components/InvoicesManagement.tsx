@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -10,12 +10,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DataTable,
+  DataTableContent,
+  DataTableFooter,
+  DataTableHeader,
+  DataTableHeading,
+  DataTableIcon,
+  DataTableTitle,
+  DataTableToolbar,
+} from "@/components/ui/data-table";
+
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/components/auth-provider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, BadgeDollarSign, ReceiptText } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -343,17 +354,23 @@ const MarketingTabs = ({
   getStatusColor: (status: string) => string;
   locale: string;
 }) => (
-  <Card className={marketingTableBorderClassName}>
+  <DataTable variant="striped">
     <Tabs
       defaultValue="commission"
       dir={locale === "ar" ? "rtl" : "ltr"}
       className="w-full"
     >
       <TableWithModal
+        title={`${t("tabs.sales")} / ${t("tabs.commission")}`}
+        icon={<BadgeDollarSign aria-hidden className="size-5" />}
         header={
           <TabsList>
-            <TabsTrigger value="sales">{t("tabs.sales")}</TabsTrigger>
-            <TabsTrigger value="commission">{t("tabs.commission")}</TabsTrigger>
+            <TabsTrigger className="h-10" value="sales">
+              {t("tabs.sales")}
+            </TabsTrigger>
+            <TabsTrigger className="h-10" value="commission">
+              {t("tabs.commission")}
+            </TabsTrigger>
           </TabsList>
         }
         modalContent={
@@ -391,7 +408,7 @@ const MarketingTabs = ({
         />
       </TableWithModal>
     </Tabs>
-  </Card>
+  </DataTable>
 );
 
 const InvoicesTabs = ({
@@ -408,19 +425,21 @@ const InvoicesTabs = ({
   all?: boolean;
   locale: string;
 }) => (
-  <Card className={marketingTableBorderClassName}>
+  <DataTable variant="striped">
     <Tabs
       defaultValue="regular"
       dir={locale === "ar" ? "rtl" : "ltr"}
       className="w-full"
     >
       <TableWithModal
+        title={t("invoices.title")}
+        icon={<ReceiptText aria-hidden className="size-5" />}
         header={
           <TabsList>
-            <TabsTrigger value="regular">
+            <TabsTrigger className="h-10" value="regular">
               {t("invoices.tabs.regular")}
             </TabsTrigger>
-            <TabsTrigger value="commission">
+            <TabsTrigger className="h-10" value="commission">
               {t("invoices.tabs.commission")}
             </TabsTrigger>
           </TabsList>
@@ -462,7 +481,7 @@ const InvoicesTabs = ({
         />
       </TableWithModal>
     </Tabs>
-  </Card>
+  </DataTable>
 );
 
 const CommissionTab = ({
@@ -631,6 +650,8 @@ const CommissionInvoicesTab = ({
 const TableWithModal = ({
   header,
   hideModal = false,
+  title,
+  icon,
   children,
   modalContent,
   t,
@@ -638,6 +659,8 @@ const TableWithModal = ({
 }: {
   header: React.ReactNode;
   hideModal?: boolean;
+  title: string;
+  icon: React.ReactNode;
   children: React.ReactNode;
   modalContent: React.ReactNode;
   t: (key: string) => string;
@@ -645,38 +668,48 @@ const TableWithModal = ({
 }) => {
   return (
     <>
-      <CardHeader className="flex flex-row items-center justify-between gap-3 border-b border-primary/10 p-4 sm:p-5">
-        <div className="flex-1">{header}</div>
-        {!hideModal && (
+      <DataTableHeader>
+        <DataTableHeading>
+          <DataTableIcon>{icon}</DataTableIcon>
+          <div className="min-w-0">
+            <DataTableTitle>{title}</DataTableTitle>
+          </div>
+        </DataTableHeading>
+      </DataTableHeader>
+      <DataTableToolbar className="overflow-x-auto py-2">
+        {header}
+      </DataTableToolbar>
+      <DataTableContent>{children}</DataTableContent>
+      {!hideModal && (
+        <DataTableFooter>
           <Dialog>
             <DialogTrigger asChild>
               <Button
                 variant="outline"
-                className={cn(
-                  "gap-2 text-text-3",
-                  marketingOutlineButtonClassName,
-                )}
+                size="sm"
+                className={cn("w-fit gap-2", marketingOutlineButtonClassName)}
               >
                 {t("common.showAll")}
                 <ArrowRight
-                  className={cn("w-4 h-4", {
+                  aria-hidden
+                  className={cn("size-4", {
                     "rotate-180": locale === "ar",
                   })}
                 />
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-h-[80vh] max-w-[95vw] overflow-y-auto rounded-2xl sm:max-w-[95vw] md:max-w-[95vw] lg:max-w-[95vw]">
-              <DialogHeader>
-                <DialogTitle>{header}</DialogTitle>
+            <DialogContent className="flex max-h-[85vh] w-[calc(100vw-2rem)] max-w-4xl flex-col gap-0 overflow-hidden rounded-2xl p-0 sm:max-w-4xl">
+              <DialogHeader className="gap-4 border-b border-primary/10 px-5 py-4 pe-12">
+                <DialogTitle>{title}</DialogTitle>
+                <div className="overflow-x-auto">{header}</div>
               </DialogHeader>
-              {modalContent}
+              <div className="min-h-0 overflow-auto p-4 [&_[role=tabpanel]]:mt-0 sm:p-5">
+                {modalContent}
+              </div>
             </DialogContent>
           </Dialog>
-        )}
-      </CardHeader>
-      <CardContent className="overflow-x-auto p-4 sm:p-5">
-        {children}
-      </CardContent>
+        </DataTableFooter>
+      )}
     </>
   );
 };

@@ -538,3 +538,16 @@ What was changed when this doc was first written, kept here so you can see
 - Rebuilt the message stream visuals with refined incoming/outgoing bubbles, visible timestamps, rounded reply previews, media frames, and compact hover action controls.
 - Reworked the composer to mirror the community composer controls: rounded surface, tokenized emoji/attachment/send buttons, selected-media pill, reply/edit preview card, and the shared `Textarea` control.
 - Preserved the existing chat APIs, socket events, participant admin flows, external-link warning, media upload path, and RTL-safe icon handling.
+
+---
+
+## 15. Learning workspace redesign - 2026-07-14 changelog
+
+**Student learning dashboard and course workspace**
+
+- Reframed the dashboard learn page with a token-based learning hero, honest course statistics, clearer in-progress/completed filtering, responsive course rows, and a distinct recommended-path section.
+- Rebuilt the course workspace as a focused learning studio: compact sticky header, collapsible desktop outline, controlled mobile course drawer, course overview state, and no distracting marketing footer.
+- Reworked the course outline with section/activity progress, semantic icon tiles, real exam titles and question counts, clear unavailable/locked fallbacks, and final-exam gating from the API contract.
+- Upgraded lesson playback with a descriptive entry panel, responsive player frame, secure-video retry state, lesson resources, and a working video-completion callback.
+- Rebuilt quizzes with title and passing-score context, answer progress, accessible selectable answer cards, guarded empty/error states, responsive sticky submit controls, and clearer result/feedback surfaces.
+- Extended the learn API response with exam metadata and course content summaries while preserving legacy client fallbacks. All new UI uses semantic tokens, logical positioning, bilingual strings, and responsive layouts.

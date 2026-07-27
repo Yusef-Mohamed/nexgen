@@ -1,26 +1,29 @@
 "use client";
+
 import { Link } from "@/i18n/navigation";
-import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
-import { PiExam } from "react-icons/pi";
-import { Award, FileText, Lock } from "lucide-react";
-import { PlayIcon } from "@/components/icons";
-import { Button } from "@/components/ui/button";
 import { getDynamicString } from "@/lib/utils";
-import { ICourse } from "@/types";
+import type { ICourse } from "@/types";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import {
+  HiOutlineArrowRight,
+  HiOutlineCheckBadge,
+  HiOutlineBookOpen,
+  HiOutlineClock,
+  HiOutlineDocumentText,
+  HiOutlineLockClosed,
+  HiOutlinePlayCircle,
+  HiOutlineTrophy,
+} from "react-icons/hi2";
 
 interface LearnCourseCardProps {
   course: ICourse;
   minimal?: boolean;
-  /** Suggested next course - same layout, public course link, lock overlay. */
   locked?: boolean;
 }
 
 const cardClassName =
-  "relative flex items-stretch gap-4 overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg hover:shadow-text-1/5 md:gap-5 md:p-4 max-md:flex-col";
-
-const imageClassName =
-  "aspect-[16/9] w-full rounded-xl object-cover md:h-36 md:w-60";
+  "group relative overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground p-3 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg hover:shadow-text-1/5 sm:p-4";
 
 export const LearnCourseCard = ({
   course,
@@ -28,205 +31,218 @@ export const LearnCourseCard = ({
   locked = false,
 }: LearnCourseCardProps) => {
   const text = useTranslations("learn");
-  const locale = useLocale();
   const courseId = course._id || course.id;
-  const learnHref = `/dashboard/learn/${courseId}`;
-  const coursePageHref = `/courses/${course.slug || courseId}`;
+  const learnHref = "/dashboard/learn/" + courseId;
+  const coursePageHref = "/courses/" + (course.slug || courseId);
   const certificateFile = course.courseProgress?.certificate?.file;
   const isCertificatePdf = certificateFile?.toLowerCase().endsWith(".pdf");
+  const courseTitle = getDynamicString(course.title) || text("course");
+  const courseImage = course.image || "/images/courses.png";
+  const progress = Math.min(
+    100,
+    Math.max(0, Number(course.userScore?.totalProgress) || 0),
+  );
+  const isCompleted = course.courseProgress?.status === "Completed";
 
   if (locked) {
     return (
-      <Link href={coursePageHref} className={`${cardClassName} group`}>
-        <Image
-          loading="lazy"
-          src={course.image}
-          alt={getDynamicString(course.title)}
-          width={600}
-          height={600}
-          className={imageClassName}
-        />
-        <div className="flex min-w-0 flex-1 max-md:flex-col">
-          <div className="flex min-w-0 flex-1">
-            <div className="w-full self-center md:pe-6 xl:pe-10">
-              <p className="text-xs font-bold uppercase tracking-wide text-primary">
-                {text("lockedCourse")}
-              </p>
-              <h2 className="my-2 line-clamp-2 font-black text-text-1 transition-colors group-hover:text-primary md:text-lg">
-                {getDynamicString(course.title)}
-              </h2>
-              <p className="text-sm text-text-3">{text("viewCoursePage")}</p>
-            </div>
+      <Link href={coursePageHref} className={cardClassName}>
+        <div className="grid gap-4 sm:grid-cols-[11rem_minmax(0,1fr)_auto] sm:items-center">
+          <div className="relative aspect-video overflow-hidden rounded-xl bg-background-2 sm:aspect-[4/3]">
+            <Image
+              loading="lazy"
+              src={courseImage}
+              alt={courseTitle}
+              fill
+              sizes="(max-width: 640px) 100vw, 176px"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-background/20" />
           </div>
-        </div>
-        <div
-          className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-background/25 backdrop-blur-[2px] transition-colors"
-          aria-hidden
-        >
-          <Button
-            type="button"
-            size="icon"
-            tabIndex={-1}
-            className="pointer-events-none size-14 rounded-full shadow-lg"
-          >
-            <Lock className="size-7" strokeWidth={2} />
-          </Button>
+
+          <div className="min-w-0">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-secondary/20 bg-secondary/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-secondary">
+              <HiOutlineLockClosed className="size-3.5" />
+              {text("lockedCourse")}
+            </div>
+            <h2 className="mt-3 line-clamp-2 font-black text-text-1 transition-colors group-hover:text-primary">
+              {courseTitle}
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-text-3">
+              {text("viewCoursePage")}
+            </p>
+          </div>
+
+          <span className="inline-flex size-11 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-transform group-hover:scale-105">
+            <HiOutlineArrowRight className="size-5 rtl:rotate-180" />
+          </span>
         </div>
       </Link>
     );
   }
 
   return (
-    <div className={cardClassName}>
-      <Link href={learnHref} className="shrink-0">
-        <Image
-          loading="lazy"
-          src={course.image}
-          alt={getDynamicString(course.title)}
-          width={600}
-          height={600}
-          className={imageClassName}
-        />
-      </Link>
-      <div className="flex min-w-0 flex-1 gap-3 max-md:flex-col">
-        <div className="flex min-w-0 flex-1">
-          <div className="w-full self-center pe-1 md:pe-28 xl:pe-32">
-            <p className="text-xs font-bold uppercase tracking-wide text-primary">
+    <article className={cardClassName}>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -end-16 -top-20 size-44 rounded-full bg-primary/10 blur-[70px]"
+      />
+
+      <div
+        className={
+          minimal
+            ? "relative grid gap-4 md:grid-cols-[14rem_minmax(0,1fr)] md:items-center"
+            : "relative grid gap-4 md:grid-cols-[14rem_minmax(0,1fr)] md:items-center xl:grid-cols-[14rem_minmax(0,1fr)_18rem]"
+        }
+      >
+        <Link
+          href={learnHref}
+          className="relative aspect-video overflow-hidden rounded-xl bg-background-2 md:aspect-[16/10]"
+        >
+          <Image
+            loading="lazy"
+            src={courseImage}
+            alt={courseTitle}
+            fill
+            sizes="(max-width: 768px) 100vw, 224px"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          <span className="absolute bottom-3 start-3 inline-flex size-10 items-center justify-center rounded-full border border-clear-ground/30 bg-clear-ground/90 text-primary cardShadowSm backdrop-blur-sm">
+            <HiOutlinePlayCircle className="size-5" />
+          </span>
+        </Link>
+
+        <div className="min-w-0 py-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-primary">
+              <HiOutlineBookOpen className="size-3.5" />
               {text("course")}
-            </p>
-            <Link href={learnHref}>
-              <h2 className="my-2 line-clamp-2 font-black text-text-1 transition-colors hover:text-primary md:text-lg">
-                {getDynamicString(course.title)}
-              </h2>
+            </span>
+            <Link
+              href={"/dashboard/learn/exams-history/" + courseId}
+              className="inline-flex items-center gap-1.5 rounded-full border border-secondary/20 bg-secondary/10 px-2.5 py-1 text-[10px] font-black text-secondary transition-colors hover:border-secondary/35"
+            >
+              <HiOutlineTrophy className="size-3.5" />
+              {text("examsHistory")}
             </Link>
-            {course.courseProgress?.status === "Completed" ? (
-              <>
-                <p className="text-sm text-text-2">
-                  {text("congratsOnFinishingTheCourse")}
-                </p>
-                {certificateFile ? (
-                  <a
-                    href={certificateFile}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-1 inline-flex text-sm font-bold text-primary underline-offset-4 hover:underline"
-                  >
-                    {text("checkYourCertificate")}
-                  </a>
-                ) : (
-                  <p className="mt-1 text-sm text-text-3">
-                    {text("yourCertificateDosnotAvailableYet")}
-                  </p>
-                )}
-              </>
-            ) : (
-              <>
-                <div className="flex w-full items-center gap-3">
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-muted md:max-w-xs">
-                    <div
-                      className="h-2 w-full rounded-full bg-primary"
-                      style={{
-                        transform: `translateX(${locale === "en" ? "-" : ""}${
-                          100 - Number(course.userScore?.totalProgress || 0)
-                        }%)`,
-                      }}
-                    />
-                  </div>
-                  <span className="shrink-0 text-sm font-black text-text-1">
-                    {parseInt(
-                      course.userScore?.totalProgress?.toString() || "0",
-                    )}
-                    %
-                  </span>
-                </div>
-                <span className="mt-1 block text-sm text-text-3">
-                  {text("overAllProgress")}
-                </span>
-              </>
-            )}
           </div>
+
+          <Link href={learnHref}>
+            <h2 className="mt-3 line-clamp-2 font-black text-text-1 transition-colors hover:text-primary">
+              {courseTitle}
+            </h2>
+          </Link>
+
+          {isCompleted ? (
+            <div className="mt-3">
+              <p className="text-sm font-bold text-green">
+                {text("congratsOnFinishingTheCourse")}
+              </p>
+              {!certificateFile && (
+                <p className="mt-1 text-sm text-text-3">
+                  {text("yourCertificateDosnotAvailableYet")}
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="mt-4 max-w-md">
+              <div className="flex items-center justify-between gap-3 text-xs font-bold">
+                <span className="text-text-3">{text("overAllProgress")}</span>
+                <span className="text-text-1">{Math.round(progress)}%</span>
+              </div>
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-primary transition-[width] duration-500"
+                  style={{ width: progress + "%" }}
+                />
+              </div>
+            </div>
+          )}
         </div>
+
         {!minimal && (
-          <div className="flex rounded-xl border-primary/10 md:min-w-64 md:border-s md:px-5 lg:min-w-72">
+          <div className="border-primary/10 xl:border-s xl:ps-4">
             {certificateFile ? (
               <a
-                className="group flex w-full items-center gap-3 self-center rounded-xl border border-primary/10 bg-primary/5 p-3 transition-colors hover:border-primary/30 hover:bg-primary/10 md:h-36 md:w-64 lg:w-72"
                 href={certificateFile}
                 target="_blank"
                 rel="noreferrer"
+                className="flex min-h-28 items-center gap-3 rounded-2xl border border-green/15 bg-fadedGreen p-3 transition-all hover:-translate-y-0.5 hover:border-green/30"
               >
-                <span className="flex size-14 shrink-0 overflow-hidden rounded-xl border border-primary/10 bg-clear-ground text-primary shadow-sm">
+                <span className="inline-flex size-12 shrink-0 overflow-hidden rounded-xl border border-green/15 bg-clear-ground text-green">
                   {isCertificatePdf ? (
                     <span className="flex size-full items-center justify-center">
-                      <FileText className="size-7" strokeWidth={1.8} />
+                      <HiOutlineDocumentText className="size-6" />
                     </span>
                   ) : (
                     <Image
                       loading="lazy"
                       src={certificateFile}
-                      alt={getDynamicString(course.title)}
-                      width={160}
-                      height={160}
+                      alt={courseTitle}
+                      width={96}
+                      height={96}
                       className="size-full object-cover"
                     />
                   )}
                 </span>
-                <div className="min-w-0">
-                  <Award className="mb-2 size-5 text-primary" />
-                  <h3 className="line-clamp-2 text-sm font-bold leading-5 text-text-1 transition-colors group-hover:text-primary group-hover:underline">
+                <span className="min-w-0">
+                  <HiOutlineCheckBadge className="mb-1 size-5 text-green" />
+                  <span className="line-clamp-2 text-sm font-black text-text-1">
                     {text("checkYourCertificate")}
-                  </h3>
-                </div>
+                  </span>
+                </span>
               </a>
             ) : course.lastLesson ? (
               <Link
-                href={`${learnHref}?display=lesson&lesson=${course.lastLesson._id}`}
-                className="group flex w-full items-center gap-3 self-center rounded-xl border border-primary/10 bg-background-2 p-4 transition-colors hover:border-primary/30 hover:bg-primary/10 md:h-36 md:w-64 lg:w-72"
+                href={
+                  learnHref + "?display=lesson&lesson=" + course.lastLesson._id
+                }
+                className="flex min-h-28 items-center gap-3 rounded-2xl border border-primary/10 bg-background-2 p-3 transition-colors hover:border-primary/30 hover:bg-primary/5"
               >
-                <PlayIcon />
-                <div className="min-w-0">
-                  <h3 className="line-clamp-3 text-sm font-bold leading-5 text-primary group-hover:underline">
-                    {getDynamicString(course.lastLesson.title)}
-                  </h3>
-                  <p className="mt-1 line-clamp-2 text-xs leading-5 text-text-3">
-                    {getDynamicString(course.lastLesson.section.title)} |{" "}
-                    {course.lastLesson.lessonDuration} {text("min")}
-                  </p>
-                </div>
+                <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <HiOutlinePlayCircle className="size-5" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-[10px] font-black uppercase tracking-[0.12em] text-primary">
+                    {text("continueLearning")}
+                  </span>
+                  <span className="mt-1 block line-clamp-2 text-sm font-black text-text-1">
+                    {getDynamicString(course.lastLesson.title) ||
+                      text("lesson")}
+                  </span>
+                  <span className="mt-1 flex items-center gap-1 text-xs text-text-3">
+                    <HiOutlineClock className="size-3.5" />
+                    {Number(course.lastLesson.lessonDuration) || 0}{" "}
+                    {text("minuteAbbr")}
+                  </span>
+                </span>
               </Link>
-            ) : null}
+            ) : (
+              <Link
+                href={learnHref}
+                className="flex min-h-28 items-center justify-center gap-2 rounded-2xl border border-primary/10 bg-primary/5 px-4 text-sm font-black text-primary transition-colors hover:bg-primary/10"
+              >
+                {text("openCourse")}
+                <HiOutlineArrowRight className="size-4 rtl:rotate-180" />
+              </Link>
+            )}
           </div>
         )}
-        <Link
-          href={`/dashboard/learn/exams-history/${courseId}`}
-          className="absolute end-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary-faded px-2.5 py-1 text-xs font-bold text-primary transition-colors hover:border-primary/40 hover:bg-primary/15"
-        >
-          <PiExam size={16} /> {text("examsHistory")}
-        </Link>
       </div>
-    </div>
+    </article>
   );
 };
 
-export const LearnCourseCardSkeleton = () => {
-  return (
-    <div className={cardClassName}>
-      <div className="aspect-[16/9] w-full rounded-xl bg-muted md:h-36 md:w-60" />
-
-      <div className="flex flex-1">
-        <div className="w-full self-center md:pe-28 xl:pe-32">
-          <div className="h-3 w-28 rounded-full bg-muted" />
-          <div className="my-3 h-7 w-3/4 rounded bg-muted" />
-
-          <div className="flex items-center gap-3">
-            <div className="h-2 w-full max-w-xs overflow-hidden rounded-full bg-muted" />
-            <div className="h-4 w-8 rounded bg-muted" />
-          </div>
-
-          <div className="mt-2 h-4 w-32 rounded bg-muted" />
-        </div>
-        <div className="absolute end-3 top-3 h-7 w-28 rounded-full bg-muted" />
+export const LearnCourseCardSkeleton = () => (
+  <div className={cardClassName}>
+    <div className="grid gap-4 md:grid-cols-[14rem_minmax(0,1fr)] md:items-center xl:grid-cols-[14rem_minmax(0,1fr)_18rem]">
+      <div className="aspect-video animate-pulse rounded-xl bg-muted md:aspect-[16/10]" />
+      <div className="space-y-3 py-1">
+        <div className="h-6 w-28 animate-pulse rounded-full bg-muted" />
+        <div className="h-6 w-3/4 animate-pulse rounded-lg bg-muted" />
+        <div className="h-2 w-full max-w-md animate-pulse rounded-full bg-muted" />
       </div>
+      <div className="hidden h-28 animate-pulse rounded-2xl bg-muted xl:block" />
     </div>
-  );
-};
+  </div>
+);

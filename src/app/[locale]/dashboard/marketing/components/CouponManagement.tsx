@@ -18,6 +18,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DataTable,
+  DataTableContent,
+  DataTableDescription,
+  DataTableEmpty,
+  DataTableHeader,
+  DataTableHeading,
+  DataTableIcon,
+  DataTableTitle,
+} from "@/components/ui/data-table";
+import { TicketPercent } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/components/auth-provider";
@@ -189,15 +201,7 @@ const CouponManagement = () => {
 
   // Empty state component
   const EmptyState = () => (
-    <TableRow>
-      <TableCell colSpan={5} className="h-24 text-center">
-        <div className="flex flex-col items-center justify-center space-y-2">
-          <p className="text-sm text-muted-foreground">
-            {t("couponsList.table.empty")}
-          </p>
-        </div>
-      </TableCell>
-    </TableRow>
+    <DataTableEmpty colSpan={5} title={t("couponsList.table.empty")} />
   );
 
   return (
@@ -356,63 +360,68 @@ const CouponManagement = () => {
       </Card>
 
       {/* Coupons Table */}
-      <Card className={cn("overflow-hidden", marketingTableBorderClassName)}>
-        <CardHeader className="border-b border-primary/10 p-4 sm:p-5">
-          <CardTitle>{t("couponsList.title")}</CardTitle>
-          <CardDescription>{t("couponsList.description")}</CardDescription>
-        </CardHeader>
-        <CardContent className="p-4 sm:p-5">
-          <div className="overflow-x-auto">
-            <Table className="whitespace-nowrap">
-              <TableHeader>
-                <TableRow>
-                  <TableHead>
-                    {t("couponsList.table.headers.couponName")}
-                  </TableHead>
-                  <TableHead>
-                    {t("couponsList.table.headers.discount")}
-                  </TableHead>
-                  <TableHead>{t("couponsList.table.headers.usage")}</TableHead>
-                  <TableHead>{t("couponsList.table.headers.reason")}</TableHead>
-                  <TableHead>{t("couponsList.table.headers.status")}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isFetching ? (
-                  // Show skeleton loading rows
-                  <>
-                    <TableRowSkeleton />
-                    <TableRowSkeleton />
-                    <TableRowSkeleton />
-                  </>
-                ) : coupons.length === 0 ? (
-                  // Show empty state
-                  <EmptyState />
-                ) : (
-                  // Show actual data
-                  coupons.map((coupon) => (
-                    <TableRow className="text-center" key={coupon._id}>
-                      <TableCell className="font-medium">
-                        {coupon.couponName}
-                      </TableCell>
-                      <TableCell>{coupon.discount}%</TableCell>
-                      <TableCell>
-                        {coupon.usedTimes} / {coupon.maxUsageTimes}
-                      </TableCell>
-                      <TableCell>{coupon.reason}</TableCell>
-                      <TableCell>
-                        <Badge className={`${getStatusColor(coupon.status)}`}>
-                          {t(`couponsList.table.status.${coupon.status}`)}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+      <DataTable variant="striped">
+        <DataTableHeader>
+          <DataTableHeading>
+            <DataTableIcon>
+              <TicketPercent aria-hidden className="size-5" />
+            </DataTableIcon>
+            <div className="min-w-0">
+              <DataTableTitle>{t("couponsList.title")}</DataTableTitle>
+              <DataTableDescription>
+                {t("couponsList.description")}
+              </DataTableDescription>
+            </div>
+          </DataTableHeading>
+        </DataTableHeader>
+        <DataTableContent>
+          <Table className="whitespace-nowrap">
+            <TableHeader>
+              <TableRow>
+                <TableHead>
+                  {t("couponsList.table.headers.couponName")}
+                </TableHead>
+                <TableHead>{t("couponsList.table.headers.discount")}</TableHead>
+                <TableHead>{t("couponsList.table.headers.usage")}</TableHead>
+                <TableHead>{t("couponsList.table.headers.reason")}</TableHead>
+                <TableHead>{t("couponsList.table.headers.status")}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isFetching ? (
+                // Show skeleton loading rows
+                <>
+                  <TableRowSkeleton />
+                  <TableRowSkeleton />
+                  <TableRowSkeleton />
+                </>
+              ) : coupons.length === 0 ? (
+                // Show empty state
+                <EmptyState />
+              ) : (
+                // Show actual data
+                coupons.map((coupon) => (
+                  <TableRow className="text-center" key={coupon._id}>
+                    <TableCell className="font-medium">
+                      {coupon.couponName}
+                    </TableCell>
+                    <TableCell>{coupon.discount}%</TableCell>
+                    <TableCell>
+                      {coupon.usedTimes} / {coupon.maxUsageTimes}
+                    </TableCell>
+                    <TableCell>{coupon.reason}</TableCell>
+                    <TableCell>
+                      <Badge className={`${getStatusColor(coupon.status)}`}>
+                        {t(`couponsList.table.status.${coupon.status}`)}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </DataTableContent>
+      </DataTable>
     </section>
   );
 };
