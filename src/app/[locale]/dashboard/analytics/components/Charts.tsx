@@ -42,7 +42,7 @@ import ProgressCircle from "@/components/ProgressCircle";
 import LeaderBoardCard from "@/components/LeaderBoardCard";
 import CourseProgress from "./CourseProgress";
 import ExamsChart from "./ExamsChart";
-import VideoChart from "./VideoChart";
+import CertificateCard from "./CertificateCard";
 import { useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/app/lib/utils";
 import { UserFilter } from "@/components/filters/UserFilter";
@@ -243,7 +243,7 @@ const Charts = () => {
               isLoading={topUsers.length === 0}
               title={text("outTopStudentsInThisCourse")}
             />
-            <VideoChart />
+            <CertificateCard />
           </aside>
         </div>
       </DashboardContainer>

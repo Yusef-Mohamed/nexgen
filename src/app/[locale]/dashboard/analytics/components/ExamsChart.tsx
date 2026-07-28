@@ -55,9 +55,14 @@ const ExamsChart = () => {
   const text = useTranslations("analytics");
 
   useEffect(() => {
+    const controller = new AbortController();
+    let isActive = true;
+
     const getExams = async () => {
       try {
         setIsCourseProgressLoading(true);
+        setCourseProgress(null);
+        setExams([]);
 
         const res = await axiosInstance.get(
           `/exams/courseProgress/${selectedCourse}/${selectedUser}`,
@@ -65,8 +70,11 @@ const ExamsChart = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
+            signal: controller.signal,
           },
         );
+        if (!isActive) return;
+
         setCourseProgress(res.data.data);
         setExams(
           res.data.data.progress.map(
@@ -84,12 +92,27 @@ const ExamsChart = () => {
           ) || [],
         );
       } catch (err) {
-        console.error("Error fetching exams:", err);
+        if (isActive) {
+          console.error("Error fetching exams:", err);
+        }
       } finally {
-        setIsCourseProgressLoading(false);
+        if (isActive) {
+          setIsCourseProgressLoading(false);
+        }
       }
     };
-    if (selectedCourse && selectedUser) getExams();
+    if (selectedCourse && selectedUser) {
+      getExams();
+    } else {
+      setCourseProgress(null);
+      setExams([]);
+      setIsCourseProgressLoading(false);
+    }
+
+    return () => {
+      isActive = false;
+      controller.abort();
+    };
   }, [
     selectedCourse,
     selectedUser,

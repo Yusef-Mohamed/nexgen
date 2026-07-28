@@ -11,9 +11,9 @@ const CourseProgress = () => {
   const [isFetching, setIsFetching] = useState(true);
   const [selectedCourseProgress, setSelectedCourseProgress] =
     useState<ICourseProgress | null>(null);
-  const { selectedCourse, selectedUser, courseProgress, selectedUserObject } =
+  const { selectedCourse, selectedUser, selectedUserObject } =
     useAnalyticsStore();
-  const locale = useLocale();
+
   const getCourseScore = async (course: string) => {
     setIsFetching(true);
     try {
@@ -42,25 +42,6 @@ const CourseProgress = () => {
   // progress.png
   return (
     <div>
-      {courseProgress?.certificate && (
-        <div className="p-2 mb-2 text-center rounded-md ">
-          <p>
-            {locale === "ar"
-              ? "لقد اجتزت الامتحان وتستحق الشهادة🎉"
-              : "congratulations you have passed the exam and deserve the certificate🎉"}
-          </p>
-
-          <a
-            href={courseProgress.certificate.file}
-            download
-            className="underline text-primary"
-          >
-            {locale === "ar"
-              ? "اضغط هنا لفتح الشهادة"
-              : "click here to open the certificate"}
-          </a>
-        </div>
-      )}
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <CircleCell
           title="gradesAverage"
