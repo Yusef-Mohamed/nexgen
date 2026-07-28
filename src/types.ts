@@ -55,6 +55,7 @@ export interface ICourse {
   freePackageSubscriptionInDays?: number;
   accessibleCourses: ICourse[];
   status: "inActive" | "active";
+  order?: number;
   promotionVideo?: string;
   createdAt: string;
   updatedAt: string;

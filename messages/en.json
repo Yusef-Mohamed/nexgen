@@ -1559,7 +1559,22 @@
     "noPracticeForThisMonth": "No practices for this month",
     "selectMonth": "Select Month",
     "month": "Month",
-    "noVideosForThisMonth": "No videos for this month"
+    "noVideosForThisMonth": "No videos for this month",
+    "studyTimeline": "Study timeline",
+    "studyTimelineDescription": "The recommended course order for this category.",
+    "selectCategory": "Select a category",
+    "category": "Category",
+    "selectCourse": "Select a course",
+    "selectCourseDescription": "Choose the course used by the analytics cards below.",
+    "noOwnedCourses": "This student does not have any active courses yet.",
+    "noCoursesInCategory": "There are no active courses in this category.",
+    "timelineLoadError": "The study timeline could not be loaded.",
+    "tryAgain": "Try again",
+    "completed": "Completed",
+    "inProgress": "In progress",
+    "notStarted": "Not started",
+    "locked": "Locked",
+    "lockedCourseDescription": "This course is not owned by the student."
   },
   "reviews": {
     "reply": "Reply",

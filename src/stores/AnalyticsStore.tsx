@@ -26,9 +26,9 @@ type AnalyticsStore = {
   selectedCourse: string;
   setSelectedCourse: (selectedCourse: string) => void;
   selectedCourseObject: ICourse | null;
-  setSelectedCourseObject: (selectedCourseObject: ICourse) => void;
+  setSelectedCourseObject: (selectedCourseObject: ICourse | null) => void;
   selectedUserObject: IUser | null;
-  setSelectedUserObject: (selectedUserObject: IUser) => void;
+  setSelectedUserObject: (selectedUserObject: IUser | null) => void;
   courseProgress: AnalyticsCourseProgress | null;
   setCourseProgress: (courseProgress: AnalyticsCourseProgress | null) => void;
   topUsers: IUser[];

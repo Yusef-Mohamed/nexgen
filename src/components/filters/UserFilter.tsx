@@ -50,15 +50,15 @@ export const UserFilter: React.FC<UserFilterProps> = ({
     value === myAccount?._id || value === "me"
       ? meLabel
       : selectedUser
-      ? selectedUser.name
-      : label;
+        ? selectedUser.name
+        : label;
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="w-full bg-background gap-4 justify-between border-2 border-transparent border-s-primary !h-12"
+          className="!h-12 w-full justify-between gap-4 rounded-xl border-2 border-transparent border-s-primary bg-background-2 px-3 shadow-none focus-visible:ring-2 focus-visible:ring-primary/20"
         >
           <div className="flex items-center gap-2">
             {selectedUser && selectedUser.profileImg ? (
