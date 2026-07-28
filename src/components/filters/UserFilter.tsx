@@ -11,7 +11,9 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { IUser } from "@/types";
+import { useSyncExternalStore } from "react";
 import UserAvatar from "../UserAvatar";
+const subscribeToHydration = () => () => {};
 
 interface UserFilterProps {
   value: string;
@@ -43,11 +45,20 @@ export const UserFilter: React.FC<UserFilterProps> = ({
   meLabel,
 }) => {
   // Find the selected user
-  const selectedUser = users.find((user) => user._id === value) || myAccount;
+  const isHydrated = useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false,
+  );
+
+  const selectedUser = isHydrated
+    ? users.find((user) => user._id === value) || myAccount
+    : undefined;
 
   // Determine what to display in the button
-  const displayText =
-    value === myAccount?._id || value === "me"
+  const displayText = !isHydrated
+    ? label
+    : value === myAccount?._id || value === "me"
       ? meLabel
       : selectedUser
         ? selectedUser.name

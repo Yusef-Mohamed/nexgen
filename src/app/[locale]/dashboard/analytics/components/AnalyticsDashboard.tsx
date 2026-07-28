@@ -56,6 +56,8 @@ ChartJS.register(
 const selectorTriggerClassName =
   "h-12 w-full rounded-xl border-2 border-transparent border-s-primary bg-background-2 shadow-none focus:ring-2 focus:ring-primary/20";
 
+const EMPTY_COURSES: ICourse[] = [];
+
 const AnalyticsDashboard = () => {
   const inputs = useTranslations("Forms");
   const text = useTranslations("analytics");
@@ -64,6 +66,7 @@ const AnalyticsDashboard = () => {
   const searchParams = useSearchParams();
   const selectedUserParam = searchParams.get("selectedUser");
   const selectedCourseParam = searchParams.get("selectedCourse");
+  const myAccountId = myAccount?._id;
   const [myChildren, setMyChildren] = useState<IUser[]>([]);
   const [userSearchTerm, setUserSearchTerm] = useState("");
   const [isUserFilterOpen, setIsUserFilterOpen] = useState(false);
@@ -71,20 +74,24 @@ const AnalyticsDashboard = () => {
   const {
     selectedUser,
     setSelectedUser,
+    selectedUserObject,
     selectedCourse,
     setSelectedCourse,
+    selectedCourseObject,
     setSelectedCourseObject,
     setSelectedUserObject,
+    courseProgress,
     setCourseProgress,
     topUsers,
     setTopUsers,
   } = useAnalyticsStore();
 
-  const { data: courses = [] } = useAnalyticsLearningSummary(
+  const { data: coursesData } = useAnalyticsLearningSummary(
     token,
     selectedUser,
   );
 
+  const courses = coursesData ?? EMPTY_COURSES;
   const activeOwnedCourses = useMemo(
     () => courses.filter((course) => course.status === "active"),
     [courses],
@@ -156,34 +163,59 @@ const AnalyticsDashboard = () => {
   }, [activeOwnedCourses, selectedCategoryId, timeline?.courses]);
 
   useEffect(() => {
-    if (!myAccount) return;
+    if (!myAccountId) return;
 
-    setSelectedUser(selectedUserParam || myAccount._id);
-    axiosInstance
-      .get(`/marketing/getMarketerChildren/${myAccount._id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => setMyChildren(response.data.teamMembers1 || []))
-      .catch((error) =>
-        console.error("Failed to load analytics students", error),
-      );
-  }, [myAccount, selectedUserParam, setSelectedUser, token]);
+    const nextSelectedUser = selectedUserParam || myAccountId;
+    if (selectedUser !== nextSelectedUser) {
+      setSelectedUser(nextSelectedUser);
+    }
+  }, [myAccountId, selectedUser, selectedUserParam, setSelectedUser]);
 
   useEffect(() => {
-    if (!myAccount || !selectedUser) return;
-    const selectedUserObject =
-      selectedUser === myAccount._id
-        ? myAccount
-        : myChildren.find((user) => user._id === selectedUser);
-    setSelectedUserObject(selectedUserObject || null);
-  }, [myAccount, myChildren, selectedUser, setSelectedUserObject]);
+    if (!myAccountId || !token) return;
+
+    const controller = new AbortController();
+    axiosInstance
+      .get(`/marketing/getMarketerChildren/${myAccountId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        signal: controller.signal,
+      })
+      .then((response) => setMyChildren(response.data.teamMembers1 || []))
+      .catch((error) => {
+        if (error?.name !== "CanceledError") {
+          console.error("Failed to load analytics students", error);
+        }
+      });
+
+    return () => controller.abort();
+  }, [myAccountId, token]);
+
+  useEffect(() => {
+    const nextSelectedUserObject =
+      myAccount && selectedUser
+        ? selectedUser === myAccountId
+          ? myAccount
+          : myChildren.find((user) => user._id === selectedUser) || null
+        : null;
+
+    if (selectedUserObject !== nextSelectedUserObject) {
+      setSelectedUserObject(nextSelectedUserObject);
+    }
+  }, [
+    myAccount,
+    myAccountId,
+    myChildren,
+    selectedUser,
+    selectedUserObject,
+    setSelectedUserObject,
+  ]);
 
   useEffect(() => {
     if (!selectedCategoryId || categoryCourses.length === 0) {
       if (selectedCourse) setSelectedCourse("");
-      setSelectedCourseObject(null);
-      setCourseProgress(null);
-      setTopUsers([]);
+      if (selectedCourseObject !== null) setSelectedCourseObject(null);
+      if (courseProgress !== null) setCourseProgress(null);
+      if (topUsers.length > 0) setTopUsers([]);
       return;
     }
 
@@ -198,16 +230,21 @@ const AnalyticsDashboard = () => {
     if (selectedCourse !== nextCourse._id) {
       setSelectedCourse(nextCourse._id);
     }
-    setSelectedCourseObject(nextCourse);
+    if (selectedCourseObject !== nextCourse) {
+      setSelectedCourseObject(nextCourse);
+    }
   }, [
     categoryCourses,
+    courseProgress,
     selectedCategoryId,
     selectedCourse,
+    selectedCourseObject,
     selectedCourseParam,
     setCourseProgress,
     setSelectedCourse,
     setSelectedCourseObject,
     setTopUsers,
+    topUsers.length,
   ]);
 
   useEffect(() => {
