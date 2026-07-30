@@ -3,7 +3,6 @@
 import { axiosInstance } from "@/app/lib/utils";
 import { IUser } from "@/types";
 import { AxiosError } from "axios";
-import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 import { Link } from "@/i18n/navigation";
 import UserAvatar from "@/components/UserAvatar";
 import Image from "next/image";
@@ -12,6 +11,16 @@ import DisplayPosts from "@/app/[locale]/dashboard/components/DisplayPosts";
 import CommunitySidebar from "@/app/[locale]/dashboard/components/CommunitySidebar";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslations } from "next-intl";
+import {
+  ArrowLeft,
+  ArrowRight,
+  MessageSquareText,
+  UserRound,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+
+type DashboardText = ReturnType<typeof useTranslations>;
 
 const UserProfileComponent = ({
   userId,
@@ -24,11 +33,16 @@ const UserProfileComponent = ({
 }) => {
   const [thisUser, setThisUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const dashboardText = useTranslations("dashboard");
+  const baseDashboardHref = isInstructorDashboard
+    ? "/instructor-dashboard"
+    : "/dashboard";
 
   useEffect(() => {
     const getThisUser = async () => {
       try {
-        const response = await axiosInstance.get(`/users/${userId}`);
+        setLoading(true);
+        const response = await axiosInstance.get("/users/" + userId);
         setThisUser(response.data.data);
       } catch (e) {
         const error = e as AxiosError;
@@ -44,98 +58,263 @@ const UserProfileComponent = ({
 
   if (loading) {
     return (
-      <main className="flex xl:flex-row relative justify-center flex-col-reverse bg-background">
-        <section className="flex-1 w-full xl:max-w-4xl px-4 py-6  space-y-3 sm:px-4 sm:py-6 sm:space-y-6">
-          <div className="overflow-hidden rounded-md bg-clear-ground cardShadow">
-            {/* Back link skeleton */}
-            <div className="flex items-center w-full gap-2 p-6 px-6 bg-clear-ground">
-              <Skeleton className="h-4 w-4" />
-              <Skeleton className="h-5 w-32" />
-            </div>
-            {/* Cover image skeleton */}
-            <div className="w-full aspect-video bg-muted">
-              <Skeleton className="w-full h-full" />
-            </div>
-            {/* Avatar and follow button skeleton */}
-            <div className="flex items-end justify-between px-4 -mt-20 md:-mt-40 sm:-mt-20">
-              <div className="border-[10px] rounded-full border-clear-ground w-fit">
-                <Skeleton className="w-32 h-32 sm:h-40 sm:w-40 md:w-52 md:h-52 rounded-full" />
-              </div>
-              <Skeleton className="h-10 w-24 rounded-md" />
-            </div>
-            {/* Name and bio skeleton */}
-            <div className="p-6 pt-0">
-              <Skeleton className="h-6 w-48 mt-6" />
-              <Skeleton className="h-4 w-full mt-2" />
-              <Skeleton className="h-4 w-3/4 mt-2" />
-            </div>
-          </div>
-          {/* Posts skeleton */}
-          <div className="space-y-3 sm:space-y-6">
-            <Skeleton className="h-64 w-full rounded-md" />
-            <Skeleton className="h-64 w-full rounded-md" />
-          </div>
-        </section>
-        <CommunitySidebar />
-      </main>
+      <ProfileFrame>
+        <ProfileSkeleton />
+      </ProfileFrame>
     );
   }
 
   if (!thisUser) {
     return (
-      <main className="flex xl:flex-row relative flex-col-reverse bg-background">
-        <section className="flex-1 w-full xl:max-w-4xl px-4 py-6  space-y-3 sm:px-4 sm:py-6 sm:space-y-6">
-          <div className="overflow-hidden rounded-md bg-clear-ground cardShadow">
-            <div className="p-6">User not found</div>
-          </div>
-        </section>
-        <CommunitySidebar />
-      </main>
+      <ProfileFrame>
+        <div className="rounded-2xl border border-primary/10 bg-clear-ground p-6 text-text-2">
+          User not found
+        </div>
+      </ProfileFrame>
     );
   }
+
+  const communityHref = baseDashboardHref + "/community?sharedTo=students";
+
   return (
-    <main className="flex xl:flex-row relative justify-center flex-col-reverse bg-background">
-      <section className="flex-1 w-full xl:max-w-4xl px-4 py-6  space-y-3 sm:px-4 sm:py-6 sm:space-y-6">
-        <div className="overflow-hidden rounded-md bg-clear-ground cardShadow">
-          <Link
-            href={`${
-              isInstructorDashboard ? "/instructor-dashboard" : "/dashboard"
-            }/community?sharedTo=students`}
-            className="flex items-center w-full gap-2 p-6 px-6 bg-clear-ground"
-          >
-            {locale === "ar" ? <FaArrowRightLong /> : <FaArrowLeftLong />}
-            {thisUser.name}
-          </Link>
-          <div className="w-full aspect-video bg-muted ">
-            {thisUser.coverImg && (
-              <Image
-                src={thisUser.coverImg}
-                width={1920}
-                height={1080}
-                alt="cover image"
-                className="object-cover w-full h-full"
-              />
-            )}
-          </div>
-          <div className="flex items-end justify-between px-4 -mt-20 md:-mt-40 sm:-mt-20">
-            <div className="border-[10px] rounded-full border-clear-ground w-fit">
-              <UserAvatar
-                user={thisUser}
-                size="lg"
-                className="w-32 h-32 sm:h-40 sm:w-40 md:w-52 md:h-52"
-              />
-            </div>
-            <FollowBtn userId={userId} />
-          </div>
-          <div className="p-6 pt-0">
-            <h2 className="mt-6 font-semibold">{thisUser.name}</h2>
-            <p className="mt-2 text-text-3 md:text-lg">{thisUser.bio || ""}</p>
+    <ProfileFrame>
+      <ProfileCardShowcase
+        backHref={communityHref}
+        dashboardText={dashboardText}
+        isInstructorDashboard={isInstructorDashboard}
+        locale={locale}
+        user={thisUser}
+        userId={userId}
+      />
+
+      <section className="space-y-4">
+        <div className="flex items-center gap-3">
+          <span className="inline-flex size-10 items-center justify-center rounded-xl border border-primary/10 bg-primary/10 text-primary">
+            <MessageSquareText className="size-5" />
+          </span>
+          <div className="min-w-0">
+            <h2 className="text-base font-black text-text-1 sm:text-lg">
+              {dashboardText("community")}
+            </h2>
+            <p className="truncate text-sm text-text-3">{thisUser.name}</p>
           </div>
         </div>
         <DisplayPosts userId={userId} />
       </section>
-      <CommunitySidebar />
+    </ProfileFrame>
+  );
+};
+
+const ProfileFrame = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <main className="relative overflow-hidden bg-background pb-40">
+      <div className="relative z-10 mx-auto grid w-full gap-4 px-3 py-4 sm:px-5 lg:px-6 xl:grid-cols-[minmax(0,780px)_20rem] 2xl:max-w-[1260px]">
+        <section className="min-w-0 space-y-5">{children}</section>
+        <CommunitySidebar />
+      </div>
     </main>
+  );
+};
+
+const ProfileCardShowcase = ({
+  backHref,
+  dashboardText,
+  isInstructorDashboard,
+  locale,
+  user,
+  userId,
+}: {
+  backHref: string;
+  dashboardText: DashboardText;
+  isInstructorDashboard: boolean;
+  locale: string;
+  user: IUser;
+  userId: string;
+}) => {
+  const BackIcon = locale === "ar" ? ArrowRight : ArrowLeft;
+
+  return (
+    <section className="space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-primary/10 bg-clear-ground px-4 py-3 sm:px-5">
+        <Link
+          href={backHref}
+          className="inline-flex h-10 items-center gap-2 rounded-full border border-primary/10 bg-background-2 px-3 text-sm font-bold text-text-3 transition-colors hover:border-primary/30 hover:text-primary"
+        >
+          <BackIcon className="size-4" />
+          {dashboardText("community")}
+        </Link>
+        <div className="flex min-w-0 items-center gap-2 text-sm font-black text-text-1">
+          <span className="inline-flex size-9 items-center justify-center rounded-xl border border-primary/10 bg-primary/10 text-primary">
+            <UserRound className="size-4" />
+          </span>
+          <span className="truncate">{dashboardText("profile")}</span>
+        </div>
+      </div>
+
+      <ConversationProfileCard
+        dashboardText={dashboardText}
+        isInstructorDashboard={isInstructorDashboard}
+        user={user}
+        userId={userId}
+      />
+    </section>
+  );
+};
+
+type ProfileCardProps = {
+  dashboardText: DashboardText;
+  isInstructorDashboard: boolean;
+  user: IUser;
+  userId: string;
+};
+
+const ConversationProfileCard = ({
+  dashboardText,
+  isInstructorDashboard,
+  user,
+  userId,
+}: ProfileCardProps) => {
+  return (
+    <article className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+      <div className="relative h-36 bg-background-2 sm:h-44">
+        <ProfileCover user={user} />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/25 via-transparent to-secondary/20" />
+      </div>
+      <div className="p-5 sm:p-6">
+        <div className="-mt-20 mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <UserAvatar
+            user={user}
+            size="lg"
+            className="size-24 border-[6px] border-clear-ground shadow-sm sm:size-28"
+          />
+          <ProfileFollowAction
+            isInstructorDashboard={isInstructorDashboard}
+            small
+            userId={userId}
+          />
+        </div>
+        <div className="min-w-0 space-y-4">
+          <ProfileIdentity
+            bioFallback={dashboardText("profileBioFallback")}
+            compact
+            user={user}
+          />
+        </div>
+      </div>
+    </article>
+  );
+};
+
+const ProfileCover = ({ user }: { user: IUser }) => {
+  if (user.coverImg) {
+    return (
+      <Image
+        src={user.coverImg}
+        alt=""
+        fill
+        sizes="(min-width: 1280px) 780px, 100vw"
+        className="object-cover"
+      />
+    );
+  }
+
+  return (
+    <>
+      <Image
+        src="/images/community/profile-cover-light.png"
+        alt=""
+        fill
+        sizes="(min-width: 1280px) 780px, 100vw"
+        className="object-cover dark:hidden"
+      />
+      <Image
+        src="/images/community/profile-cover-dark.png"
+        alt=""
+        fill
+        sizes="(min-width: 1280px) 780px, 100vw"
+        className="hidden object-cover dark:block"
+      />
+    </>
+  );
+};
+
+const ProfileIdentity = ({
+  bioFallback,
+  compact,
+  dark,
+  hideBio,
+  user,
+}: {
+  bioFallback?: string;
+  compact?: boolean;
+  dark?: boolean;
+  hideBio?: boolean;
+  user: IUser;
+}) => (
+  <div className="min-w-0 pb-1">
+    <div className="flex flex-wrap items-center gap-2">
+      <h1
+        className={cn(
+          "truncate font-black",
+          compact ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl",
+          dark ? "text-clear-ground" : "text-text-1",
+        )}
+      >
+        {user.name}
+      </h1>
+    </div>
+    {!hideBio && (user.bio || bioFallback) && (
+      <p
+        className={cn(
+          "mt-2 max-w-2xl text-sm leading-6 sm:text-base",
+          dark ? "text-clear-ground/85" : "text-text-2",
+        )}
+      >
+        {user.bio || bioFallback}
+      </p>
+    )}
+  </div>
+);
+
+const ProfileFollowAction = ({
+  isInstructorDashboard,
+  small,
+  userId,
+}: {
+  isInstructorDashboard: boolean;
+  small?: boolean;
+  userId: string;
+}) => {
+  if (isInstructorDashboard) return null;
+
+  return (
+    <FollowBtn
+      userId={userId}
+      sm={small}
+      className={cn(
+        "shrink-0 shadow-sm",
+        small ? "h-9 min-w-24 rounded-lg px-4 text-sm" : "h-11 rounded-xl",
+      )}
+    />
+  );
+};
+
+const ProfileSkeleton = () => {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-3 rounded-2xl border border-primary/10 bg-clear-ground px-4 py-3 sm:px-5">
+        <Skeleton className="h-10 w-36 rounded-full" />
+        <Skeleton className="h-9 w-40 rounded-xl" />
+      </div>
+      <div className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground">
+        <Skeleton className="h-36 w-full rounded-none sm:h-44" />
+        <div className="space-y-3 p-5">
+          <Skeleton className="size-20 rounded-2xl" />
+          <Skeleton className="h-8 w-56" />
+          <Skeleton className="h-20 w-full max-w-lg rounded-2xl" />
+        </div>
+      </div>
+    </div>
   );
 };
 

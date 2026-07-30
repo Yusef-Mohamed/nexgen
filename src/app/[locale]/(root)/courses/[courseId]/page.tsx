@@ -56,7 +56,10 @@ export async function generateMetadata(props: {
 
 const CoursesPage = async (props: {
   params: Promise<{ locale: string; courseId: string }>;
-  searchParams: Promise<{ coupon?: string | string[]; code?: string | string[] }>;
+  searchParams: Promise<{
+    coupon?: string | string[];
+    code?: string | string[];
+  }>;
 }) => {
   const params = await props.params;
   const searchParams = await props.searchParams;
@@ -80,135 +83,134 @@ const CoursesPage = async (props: {
       <ItemPageLayout
         aside={<CourseCard courseData={courseData} couponCode={couponCode} />}
       >
-          <CourseHeading courseData={courseData} className="max-lg:hidden" />
-          <CourseCard
-            courseData={courseData}
-            couponCode={couponCode}
-            className="lg:hidden relative overflow-hidden"
-          />
-          <CourseMetadata courseData={courseData} />
+        <CourseHeading courseData={courseData} className="max-lg:hidden" />
+        <CourseCard
+          courseData={courseData}
+          couponCode={couponCode}
+          className="lg:hidden relative overflow-hidden"
+        />
+        <CourseMetadata courseData={courseData} />
 
-          {courseData.whatWillLearn && courseData.whatWillLearn.length > 0 && (
-            <SectionBlock
+        {courseData.whatWillLearn && courseData.whatWillLearn.length > 0 && (
+          <SectionBlock
+            tone="primary"
+            eyebrow={text("whatYouWillLearn")}
+            icon={<HiOutlineCheckCircle className="size-5" />}
+            title={text("whatYouWillLearn")}
+          >
+            <ItemDetailList
+              items={courseData.whatWillLearn}
               tone="primary"
-              eyebrow={text("whatYouWillLearn")}
-              icon={<HiOutlineCheckCircle className="size-5" />}
-              title={text("whatYouWillLearn")}
+              icon={<HiOutlineCheckCircle className="size-4" />}
+            />
+          </SectionBlock>
+        )}
+
+        {courseData.whoThisCourseFor &&
+          courseData.whoThisCourseFor.length > 0 && (
+            <SectionBlock
+              tone="secondary"
+              eyebrow={text("whoThisCourseFor")}
+              icon={<HiOutlineUserGroup className="size-5" />}
+              title={text("whoThisCourseFor")}
             >
               <ItemDetailList
-                items={courseData.whatWillLearn}
-                tone="primary"
-                icon={<HiOutlineCheckCircle className="size-4" />}
+                items={courseData.whoThisCourseFor}
+                tone="secondary"
+                icon={<HiOutlineUserGroup className="size-4" />}
               />
             </SectionBlock>
           )}
 
-          {courseData.whoThisCourseFor &&
-            courseData.whoThisCourseFor.length > 0 && (
-              <SectionBlock
-                tone="secondary"
-                eyebrow={text("whoThisCourseFor")}
-                icon={<HiOutlineUserGroup className="size-5" />}
-                title={text("whoThisCourseFor")}
-              >
-                <ItemDetailList
-                  items={courseData.whoThisCourseFor}
-                  tone="secondary"
-                  icon={<HiOutlineUserGroup className="size-4" />}
-                />
-              </SectionBlock>
-            )}
-
-          {(courseData.coursePrerequisites.length > 0 ||
-            courseData.accessibleCourses.length > 0) && (
-            <SectionBlock
-              tone="primary"
-              eyebrow={text("coursePrerequisites")}
-              icon={<HiOutlineClipboardDocumentList className="size-5" />}
-              title={text("coursePrerequisites")}
-            >
-              <ul className="grid gap-3 md:grid-cols-2 md:gap-4">
-                <ItemDetailList
-                  items={courseData.coursePrerequisites}
-                  tone="primary"
-                  icon={<HiOutlineClipboardDocumentList className="size-4" />}
-                  asFragment
-                />
-                {courseData.accessibleCourses &&
-                  courseData.accessibleCourses.length > 0 &&
-                  courseData.accessibleCourses.map((course, index) => (
-                    <li
-                      key={`accessible-${index}`}
-                      className="md:col-span-2 flex items-start gap-3 rounded-xl bg-primary/10 border border-primary/20 p-3 sm:p-4"
-                    >
-                      <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                        <HiOutlineSparkles className="size-4" />
-                      </span>
-                      <p className="flex-1 text-sm md:text-base text-text-1 font-medium">
-                        {text("recommendedToSee")}{" "}
-                        <Link
-                          href={`/courses/${course._id}`}
-                          target="_blank"
-                          className="text-primary underline underline-offset-2 hover:text-primary-main inline-flex items-center gap-1"
-                        >
-                          {getDynamicString(course.title)}
-                          <HiOutlineArrowRight className="size-3.5 rtl:rotate-180" />
-                        </Link>
-                      </p>
-                    </li>
-                  ))}
-              </ul>
-            </SectionBlock>
-          )}
-
-          {courseData.nextCourses && courseData.nextCourses.length > 0 && (
-            <SectionBlock
-              tone="secondary"
-              eyebrow={text("whatIsNext")}
-              icon={<HiOutlineSparkles className="size-5" />}
-              title={
-                getDynamicString(courseData.whatIsNextTitle) ||
-                text("whatIsNext")
-              }
-            >
-              {getDynamicString(courseData.whatIsNextDescription) && (
-                <p className="text-sm md:text-base text-text-2 mb-5">
-                  {getDynamicString(courseData.whatIsNextDescription)}
-                </p>
-              )}
-              <div className="grid gap-3 md:grid-cols-2">
-                {courseData.nextCourses.map((course) => (
-                  <Link
-                    key={course._id}
-                    href={`/courses/${course.slug || course._id}`}
-                    className="group rounded-xl bg-clear-ground border border-secondary/15 p-4 transition-colors hover:border-secondary/40"
+        {(courseData.coursePrerequisites.length > 0 ||
+          courseData.accessibleCourses.length > 0) && (
+          <SectionBlock
+            tone="primary"
+            eyebrow={text("coursePrerequisites")}
+            icon={<HiOutlineClipboardDocumentList className="size-5" />}
+            title={text("coursePrerequisites")}
+          >
+            <ul className="grid gap-3 md:grid-cols-2 md:gap-4">
+              <ItemDetailList
+                items={courseData.coursePrerequisites}
+                tone="primary"
+                icon={<HiOutlineClipboardDocumentList className="size-4" />}
+                asFragment
+              />
+              {courseData.accessibleCourses &&
+                courseData.accessibleCourses.length > 0 &&
+                courseData.accessibleCourses.map((course, index) => (
+                  <li
+                    key={`accessible-${index}`}
+                    className="md:col-span-2 flex items-start gap-3 rounded-xl bg-primary/10 border border-primary/20 p-3 sm:p-4"
                   >
-                    <div className="flex items-start gap-3">
-                      <span className="mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-secondary/10 text-secondary">
-                        <HiOutlineBookOpen className="size-5" />
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <h3 className="font-semibold text-text-1 line-clamp-2 group-hover:text-secondary">
-                          {getDynamicString(course.title)}
-                        </h3>
-                        {getDynamicString(course.description) && (
-                          <p className="mt-1 text-sm text-text-2 line-clamp-2">
-                            {getDynamicString(course.description)}
-                          </p>
-                        )}
-                        <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-secondary">
-                          {text("viewCourse")}
-                          <HiOutlineArrowRight className="size-3.5 rtl:rotate-180" />
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
+                    <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                      <HiOutlineSparkles className="size-4" />
+                    </span>
+                    <p className="flex-1 text-sm md:text-base text-text-1 font-medium">
+                      {text("recommendedToSee")}{" "}
+                      <Link
+                        href={`/courses/${course._id}`}
+                        target="_blank"
+                        className="text-primary underline underline-offset-2 hover:text-primary-main inline-flex items-center gap-1"
+                      >
+                        {getDynamicString(course.title)}
+                        <HiOutlineArrowRight className="size-3.5 rtl:rotate-180" />
+                      </Link>
+                    </p>
+                  </li>
                 ))}
-              </div>
-            </SectionBlock>
-          )}
+            </ul>
+          </SectionBlock>
+        )}
 
-          <CourseContent />
+        {courseData.nextCourses && courseData.nextCourses.length > 0 && (
+          <SectionBlock
+            tone="secondary"
+            eyebrow={text("whatIsNext")}
+            icon={<HiOutlineSparkles className="size-5" />}
+            title={
+              getDynamicString(courseData.whatIsNextTitle) || text("whatIsNext")
+            }
+          >
+            {getDynamicString(courseData.whatIsNextDescription) && (
+              <p className="text-sm md:text-base text-text-2 mb-5">
+                {getDynamicString(courseData.whatIsNextDescription)}
+              </p>
+            )}
+            <div className="grid gap-3 md:grid-cols-2">
+              {courseData.nextCourses.map((course) => (
+                <Link
+                  key={course._id}
+                  href={`/courses/${course.slug || course._id}`}
+                  className="group rounded-xl bg-clear-ground border border-secondary/15 p-4 transition-colors hover:border-secondary/40"
+                >
+                  <div className="flex items-start gap-3">
+                    <span className="mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-secondary/10 text-secondary">
+                      <HiOutlineBookOpen className="size-5" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-semibold text-text-1 line-clamp-2 group-hover:text-secondary">
+                        {getDynamicString(course.title)}
+                      </h3>
+                      {getDynamicString(course.description) && (
+                        <p className="mt-1 text-sm text-text-2 line-clamp-2">
+                          {getDynamicString(course.description)}
+                        </p>
+                      )}
+                      <span className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-secondary">
+                        {text("viewCourse")}
+                        <HiOutlineArrowRight className="size-3.5 rtl:rotate-180" />
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </SectionBlock>
+        )}
+
+        <CourseContent />
       </ItemPageLayout>
 
       <MobileAppHero />
@@ -221,9 +223,7 @@ const CoursesPage = async (props: {
               {text("studentsReviews")}
             </span>
           </div>
-          <h2 className="text-text-1 font-bold">
-            {text("studentsReviews")}
-          </h2>
+          <h2 className="text-text-1 font-bold">{text("studentsReviews")}</h2>
         </div>
         <ReviewsGrid
           reviews={courseData.reviews}

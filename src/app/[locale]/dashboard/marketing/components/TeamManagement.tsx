@@ -56,7 +56,6 @@ const TeamManagement: React.FC = () => {
   const fetchData = useCallback(async () => {
     if (!user?._id) return;
 
-    setIsFetching(true);
     try {
       const res = await axiosInstance.get<TeamData>(
         `/marketing/getMarketerChildren/${user._id}`,
@@ -64,7 +63,7 @@ const TeamManagement: React.FC = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       setData(res.data);
@@ -75,23 +74,27 @@ const TeamManagement: React.FC = () => {
       else toast.error(t("fetchError"));
     }
     setIsFetching(false);
-  }, [token, user?._id, t]);
+  }, [token, user, t]);
 
   useEffect(() => {
-    if (token) fetchData();
+    if (!token) return;
+
+    const timeout = window.setTimeout(() => {
+      void fetchData();
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
   }, [token, fetchData]);
   return (
-    <section className="space-y-4">
-      <h2 className="font-semibold">{t("affiliateMarketing")}</h2>
-
+    <section className="space-y-5">
       {isFetching ? (
         <>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <div className="w-full aspect-[1.5] bg-input animate-pulse rounded-xl" />
-            <div className="w-full aspect-[1.5] bg-input animate-pulse rounded-xl" />
-            <div className="w-full aspect-[1.5] bg-input animate-pulse rounded-xl" />
+            <div className="w-full aspect-[1.5] animate-pulse rounded-2xl border border-primary/10 bg-clear-ground" />
+            <div className="w-full aspect-[1.5] animate-pulse rounded-2xl border border-primary/10 bg-clear-ground" />
+            <div className="w-full aspect-[1.5] animate-pulse rounded-2xl border border-primary/10 bg-clear-ground" />
           </div>
-          <div className="aspect-[1.7] w-full bg-input animate-pulse rounded-xl"></div>
+          <div className="aspect-[1.7] w-full animate-pulse rounded-2xl border border-primary/10 bg-clear-ground"></div>
         </>
       ) : (
         <>
@@ -133,8 +136,8 @@ const StatsCards: React.FC<StatsCardsProps> = ({
 const StatCard: React.FC<StatCardProps> = ({ title, value, base, mark }) => {
   const locale = useLocale();
   return (
-    <Card className="cardShadowSecondary bg-background">
-      <CardContent className="p-4">
+    <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+      <CardContent className="p-4 sm:p-5">
         <div>
           <p className="mb-4 max-sm:text-sm text-muted-foreground">{title}</p>
           <h3 className="flex items-end gap-1 mt-1 mb-2 font-semibold h1-5">

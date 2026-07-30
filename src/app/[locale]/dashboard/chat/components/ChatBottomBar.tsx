@@ -13,14 +13,13 @@ import { MdOutlineAttachment } from "react-icons/md";
 import { SendHorizontal } from "lucide-react";
 import { EmojiPicker } from "@/components/EmojiPicker";
 import { cn } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
 
 export default function ChatBottombar() {
   const text = useTranslations("chat");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [media, setMedia] = useState<File | null>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<HTMLInputElement>(null);
   const { token, user } = useAuth();
   const {
@@ -31,6 +30,11 @@ export default function ChatBottombar() {
     actionOnMessage,
     updateMessage,
   } = useChatStore();
+
+  const adjustTextareaHeight = useCallback((element: HTMLDivElement) => {
+    element.style.height = "auto";
+    element.style.height = `${Math.min(element.scrollHeight, 160)}px`;
+  }, []);
 
   const sendMessageToSocket = useCallback(
     (payload: IMessage, type: "new" | "edit") => {
@@ -51,8 +55,21 @@ export default function ChatBottombar() {
           });
       }
     },
-    [socket, user?._id, selectedChatId]
+    [socket, user?._id, selectedChatId],
   );
+
+  const resetComposer = useCallback(() => {
+    setMessage("");
+    setMedia(null);
+    if (mediaRef.current) mediaRef.current.value = "";
+    if (inputRef.current) {
+      inputRef.current.innerText = "";
+      inputRef.current.style.height = "auto";
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 10);
+    }
+  }, []);
 
   const handleSend = useCallback(async () => {
     if (message.trim() || media) {
@@ -69,7 +86,7 @@ export default function ChatBottombar() {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
           addMessage(res.data);
           sendMessageToSocket(res.data, "new");
@@ -81,7 +98,7 @@ export default function ChatBottombar() {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
           updateMessage(res.data);
           sendMessageToSocket(res.data, "edit");
@@ -93,18 +110,13 @@ export default function ChatBottombar() {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
           addMessage(res.data.data);
           sendMessageToSocket(res.data.data, "new");
         }
         setActionOnMessage(null);
-        setMessage("");
-        if (inputRef.current) {
-          setTimeout(() => {
-            inputRef.current?.focus();
-          }, 10);
-        }
+        resetComposer();
       } catch (e) {
         const typedError = e as AxiosError<{
           message: string;
@@ -125,37 +137,45 @@ export default function ChatBottombar() {
     addMessage,
     updateMessage,
     setActionOnMessage,
+    resetComposer,
   ]);
 
   useEffect(() => {
     if (actionOnMessage?.action === "edit") {
-      setMessage(actionOnMessage.message.text);
+      const nextMessage = actionOnMessage.message.text;
+      setMessage(nextMessage);
+      if (inputRef.current) {
+        inputRef.current.innerText = nextMessage;
+        adjustTextareaHeight(inputRef.current);
+      }
     }
-  }, [actionOnMessage]);
-
-  const adjustTextareaHeight = (element: HTMLTextAreaElement) => {
-    element.style.height = "auto";
-    element.style.height = `${element.scrollHeight}px`;
-  };
+  }, [actionOnMessage, adjustTextareaHeight]);
 
   const handleMediaClick = useCallback(() => {
     mediaRef.current?.click();
   }, []);
 
-  const handleEmojiSelect = useCallback((value: string) => {
-    setMessage((prev) => prev + value);
-    inputRef.current?.focus();
-    if (inputRef.current) {
-      adjustTextareaHeight(inputRef.current);
-    }
-  }, []);
+  const handleEmojiSelect = useCallback(
+    (value: string) => {
+      setMessage((prev) => {
+        const nextMessage = `${prev}${value}`;
+        if (inputRef.current) {
+          inputRef.current.innerText = nextMessage;
+          adjustTextareaHeight(inputRef.current);
+        }
+        return nextMessage;
+      });
+      inputRef.current?.focus();
+    },
+    [adjustTextareaHeight],
+  );
 
   const handleMediaChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) setMedia(file);
     },
-    []
+    [],
   );
   return (
     <>
@@ -166,84 +186,116 @@ export default function ChatBottombar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.1 }}
-            className="p-4 border-t"
+            className="border-t border-primary/10 bg-clear-ground/90 px-4 py-3"
           >
-            <div className="flex items-start justify-between p-2 bg-muted">
-              <div>
-                <h4 className="text-sm font-semibold">
+            <div className="flex items-start justify-between gap-3 rounded-2xl border border-primary/15 bg-primary/5 p-3">
+              <div className="min-w-0 border-s-2 border-primary ps-3">
+                <h4 className="text-sm font-semibold text-text-1">
                   {actionOnMessage.message.sender.name}
                 </h4>
-                <p className="text-xs">{actionOnMessage.message.text}</p>
+                <p className="line-clamp-2 text-xs leading-5 text-text-3">
+                  {actionOnMessage.message.text}
+                </p>
               </div>
-              <div className="flex flex-col items-end">
-                <button onClick={() => setActionOnMessage(null)}>
+              <div className="flex shrink-0 flex-col items-end gap-1">
+                <button
+                  onClick={() => setActionOnMessage(null)}
+                  className="inline-flex size-8 cursor-pointer items-center justify-center rounded-full border border-primary/10 bg-clear-ground text-text-3 transition-colors hover:text-primary"
+                  type="button"
+                >
                   <IoMdClose />
                 </button>
-                <span className="text-xs">{text(actionOnMessage.action)}</span>
+                <span className="text-xs font-semibold text-primary">
+                  {text(actionOnMessage.action)}
+                </span>
               </div>
             </div>
           </motion.div>
         </AnimatePresence>
       )}
-      <div className="flex justify-between w-full items-center gap-2 border-t p-4">
-        <div className="relative flex items-center gap-4 w-full">
+      <div className="border-t border-primary/10 bg-clear-ground/95 p-3 backdrop-blur-sm sm:p-4">
+        {media && (
+          <div className="mb-3 flex items-center justify-between gap-3 rounded-2xl border border-secondary/15 bg-secondary/10 px-3 py-2 text-sm text-secondary">
+            <span className="line-clamp-1 font-semibold">{media.name}</span>
+            <button
+              type="button"
+              onClick={() => {
+                setMedia(null);
+                if (mediaRef.current) mediaRef.current.value = "";
+              }}
+              className="inline-flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full bg-clear-ground text-text-3 transition-colors hover:text-secondary"
+            >
+              <IoMdClose />
+            </button>
+          </div>
+        )}{" "}
+        <input
+          disabled={isLoading}
+          type="file"
+          id="mediaFile"
+          className="hidden"
+          ref={mediaRef}
+          onChange={handleMediaChange}
+        />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSend();
+          }}
+          className="relative min-w-0 flex-1"
+        >
+          {" "}
           <EmojiPicker
             onChange={handleEmojiSelect}
-            triggerClassName="w-11 h-11 flex items-center justify-center rounded-full text-primary bg-primary-faded"
-            className="text-primary size-6"
+            triggerClassName="size-9 shrink-0 flex items-center justify-center rounded-full border border-primary/15 text-primary bg-clear-ground hover:bg-primary/10 transition-colors cursor-pointer absolute start-1 top-1 z-10"
+            className="size-4 text-primary"
           />
-
-          <div className="flex">
-            <button
-              onClick={handleMediaClick}
-              className={cn(
-                "h-11 w-11",
-                "flex items-center justify-center rounded-full text-primary bg-primary-faded",
-                {
-                  "text-primary": media !== null,
-                }
-              )}
-            >
-              <MdOutlineAttachment className="text-primary size-6" />
-            </button>
-            <input
-              disabled={isLoading}
-              type="file"
-              id="mediaFile"
-              className="hidden"
-              ref={mediaRef}
-              onChange={handleMediaChange}
+          <button
+            onClick={handleMediaClick}
+            className={cn(
+              "flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-primary/15 bg-clear-ground text-primary transition-colors hover:bg-primary/10 absolute start-11 top-1 z-10",
+              {
+                "border-secondary/25 bg-secondary/10 text-secondary":
+                  media !== null,
+              },
+            )}
+            type="button"
+          >
+            <MdOutlineAttachment className="size-4" />
+          </button>
+          <div className="relative overflow-hidden rounded-[1.5rem]">
+            {!message && (
+              <span className="pointer-events-none absolute start-22 top-3 text-sm text-text-3">
+                Aa
+              </span>
+            )}
+            <div
+              ref={inputRef}
+              aria-label="Aa"
+              aria-multiline="true"
+              contentEditable={!isLoading}
+              onInput={(e) => {
+                setMessage(e.currentTarget.innerText);
+                adjustTextareaHeight(e.currentTarget);
+              }}
+              onPaste={(e) => {
+                e.preventDefault();
+                const text = e.clipboardData.getData("text/plain");
+                document.execCommand("insertText", false, text);
+              }}
+              role="textbox"
+              suppressContentEditableWarning
+              className="max-h-40 min-h-11 overflow-y-auto whitespace-pre-wrap break-words rounded-[1.5rem] border border-primary/10 bg-clear-ground py-3 pe-12 text-sm shadow-none outline-none focus-visible:ring-1 focus-visible:ring-primary/30 ps-22!"
             />
           </div>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSend();
-            }}
-            className="relative w-full"
+          <button
+            disabled={isLoading || (!message.trim() && !media)}
+            type="submit"
+            className="absolute end-1 bottom-1 inline-flex size-9 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <Input
-              disabled={isLoading}
-              autoComplete="off"
-              value={message}
-              onInput={(e) =>
-                adjustTextareaHeight(e.target as HTMLTextAreaElement)
-              }
-              onChange={(e) => setMessage(e.target.value)}
-              name="text"
-              placeholder="Aa"
-              className="flex items-center w-full py-2 pb-8 overflow-hidden border resize-none rounded-lg ps-8 bg-background"
-              style={{ height: "auto" }}
-            />{" "}
-            <button
-              disabled={isLoading}
-              onClick={handleSend}
-              className="absolute top-1/2 -translate-y-1/2 end-2"
-            >
-              <SendHorizontal className="text-primary size-6" size={18} />
-            </button>
-          </form>
-        </div>
+            <SendHorizontal className="size-4 rtl:rotate-180" />
+          </button>
+        </form>
       </div>
     </>
   );

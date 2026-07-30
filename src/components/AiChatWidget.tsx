@@ -8,6 +8,7 @@ import { useLocale } from "next-intl";
 import {
   FormEvent,
   KeyboardEvent,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -16,6 +17,7 @@ import {
 import {
   Bot,
   BookOpen,
+  ChevronRight,
   ExternalLink,
   GraduationCap,
   Loader2,
@@ -67,6 +69,7 @@ type AiChatResponse = {
   data: {
     data: {
       chatId: string;
+      guestKey?: string;
       answer: string;
       recommendations: Recommendation[];
       handoff?: Handoff | null;
@@ -87,6 +90,7 @@ type AiChatSessionResponse = {
 };
 
 const GUEST_CHAT_STORAGE_KEY = "nexgenAiChatId";
+const GUEST_CHAT_GUEST_KEY_STORAGE_KEY = "nexgenAiGuestKey";
 
 const copy = {
   en: {
@@ -94,12 +98,20 @@ const copy = {
     title: "Nexgen AI",
     subtitle: "Ask about courses, services, and learning paths.",
     greeting:
-      "Hi, I am Nexgen Academy's assistant. Tell me what you want to learn and I will point you to the best options.",
+      "Hi, I am Nexgen Academy's assistant. Tell me what you want to learn, and I will ask a quick question to find the right fit.",
     placeholder: "I want to learn forex...",
     send: "Send",
     thinking: "Thinking...",
     recommendations: "Recommended for you",
     newChat: "New chat",
+    newChatShort: "New chat",
+    chatsLabel: "Chats",
+    chatsHint: "Switch between your saved AI conversations.",
+    selectChat: "Select a saved chat",
+    currentChat: "Current chat",
+    loadingChats: "Loading chats...",
+    noSavedChats: "No saved chats yet",
+    untitledChat: "Saved chat",
     previousChats: "Previous chats",
     telegramFallback: "Chat with us on Telegram",
     telegramDescription: "You can contact technical support on Telegram.",
@@ -121,6 +133,14 @@ const copy = {
     thinking: "جاري التفكير...",
     recommendations: "اقتراحات مناسبة لك",
     newChat: "محادثة جديدة",
+    newChatShort: "محادثة جديدة",
+    chatsLabel: "المحادثات",
+    chatsHint: "انتقل بين محادثاتك المحفوظة مع المساعد.",
+    selectChat: "اختر محادثة محفوظة",
+    currentChat: "المحادثة الحالية",
+    loadingChats: "جاري تحميل المحادثات...",
+    noSavedChats: "لا توجد محادثات محفوظة بعد",
+    untitledChat: "محادثة محفوظة",
     previousChats: "المحادثات السابقة",
     telegramFallback: "فتح شات الدعم على تيليجرام",
     telegramDescription: "يمكنك التواصل مع الدعم الفني من التيليجرام",
@@ -163,6 +183,7 @@ export default function AiChatWidget() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
+  const [activeGuestKey, setActiveGuestKey] = useState<string | null>(null);
   const [sessions, setSessions] = useState<AiChatSession[]>([]);
   const [messages, setMessages] = useState<ChatMessage[]>([
     createMessage("assistant", text.greeting),
@@ -177,6 +198,33 @@ export default function AiChatWidget() {
   const typingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isBusy = loading || Boolean(typingMessageId);
   const isLoggedIn = Boolean(token);
+  const starterPrompts = useMemo(
+    () =>
+      language === "ar"
+        ? ["اقترح لي كورس مناسب", "ما أفضل مسار تعلم؟", "أحتاج تدريب شخصي"]
+        : [
+            "Find the right course",
+            "Compare learning paths",
+            "I need coaching",
+          ],
+    [language],
+  );
+  const showStarterPrompts =
+    messages.length === 1 &&
+    messages[0]?.role === "assistant" &&
+    !loading &&
+    !typingMessageId;
+  const activeSessionIsListed = Boolean(
+    activeChatId && sessions.some((session) => session._id === activeChatId),
+  );
+  const showCurrentChatFallback = Boolean(
+    activeChatId && !activeSessionIsListed,
+  );
+  const chatSelectPlaceholder = sessionsLoading
+    ? text.loadingChats
+    : sessions.length > 0
+      ? text.selectChat
+      : text.noSavedChats;
 
   useEffect(() => {
     return () => {
@@ -188,9 +236,23 @@ export default function AiChatWidget() {
     if (typeof window === "undefined") return;
     if (isLoggedIn) {
       setActiveChatId(null);
+      setActiveGuestKey(null);
       return;
     }
-    setActiveChatId(localStorage.getItem(GUEST_CHAT_STORAGE_KEY));
+    const storedChatId = localStorage.getItem(GUEST_CHAT_STORAGE_KEY);
+    const storedGuestKey = localStorage.getItem(
+      GUEST_CHAT_GUEST_KEY_STORAGE_KEY,
+    );
+
+    if (storedChatId && !storedGuestKey) {
+      localStorage.removeItem(GUEST_CHAT_STORAGE_KEY);
+      setActiveChatId(null);
+      setActiveGuestKey(null);
+      return;
+    }
+
+    setActiveChatId(storedChatId);
+    setActiveGuestKey(storedGuestKey);
   }, [isLoggedIn]);
 
   const requestMessages = useMemo(
@@ -202,7 +264,7 @@ export default function AiChatWidget() {
     [messages, text.greeting],
   );
 
-  const loadSessions = async () => {
+  const loadSessions = useCallback(async () => {
     if (!isLoggedIn) return;
     setSessionsLoading(true);
     try {
@@ -215,12 +277,12 @@ export default function AiChatWidget() {
     } finally {
       setSessionsLoading(false);
     }
-  };
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (!open || !isLoggedIn) return;
     loadSessions();
-  }, [open, isLoggedIn]);
+  }, [open, isLoggedIn, loadSessions]);
 
   const resetChatState = () => {
     if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
@@ -240,8 +302,10 @@ export default function AiChatWidget() {
 
     if (!isLoggedIn) {
       setActiveChatId(null);
+      setActiveGuestKey(null);
       if (typeof window !== "undefined") {
         localStorage.removeItem(GUEST_CHAT_STORAGE_KEY);
+        localStorage.removeItem(GUEST_CHAT_GUEST_KEY_STORAGE_KEY);
       }
       return;
     }
@@ -285,9 +349,9 @@ export default function AiChatWidget() {
     }
   };
 
-  const submitMessage = async (event?: FormEvent) => {
+  const submitMessage = async (event?: FormEvent, promptOverride?: string) => {
     event?.preventDefault();
-    const content = input.trim();
+    const content = (promptOverride ?? input).trim();
 
     if (!content || isBusy) {
       if (!content) setError(text.empty);
@@ -303,8 +367,10 @@ export default function AiChatWidget() {
     setHandoff(null);
 
     try {
+      const canContinueGuestChat = isLoggedIn || Boolean(activeGuestKey);
       const response = (await axiosInstance.post("/ai-chat", {
-        chatId: activeChatId,
+        chatId: canContinueGuestChat ? activeChatId : null,
+        guestKey: !isLoggedIn ? activeGuestKey : undefined,
         messages: [
           ...requestMessages,
           {
@@ -315,10 +381,20 @@ export default function AiChatWidget() {
       })) as AiChatResponse;
 
       const responseChatId = response.data.data.chatId;
+      const responseGuestKey = response.data.data.guestKey;
       if (responseChatId) {
         setActiveChatId(responseChatId);
         if (!isLoggedIn && typeof window !== "undefined") {
           localStorage.setItem(GUEST_CHAT_STORAGE_KEY, responseChatId);
+        }
+      }
+      if (!isLoggedIn && responseGuestKey) {
+        setActiveGuestKey(responseGuestKey);
+        if (typeof window !== "undefined") {
+          localStorage.setItem(
+            GUEST_CHAT_GUEST_KEY_STORAGE_KEY,
+            responseGuestKey,
+          );
         }
       }
 
@@ -353,7 +429,8 @@ export default function AiChatWidget() {
         });
 
         if (index >= answer.length) {
-          if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
+          if (typingIntervalRef.current)
+            clearInterval(typingIntervalRef.current);
           typingIntervalRef.current = null;
           setTypingMessageId(null);
           setRecommendations(nextRecommendations);
@@ -388,125 +465,194 @@ export default function AiChatWidget() {
       {open && (
         <div
           className={cn(
-            "absolute bottom-16 end-0 z-50 flex h-[min(34rem,calc(100vh-8rem))] w-[calc(100vw-2rem)] max-w-[24rem] flex-col overflow-hidden",
-            "rounded-2xl border border-primary/15 bg-clear-ground shadow-2xl shadow-primary/15",
+            "absolute bottom-16 end-0 z-50 flex h-[min(32rem,calc(100vh-6rem))] w-[calc(100vw-1.25rem)] max-w-[22.5rem] flex-col overflow-hidden",
+            "rounded-3xl border border-primary/10 bg-clear-ground shadow-2xl shadow-text-1/10",
           )}
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby="nexgen-ai-chat-title"
         >
-          <div className="flex items-center justify-between gap-3 border-b border-primary/10 bg-primary px-4 py-3 text-clear-ground">
-            <div className="flex min-w-0 items-center gap-2">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-clear-ground/15">
-                <Bot className="size-5" />
-              </span>
-              <div className="min-w-0">
-                <h2 className="truncate text-sm font-bold">{text.title}</h2>
-                <p className="truncate text-xs text-clear-ground/80">
-                  {text.subtitle}
-                </p>
+          <div className="border-b border-primary/10 bg-clear-ground px-4 py-3.5">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="relative flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <Bot className="size-5" />
+                  <span className="absolute bottom-0 end-0 size-3 rounded-full border-2 border-clear-ground bg-green" />
+                </span>
+                <div className="min-w-0">
+                  <h2
+                    id="nexgen-ai-chat-title"
+                    className="truncate text-sm font-bold text-text-1"
+                  >
+                    {text.title}
+                  </h2>
+                  <p className="mt-0.5 flex min-w-0 items-center gap-1.5 text-xs text-text-3">
+                    <span className="size-1.5 rounded-full bg-green" />
+                    <span className="truncate">{text.subtitle}</span>
+                  </p>
+                </div>
               </div>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="flex size-8 shrink-0 items-center justify-center rounded-full text-text-3 transition hover:bg-muted hover:text-text-1"
+                aria-label="Close AI chat"
+              >
+                <X className="size-4" />
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="flex size-8 shrink-0 items-center justify-center rounded-full text-clear-ground/85 transition hover:bg-clear-ground/15 hover:text-clear-ground"
-              aria-label="Close AI chat"
-            >
-              <X className="size-4" />
-            </button>
           </div>
 
           {isLoggedIn && (
-            <div className="flex items-center gap-2 border-b border-primary/10 bg-clear-ground px-3 py-2">
+            <div className="border-b border-primary/10 bg-background/70 px-3 py-3">
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <label
+                    className="block text-xs font-bold text-text-1"
+                    htmlFor="nexgen-ai-sessions"
+                  >
+                    {text.chatsLabel}
+                  </label>
+                  <p className="mt-0.5 truncate text-[11px] text-text-3">
+                    {text.chatsHint}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  disabled={isBusy}
+                  onClick={startNewChat}
+                  className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-xl border border-primary/10 bg-clear-ground px-2.5 text-xs font-semibold text-primary transition hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+                  aria-label={text.newChat}
+                  title={text.newChat}
+                >
+                  <Plus className="size-3.5" />
+                  <span>{text.newChatShort}</span>
+                </button>
+              </div>
               <select
+                id="nexgen-ai-sessions"
                 value={activeChatId || ""}
-                disabled={sessionsLoading || isBusy}
+                disabled={
+                  sessionsLoading ||
+                  isBusy ||
+                  (!activeChatId && sessions.length === 0)
+                }
                 onChange={(event) => openSession(event.target.value)}
-                className="min-w-0 flex-1 rounded-lg border border-primary/15 bg-background px-2 py-2 text-xs text-text-1 outline-none focus:border-primary"
-                aria-label={text.previousChats}
+                className="w-full min-w-0 rounded-xl border border-primary/10 bg-clear-ground px-3 py-2 text-xs font-medium text-text-1 outline-none transition focus:border-primary disabled:cursor-not-allowed disabled:opacity-60"
+                aria-label={text.selectChat}
               >
-                <option value="">{text.previousChats}</option>
+                <option value="">{chatSelectPlaceholder}</option>
+                {showCurrentChatFallback && (
+                  <option value={activeChatId || ""}>{text.currentChat}</option>
+                )}
                 {sessions.map((session) => (
                   <option key={session._id} value={session._id}>
-                    {session.title || text.previousChats}
+                    {session.title || text.untitledChat}
                   </option>
                 ))}
               </select>
-              <button
-                type="button"
-                disabled={isBusy}
-                onClick={startNewChat}
-                className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-primary/15 text-primary transition hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
-                aria-label={text.newChat}
-              >
-                <Plus className="size-4" />
-              </button>
             </div>
           )}
 
           <div
             ref={panelRef}
-            className="flex-1 space-y-3 overflow-y-auto px-3 py-4"
+            className="flex-1 space-y-3 overflow-y-auto bg-background/70 px-4 py-4"
           >
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={cn(
-                  "flex",
-                  message.role === "user" ? "justify-end" : "justify-start",
-                )}
-              >
+            {messages.map((message) => {
+              const isUser = message.role === "user";
+              const isTypingMessage = typingMessageId === message.id;
+
+              return (
                 <div
+                  key={message.id}
                   className={cn(
-                    "max-w-[85%] whitespace-pre-line break-words rounded-2xl px-3 py-2 text-sm leading-6",
-                    message.role === "user"
-                      ? "rounded-ee-sm bg-primary text-clear-ground"
-                      : "rounded-es-sm bg-muted text-text-1",
+                    "flex",
+                    isUser ? "justify-end" : "justify-start",
                   )}
                 >
-                  {message.content}
+                  <div
+                    className={cn(
+                      "max-w-[84%] whitespace-pre-line break-words px-3.5 py-2.5 text-sm leading-6 shadow-sm",
+                      isUser
+                        ? "rounded-2xl rounded-ee-md bg-primary text-primary-foreground shadow-primary/15"
+                        : "rounded-2xl rounded-es-md bg-clear-ground text-text-1",
+                    )}
+                  >
+                    {message.content ? (
+                      message.content
+                    ) : isTypingMessage ? (
+                      <span className="flex items-center gap-1.5 py-1">
+                        <span className="size-1.5 animate-pulse rounded-full bg-current opacity-40" />
+                        <span className="size-1.5 animate-pulse rounded-full bg-current opacity-50 [animation-delay:120ms]" />
+                        <span className="size-1.5 animate-pulse rounded-full bg-current opacity-60 [animation-delay:240ms]" />
+                      </span>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             {loading && (
               <div className="flex justify-start">
-                <div className="flex items-center gap-2 rounded-2xl rounded-es-sm bg-muted px-3 py-2 text-sm text-text-2">
-                  <Loader2 className="size-4 animate-spin" />
+                <div className="flex items-center gap-2 rounded-2xl rounded-es-md bg-clear-ground px-3.5 py-2.5 text-sm text-text-2 shadow-sm">
+                  <Loader2 className="size-4 animate-spin text-primary" />
                   {text.thinking}
                 </div>
               </div>
             )}
 
+            {showStarterPrompts && (
+              <div className="flex flex-wrap gap-2 pt-1">
+                {starterPrompts.map((prompt) => (
+                  <button
+                    key={prompt}
+                    type="button"
+                    onClick={() => submitMessage(undefined, prompt)}
+                    className="rounded-full border border-primary/10 bg-clear-ground px-3 py-1.5 text-xs font-medium text-text-2 transition hover:border-primary/35 hover:text-primary"
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {recommendations.length > 0 && (
-              <div className="space-y-2 rounded-2xl border border-primary/10 bg-primary/5 p-3">
-                <h3 className="text-xs font-bold uppercase text-primary">
-                  {text.recommendations}
-                </h3>
+              <div className="space-y-2 rounded-2xl border border-primary/10 bg-clear-ground p-3">
+                <div className="flex items-center gap-2">
+                  <span className="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Sparkles className="size-3.5" />
+                  </span>
+                  <h3 className="text-xs font-bold uppercase text-text-1">
+                    {text.recommendations}
+                  </h3>
+                </div>
                 {recommendations.map((item) => {
                   const Icon = getRecommendationIcon(item.type);
                   return (
                     <Link
                       key={`${item.type}-${item.id}`}
                       href={getRecommendationHref(locale, item)}
-                      className="block rounded-xl border border-primary/10 bg-clear-ground p-3 transition hover:border-primary/35 hover:shadow-md"
+                      className="group block rounded-xl border border-primary/10 bg-background/70 p-3 transition hover:border-primary/35"
                     >
-                      <div className="flex items-start gap-2">
-                        <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                      <div className="flex items-start gap-3">
+                        <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                           <Icon className="size-4" />
                         </span>
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="truncate text-sm font-bold text-text-1">
+                          <div className="flex items-start gap-2">
+                            <span className="min-w-0 flex-1 text-sm font-bold leading-5 text-text-1">
                               {item.title}
                             </span>
                             <span className="shrink-0 rounded-full bg-secondary/10 px-2 py-0.5 text-[10px] font-semibold text-secondary">
                               {text[item.type]}
                             </span>
                           </div>
-                          <p className="mt-1 line-clamp-2 text-xs leading-5 text-text-2">
+                          <p className="mt-1.5 line-clamp-2 text-xs leading-5 text-text-2">
                             {item.reason}
                           </p>
-                          <span className="mt-2 inline-flex text-xs font-semibold text-primary">
+                          <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary">
                             {text.open}
+                            <ChevronRight className="size-3.5 rtl:rotate-180" />
                           </span>
                         </div>
                       </div>
@@ -521,21 +667,21 @@ export default function AiChatWidget() {
                 href={handoff.url}
                 target="_blank"
                 rel="noreferrer"
-                className="block rounded-2xl border border-sky-200 bg-sky-50 p-3 text-sky-900 transition hover:border-sky-300 hover:bg-sky-100"
+                className="group block rounded-2xl border border-secondary/15 bg-clear-ground p-3 text-text-1 transition hover:border-secondary/35"
               >
-                <div className="flex items-center gap-2">
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-sky-500 text-white">
+                <div className="flex items-center gap-3">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-secondary">
                     <FaTelegramPlane className="size-4" />
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-bold">
                       {handoff.label || text.telegramFallback}
                     </p>
-                    <p className="mt-0.5 line-clamp-2 text-xs text-sky-700">
+                    <p className="mt-0.5 line-clamp-2 text-xs leading-5 text-text-2">
                       {text.telegramDescription}
                     </p>
                   </div>
-                  <ExternalLink className="size-4 shrink-0" />
+                  <ExternalLink className="size-4 shrink-0 text-secondary transition-transform group-hover:-translate-y-0.5" />
                 </div>
               </a>
             )}
@@ -545,8 +691,12 @@ export default function AiChatWidget() {
             onSubmit={submitMessage}
             className="border-t border-primary/10 bg-clear-ground p-3"
           >
-            {error && <p className="mb-2 text-xs text-destructive">{error}</p>}
-            <div className="flex items-end gap-2">
+            {error && (
+              <p className="mb-2 rounded-xl border border-destructive/20 bg-destructive/10 px-3 py-2 text-xs font-medium text-destructive">
+                {error}
+              </p>
+            )}
+            <div className="flex items-end gap-2 rounded-2xl border border-primary/10 bg-background/80 p-2 transition focus-within:border-primary/40">
               <textarea
                 value={input}
                 onChange={(event) => {
@@ -555,19 +705,19 @@ export default function AiChatWidget() {
                 }}
                 onKeyDown={handleKeyDown}
                 placeholder={text.placeholder}
-                rows={2}
-                className="min-h-11 flex-1 resize-none rounded-xl border border-primary/15 bg-background px-3 py-2 text-sm text-text-1 outline-none transition placeholder:text-text-3 focus:border-primary"
+                rows={1}
+                className="max-h-24 min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-sm text-text-1 outline-none placeholder:text-text-3"
               />
               <button
                 type="submit"
                 disabled={isBusy}
-                className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-clear-ground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
                 aria-label={text.send}
               >
                 {isBusy ? (
                   <Loader2 className="size-5 animate-spin" />
                 ) : (
-                  <Send className="size-5" />
+                  <Send className="size-5 rtl:rotate-180" />
                 )}
               </button>
             </div>
@@ -578,12 +728,15 @@ export default function AiChatWidget() {
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className="relative flex size-12 items-center justify-center rounded-full bg-primary text-clear-ground shadow-lg shadow-primary/25 transition hover:-translate-y-0.5 hover:bg-primary/90"
+        className={cn(
+          "group relative flex size-14 items-center justify-center overflow-hidden rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/25 transition-all duration-300 hover:-translate-y-1 hover:bg-primary/90",
+          open && "bg-secondary shadow-secondary/25",
+        )}
         aria-label={text.button}
       >
-        <Bot className="z-10 size-6" />
+        <Bot className="relative z-10 size-6" />
         {!open && (
-          <span className="absolute inset-0 rounded-full bg-primary opacity-40 animate-ping" />
+          <span className="absolute inset-0 rounded-full bg-primary opacity-30 animate-ping" />
         )}
       </button>
     </div>

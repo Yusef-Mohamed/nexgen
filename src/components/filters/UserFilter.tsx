@@ -11,7 +11,9 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { IUser } from "@/types";
+import { useSyncExternalStore } from "react";
 import UserAvatar from "../UserAvatar";
+const subscribeToHydration = () => () => {};
 
 interface UserFilterProps {
   value: string;
@@ -43,22 +45,31 @@ export const UserFilter: React.FC<UserFilterProps> = ({
   meLabel,
 }) => {
   // Find the selected user
-  const selectedUser = users.find((user) => user._id === value) || myAccount;
+  const isHydrated = useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false,
+  );
+
+  const selectedUser = isHydrated
+    ? users.find((user) => user._id === value) || myAccount
+    : undefined;
 
   // Determine what to display in the button
-  const displayText =
-    value === myAccount?._id || value === "me"
+  const displayText = !isHydrated
+    ? label
+    : value === myAccount?._id || value === "me"
       ? meLabel
       : selectedUser
-      ? selectedUser.name
-      : label;
+        ? selectedUser.name
+        : label;
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="w-full bg-background gap-4 justify-between border-2 border-transparent border-s-primary !h-12"
+          className="!h-12 w-full justify-between gap-4 rounded-xl border-2 border-transparent border-s-primary bg-background-2 px-3 shadow-none focus-visible:ring-2 focus-visible:ring-primary/20"
         >
           <div className="flex items-center gap-2">
             {selectedUser && selectedUser.profileImg ? (

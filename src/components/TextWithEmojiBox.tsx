@@ -19,6 +19,8 @@ interface TextWithEmojiBoxProps {
   placeholder?: string;
   multiMedia?: boolean;
   textClassName?: string;
+  toolsPosition?: "split" | "end";
+  mediaIcon?: React.ReactNode;
 }
 
 const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
@@ -33,21 +35,23 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
   placeholder,
   multiMedia = false,
   textClassName,
+  toolsPosition = "split",
+  mediaIcon,
 }) => {
   const mediaRef = useRef<HTMLInputElement>(null);
+
+  const adjustTextareaHeight = (element: HTMLTextAreaElement) => {
+    element.style.height = "auto"; // Reset height to calculate full scroll height
+    element.style.height = `${element.scrollHeight}px`; // Set to full scroll height
+  };
 
   const handleInputChange = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       setText(event.target.value);
       adjustTextareaHeight(event.target);
     },
-    [setText]
+    [setText],
   );
-
-  const adjustTextareaHeight = (element: HTMLTextAreaElement) => {
-    element.style.height = "auto"; // Reset height to calculate full scroll height
-    element.style.height = `${element.scrollHeight}px`; // Set to full scroll height
-  };
 
   const handleKeyPress = useCallback(
     (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -60,7 +64,7 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
         }
       }
     },
-    [handleSend, setText]
+    [handleSend, setText],
   );
 
   const handleMediaClick = useCallback(() => {
@@ -75,7 +79,7 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
         adjustTextareaHeight(inputRef.current);
       }
     },
-    [setText, inputRef]
+    [setText, inputRef],
   );
 
   const handleMediaChange = useCallback(
@@ -99,14 +103,18 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
         if (file) setMedia(file);
       }
     },
-    [setMedia, multiMedia]
+    [setMedia, multiMedia],
   );
+
+  const hasSelectedMedia = Array.isArray(media)
+    ? media.length > 0
+    : Boolean(media);
 
   return (
     <div
       className={cn(
         "flex justify-between w-full items-center gap-2 border-t",
-        className
+        className,
       )}
     >
       <div className="relative w-full">
@@ -122,28 +130,40 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
           placeholder={placeholder || "Aa"}
           className={cn(
             "flex items-center w-full py-2 pb-8 overflow-hidden border resize-none rounded-lg bg-background",
-            textClassName
+            textClassName,
           )}
           style={{ height: "auto" }} // Set initial height to auto for dynamic resizing
         />
 
         <div
           className={cn(
-            "absolute bottom-2 flex items-center justify-between gap-2 w-full px-2",
-            {}
+            "absolute bottom-2 flex items-center gap-2",
+            toolsPosition === "end"
+              ? "end-2 rounded-full border border-primary/10 bg-clear-ground/95 p-1 backdrop-blur-sm"
+              : "w-full justify-between px-2",
           )}
         >
           <div className="flex items-center gap-2">
-            <EmojiPicker onChange={handleEmojiSelect} />
+            <EmojiPicker
+              onChange={handleEmojiSelect}
+              triggerClassName="inline-flex size-8 cursor-pointer items-center justify-center rounded-full text-text-3 transition hover:bg-primary/10 hover:text-primary"
+              className="text-current"
+            />
             {setMedia && (
               <div className="flex">
                 <button
+                  type="button"
                   onClick={handleMediaClick}
-                  className={cn({
-                    "text-primary": media !== null,
-                  })}
+                  className={cn(
+                    "inline-flex size-8 cursor-pointer items-center justify-center rounded-full text-text-3 transition hover:bg-primary/10 hover:text-primary",
+                    {
+                      "bg-primary/10 text-primary": hasSelectedMedia,
+                    },
+                  )}
                 >
-                  <MdOutlineAttachment className="text-xl text-text-3" />
+                  {mediaIcon ?? (
+                    <MdOutlineAttachment className="text-xl text-current" />
+                  )}
                 </button>
                 <input
                   disabled={isLoading}
@@ -158,8 +178,18 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
             )}
           </div>
           {handleSend && (
-            <button disabled={isLoading} onClick={handleSend}>
-              <SendHorizontal className="text-text-3" size={18} />
+            <button
+              type="button"
+              disabled={isLoading}
+              onClick={handleSend}
+              className={cn(
+                "inline-flex size-8 cursor-pointer items-center justify-center rounded-full transition disabled:cursor-not-allowed disabled:opacity-60",
+                toolsPosition === "end"
+                  ? "bg-primary text-primary-foreground hover:scale-105"
+                  : "text-text-3 hover:bg-primary/10 hover:text-primary",
+              )}
+            >
+              <SendHorizontal size={18} />
             </button>
           )}
         </div>

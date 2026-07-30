@@ -17,6 +17,7 @@ interface DatePickerWithRangeProps {
   date: DateRange | undefined;
   setDate: (date: DateRange | undefined) => void;
   className?: string;
+  buttonClassName?: string;
 }
 const formatDate = (date: Date) => {
   return format(date, "yyyy MM dd").split(" ").join("-");
@@ -26,6 +27,7 @@ export function DatePickerWithRange({
   date,
   setDate,
   className,
+  buttonClassName,
 }: DatePickerWithRangeProps) {
   const locale = useLocale();
   return (
@@ -37,7 +39,8 @@ export function DatePickerWithRange({
             variant="outline"
             className={cn(
               "md:text-sm justify-start text-left gap-4 font-normal",
-              !date && "text-muted-foreground"
+              !date && "text-muted-foreground",
+              buttonClassName,
             )}
             dir={locale === "ar" ? "rtl" : "ltr"}
           >

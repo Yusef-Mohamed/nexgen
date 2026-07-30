@@ -15,75 +15,63 @@ const CourseSidebarSkeleton: React.FC<CourseSidebarSkeletonProps> = ({
   return (
     <aside
       className={cn(
-        "py-4 pt-0 flex flex-col bg-background-2 h-screen overflow-auto max-h-screen top-0 sticky transition-all duration-300",
-        collapsed ? "w-16 px-2 pt-4" : "w-md px-3 sm:px-6",
-        className
+        "sticky top-0 flex h-screen max-h-screen shrink-0 flex-col border-e border-primary/10 bg-clear-ground px-3 transition-[width] duration-300",
+        collapsed ? "w-[4.5rem] px-2" : "w-[22rem] max-w-[92vw]",
+        className,
       )}
     >
-      <div className="flex flex-col h-full">
-        {/* Header with Logo skeleton */}
-        <div className="flex justify-between h-[76px] items-center flex-wrap mb-4 gap-4">
-          <Skeleton className="h-10 w-32 rounded-lg" />
-        </div>
-
-        {!collapsed && (
-          <>
-            {/* Back to Learning Button skeleton */}
-            <div className="flex items-center gap-3 px-4 py-3 mb-6">
-              <Skeleton className="size-10 rounded-full" />
-              <Skeleton className="h-5 w-40 rounded-lg" />
-            </div>
-
-            {/* Course Sections skeleton */}
-            <nav className="flex-1 overflow-y-auto pr-1">
-              <ul className="space-y-6">
-                {Array.from({ length: 3 }).map((_, sectionIndex) => (
-                  <li
-                    key={sectionIndex}
-                    className="space-y-4 p-4 border bg-primary/5 border-primary/30 rounded-2xl"
-                  >
-                    {/* Section Header skeleton */}
-                    <div className="w-full flex items-center justify-between">
-                      <div className="flex items-center gap-4 flex-1 min-w-0">
-                        <Skeleton className="size-12 rounded-xl shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <Skeleton className="h-5 w-48 mb-2 rounded-lg" />
-                          <Skeleton className="h-4 w-32 rounded-lg" />
-                        </div>
-                      </div>
-                      <Skeleton className="size-8 rounded-full" />
-                    </div>
-
-                    {/* Lessons skeleton - shown for the first one by default in skeleton */}
-                    {sectionIndex === 0 && (
-                      <ul className="space-y-4 px-1">
-                        {Array.from({ length: 2 }).map((_, lessonIndex) => (
-                          <li
-                            key={lessonIndex}
-                            className="space-y-5 bg-background p-3 rounded-2xl shadow-sm"
-                          >
-                            {/* Lesson Card skeleton */}
-                            <div className="w-full flex items-center justify-between gap-4">
-                              <div className="flex items-center gap-4 flex-1 min-w-0">
-                                <Skeleton className="size-10 rounded-xl shrink-0" />
-                                <div className="flex-1 min-w-0">
-                                  <Skeleton className="h-5 w-3/4 mb-1 rounded-lg" />
-                                  <Skeleton className="h-4 w-1/2 rounded-lg" />
-                                </div>
-                              </div>
-                              <Skeleton className="size-8 rounded-full" />
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </>
-        )}
+      <div className="flex h-[72px] shrink-0 items-center justify-between border-b border-primary/10">
+        <Skeleton
+          className={cn("h-9 rounded-xl", collapsed ? "w-9" : "w-28")}
+        />
+        {!collapsed && <Skeleton className="size-9 rounded-xl" />}
       </div>
+
+      {!collapsed && (
+        <>
+          <div className="space-y-3 py-4">
+            <Skeleton className="h-4 w-32 rounded-full" />
+            <div className="rounded-2xl border border-primary/10 bg-primary-faded p-4">
+              <div className="flex items-center gap-3">
+                <Skeleton className="size-10 rounded-xl" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-3 w-20 rounded-full" />
+                  <Skeleton className="h-4 w-4/5 rounded-full" />
+                </div>
+              </div>
+              <Skeleton className="mt-4 h-1.5 w-full rounded-full" />
+              <Skeleton className="mt-3 h-3 w-32 rounded-full" />
+            </div>
+          </div>
+
+          <div className="mb-3 flex items-center justify-between px-1">
+            <div className="space-y-2">
+              <Skeleton className="h-3 w-28 rounded-full" />
+              <Skeleton className="h-3 w-16 rounded-full" />
+            </div>
+            <Skeleton className="size-9 rounded-xl" />
+          </div>
+
+          <div className="min-h-0 flex-1 space-y-3 overflow-hidden">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="rounded-2xl border border-primary/10 bg-background-2 p-3"
+              >
+                <div className="flex items-center gap-3">
+                  <Skeleton className="size-9 rounded-xl" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-3/4 rounded-full" />
+                    <Skeleton className="h-3 w-1/2 rounded-full" />
+                    <Skeleton className="h-1 w-full rounded-full" />
+                  </div>
+                  <Skeleton className="size-4 rounded-full" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </aside>
   );
 };

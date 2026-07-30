@@ -6,8 +6,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DataTable,
+  DataTableContent,
+  DataTableDescription,
+  DataTableEmpty,
+  DataTableHeader,
+  DataTableHeading,
+  DataTableIcon,
+  DataTableTitle,
+} from "@/components/ui/data-table";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/auth-provider";
@@ -15,7 +24,7 @@ import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import { IUser } from "@/types";
 import { Button } from "@/components/ui/button";
-import { AiFillDelete } from "react-icons/ai";
+import { Copy, Link2, Trash2 } from "lucide-react";
 import ConfirmationDialog from "@/components/ui/confirmation-dialog";
 import { AxiosError } from "axios";
 
@@ -49,9 +58,9 @@ const LinksTable = ({
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
-        console.log(res.data);
+
         setData(res.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -62,46 +71,50 @@ const LinksTable = ({
     if (token) fetchData();
   }, [token, user?._id, t]);
   return (
-    <Card className="mb-4 border-none cardShadow bg-background">
-      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4">
-        <CardTitle>{t("inviteLinks")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="relative overflow-x-auto whitespace-nowrap">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>#</TableHead>
-                <TableHead>{t("link")}</TableHead>
-                <TableHead>{t("clicksCount")}</TableHead>
-                <TableHead>{t("registerCount")}</TableHead>
-                <TableHead>{t("month")}</TableHead>
-                <TableHead>{t("year")}</TableHead>
-                <TableHead>{t("actions") || "Actions"}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {links?.map((link, index) => (
-                <LinkRow
-                  data={data}
-                  link={link}
-                  index={index}
-                  key={index}
-                  onDelete={onDelete}
-                />
-              ))}
-              {links.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={8} className="py-8 text-center">
-                    {t("noResults")}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </CardContent>
-    </Card>
+    <DataTable variant="striped">
+      <DataTableHeader>
+        <DataTableHeading>
+          <DataTableIcon>
+            <Link2 aria-hidden className="size-5" />
+          </DataTableIcon>
+          <div className="min-w-0">
+            <DataTableTitle>{t("inviteLinks")}</DataTableTitle>
+            <DataTableDescription>
+              {t("createLink.description")}
+            </DataTableDescription>
+          </div>
+        </DataTableHeading>
+      </DataTableHeader>
+      <DataTableContent className="whitespace-nowrap">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>#</TableHead>
+              <TableHead>{t("link")}</TableHead>
+              <TableHead>{t("clicksCount")}</TableHead>
+              <TableHead>{t("registerCount")}</TableHead>
+              <TableHead>{t("month")}</TableHead>
+              <TableHead>{t("year")}</TableHead>
+              <TableHead>{t("actions") || "Actions"}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {links?.map((link, index) => (
+              <LinkRow
+                data={data}
+                link={link}
+                index={index}
+                key={index}
+                onDelete={onDelete}
+              />
+            ))}
+            {links.length === 0 && (
+              <DataTableEmpty colSpan={8} title={t("noResults")} />
+            )}
+          </TableBody>
+        </Table>
+      </DataTableContent>
+    </DataTable>
   );
 };
 const LinkRow = ({
@@ -133,13 +146,13 @@ const LinkRow = ({
   const clicksCount = useMemo(
     () =>
       data?.clicksDetails?.clicksDetails?.find(
-        (item) => item.invitationKey === link
+        (item) => item.invitationKey === link,
       )?.clicks,
-    [data, link]
+    [data, link],
   );
   const registerCount = useMemo(
     () => data?.registeredUsersCounter[link]?.length,
-    [data, link]
+    [data, link],
   );
 
   const handleDelete = async () => {
@@ -175,22 +188,26 @@ const LinkRow = ({
         <TableCell>
           <div className="flex items-center gap-2">
             <Button
-              size={"sm"}
+              size="sm"
+              className="rounded-xl"
               onClick={() => {
                 const finLink = `${window.location.origin}/${locale}/sign-up/${link}`;
                 navigator.clipboard.writeText(finLink);
                 toast.success(t("linkCopied"));
               }}
             >
+              <Copy className="me-1 size-3.5" />
               {t("copy")}
             </Button>
             {onDelete && (
               <Button
-                size={"sm"}
+                size="sm"
                 variant="destructive"
+                className="rounded-xl"
+                aria-label={postActionText("delete")}
                 onClick={() => setIsDeleteDialogOpen(true)}
               >
-                <AiFillDelete className="w-4 h-4" />
+                <Trash2 className="size-4" />
               </Button>
             )}
           </div>

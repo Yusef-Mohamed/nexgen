@@ -63,7 +63,7 @@ const InvitationLinksBlock: React.FC = () => {
 
     if (!formData.name.trim()) {
       setValidationError(
-        t("createLink.validation.required") || "Link name is required"
+        t("createLink.validation.required") || "Link name is required",
       );
       return;
     }
@@ -71,7 +71,7 @@ const InvitationLinksBlock: React.FC = () => {
     if (!isValidFormat) {
       setValidationError(
         t("createLink.validation.invalidFormat") ||
-          "Link name can only contain English letters (a-z, A-Z) and hyphens (-)"
+          "Link name can only contain English letters (a-z, A-Z) and hyphens (-)",
       );
       return;
     }
@@ -92,7 +92,7 @@ const InvitationLinksBlock: React.FC = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       toast.success(t("createLink.success"));
       setFormData({ name: "" });
@@ -129,7 +129,7 @@ const InvitationLinksBlock: React.FC = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         // Refresh data after deleting link
         await fetchInvitationLinks();
@@ -138,7 +138,7 @@ const InvitationLinksBlock: React.FC = () => {
         throw error; // Re-throw to be handled by LinksTable component
       }
     },
-    [user?._id, token, fetchInvitationLinks]
+    [user?._id, token, fetchInvitationLinks],
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,12 +159,15 @@ const InvitationLinksBlock: React.FC = () => {
 
   return (
     <>
-      <Card id="invites" className="mb-4 border-none cardShadow bg-background ">
-        <CardHeader>
+      <Card
+        id="invites"
+        className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm"
+      >
+        <CardHeader className="border-b border-primary/10 p-4 sm:p-5">
           <CardTitle>{t("createLink.title")}</CardTitle>
           <CardDescription>{t("createLink.description")}</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 sm:p-5">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">
@@ -184,7 +187,11 @@ const InvitationLinksBlock: React.FC = () => {
                 <p className="text-sm text-destructive">{validationError}</p>
               )}
             </div>
-            <Button isLoading={isLoading} type="submit" className="mt-4">
+            <Button
+              isLoading={isLoading}
+              type="submit"
+              className="mt-4 rounded-xl"
+            >
               {t("createLink.form.submitButton")}
             </Button>
           </form>

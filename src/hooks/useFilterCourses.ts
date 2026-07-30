@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/auth-provider";
-import { useMyCoursesStore } from "@/stores/MyCoursesStore";
+import { useMyLearningSummary } from "@/hooks/useMyCoursesQueries";
 import { axiosInstance } from "@/app/lib/utils";
 import { ICourse } from "@/types";
 
@@ -11,7 +11,12 @@ import { ICourse } from "@/types";
  */
 export const useFilterCourses = ({ enable = true }: { enable?: boolean }) => {
   const { token, user } = useAuth();
-  const { courses: userCourses, getCourses, isLoading } = useMyCoursesStore();
+  const shouldFetchUserCourses =
+    enable && !!user && !user.isInstructor && !user.isMarketer;
+  const { data: userCourses = [], isLoading } = useMyLearningSummary(
+    shouldFetchUserCourses ? token : null,
+    user?._id,
+  );
   const [instructorCourses, setInstructorCourses] = useState<ICourse[]>([]);
   const [marketerCourses, setMarketerCourses] = useState<ICourse[]>([]);
   const [isLoadingInstructorCourses, setIsLoadingInstructorCourses] =
@@ -51,13 +56,9 @@ export const useFilterCourses = ({ enable = true }: { enable?: boolean }) => {
     if (user.isMarketer) {
       getMarketerCourses();
     }
-    if (!user.isInstructor && !user.isMarketer) {
-      getCourses(token, user._id);
-    }
   }, [
     token,
     user,
-    getCourses,
     getInstructorCourses,
     getMarketerCourses,
     enable,

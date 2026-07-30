@@ -24,20 +24,22 @@ import { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { axiosInstance } from "@/app/lib/utils";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "../auth-provider";
 import ImageWithZoom from "../ImageWithZoom";
-
+import { formatMessageTime } from "@/lib/dateTime";
 interface MessageCardProps {
   message: IMessage;
   isMine: boolean;
   isFirst?: boolean;
+  isLast?: boolean;
 }
 
 const MessageCard: React.FC<MessageCardProps> = ({
   message,
   isMine,
-  isFirst,
+  isFirst = false,
+  isLast = false,
 }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,6 +48,8 @@ const MessageCard: React.FC<MessageCardProps> = ({
   const messageDiv = useRef(null);
   const { user: myAccount, token } = useAuth();
   const text = useTranslations("chat");
+  const locale = useLocale();
+  const sentAt = formatMessageTime(message.createdAt, locale).toLowerCase();
 
   const deleteMessageAction = async () => {
     try {
@@ -81,7 +85,10 @@ const MessageCard: React.FC<MessageCardProps> = ({
         return (
           <span
             key={index}
-            className="underline cursor-pointer"
+            className={cn(
+              "cursor-pointer underline underline-offset-4",
+              isMine ? "text-primary-foreground" : "text-primary",
+            )}
             onClick={() => setSelectedLink(part)}
           >
             {text("link")}
@@ -96,112 +103,139 @@ const MessageCard: React.FC<MessageCardProps> = ({
     <>
       <motion.div
         className={cn(
-          "flex flex-col gap-2 px-4 py-[2px] whitespace-pre-wrap group/fullContainer ",
-          isMine ? "items-start" : "items-end"
+          "group/fullContainer flex flex-col whitespace-pre-wrap px-2 sm:px-4",
+          isMine ? "items-end" : "items-start",
+          isFirst ? "pt-1" : "pt-0",
+          isLast ? "pb-1" : "pb-0",
         )}
         ref={messageDiv}
       >
         <div
-          className={cn("flex gap-3 w-full", {
-            "flex-row-reverse": isMine,
+          className={cn("flex w-full items-start gap-3", {
+            "justify-end": isMine,
           })}
         >
           {!isMine && (
-            <UserAvatar
-              user={message.sender}
-              innerClassName="!rounded-md"
-              className={cn("w-10 h-10 rounded-md", {
-                "opacity-0": !isFirst,
-              })}
-            />
+            <div className="mt-5 size-10 shrink-0">
+              {isFirst && (
+                <UserAvatar
+                  user={message.sender}
+                  innerClassName="!rounded-2xl"
+                  className="size-10 rounded-2xl border border-primary/10"
+                />
+              )}
+            </div>
           )}
           <div
-            className={cn("flex items-center gap-3", {
-              "flex-row-reverse": isMine,
-            })}
+            className={cn(
+              "flex max-w-[min(82%,38rem)] items-end gap-2",
+              isMine && "flex-row-reverse",
+            )}
           >
             <div
               className={cn(
-                "px-4 py-2 rounded-[1.25rem] min-w-20 flex-1 group relative max-w-md",
-                {
-                  "bg-primary text-white": isMine,
-                  "bg-primary/5 border border-primary/20": !isMine,
-                }
+                "flex min-w-0 flex-col",
+                isMine ? "items-end" : "items-start",
               )}
             >
-              {isMine&&
-              <div className={cn("absolute top-0  ",{
-                "end-0":isMine,
-              })}
-              style={{
-                border:"15px solid",
-                borderColor:"hsl(var(--primary)) transparent transparent transparent"
-              }}
-              ></div>
-            }
-              {message.repliedTo && (
+              {isFirst && (
                 <div
-                  className={cn(" px-4 py-2 rounded-lg mb-2", {
-                    "bg-muted text-text-2": isMine,
-                    "bg-primary/10 border border-primary/20  ": !isMine,
-                  })}
+                  className={cn(
+                    "mb-1 px-1 text-[11px] font-bold text-text-3",
+                    isMine && "text-end",
+                  )}
                 >
-                  <p className="text-primary text-sm mb-1">
-                    {message.repliedTo.sender.name}
-                  </p>
-                  <p className="text-xs">
-                    {renderMessageText(message.repliedTo.text)}
-                  </p>
+                  {message.sender.name}
                 </div>
               )}
-
-              <p>{renderMessageText(message.text)}</p>
-              {message.media[0] &&
-                (message.media[0].endsWith("pdf") ? (
-                  <a
-                    href={message.media[0]}
-                    target="_blank"
-                    className="text-sm font-normal underline"
-                  >
-                    {text("pdfFileClickToOpen")}
-                  </a>
-                ) : (
-                  <ImageWithZoom
-                    src={message.media[0]}
-                    alt=""
-                    width={400}
-                    height={400}
-                    className="w-full mt-4"
-                  />
-                ))}
-
-              <span
+              <div
                 className={cn(
-                  "absolute text-sm top-0 translate-x-1/2 right-1/2 scale-0 group-hover:scale-100 transition-all -translate-y-[110%] rounded px-3 py-2 whitespace-nowrap",
-                  {
-                    "bg-primary": isMine,
-                    "bg-muted": !isMine,
-                  }
+                  "group/bubble relative min-w-20 px-4 py-3 text-sm leading-6 transition-all duration-200",
+                  isMine
+                    ? "border border-primary/30 bg-primary text-primary-foreground"
+                    : "border border-primary/10 bg-clear-ground text-text-2",
+                  isMine
+                    ? cn(
+                        "rounded-2xl",
+                        !isFirst && "rounded-e-md",
+                        !isLast && "rounded-e-md",
+                      )
+                    : cn(
+                        "rounded-2xl",
+                        !isFirst && "rounded-s-md",
+                        !isLast && "rounded-s-md",
+                      ),
                 )}
               >
-                {new Date(message.createdAt)
-                  .toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })
-                  ?.toLowerCase()}
-              </span>
+                {message.repliedTo && (
+                  <div
+                    className={cn(
+                      "mb-3 rounded-xl border px-3 py-2",
+                      isMine
+                        ? "border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground"
+                        : "border-primary/15 bg-primary/10 text-text-2",
+                    )}
+                  >
+                    <p
+                      className={cn(
+                        "mb-1 text-xs font-bold",
+                        isMine ? "text-primary-foreground" : "text-primary",
+                      )}
+                    >
+                      {message.repliedTo.sender.name}
+                    </p>
+                    <p className="line-clamp-2 text-xs opacity-80">
+                      {renderMessageText(message.repliedTo.text)}
+                    </p>
+                  </div>
+                )}
+
+                {message.text && <p>{renderMessageText(message.text)}</p>}
+                {message.media[0] &&
+                  (message.media[0].endsWith("pdf") ? (
+                    <a
+                      href={message.media[0]}
+                      target="_blank"
+                      className={cn(
+                        "mt-3 inline-flex rounded-full border px-3 py-1.5 text-xs font-semibold underline-offset-4 hover:underline",
+                        isMine
+                          ? "border-primary-foreground/25 text-primary-foreground"
+                          : "border-primary/20 text-primary",
+                      )}
+                    >
+                      {text("pdfFileClickToOpen")}
+                    </a>
+                  ) : (
+                    <div className="mt-3 overflow-hidden rounded-2xl border border-primary/10 bg-background/70">
+                      <ImageWithZoom
+                        src={message.media[0]}
+                        alt=""
+                        width={400}
+                        height={400}
+                        className="max-h-[22rem] w-full object-cover"
+                      />
+                    </div>
+                  ))}
+              </div>
+              <div
+                className={cn(
+                  "mt-0.5 h-2.5 px-1 text-[10px] font-semibold leading-none text-text-3 opacity-0 transition-opacity group-hover/fullContainer:opacity-100",
+                  isMine ? "text-end" : "text-start",
+                )}
+              >
+                {sentAt}
+              </div>
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center justify-center w-8 h-8 text-lg transition-all scale-0 rounded group-hover/fullContainer:scale-100 bg-muted">
+                <button className="mb-4 flex size-8 scale-95 cursor-pointer items-center justify-center rounded-full border border-primary/10 bg-clear-ground text-text-3 opacity-0 shadow-sm transition-all hover:text-primary group-hover/fullContainer:scale-100 group-hover/fullContainer:opacity-100 focus:scale-100 focus:opacity-100">
                   <HiOutlineDotsHorizontal />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem asChild>
                   <button
-                    className="flex items-center w-full gap-4"
+                    className="flex w-full cursor-pointer items-center gap-4"
                     onClick={() => {
                       setActionOnMessage({
                         action: "reply",
@@ -222,7 +256,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                             new Date().getTime() - 1000 * 60 * 60 * 6 &&
                           myAccount?.role !== "admin"
                         }
-                        className="flex items-center w-full gap-4 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex w-full cursor-pointer items-center gap-4 disabled:cursor-not-allowed disabled:opacity-50"
                         onClick={() => {
                           setActionOnMessage({
                             action: "edit",
@@ -245,7 +279,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                             new Date().getTime() - 1000 * 60 * 60 * 6 &&
                           myAccount?.role !== "admin"
                         }
-                        className="flex items-center w-full gap-4 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex w-full cursor-pointer items-center gap-4 disabled:cursor-not-allowed disabled:opacity-50"
                         onClick={() => {
                           setIsDeleting(true);
                         }}
@@ -332,23 +366,63 @@ export const MessageCardSkeleton = ({ isMine }: { isMine: boolean }) => {
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 p-4 whitespace-pre-wrap ",
-        isMine ? "items-start" : "items-end"
+        "flex flex-col whitespace-pre-wrap px-2 py-2 sm:px-4",
+        isMine ? "items-end" : "items-start",
       )}
     >
       <div
-        className={cn("flex gap-3 items-center w-full", {
-          "flex-row-reverse": !isMine,
+        className={cn("flex w-full items-start gap-3", {
+          "justify-end": isMine,
         })}
       >
-        <div className="w-12 h-12 rounded-full bg-muted-foreground animate-pulse" />
+        {!isMine && (
+          <div className="mt-5 flex size-10 shrink-0 animate-pulse items-center justify-center rounded-2xl border border-primary/10 bg-clear-ground cardShadowSm">
+            <div className="size-5 rounded-lg bg-muted" />
+          </div>
+        )}
         <div
           className={cn(
-            "p-3 group rounded max-w-xs bg-muted w-full flex-1 animate-pulse"
+            "flex max-w-[min(82%,38rem)] items-end gap-2",
+            isMine && "flex-row-reverse",
           )}
         >
-          <div className="w-full h-2 rounded bg-muted-foreground animate-pulse" />
-          <div className="w-1/2 h-2 mt-1 rounded me-auto bg-muted-foreground animate-pulse" />
+          <div
+            className={cn(
+              "flex min-w-0 flex-col",
+              isMine ? "items-end" : "items-start",
+            )}
+          >
+            <div className="mb-1 h-2.5 w-20 animate-pulse rounded-full bg-muted" />
+            <div
+              className={cn(
+                "w-72 max-w-[78vw] animate-pulse rounded-2xl border p-3 cardShadowSm sm:w-80",
+                isMine
+                  ? "border-primary/20 bg-primary/15"
+                  : "border-primary/10 bg-clear-ground",
+              )}
+            >
+              <div
+                className={cn(
+                  "h-2.5 rounded-full",
+                  isMine ? "bg-primary/25" : "bg-muted",
+                )}
+              />
+              <div
+                className={cn(
+                  "mt-2 h-2.5 w-2/3 rounded-full",
+                  isMine ? "bg-primary/25" : "bg-muted",
+                )}
+              />
+              <div
+                className={cn(
+                  "mt-2 h-2.5 w-1/2 rounded-full",
+                  isMine ? "bg-primary/25" : "bg-muted",
+                )}
+              />
+            </div>
+            <div className="mt-1 h-2 w-12 animate-pulse rounded-full bg-muted" />
+          </div>
+          <div className="mb-4 hidden size-8 animate-pulse rounded-full border border-primary/10 bg-clear-ground cardShadowSm sm:block" />
         </div>
       </div>
     </div>

@@ -62,14 +62,18 @@ export function ChatPopover() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button className="relative rounded-full" size="icon" variant="outline">
-          <ChatIcon className="size-4 text-muted-foreground" />
-          <div className="absolute z-10 flex items-center justify-center size-3 text-xs rounded-full -top-1 -end-1 bg-primary border"></div>
-          <div className="absolute flex items-center justify-center size-3 text-xs rounded-full animate-ping -top-1 -end-1 bg-primary "></div>
+        <Button
+          className="relative size-10 rounded-xl border-primary/10 bg-clear-ground text-text-3 shadow-none transition-colors hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
+          size="icon"
+          variant="outline"
+        >
+          <ChatIcon className="size-4" />
+          <div className="absolute end-1.5 top-1.5 z-10 size-2.5 rounded-full border border-clear-ground bg-primary" />
+          <div className="absolute end-1.5 top-1.5 size-2.5 animate-ping rounded-full bg-primary" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-80 p-0 overflow-hidden"
+        className="w-80 overflow-hidden rounded-2xl border-primary/10 p-0 shadow-xl shadow-text-1/10"
         align="end"
         sideOffset={8}
       >

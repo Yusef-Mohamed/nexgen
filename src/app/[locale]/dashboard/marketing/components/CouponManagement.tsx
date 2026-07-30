@@ -18,6 +18,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DataTable,
+  DataTableContent,
+  DataTableDescription,
+  DataTableEmpty,
+  DataTableHeader,
+  DataTableHeading,
+  DataTableIcon,
+  DataTableTitle,
+} from "@/components/ui/data-table";
+import { TicketPercent } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/components/auth-provider";
@@ -28,7 +40,9 @@ import { useFilterCourses } from "@/hooks/useFilterCourses";
 import { useFilterPackages } from "@/hooks/useFilterPackages";
 import { useFilterCoursePackages } from "@/hooks/useFilterCoursePackages";
 import CouponAppliesToSelector from "./CouponAppliesToSelector";
+import { marketingTableBorderClassName } from "./filterStyles";
 import { useForm } from "react-hook-form";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -49,11 +63,11 @@ const createCouponSchema = (t: (key: string) => string) =>
       .min(1, t("createCoupon.form.validation.percentageRequired"))
       .refine(
         (val) => !isNaN(Number(val)) && Number(val) > 0,
-        t("createCoupon.form.validation.percentageInvalid")
+        t("createCoupon.form.validation.percentageInvalid"),
       )
       .refine(
         (val) => Number(val) < 100,
-        t("createCoupon.form.validation.percentageMax")
+        t("createCoupon.form.validation.percentageMax"),
       ),
     maxUses: z.string().optional(),
     reason: z
@@ -137,7 +151,7 @@ const CouponManagement = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       setCoupons([res.data.data, ...coupons]);
       toast.success(t("createCoupon.success"));
@@ -187,26 +201,18 @@ const CouponManagement = () => {
 
   // Empty state component
   const EmptyState = () => (
-    <TableRow>
-      <TableCell colSpan={5} className="h-24 text-center">
-        <div className="flex flex-col items-center justify-center space-y-2">
-          <p className="text-sm text-muted-foreground">
-            {t("couponsList.table.empty")}
-          </p>
-        </div>
-      </TableCell>
-    </TableRow>
+    <DataTableEmpty colSpan={5} title={t("couponsList.table.empty")} />
   );
 
   return (
-    <section>
+    <section className="space-y-5">
       {/* Create Coupon Form */}
-      <Card className="mb-4 border-none cardShadow bg-background">
-        <CardHeader>
+      <Card className={cn("overflow-hidden", marketingTableBorderClassName)}>
+        <CardHeader className="border-b border-primary/10 p-4 sm:p-5">
           <CardTitle>{t("createCoupon.title")}</CardTitle>
           <CardDescription>{t("createCoupon.description")}</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 sm:p-5">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -222,7 +228,7 @@ const CouponManagement = () => {
                         <Input
                           {...field}
                           placeholder={t(
-                            "createCoupon.form.couponName.placeholder"
+                            "createCoupon.form.couponName.placeholder",
                           )}
                           disabled={isLoading}
                         />
@@ -244,7 +250,7 @@ const CouponManagement = () => {
                           {...field}
                           type="number"
                           placeholder={t(
-                            "createCoupon.form.discountPercentage.placeholder"
+                            "createCoupon.form.discountPercentage.placeholder",
                           )}
                           disabled={isLoading}
                         />
@@ -266,7 +272,7 @@ const CouponManagement = () => {
                           {...field}
                           type="number"
                           placeholder={t(
-                            "createCoupon.form.maxUses.placeholder"
+                            "createCoupon.form.maxUses.placeholder",
                           )}
                           disabled={isLoading}
                         />
@@ -287,7 +293,7 @@ const CouponManagement = () => {
                         <Input
                           {...field}
                           placeholder={t(
-                            "createCoupon.form.reason.placeholder"
+                            "createCoupon.form.reason.placeholder",
                           )}
                           disabled={isLoading}
                         />
@@ -299,7 +305,7 @@ const CouponManagement = () => {
               </div>
 
               {/* Selection Section */}
-              <div className="space-y-4 border-t pt-4 mt-4">
+              <div className="mt-5 space-y-4 border-t border-primary/10 pt-5">
                 <Label className="text-base font-semibold">
                   {t("createCoupon.form.appliesTo.label")}
                 </Label>
@@ -341,7 +347,11 @@ const CouponManagement = () => {
                 />
               </div>
 
-              <Button isLoading={isLoading} type="submit" className="mt-4">
+              <Button
+                isLoading={isLoading}
+                type="submit"
+                className="mt-4 rounded-xl"
+              >
                 {t("createCoupon.form.submitButton")}
               </Button>
             </form>
@@ -350,12 +360,21 @@ const CouponManagement = () => {
       </Card>
 
       {/* Coupons Table */}
-      <Card className="border-none cardShadow bg-background">
-        <CardHeader>
-          <CardTitle>{t("couponsList.title")}</CardTitle>
-          <CardDescription>{t("couponsList.description")}</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <DataTable variant="striped">
+        <DataTableHeader>
+          <DataTableHeading>
+            <DataTableIcon>
+              <TicketPercent aria-hidden className="size-5" />
+            </DataTableIcon>
+            <div className="min-w-0">
+              <DataTableTitle>{t("couponsList.title")}</DataTableTitle>
+              <DataTableDescription>
+                {t("couponsList.description")}
+              </DataTableDescription>
+            </div>
+          </DataTableHeading>
+        </DataTableHeader>
+        <DataTableContent>
           <Table className="whitespace-nowrap">
             <TableHeader>
               <TableRow>
@@ -401,8 +420,8 @@ const CouponManagement = () => {
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </DataTableContent>
+      </DataTable>
     </section>
   );
 };

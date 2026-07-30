@@ -9,20 +9,27 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getDynamicString } from "@/lib/utils";
+import {
+  getYouTubeEmbedUrl,
+  YOUTUBE_IFRAME_ALLOW,
+  YOUTUBE_IFRAME_REFERRER_POLICY,
+} from "@/lib/youtube";
 import { DynamicString } from "@/types";
 
 interface ItemImageProps {
-  image: string;
+  image?: string | undefined;
   title: DynamicString;
-  promotionVideo?: string;
+  promotionVideo?: string | undefined;
 }
 
 const ItemImage = ({ image, title, promotionVideo }: ItemImageProps) => {
-  if (!promotionVideo) {
+  const embedUrl = promotionVideo ? getYouTubeEmbedUrl(promotionVideo) : null;
+
+  if (!embedUrl) {
     return (
       <div>
         <Image
-          src={image}
+          src={image || "/images/default-image.png"}
           width={1000}
           height={1000}
           className="aspect-16/9 object-cover w-full rounded-2xl"
@@ -37,7 +44,7 @@ const ItemImage = ({ image, title, promotionVideo }: ItemImageProps) => {
       <DialogTrigger asChild>
         <div className="relative cursor-pointer group">
           <Image
-            src={image}
+            src={image || "/images/default-image.png"}
             width={1000}
             height={1000}
             className="aspect-16/9 object-cover w-full rounded-2xl"
@@ -54,11 +61,13 @@ const ItemImage = ({ image, title, promotionVideo }: ItemImageProps) => {
         <DialogTitle className="sr-only">Promotion Video</DialogTitle>
         <div className="aspect-video w-full bg-black">
           <iframe
-            src={promotionVideo}
+            src={embedUrl}
+            title="Promotion Video"
             className="w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow={YOUTUBE_IFRAME_ALLOW}
+            referrerPolicy={YOUTUBE_IFRAME_REFERRER_POLICY}
             allowFullScreen
-          ></iframe>
+          />
         </div>
       </DialogContent>
     </Dialog>

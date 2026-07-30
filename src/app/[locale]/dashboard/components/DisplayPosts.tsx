@@ -3,20 +3,39 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { axiosInstance } from "@/app/lib/utils";
 import PostCard, { SkeletonPostCard } from "@/components/cards/PostCard";
 import GetFocusedPost from "./GetFocusedPost";
-import { IPost } from "@/types";
+import { IPagination, IPost } from "@/types";
 import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/auth-provider";
 import HomeCourses from "./HomeCourses";
+import CreatePost from "../community/components/CreatePost";
 
-const DisplayPosts = ({ userId }: { userId?: string }) => {
+const DisplayPosts = ({
+  userId,
+  showComposer = false,
+  inCommunity = false,
+  hideHomeCourses = false,
+}: {
+  userId?: string;
+  showComposer?: boolean;
+  inCommunity?: boolean;
+  hideHomeCourses?: boolean;
+}) => {
   const { token } = useAuth();
   const text = useTranslations("post");
   const [haveError, setHaveError] = useState(false);
   const [searchTerm] = useState("");
 
   const fetchPosts = useCallback(
-    async (page: number, search?: string): Promise<IPost[]> => {
+    async (
+      page: number,
+      search?: string,
+      helpers?: {
+        setPaginationData: React.Dispatch<
+          React.SetStateAction<IPagination | null>
+        >;
+      },
+    ): Promise<IPost[]> => {
       try {
         if (haveError) {
           return [];
@@ -39,13 +58,13 @@ const DisplayPosts = ({ userId }: { userId?: string }) => {
           `/posts${filters ? "?" + filters : ""}`,
           {
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         );
 
         const data = res.data.data as IPost[];
 
         if (res.data.paginationResult) {
-          setPaginationData(res.data.paginationResult);
+          helpers?.setPaginationData(res.data.paginationResult);
         }
 
         return data;
@@ -55,14 +74,14 @@ const DisplayPosts = ({ userId }: { userId?: string }) => {
         return [];
       }
     },
-    [token, userId, haveError]
+    [token, userId, haveError],
   );
 
   const {
     data: posts,
     isLoading,
     observerRef,
-    setPaginationData,
+    setData,
     hasMore,
   } = useInfiniteScroll<IPost>({
     fetchData: fetchPosts,
@@ -92,8 +111,9 @@ const DisplayPosts = ({ userId }: { userId?: string }) => {
 
   if (!userId) {
     return (
-      <section>
-        <HomeCourses />
+      <section className="flex flex-col gap-5">
+        {!hideHomeCourses && <HomeCourses />}
+        {showComposer && <CreatePost setData={setData} />}
 
         {haveError && (
           <p className="text-center text-destructive">
@@ -103,9 +123,9 @@ const DisplayPosts = ({ userId }: { userId?: string }) => {
 
         {renderEmptyState()}
 
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
           {posts.map((post) => (
-            <PostCard key={post._id} post={post} />
+            <PostCard key={post._id} post={post} inCommunity={inCommunity} />
           ))}
         </div>
 

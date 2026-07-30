@@ -11,6 +11,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Play } from "lucide-react";
+import {
+  getYouTubeEmbedUrl,
+  YOUTUBE_IFRAME_ALLOW,
+  YOUTUBE_IFRAME_REFERRER_POLICY,
+} from "@/lib/youtube";
 
 interface PromotionVideoFieldProps {
   form: UseFormReturn<any>;
@@ -27,47 +32,17 @@ const PromotionVideoField: React.FC<PromotionVideoFieldProps> = ({
 }) => {
   const text = useTranslations("courses");
 
-  // Extract YouTube video ID and convert to embed URL
-  const extractYouTubeEmbedUrl = useCallback((input: string): string | null => {
-    if (!input || input.trim() === "") return null;
-
-    let videoId: string | null = null;
-
-    // Check if it's already an embed URL or contains embed URL (for iframe code)
-    const embedMatch = input.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
-    if (embedMatch) {
-      videoId = embedMatch[1];
-    }
-    // Check if it's a watch URL
-    else {
-      const watchMatch = input.match(/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/);
-      if (watchMatch) {
-        videoId = watchMatch[1];
-      }
-      // Check if it's a short URL (youtu.be)
-      else {
-        const shortMatch = input.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
-        if (shortMatch) {
-          videoId = shortMatch[1];
-        }
-      }
-    }
-
-    if (videoId) {
-      return `https://www.youtube.com/embed/${videoId}`;
-    }
-
-    return null;
-  }, []);
+  const extractYouTubeEmbedUrl = useCallback(
+    (input: string) => getYouTubeEmbedUrl(input),
+    [],
+  );
 
   // Watch the promotion video field value
   const promotionVideoValue = form.watch(name);
 
   // Check if it's already an embed URL or extract from other formats
   const embedUrl = promotionVideoValue
-    ? promotionVideoValue.startsWith("https://www.youtube.com/embed/")
-      ? promotionVideoValue
-      : extractYouTubeEmbedUrl(promotionVideoValue)
+    ? extractYouTubeEmbedUrl(promotionVideoValue)
     : null;
 
   const handleValueChange = useCallback(
@@ -97,8 +72,8 @@ const PromotionVideoField: React.FC<PromotionVideoFieldProps> = ({
               src={embedUrl}
               title="Promotion Video"
               frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
+              allow={YOUTUBE_IFRAME_ALLOW}
+              referrerPolicy={YOUTUBE_IFRAME_REFERRER_POLICY}
               allowFullScreen
               className="w-full h-full"
             />

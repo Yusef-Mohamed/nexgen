@@ -4,13 +4,12 @@ import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Link, useRouter } from "@/i18n/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState, useRef, DragEvent } from "react";
 import { toast } from "react-toastify";
-import { FaCloudArrowUp } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
-import { FaImage } from "react-icons/fa";
+import { ImageIcon, UploadCloud } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const IdentityVerification = () => {
@@ -32,7 +31,6 @@ const IdentityVerification = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const locale = useLocale();
   const getCurrentImageKey = () => {
     switch (currentStep) {
       case 1:
@@ -111,7 +109,7 @@ const IdentityVerification = () => {
   const currentImage = data[getCurrentImageKey()];
   if (user?.idVerification === "verified") {
     return (
-      <div>
+      <div className="space-y-6">
         <h2 className="mt-6 mb-2 text-center">{text("verificationDone")}</h2>
         <p className="mb-8 text-center text-text-2">
           {text("verificationDoneP")}
@@ -120,7 +118,7 @@ const IdentityVerification = () => {
     );
   }
   return (
-    <div>
+    <div className="space-y-6">
       {isSubmitted || user?.idVerification === "pending" ? (
         <>
           <h2 className="mt-6 mb-2 text-center">
@@ -143,7 +141,7 @@ const IdentityVerification = () => {
           <Image
             src={`/images/${currentStep !== 3 ? "id-label" : "selfie"}.png`}
             alt="feedback"
-            className="object-cover mx-auto rounded-xl"
+            className="mx-auto rounded-2xl object-cover"
             width={220}
             height={220}
           />
@@ -155,22 +153,22 @@ const IdentityVerification = () => {
           </p>
           <div
             className={cn(
-              `relative mx-auto h-[220px] w-full aspect-video rounded-3xl overflow-hidden`,
+              `relative mx-auto aspect-video h-[220px] w-full overflow-hidden rounded-2xl border border-primary/10 bg-background-2`,
               {
                 "cursor-not-allowed opacity-60": isLoading,
                 "cursor-pointer": !isLoading,
                 "border-2 border-dashed border-primary bg-primary/10":
                   isDragging || currentImage,
-                "border-2 border-dashed": !isDragging,
-              }
+                "border-2 border-dashed border-primary/20": !isDragging,
+              },
             )}
             onClick={() => !isLoading && fileInputRef.current?.click()}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
           >
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-input/20">
-              <FaCloudArrowUp className="w-12 h-12 mb-2 text-primary" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-primary/5 px-4 text-center">
+              <UploadCloud className="mb-2 size-12 text-primary" />
               <p className="text-sm">{text("clickOrDragImageToUpload")}</p>
               <p className="mt-1 text-xs text-text-3">
                 {text("acceptedFormats")} <b>.png, .jpg, .jpeg</b>
@@ -195,9 +193,9 @@ const IdentityVerification = () => {
               return file ? (
                 <li
                   key={key}
-                  className="flex items-center gap-4 px-6 py-3 mt-2 border rounded-sm"
+                  className="mt-2 flex items-center gap-3 rounded-xl border border-primary/10 bg-background-2 px-4 py-3"
                 >
-                  <FaImage className="w-5 h-5" />
+                  <ImageIcon className="size-5 text-primary" />
                   <div className="flex flex-col gap-0.5">
                     <span className="text-sm">{file.name}</span>
                     <span className="text-xs">
@@ -209,45 +207,30 @@ const IdentityVerification = () => {
             })}
           </ul>
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-            <p className="text-xs text-center text-text-2">
+            <p className="text-center text-xs leading-5 text-text-2">
               {common("id_verification.description")}
             </p>
-            <div className="flex items-center justify-end gap-2">
+            <div className="flex items-center justify-end gap-2 rounded-xl border border-primary/10 bg-background-2 p-3">
               <label
                 htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-text-2"
+                className="text-sm font-medium leading-6 text-text-2 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                {locale === "ar" ? (
-                  <>
-                    أوافق علي{" "}
-                    <Link
-                      href={"/terms-of-services"}
-                      className="underline text-primary"
-                      target="_blank"
-                    >
-                      الشروط الخدمات
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    I agree to the{" "}
-                    <Link
-                      href={"/terms-of-services"}
-                      className="underline text-primary"
-                      target="_blank"
-                    >
-                      Terms of Services
-                    </Link>
-                  </>
-                )}
+                {text("agreeToTerms")}{" "}
+                <Link
+                  href="/terms-of-services"
+                  className="font-bold text-primary underline-offset-4 hover:underline"
+                  target="_blank"
+                >
+                  {common("termsOfService")}
+                </Link>
               </label>
               <Checkbox required id="terms" />
             </div>
-            <div className="flex items-center justify-end gap-4">
+            <div className="flex flex-col-reverse items-stretch justify-end gap-3 sm:flex-row sm:items-center">
               <Button
                 isLoading={isLoading}
                 type="submit"
-                className="w-[200px] flex items-center justify-center"
+                className="flex w-full items-center justify-center rounded-xl sm:w-[200px]"
                 disabled={!data[getCurrentImageKey()]}
               >
                 {text("next")}
@@ -258,7 +241,7 @@ const IdentityVerification = () => {
                   variant="outline"
                   onClick={() => setCurrentStep((prev) => prev - 1)}
                   type="button"
-                  className="w-[200px]"
+                  className="w-full rounded-xl sm:w-[200px]"
                 >
                   {text("prev")}
                 </Button>

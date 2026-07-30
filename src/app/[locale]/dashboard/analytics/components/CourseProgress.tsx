@@ -11,9 +11,9 @@ const CourseProgress = () => {
   const [isFetching, setIsFetching] = useState(true);
   const [selectedCourseProgress, setSelectedCourseProgress] =
     useState<ICourseProgress | null>(null);
-  const { selectedCourse, selectedUser, courseProgress, selectedUserObject } =
+  const { selectedCourse, selectedUser, selectedUserObject } =
     useAnalyticsStore();
-  const locale = useLocale();
+
   const getCourseScore = async (course: string) => {
     setIsFetching(true);
     try {
@@ -42,26 +42,7 @@ const CourseProgress = () => {
   // progress.png
   return (
     <div>
-      {courseProgress?.certificate && (
-        <div className="p-2 mb-2 text-center rounded-md ">
-          <p>
-            {locale === "ar"
-              ? "لقد اجتزت الامتحان وتستحق الشهادة🎉"
-              : "congratulations you have passed the exam and deserve the certificate🎉"}
-          </p>
-
-          <a
-            href={courseProgress.certificate.file}
-            download
-            className="underline text-primary"
-          >
-            {locale === "ar"
-              ? "اضغط هنا لفتح الشهادة"
-              : "click here to open the certificate"}
-          </a>
-        </div>
-      )}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <CircleCell
           title="gradesAverage"
           icon={"/images/grades.png"}
@@ -70,13 +51,13 @@ const CourseProgress = () => {
             Number(selectedCourseProgress?.avgLessonsExamsPercentage) ||
             0
           }
-          color="#1B7DF5"
+          color="hsl(var(--primary))"
           isFetching={isFetching}
         />
         <CircleCell
           icon={"/images/time.png"}
           title="timeSpent"
-          color="#9747FF"
+          color="hsl(var(--secondary))"
           value={Number(
             Math.min(
               ((selectedUserObject?.timeSpent?.totalTimeSpent || 0) /
@@ -91,7 +72,7 @@ const CourseProgress = () => {
         <CircleCell
           icon={"/images/progress.png"}
           title="totalProgress"
-          color="#5DD5D5"
+          color="hsl(var(--green))"
           value={Number(selectedCourseProgress?.totalProgress) || 0}
           isFetching={isFetching}
           className="md:col-span-2 lg:col-span-1"
@@ -137,7 +118,7 @@ const CircleCell = ({
   return (
     <div
       className={cn(
-        "p-4 rounded-md bg-background cardShadowSecondary relative",
+        "relative overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground p-4 shadow-sm",
         className,
       )}
     >

@@ -20,8 +20,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useAuth } from "@/components/auth-provider";
-import { useMyCoursesStore } from "@/stores/MyCoursesStore";
 import { axiosInstance } from "@/app/lib/utils";
+import { useInvalidateMyCourses } from "@/hooks/useMyCoursesQueries";
 import {
   calculateCouponPrice,
   canCouponApplyToItem,
@@ -64,8 +64,8 @@ const MainComponent = ({
   const [needPlacementExams, setNeedPlacementExams] = useState(false);
   const [discount, setDiscount] = useState(0);
   const [selectedCoupon, setSelectedCoupon] = useState("");
-  const { token, user } = useAuth();
-  const { getCourses } = useMyCoursesStore();
+  const { token } = useAuth();
+  const invalidateMyCourses = useInvalidateMyCourses();
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialCoupon = useMemo(
@@ -104,7 +104,7 @@ const MainComponent = ({
             },
           },
         );
-        getCourses(token, user?._id || "", true);
+        await invalidateMyCourses();
         router.push(`/courses/${thisItem._id}`);
       } else {
         if (!isVerified) {

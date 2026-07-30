@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { FaStar } from "react-icons/fa";
+import { Star } from "lucide-react";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { useCourseReviewStore } from "@/stores/CourseReview";
@@ -45,7 +45,7 @@ const CreateCourseReview: React.FC<CreateCourseReviewProps> = ({
       toast.success(
         idToEdit
           ? text("reviewUpdatedSuccessfully")
-          : text("reviewCreatedSuccessfully")
+          : text("reviewCreatedSuccessfully"),
       );
       router.refresh();
     }
@@ -60,8 +60,8 @@ const CreateCourseReview: React.FC<CreateCourseReviewProps> = ({
   };
 
   return (
-    <div>
-      <h3 className="mt-6 mb-4 font-semibold">
+    <div className="rounded-2xl border border-primary/10 bg-background-2 p-4 sm:p-5">
+      <h3 className="mb-4 text-lg font-black text-text-1">
         {idToEdit ? text("editYourReview") : text("addReview")}
       </h3>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -69,20 +69,23 @@ const CreateCourseReview: React.FC<CreateCourseReviewProps> = ({
           <Label htmlFor="title">
             {text("shareWithUsYourOpinionAndHelpUsImprove")}
           </Label>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 rounded-xl border border-primary/10 bg-clear-ground p-3">
             {Array.from({ length: 5 }).map((_, index) => (
               <button
                 key={index}
                 type="button"
                 onClick={() => setData({ ratings: index + 1 })}
                 disabled={isLoading}
-                className={cn(`text-2xl`, {
-                  "text-primary": index < data.ratings,
-                  "text-input": !(index < data.ratings),
-                  "opacity-50": isLoading,
-                })}
+                className={cn(
+                  "rounded-lg p-1 text-2xl transition-transform hover:scale-110",
+                  {
+                    "text-primary": index < data.ratings,
+                    "text-input": !(index < data.ratings),
+                    "opacity-50": isLoading,
+                  },
+                )}
               >
-                <FaStar />
+                <Star className="size-7 fill-current" />
               </button>
             ))}
           </div>
@@ -92,19 +95,19 @@ const CreateCourseReview: React.FC<CreateCourseReviewProps> = ({
             name="title"
             value={data.title}
             placeholder={text("writeYourFeedbackExample")}
-            className="min-h-20"
+            className="min-h-28 rounded-xl"
             required
             onChange={(e) => setData({ title: e.target.value })}
           />
         </div>
 
-        <div className="flex items-center justify-end gap-4">
+        <div className="flex flex-col-reverse items-stretch justify-end gap-3 sm:flex-row sm:items-center">
           {idToEdit && (
             <Button
               onClick={handleDelete}
               isLoading={isLoading}
               variant="destructive"
-              className="w-[200px]"
+              className="w-full rounded-xl sm:w-[200px]"
             >
               {text("delete")}
             </Button>
@@ -112,7 +115,7 @@ const CreateCourseReview: React.FC<CreateCourseReviewProps> = ({
           <Button
             isLoading={isLoading}
             type="submit"
-            className="w-[200px] flex items-center justify-center"
+            className="flex w-full items-center justify-center rounded-xl sm:w-[200px]"
           >
             {text("saveMyReview")}
           </Button>

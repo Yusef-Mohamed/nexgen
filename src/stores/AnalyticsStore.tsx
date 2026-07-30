@@ -1,41 +1,36 @@
 import { ICourse, IUser } from "@/types";
 import { create } from "zustand";
 
+export type AnalyticsCertificate = {
+  file?: string | null;
+  _id?: string;
+  isdeserve?: boolean;
+  istake?: boolean;
+  isDeserve?: boolean;
+  isTake?: boolean;
+} | null;
+
+type AnalyticsCourseProgress = {
+  certificate?: AnalyticsCertificate;
+  progress: {
+    attemptDate: string;
+    examScore: number;
+    status: string;
+    lesson: { title: string };
+  }[];
+};
+
 type AnalyticsStore = {
   selectedUser: string;
   setSelectedUser: (selectedUser: string) => void;
   selectedCourse: string;
   setSelectedCourse: (selectedCourse: string) => void;
   selectedCourseObject: ICourse | null;
-  setSelectedCourseObject: (selectedCourseObject: ICourse) => void;
+  setSelectedCourseObject: (selectedCourseObject: ICourse | null) => void;
   selectedUserObject: IUser | null;
-  setSelectedUserObject: (selectedUserObject: IUser) => void;
-  courseProgress: {
-    certificate: {
-      file: string;
-      _id: string;
-      isTake: boolean;
-    };
-    progress: {
-      attemptDate: string;
-      examScore: number;
-      status: string;
-      lesson: { title: string };
-    }[];
-  };
-  setCourseProgress: (courseProgress: {
-    certificate: {
-      file: string;
-      _id: string;
-      isTake: boolean;
-    };
-    progress: {
-      attemptDate: string;
-      examScore: number;
-      status: string;
-      lesson: { title: string };
-    }[];
-  }) => void;
+  setSelectedUserObject: (selectedUserObject: IUser | null) => void;
+  courseProgress: AnalyticsCourseProgress | null;
+  setCourseProgress: (courseProgress: AnalyticsCourseProgress | null) => void;
   topUsers: IUser[];
   setTopUsers: (topUsers: IUser[]) => void;
   isCourseProgressLoading: boolean;
@@ -51,14 +46,7 @@ export const useAnalyticsStore = create<AnalyticsStore>((set) => ({
   selectedCourseObject: null,
   setSelectedCourseObject: (selectedCourseObject) =>
     set({ selectedCourseObject }),
-  courseProgress: {
-    certificate: {
-      file: "",
-      _id: "",
-      isTake: false,
-    },
-    progress: [],
-  },
+  courseProgress: null,
   setCourseProgress: (courseProgress) => set({ courseProgress }),
   topUsers: [],
   setTopUsers: (topUsers) => set({ topUsers }),

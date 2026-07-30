@@ -168,7 +168,10 @@ export const BlogCard2: React.FC<BlogCardProps> = ({
           { "md:basis-1/2": isRow },
         )}
       >
-        <Link href={`/blogs/${slug}`} className="block">
+        <Link
+          href={`${inDashboard ? "/dashboard/blogs" : "/blogs"}/${slug}`}
+          className="block"
+        >
           <h3 className="text-lg sm:text-xl font-bold text-text-1 leading-snug hover:text-primary transition-colors">
             {getDynamicString(title)}
           </h3>

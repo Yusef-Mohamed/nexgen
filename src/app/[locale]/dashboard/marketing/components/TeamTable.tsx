@@ -1,3 +1,38 @@
+import { useMemo, useState } from "react";
+import { format } from "date-fns";
+import { useTranslations } from "next-intl";
+import { DateRange } from "react-day-picker";
+import {
+  BarChart3,
+  CalendarDays,
+  Download,
+  SlidersHorizontal,
+  UsersRound,
+} from "lucide-react";
+import * as XLSX from "xlsx";
+
+import { DatePickerWithRange } from "@/components/DatePickerWithRange";
+import UserAvatar from "@/components/UserAvatar";
+import { Button } from "@/components/ui/button";
+import {
+  DataTable,
+  DataTableContent,
+  DataTableDescription,
+  DataTableEmpty,
+  DataTableFooter,
+  DataTableHeader,
+  DataTableHeading,
+  DataTableIcon,
+  DataTableTitle,
+  DataTableToolbar,
+} from "@/components/ui/data-table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -6,89 +41,76 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
-import { DateRange } from "react-day-picker";
-import { TeamData, User, UserStats } from "./TeamManagement";
-import { DatePickerWithRange } from "@/components/DatePickerWithRange";
-import UserAvatar from "@/components/UserAvatar";
-import OrdersDialog from "./OrdersDialog";
-import { format } from "date-fns";
-import { Link } from "@/i18n/navigation";
-import { Button } from "@/components/ui/button";
-import * as XLSX from "xlsx";
-import { getDynamicString } from "@/lib/utils";
-import { useFilterCourses } from "@/hooks/useFilterCourses";
 import { useFilterCoursePackages } from "@/hooks/useFilterCoursePackages";
+import { useFilterCourses } from "@/hooks/useFilterCourses";
 import { useFilterPackages } from "@/hooks/useFilterPackages";
-const formatDate = (date: Date) => {
-  return format(date, "yyyy MM dd").split(" ").join("-");
-};
+import { Link } from "@/i18n/navigation";
+import { cn, getDynamicString } from "@/lib/utils";
+
+import { TeamData, User, UserStats } from "./TeamManagement";
+import OrdersDialog from "./OrdersDialog";
+import {
+  marketingFilterControlClassName,
+  marketingOutlineButtonClassName,
+} from "./filterStyles";
+
+const formatDate = (date: Date) => format(date, "yyyy-MM-dd");
+
 const TeamTable = ({ data }: { data: TeamData }) => {
   const t = useTranslations("teamManagement");
   const [purchaseFilter, setPurchaseFilter] = useState<
     "all" | "buyers" | "non-buyers"
   >("all");
-  const [resaleFilter, setResaleFilter] = useState<boolean>(false);
+  const [resaleFilter, setResaleFilter] = useState(false);
   const [date, setDate] = useState<DateRange | undefined>({
     from: undefined,
     to: undefined,
   });
-  const [isShowAll, setIsShowAll] = useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = useState<string>("");
-  const { courses } = useFilterCourses({
-    enable: true,
-  });
-  const { coursePackages } = useFilterCoursePackages({
-    enable: true,
-  });
-  const { packages } = useFilterPackages({
-    enable: true,
-  });
+  const [isShowAll, setIsShowAll] = useState(false);
+  const [selectedItem, setSelectedItem] = useState("");
+  const { courses } = useFilterCourses({ enable: true });
+  const { coursePackages } = useFilterCoursePackages({ enable: true });
+  const { packages } = useFilterPackages({ enable: true });
 
   const filteredUsers = useMemo(() => {
-    let filteredUsers: User[] = [];
+    let users: User[];
+
     if (purchaseFilter === "buyers") {
-      filteredUsers = data.teamMembers1;
+      users = data.teamMembers1;
     } else if (purchaseFilter === "non-buyers") {
-      filteredUsers = data.teamMembers2;
+      users = data.teamMembers2;
     } else {
-      filteredUsers = [...data.teamMembers1, ...data.teamMembers2];
+      users = [...data.teamMembers1, ...data.teamMembers2];
     }
+
     if (resaleFilter) {
-      filteredUsers = filteredUsers.filter((member) =>
-        member.orders?.some((order) => order.isResale)
+      users = users.filter((member) =>
+        member.orders?.some((order) => order.isResale),
       );
     }
+
     if (selectedItem) {
       const [type, id] = selectedItem.split("-");
-      filteredUsers = filteredUsers.filter((member) => {
-        return member.orders?.some((order) => {
-          if (type === "course") {
-            return order.course?._id === id;
-          } else if (type === "coursePackage") {
+      users = users.filter((member) =>
+        member.orders?.some((order) => {
+          if (type === "course") return order.course?._id === id;
+          if (type === "coursePackage") {
             return order.coursePackage?._id === id;
-          } else if (type === "package") {
-            return order.package?._id === id;
           }
-        });
-      });
+          if (type === "package") return order.package?._id === id;
+          return false;
+        }),
+      );
     }
+
     if (date?.from && date?.to) {
-      filteredUsers = filteredUsers.filter((member) => {
+      users = users.filter((member) => {
         const createdAt = new Date(member.createdAt);
         return createdAt >= date.from! && createdAt <= date.to!;
       });
     }
-    return filteredUsers;
+
+    return users;
   }, [
     data.teamMembers1,
     data.teamMembers2,
@@ -98,53 +120,57 @@ const TeamTable = ({ data }: { data: TeamData }) => {
     selectedItem,
   ]);
 
+  const visibleUsers = isShowAll ? filteredUsers : filteredUsers.slice(0, 3);
+
   const handleExportToExcel = () => {
     const exportData = filteredUsers.map((user) => ({
       Name: user.name,
       Email: user.email,
       Phone: user.phone || "+000000000",
     }));
-
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Team Members");
-    XLSX.writeFile(wb, "team_members.xlsx");
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Team Members");
+    XLSX.writeFile(workbook, "team_members.xlsx");
   };
 
   return (
-    <Card className="mb-4 border-none cardShadow bg-background">
-      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <CardTitle>{t("myTeamMembers")}</CardTitle>
-          <Button
-            onClick={handleExportToExcel}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+    <DataTable variant="striped">
+      <DataTableHeader>
+        <DataTableHeading>
+          <DataTableIcon>
+            <UsersRound aria-hidden className="size-5" />
+          </DataTableIcon>
+          <div className="min-w-0">
+            <DataTableTitle>{t("myTeamMembers")}</DataTableTitle>
+            <DataTableDescription className="tabular-nums">
+              {filteredUsers.length.toLocaleString()} {t("student")}
+            </DataTableDescription>
+          </div>
+        </DataTableHeading>
+        <Button
+          onClick={handleExportToExcel}
+          variant="outline"
+          size="sm"
+          className={cn(
+            "w-full gap-2 sm:w-auto",
+            marketingOutlineButtonClassName,
+          )}
+        >
+          <Download aria-hidden className="size-4" />
+          {t("exportToExcel")}
+        </Button>
+      </DataTableHeader>
+
+      <DataTableToolbar>
+        <span className="hidden size-9 shrink-0 items-center justify-center rounded-xl border border-primary/10 bg-clear-ground text-text-3 shadow-sm lg:inline-flex">
+          <SlidersHorizontal aria-hidden className="size-4" />
+        </span>
+        <div className="grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <Select value={selectedItem} onValueChange={setSelectedItem}>
+            <SelectTrigger
+              className={cn("w-full", marketingFilterControlClassName)}
             >
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            {t("exportToExcel")}
-          </Button>
-        </div>
-        <div className="flex flex-wrap gap-4">
-          <Select
-            value={selectedItem}
-            onValueChange={(value) => setSelectedItem(value)}
-          >
-            <SelectTrigger className="w-40 h-10 md:w-48 lg:h-12 md:h-10 md:text-sm">
               <SelectValue placeholder={t("allItems")} />
             </SelectTrigger>
             <SelectContent>
@@ -168,13 +194,16 @@ const TeamTable = ({ data }: { data: TeamData }) => {
               ))}
             </SelectContent>
           </Select>
+
           <Select
             value={purchaseFilter}
             onValueChange={(value: "all" | "buyers" | "non-buyers") =>
               setPurchaseFilter(value)
             }
           >
-            <SelectTrigger className="w-40 h-10 md:w-48 lg:h-12 md:h-10 md:text-sm">
+            <SelectTrigger
+              className={cn("w-full", marketingFilterControlClassName)}
+            >
               <SelectValue placeholder={t("filterByPurchase")} />
             </SelectTrigger>
             <SelectContent>
@@ -188,7 +217,9 @@ const TeamTable = ({ data }: { data: TeamData }) => {
             value={resaleFilter.toString()}
             onValueChange={(value) => setResaleFilter(value === "true")}
           >
-            <SelectTrigger className="w-40 h-10 md:w-48 lg:h-12 md:h-10 md:text-sm">
+            <SelectTrigger
+              className={cn("w-full", marketingFilterControlClassName)}
+            >
               <SelectValue placeholder={t("resaleFilter")} />
             </SelectTrigger>
             <SelectContent>
@@ -197,110 +228,162 @@ const TeamTable = ({ data }: { data: TeamData }) => {
             </SelectContent>
           </Select>
 
-          <div className="relative">
-            <DatePickerWithRange date={date} setDate={setDate} />
-          </div>
+          <DatePickerWithRange
+            date={date}
+            setDate={setDate}
+            className="min-w-0"
+            buttonClassName={cn(
+              "w-full min-w-0",
+              marketingFilterControlClassName,
+            )}
+          />
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="relative w-full overflow-x-auto whitespace-nowrap">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>#</TableHead>
-                <TableHead>{t("name")}</TableHead>
-                <TableHead>{t("items")}</TableHead>
-                <TableHead>{t("totalOrdersPrice")}</TableHead>
-                <TableHead>{t("resaleCount")}</TableHead>
-                <TableHead>{t("registeredDate")}</TableHead>
-                <TableHead>{t("orders")}</TableHead>
-                <TableHead>{t("hisAnalytics")}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredUsers
-                .slice(0, isShowAll ? filteredUsers.length : 3)
-                ?.map((member, index) => (
-                  <UserRow member={member} index={index} key={member._id} />
-                ))}
-              {filteredUsers.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={7} className="py-8 text-center">
-                    {t("noResults")}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-          <div className="flex justify-center mt-4">
-            <Button
-              onClick={() => setIsShowAll((prev) => !prev)}
-              variant={"outline"}
-            >
-              {isShowAll ? t("showLess") : t("showAll")}
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+      </DataTableToolbar>
+
+      <DataTableContent>
+        <Table className="min-w-[1080px]">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-16 text-center">#</TableHead>
+              <TableHead>{t("name")}</TableHead>
+              <TableHead className="text-center">{t("items")}</TableHead>
+              <TableHead>{t("totalOrdersPrice")}</TableHead>
+              <TableHead className="text-center">{t("resaleCount")}</TableHead>
+              <TableHead>{t("registeredDate")}</TableHead>
+              <TableHead>{t("orders")}</TableHead>
+              <TableHead>{t("hisAnalytics")}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {visibleUsers.map((member, index) => (
+              <UserRow member={member} index={index} key={member._id} />
+            ))}
+            {filteredUsers.length === 0 ? (
+              <DataTableEmpty
+                colSpan={8}
+                icon={<UsersRound aria-hidden className="size-5" />}
+                title={t("noResults")}
+              />
+            ) : null}
+          </TableBody>
+        </Table>
+      </DataTableContent>
+
+      {filteredUsers.length > 3 ? (
+        <DataTableFooter>
+          <Button
+            onClick={() => setIsShowAll((current) => !current)}
+            variant="outline"
+            size="sm"
+            className={cn("w-full sm:w-auto", marketingOutlineButtonClassName)}
+          >
+            {isShowAll ? t("showLess") : t("showAll")}
+          </Button>
+        </DataTableFooter>
+      ) : null}
+    </DataTable>
   );
 };
+
 const UserRow = ({ member, index }: { member: User; index: number }) => {
   const t = useTranslations("teamManagement");
   const stats = useMemo((): UserStats => {
-    if (!member?.orders) return { items: 0, totalOrdersPrice: 0, resale: 0 };
-
+    if (!member.orders) {
+      return { items: 0, totalOrdersPrice: 0, resale: 0 };
+    }
     return {
       items: member.orders.length,
       totalOrdersPrice: member.orders.reduce(
         (sum, order) => sum + order.totalOrderPrice,
-        0
+        0,
       ),
       resale: member.orders.filter((order) => order.isResale).length,
     };
-  }, [member]);
+  }, [member.orders]);
 
   return (
-    <TableRow key={member._id}>
-      <TableCell>{index + 1}</TableCell>
+    <TableRow className="group">
+      <TableCell className="text-center">
+        <span className="inline-flex size-8 items-center justify-center rounded-lg bg-background-2 text-xs font-bold tabular-nums text-text-3">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+      </TableCell>
       <TableCell>
         <Link
           target="_blank"
+          rel="noopener noreferrer"
           href={`/dashboard/community/profile/${member._id}`}
-          className="flex items-center gap-2"
+          className="group/member flex w-fit items-center gap-3 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
         >
           <UserAvatar
-            user={{
-              name: member.name,
-              profileImg: member.profileImg,
-            }}
+            user={{ name: member.name, profileImg: member.profileImg }}
+            className="ring-2 ring-primary/10 transition-shadow group-hover/member:ring-primary/25"
           />
-          <div>
-            <p className="font-semibold">{member.name}</p>
-            <p className="text-muted-foreground">{member.email}</p>
-            <p className="text-muted-foreground w-fit" dir="ltr">
+          <div className="min-w-0">
+            <p className="max-w-48 truncate font-semibold text-text-1 transition-colors group-hover/member:text-primary">
+              {member.name}
+            </p>
+            <p className="max-w-52 truncate text-xs text-text-3">
+              {member.email}
+            </p>
+            <p className="mt-0.5 w-fit text-xs text-text-3" dir="ltr">
               {member.phone || "+000000000"}
             </p>
           </div>
         </Link>
       </TableCell>
-      <TableCell>{stats.items}</TableCell>
-      <TableCell>${stats.totalOrdersPrice.toLocaleString()}</TableCell>
-      <TableCell>{stats.resale}</TableCell>
-      <TableCell>{formatDate(new Date(member.createdAt))}</TableCell>
+      <TableCell className="text-center">
+        <MetricBadge>{stats.items.toLocaleString()}</MetricBadge>
+      </TableCell>
+      <TableCell>
+        <span className="font-bold tabular-nums text-text-1">
+          ${stats.totalOrdersPrice.toLocaleString()}
+        </span>
+      </TableCell>
+      <TableCell className="text-center">
+        <MetricBadge active={stats.resale > 0}>
+          {stats.resale.toLocaleString()}
+        </MetricBadge>
+      </TableCell>
+      <TableCell>
+        <span className="inline-flex items-center gap-2 whitespace-nowrap text-sm tabular-nums text-text-2">
+          <CalendarDays aria-hidden className="size-4 text-text-3" />
+          {formatDate(new Date(member.createdAt))}
+        </span>
+      </TableCell>
       <TableCell>
         <OrdersDialog orders={member.orders || []} />
       </TableCell>
       <TableCell>
         <Link
           target="_blank"
+          rel="noopener noreferrer"
           href={`/dashboard/analytics?selectedUser=${member._id}`}
-          className="underline text-primary"
+          className="inline-flex items-center gap-2 rounded-xl border border-primary/15 bg-primary/10 px-3 py-2 text-xs font-bold text-primary transition-colors hover:border-primary/30 hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
         >
+          <BarChart3 aria-hidden className="size-4" />
           {t("showHisAnalytics")}
         </Link>
       </TableCell>
     </TableRow>
   );
 };
+
+const MetricBadge = ({
+  active = false,
+  children,
+}: {
+  active?: boolean;
+  children: React.ReactNode;
+}) => (
+  <span
+    className={cn(
+      "inline-flex min-w-9 items-center justify-center rounded-lg px-2.5 py-1 text-xs font-bold tabular-nums",
+      active ? "bg-primary/10 text-primary" : "bg-background-2 text-text-2",
+    )}
+  >
+    {children}
+  </span>
+);
+
 export default TeamTable;

@@ -1,16 +1,18 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Lock, ChevronUp, ChevronDown } from "lucide-react";
-import { MdOutlineErrorOutline } from "react-icons/md";
-import { type ComponentType } from "react";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
+import type { ReactNode } from "react";
+import {
+  HiOutlineCheckCircle,
+  HiOutlineChevronDown,
+  HiOutlineChevronUp,
+  HiOutlineLockClosed,
+} from "react-icons/hi2";
 
 interface SidebarItemButtonProps {
   title: string;
   subtitle?: string;
-  icon: string;
+  icon: ReactNode;
   isFocused: boolean;
   isDone?: boolean;
   disabled?: boolean;
@@ -18,7 +20,7 @@ interface SidebarItemButtonProps {
   badge?: string;
   variant?: "primary" | "none" | "primary-outline";
   isExpanded?: boolean;
-  onToggle?: (e: React.MouseEvent) => void;
+  onToggle?: () => void;
 }
 
 const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
@@ -38,98 +40,115 @@ const SidebarItemButton: React.FC<SidebarItemButtonProps> = ({
   const isOutline = variant === "primary-outline";
 
   return (
-    <Button
-      onClick={onClick}
-      disabled={disabled}
-      variant={isPrimary ? "default" : "none"}
+    <div
       className={cn(
-        "w-full flex items-center !h-auto justify-between gap-2 py-4 px-4 rounded-2xl text-start transition-all duration-300 cursor-pointer",
-        {
-          "hover:bg-primary/10": variant !== "primary",
-          "border border-primary bg-primary/5": isOutline,
-        }
+        "group/item relative flex items-center rounded-xl border transition-all duration-200",
+        isPrimary
+          ? "border-primary bg-primary text-primary-foreground shadow-sm"
+          : "border-transparent bg-transparent text-text-1 hover:border-primary/15 hover:bg-primary/5",
+        isOutline && "border-primary/25 bg-primary/10",
+        isFocused && !isPrimary && "border-primary/30 bg-primary/10",
+        disabled && "opacity-60",
       )}
     >
-      <div className="flex items-center gap-4 flex-1 min-w-0">
-        <Image width={40} height={40} alt="section" src={icon} />
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={disabled}
+        aria-current={isFocused ? "step" : undefined}
+        className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 rounded-xl px-3 py-3 text-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:cursor-not-allowed"
+      >
+        <span
+          className={cn(
+            "inline-flex size-9 shrink-0 items-center justify-center rounded-lg border",
+            isPrimary
+              ? "border-primary-foreground/20 bg-primary-foreground/15 text-primary-foreground"
+              : "border-primary/10 bg-primary/10 text-primary",
+          )}
+        >
+          {icon}
+        </span>
 
-        <div className="w-full flex-1 overflow-hidden space-y-1">
-          <div className="flex items-center gap-2">
+        <span className="min-w-0 flex-1">
+          <span className="flex items-center gap-2">
             {badge && (
               <span
                 className={cn(
-                  "px-2 py-0.5 text-xs font-bold rounded-md shrink-0",
-                  isPrimary ? "bg-white/20 text-white" : "bg-primary/10 text-primary"
+                  "shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-black",
+                  isPrimary
+                    ? "bg-primary-foreground/15 text-primary-foreground"
+                    : "bg-primary/10 text-primary",
                 )}
               >
                 {badge}
               </span>
             )}
-            <h5
+            <span
               className={cn(
-                "overflow-hidden line-clamp-1 font-bold text-base whitespace-break-spaces",
-                isPrimary ? "text-white" : "text-gray-900 dark:text-gray-100"
+                "line-clamp-2 text-sm font-bold leading-5",
+                isPrimary ? "text-primary-foreground" : "text-text-1",
               )}
             >
               {title}
-            </h5>
-          </div>
-          <span
-            className={cn(
-              "text-sm line-clamp-1 whitespace-break-spaces font-medium",
-              isPrimary ? "text-white/80" : "text-gray-500 dark:text-gray-400"
-            )}
-          >
-            {subtitle}
+            </span>
           </span>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-2">
-        {!disabled && isDone === false && (
-          <MdOutlineErrorOutline className="w-5 h-5 text-destructive shrink-0" />
-        )}
-
-        {onToggle ? (
-          <div
-            onClick={(e) => {
-              if (disabled) return;
-              e.stopPropagation();
-              onToggle(e);
-            }}
-            className={cn("p-1 rounded-full transition-colors", {
-              "hover:bg-white/10 cursor-pointer": !disabled,
-            })}
-          >
-            {disabled ? (
-              <Lock
-                className={cn(
-                  "w-4 h-4 shrink-0",
-                  isPrimary ? "text-white/60" : "text-gray-400 dark:text-gray-500"
-                )}
-              />
-            ) : isExpanded ? (
-              <ChevronUp
-                className={cn("w-5 h-5", isPrimary ? "text-white" : "text-gray-400 dark:text-gray-500")}
-              />
-            ) : (
-              <ChevronDown
-                className={cn("w-5 h-5", isPrimary ? "text-white" : "text-gray-400 dark:text-gray-500")}
-              />
-            )}
-          </div>
-        ) : (
-          disabled && (
-            <Lock
+          {subtitle && (
+            <span
               className={cn(
-                "w-4 h-4 shrink-0",
-                isPrimary ? "text-white/60" : "text-gray-400 dark:text-gray-500"
+                "mt-0.5 block line-clamp-1 text-xs font-medium",
+                isPrimary ? "text-primary-foreground/75" : "text-text-3",
               )}
-            />
-          )
+            >
+              {subtitle}
+            </span>
+          )}
+        </span>
+
+        {disabled ? (
+          <HiOutlineLockClosed
+            className={cn(
+              "size-4 shrink-0",
+              isPrimary ? "text-primary-foreground/70" : "text-text-3",
+            )}
+          />
+        ) : isDone ? (
+          <HiOutlineCheckCircle
+            className={cn(
+              "size-5 shrink-0",
+              isPrimary ? "text-primary-foreground" : "text-green",
+            )}
+          />
+        ) : (
+          <span
+            aria-hidden
+            className={cn(
+              "size-2 shrink-0 rounded-full",
+              isPrimary ? "bg-primary-foreground/70" : "bg-primary/35",
+            )}
+          />
         )}
-      </div>
-    </Button>
+      </button>
+
+      {onToggle && !disabled && (
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={isExpanded}
+          className={cn(
+            "me-2 inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
+            isPrimary
+              ? "text-primary-foreground hover:bg-primary-foreground/10"
+              : "text-text-3 hover:bg-primary/10 hover:text-primary",
+          )}
+        >
+          {isExpanded ? (
+            <HiOutlineChevronUp className="size-4" />
+          ) : (
+            <HiOutlineChevronDown className="size-4" />
+          )}
+        </button>
+      )}
+    </div>
   );
 };
 

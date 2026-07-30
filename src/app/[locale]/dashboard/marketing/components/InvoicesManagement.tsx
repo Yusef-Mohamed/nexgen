@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -10,13 +10,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DataTable,
+  DataTableContent,
+  DataTableFooter,
+  DataTableHeader,
+  DataTableHeading,
+  DataTableIcon,
+  DataTableTitle,
+  DataTableToolbar,
+} from "@/components/ui/data-table";
+
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/components/auth-provider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import TrendBadge from "@/components/TrendBadge";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, BadgeDollarSign, ReceiptText } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -31,6 +41,10 @@ import { IMarketLog } from "@/types";
 import { Input } from "@/components/ui/input";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
+import {
+  marketingOutlineButtonClassName,
+  marketingTableBorderClassName,
+} from "./filterStyles";
 
 const InvoicesManagement = () => {
   const t = useTranslations("invoicesManagement");
@@ -65,7 +79,7 @@ const InvoicesManagement = () => {
         year: "numeric",
         month: "long",
         day: "numeric",
-      }
+      },
     );
   };
 
@@ -84,12 +98,8 @@ const InvoicesManagement = () => {
     return <LoadingState />;
   }
   return (
-    <div className="space-y-8">
-      <StatsCards
-        marketLog={marketLog}
-        locale={locale}
-        t={t}
-      />
+    <div className="space-y-5">
+      <StatsCards marketLog={marketLog} locale={locale} t={t} />
       <MarketingTabs
         marketLog={marketLog}
         t={t}
@@ -109,26 +119,23 @@ const InvoicesManagement = () => {
 };
 
 const LoadingState = () => (
-  <div className="space-y-8">
+  <div className="space-y-5">
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
       {Array.from({ length: 4 }).map((_, i) => (
-        <Card key={i}>
-          <CardContent className="p-4">
+        <Card key={i} className={marketingTableBorderClassName}>
+          <CardContent className="p-4 sm:p-5">
             <Skeleton className="mb-2 w-24 h-4" />
             <Skeleton className="w-32 h-8" />
           </CardContent>
         </Card>
       ))}
     </div>
-    <Card>
-      <CardContent className="p-4">
+    <Card className={marketingTableBorderClassName}>
+      <CardContent className="p-4 sm:p-5">
         <Skeleton className="mb-4 w-48 h-8" />
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton
-              key={i}
-              className="w-full h-12"
-            />
+            <Skeleton key={i} className="w-full h-12" />
           ))}
         </div>
       </CardContent>
@@ -145,42 +152,42 @@ const StatsCards = ({
   t: (key: string) => string;
   locale: string;
 }) => (
-  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-    <div className="lg:col-span-3 grid grid-cols-6 gap-4">
+  <div className="grid grid-cols-1 gap-4 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:col-span-3 xl:grid-cols-6">
       <StatCard
         title={t("stats.totalSales")}
         value={marketLog?.totalSalesMoney || 0}
         difference={marketLog?.salesMoneyDifference || 0}
         total={marketLog?.totalSalesMoney || 0}
-        className="col-span-2"
+        className="xl:col-span-2"
       />
       <StatCard
         title={t("stats.profit")}
         value={marketLog?.profits || 0}
         difference={marketLog?.profitsDifference || 0}
         total={marketLog?.profits || 0}
-        className="col-span-2"
+        className="xl:col-span-2"
       />
       <StatCard
         title={t("stats.withdrawals")}
         value={marketLog?.withdrawals || 0}
         difference={0}
         total={marketLog?.withdrawals || 0}
-        className="col-span-2"
-      />{" "}
+        className="xl:col-span-2"
+      />
       <StatCard
         title={t("stats.totalProfits")}
         value={marketLog?.totalProfits || 0}
         difference={0}
         total={marketLog?.totalProfits || 0}
-        className="col-span-3"
+        className="xl:col-span-3"
       />
       <StatCard
         title={t("stats.commissionsProfits")}
         value={marketLog?.commissionsProfits || 0}
         difference={0}
         total={marketLog?.commissionsProfits || 0}
-        className="col-span-3"
+        className="xl:col-span-3"
       />
     </div>
     <BalanceCard
@@ -204,23 +211,19 @@ const StatCard = ({
   total: number;
   className?: string;
 }) => (
-  <Card className={cn("cardShadow bg-background", className)}>
-    <CardContent className="p-4">
+  <Card
+    className={cn(
+      "overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm",
+      className,
+    )}
+  >
+    <CardContent className="p-4 sm:p-5">
       <div>
         <p className="text-sm text-muted-foreground">{title}</p>
         <h3 className="mt-1 mb-2 font-semibold h1-5">
           ${value?.toLocaleString()}
         </h3>
       </div>
-      {/* {difference && total ? (
-        <>
-          <TrendBadge
-            percentage={Math.abs((difference / total) * 100).toFixed(1)}
-            positive={difference > 0}
-          />
-          <RenderFakeChart positive={difference > 0} />
-        </>
-      ) : null} */}
     </CardContent>
   </Card>
 );
@@ -252,7 +255,7 @@ const BalanceCard = ({
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       setIsOpen(false);
       setAmount("");
@@ -269,7 +272,7 @@ const BalanceCard = ({
   };
 
   return (
-    <Card className="cardShadow bg-background">
+    <Card className={marketingTableBorderClassName}>
       <CardContent className="flex flex-col justify-center items-center p-4 h-full">
         <div className="relative">
           <Image
@@ -278,7 +281,7 @@ const BalanceCard = ({
             width={500}
             height={500}
             className={cn(
-              "hidden w-full rounded-md aspect-[340/176] dark:block"
+              "hidden w-full rounded-md aspect-[340/176] dark:block",
             )}
           />
           <Image
@@ -298,13 +301,10 @@ const BalanceCard = ({
           </div>
         </div>
 
-        <Dialog
-          open={isOpen}
-          onOpenChange={setIsOpen}
-        >
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button
-              className="mt-4 w-full"
+              className={cn("mt-4 w-full", marketingOutlineButtonClassName)}
               variant="outline"
             >
               {t("stats.withdraw")}
@@ -354,17 +354,23 @@ const MarketingTabs = ({
   getStatusColor: (status: string) => string;
   locale: string;
 }) => (
-  <Card className="cardShadow bg-background">
+  <DataTable variant="striped">
     <Tabs
       defaultValue="commission"
       dir={locale === "ar" ? "rtl" : "ltr"}
       className="w-full"
     >
       <TableWithModal
+        title={`${t("tabs.sales")} / ${t("tabs.commission")}`}
+        icon={<BadgeDollarSign aria-hidden className="size-5" />}
         header={
           <TabsList>
-            <TabsTrigger value="sales">{t("tabs.sales")}</TabsTrigger>
-            <TabsTrigger value="commission">{t("tabs.commission")}</TabsTrigger>
+            <TabsTrigger className="h-10" value="sales">
+              {t("tabs.sales")}
+            </TabsTrigger>
+            <TabsTrigger className="h-10" value="commission">
+              {t("tabs.commission")}
+            </TabsTrigger>
           </TabsList>
         }
         modalContent={
@@ -402,7 +408,7 @@ const MarketingTabs = ({
         />
       </TableWithModal>
     </Tabs>
-  </Card>
+  </DataTable>
 );
 
 const InvoicesTabs = ({
@@ -419,19 +425,21 @@ const InvoicesTabs = ({
   all?: boolean;
   locale: string;
 }) => (
-  <Card className="cardShadow bg-background">
+  <DataTable variant="striped">
     <Tabs
       defaultValue="regular"
       dir={locale === "ar" ? "rtl" : "ltr"}
       className="w-full"
     >
       <TableWithModal
+        title={t("invoices.title")}
+        icon={<ReceiptText aria-hidden className="size-5" />}
         header={
           <TabsList>
-            <TabsTrigger value="regular">
+            <TabsTrigger className="h-10" value="regular">
               {t("invoices.tabs.regular")}
             </TabsTrigger>
-            <TabsTrigger value="commission">
+            <TabsTrigger className="h-10" value="commission">
               {t("invoices.tabs.commission")}
             </TabsTrigger>
           </TabsList>
@@ -473,7 +481,7 @@ const InvoicesTabs = ({
         />
       </TableWithModal>
     </Tabs>
-  </Card>
+  </DataTable>
 );
 
 const CommissionTab = ({
@@ -642,6 +650,8 @@ const CommissionInvoicesTab = ({
 const TableWithModal = ({
   header,
   hideModal = false,
+  title,
+  icon,
   children,
   modalContent,
   t,
@@ -649,6 +659,8 @@ const TableWithModal = ({
 }: {
   header: React.ReactNode;
   hideModal?: boolean;
+  title: string;
+  icon: React.ReactNode;
   children: React.ReactNode;
   modalContent: React.ReactNode;
   t: (key: string) => string;
@@ -656,45 +668,50 @@ const TableWithModal = ({
 }) => {
   return (
     <>
-      <CardHeader className="flex flex-row justify-between items-center">
-        <div className="flex-1">{header}</div>
-        {!hideModal && (
+      <DataTableHeader>
+        <DataTableHeading>
+          <DataTableIcon>{icon}</DataTableIcon>
+          <div className="min-w-0">
+            <DataTableTitle>{title}</DataTableTitle>
+          </div>
+        </DataTableHeading>
+      </DataTableHeader>
+      <DataTableToolbar className="overflow-x-auto py-2">
+        {header}
+      </DataTableToolbar>
+      <DataTableContent>{children}</DataTableContent>
+      {!hideModal && (
+        <DataTableFooter>
           <Dialog>
             <DialogTrigger asChild>
               <Button
-                variant="ghost"
-                className="gap-2 text-text-3"
+                variant="outline"
+                size="sm"
+                className={cn("w-fit gap-2", marketingOutlineButtonClassName)}
               >
                 {t("common.showAll")}
                 <ArrowRight
-                  className={cn("w-4 h-4", {
+                  aria-hidden
+                  className={cn("size-4", {
                     "rotate-180": locale === "ar",
                   })}
                 />
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-h-[80vh] max-w-[95vw] sm:max-w-[95vw] md:max-w-[95vw] lg:max-w-[95vw] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>{header}</DialogTitle>
+            <DialogContent className="flex max-h-[85vh] w-[calc(100vw-2rem)] max-w-4xl flex-col gap-0 overflow-hidden rounded-2xl p-0 sm:max-w-4xl">
+              <DialogHeader className="gap-4 border-b border-primary/10 px-5 py-4 pe-12">
+                <DialogTitle>{title}</DialogTitle>
+                <div className="overflow-x-auto">{header}</div>
               </DialogHeader>
-              {modalContent}
+              <div className="min-h-0 overflow-auto p-4 [&_[role=tabpanel]]:mt-0 sm:p-5">
+                {modalContent}
+              </div>
             </DialogContent>
           </Dialog>
-        )}
-      </CardHeader>
-      <CardContent>{children}</CardContent>
+        </DataTableFooter>
+      )}
     </>
   );
 };
-
-const RenderFakeChart = ({ positive }: { positive: boolean }) => (
-  <Image
-    src={`/images/invoices_${positive ? "up" : "down"}_chart.svg`}
-    alt="chart"
-    width={500}
-    height={500}
-    className="w-full aspect-[189/120] mt-4 object-cover"
-  />
-);
 
 export default InvoicesManagement;

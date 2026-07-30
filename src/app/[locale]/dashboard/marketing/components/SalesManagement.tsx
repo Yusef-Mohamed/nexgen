@@ -9,6 +9,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Table } from "@/components/ui/table";
+import {
+  DataTable,
+  DataTableContent,
+  DataTableDescription,
+  DataTableHeader,
+  DataTableHeading,
+  DataTableIcon,
+  DataTableTitle,
+  DataTableToolbar,
+} from "@/components/ui/data-table";
+import { ChartNoAxesCombined } from "lucide-react";
 
 import { useAuth } from "@/components/auth-provider";
 import TrendBadge from "@/components/TrendBadge";
@@ -21,7 +33,6 @@ import { axiosInstance } from "@/app/lib/utils";
 import { RiTeamFill } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
-import { IUser } from "@/types";
 import {
   Select,
   SelectContent,
@@ -29,7 +40,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import LeaderBoardCard from "@/components/LeaderBoardCard";
 import { FaMoneyBill } from "react-icons/fa";
 import {
   Area,
@@ -41,7 +51,11 @@ import {
 } from "recharts";
 import { DateRange } from "react-day-picker";
 import { DatePickerWithRange } from "@/components/DatePickerWithRange";
-import { getDynamicString } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
+import {
+  marketingFilterControlClassName,
+  marketingOutlineButtonClassName,
+} from "./filterStyles";
 const SalesManagement = () => {
   const t = useTranslations("salesManagement");
   const { token } = useAuth();
@@ -88,8 +102,8 @@ const SalesManagement = () => {
   }
 
   return (
-    <div className="flex flex-col gap-6 lg:flex-row">
-      <div className="space-y-6 basis-[60%]">
+    <div className="grid gap-5 xl:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.8fr)]">
+      <div className="min-w-0 space-y-5">
         <StatsCards
           totalSales={marketLog?.totalSales || 0}
           myTeam={marketLog?.team || 0}
@@ -98,10 +112,9 @@ const SalesManagement = () => {
         />
         <MainComponent analytics={marketLog?.analytics || []} />
       </div>
-      <div className="space-y-6 basis-[40%]">
+      <div className="min-w-0 space-y-5">
         <AffiliateMarketing />
         <MyTeam />
-        {/* <TopInstructors /> */}
       </div>
     </div>
   );
@@ -126,6 +139,7 @@ const StatBlock: React.FC<StatBlockProps> = ({
   students,
 }) => {
   const locale = useLocale();
+  const t = useTranslations("salesManagement");
 
   return (
     <div>
@@ -138,8 +152,7 @@ const StatBlock: React.FC<StatBlockProps> = ({
         <p className="mb-2">
           <span className="mb-1 text-sm text-text-3">
             <span className="h1-5 text-text-1">{students}</span>{" "}
-            {locale !== "ar" ? "/" : "\\"}{" "}
-            {locale === "ar" ? "طالب" : "Student"}
+            {locale !== "ar" ? "/" : "\\"} {t("student")}
           </span>
         </p>
       </div>
@@ -216,15 +229,29 @@ const MainComponent = ({
     if (item && token) fetchData();
   }, [item, token, date]);
   return (
-    <Card className="mb-4 border-none cardShadow bg-background">
-      <CardHeader className="flex flex-row flex-wrap gap-4 justify-between items-center py-4">
-        <CardTitle className="h2">{t("salesAnalytics")}</CardTitle>
-        <div className="flex flex-wrap gap-4">
+    <DataTable variant="striped">
+      <DataTableHeader>
+        <DataTableHeading>
+          <DataTableIcon>
+            <ChartNoAxesCombined aria-hidden className="size-5" />
+          </DataTableIcon>
+          <div className="min-w-0">
+            <DataTableTitle>{t("salesAnalytics")}</DataTableTitle>
+            <DataTableDescription>
+              {t("selectItemToViewAnalytics")}
+            </DataTableDescription>
+          </div>
+        </DataTableHeading>
+      </DataTableHeader>
+      <DataTableToolbar>
+        <div className="grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
           <Select
             value={item.toString()}
             onValueChange={(value) => setItem(value)}
           >
-            <SelectTrigger className="w-auto h-10 md:w-auto lg:h-12 md:h-10 md:text-sm">
+            <SelectTrigger
+              className={cn("w-full", marketingFilterControlClassName)}
+            >
               <SelectValue placeholder={t("resaleFilter")} />
             </SelectTrigger>
             <SelectContent>
@@ -248,10 +275,18 @@ const MainComponent = ({
               ))}
             </SelectContent>
           </Select>{" "}
-          <DatePickerWithRange date={date} setDate={setDate} />
+          <DatePickerWithRange
+            date={date}
+            setDate={setDate}
+            className="min-w-0"
+            buttonClassName={cn(
+              "w-full min-w-0",
+              marketingFilterControlClassName,
+            )}
+          />
         </div>
-      </CardHeader>
-      <CardContent>
+      </DataTableToolbar>
+      <DataTableContent className="p-4 sm:p-5">
         {!item ? (
           <p className="py-8 text-center text-muted-foreground">
             {t("selectItemToViewAnalytics")}
@@ -287,11 +322,11 @@ const MainComponent = ({
               startDate={date?.from || new Date()}
               endDate={date?.to || new Date()}
             />
-            <div className="overflow-x-auto relative whitespace-nowrap">
+            <div className="relative overflow-x-auto whitespace-nowrap">
               <div className="mt-8">
                 <h3 className="mb-4">{t("topCoursesSell")}</h3>
-                <div className="overflow-auto max-w-full">
-                  <table className="w-full whitespace-nowrap text-text-2">
+                <div className="max-w-full overflow-auto rounded-xl border border-primary/10">
+                  <Table className="w-full whitespace-nowrap text-text-2">
                     <thead>
                       <tr>
                         <th className="py-2 font-normal text-start">#</th>
@@ -313,21 +348,21 @@ const MainComponent = ({
                           <td className="py-2">{item.item}</td>
                           <td className="py-2">{item.sales}</td>
                           <td className="py-2">
-                            <span className="px-2 py-1 font-semibold rounded bg-primary/10 text-primary">
+                            <span className="rounded-lg bg-primary/10 px-2 py-1 font-black text-primary">
                               %{item.percentage}
                             </span>
                           </td>
                         </tr>
                       ))}
                     </tbody>
-                  </table>
+                  </Table>
                 </div>
               </div>
             </div>
           </>
         )}
-      </CardContent>
-    </Card>
+      </DataTableContent>
+    </DataTable>
   );
 };
 const OrdersChart = ({
@@ -370,11 +405,11 @@ const OrdersChart = ({
   }, [givenPeriodOrders, startDate, endDate]);
 
   return (
-    <Card className="cardShadow bg-background">
-      <CardHeader>
+    <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+      <CardHeader className="border-b border-primary/10 p-4 sm:p-5">
         <CardTitle className="h3">{t("selectedPeriodOrders")}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 sm:p-5">
         {chartData.length === 0 ? (
           <p className="py-8 text-center">{t("noOrdersFound")}</p>
         ) : (
@@ -455,7 +490,7 @@ const LoadingState = () => (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
       {Array.from({ length: 4 }).map((_, i) => (
         <Card key={i}>
-          <CardContent className="p-4">
+          <CardContent className="p-4 sm:p-5">
             <Skeleton className="mb-2 w-24 h-4" />
             <Skeleton className="w-32 h-8" />
           </CardContent>
@@ -463,7 +498,7 @@ const LoadingState = () => (
       ))}
     </div>
     <Card>
-      <CardContent className="p-4">
+      <CardContent className="p-4 sm:p-5">
         <Skeleton className="mb-4 w-48 h-8" />
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -488,7 +523,7 @@ const StatsCards = ({
 }) => {
   const { user } = useAuth();
   return (
-    <div className="grid gap-6 sm:grid-cols-3">
+    <div className="grid gap-4 md:grid-cols-3">
       <StatCard
         title={t("totalSales")}
         value={totalSales}
@@ -535,8 +570,8 @@ const StatCard = ({
 }) => {
   const locale = useLocale();
   return (
-    <Card className="cardShadowSecondary bg-background">
-      <CardContent className="p-4">
+    <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+      <CardContent className="p-4 sm:p-5">
         <div>
           <p className="mb-4 max-sm:text-sm text-muted-foreground">{title}</p>
           <h3 className="flex gap-1 items-end mt-1 mb-2 font-semibold h1-5">
@@ -564,7 +599,7 @@ const StatCard = ({
 const MyTeam = () => {
   const text = useTranslations("salesManagement");
   return (
-    <Card className="p-4 cardShadow bg-background">
+    <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground p-4 shadow-sm">
       <CardHeader className="p-0 mb-6">
         <CardTitle className="flex gap-2 items-center h2">
           <RiTeamFill className="text-xl" />
@@ -573,61 +608,18 @@ const MyTeam = () => {
       </CardHeader>
       <CardContent className="p-0">{/*   */}</CardContent>
       <CardFooter className="p-0 mt-6">
-        <Button className="w-full" asChild>
+        <Button className="w-full rounded-xl" asChild>
           <Link href="/dashboard/marketing/my-team">{text("seeAllTeam")}</Link>
         </Button>
       </CardFooter>
     </Card>
   );
 };
-const TopInstructors = () => {
-  const text = useTranslations("salesManagement");
-  const { user, token } = useAuth();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<IUser[]>([]);
-  useEffect(() => {
-    const getLeaderBoard = async () => {
-      try {
-        setIsLoading(true);
-        console.log("");
-
-        const res = await axiosInstance.get("/leaderboard", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const leaderBoard = res.data.leaderBoard;
-        const users = [];
-        if (leaderBoard.firstRank?.marketer)
-          users.push(leaderBoard.firstRank.marketer);
-        if (leaderBoard.secondRank?.marketer)
-          users.push(leaderBoard.secondRank.marketer);
-        if (leaderBoard.thirdRank?.marketer)
-          users.push(leaderBoard.thirdRank.marketer);
-        setData(users);
-      } catch (err) {
-        console.error(err);
-      }
-      setIsLoading(false);
-    };
-    if (token) {
-      getLeaderBoard();
-    }
-  }, [token]);
-  if (!user) return null;
-  return (
-    <LeaderBoardCard
-      users={data}
-      isLoading={isLoading}
-      title={text("ourTopInstructors")}
-    />
-  );
-};
 
 const AffiliateMarketing = () => {
   const text = useTranslations("salesManagement");
   return (
-    <Card className="p-4 cardShadow bg-background">
+    <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground p-4 shadow-sm">
       <CardHeader className="p-0 mb-6">
         <CardTitle className="flex gap-2 items-center h2">
           <FaMoneyBill className="text-xl" />
@@ -635,10 +627,14 @@ const AffiliateMarketing = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <Button className="mb-2 w-full" variant={"outline"} asChild>
+        <Button
+          className={cn("mb-2 w-full", marketingOutlineButtonClassName)}
+          variant="outline"
+          asChild
+        >
           <Link href="/dashboard/marketing/coupons">{text("coupons")}</Link>
         </Button>
-        <Button className="w-full" asChild>
+        <Button className="w-full rounded-xl" asChild>
           <Link href="/dashboard/marketing/my-team#invites">
             {text("invitations")}
           </Link>

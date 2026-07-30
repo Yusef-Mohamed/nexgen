@@ -5,8 +5,9 @@ import { useTranslations } from "next-intl";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getDynamicString } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import { DynamicString } from "@/types";
+import { marketingNestedBorderClassName } from "./filterStyles";
 
 interface SelectableItem {
   _id: string;
@@ -76,7 +77,12 @@ const CouponAppliesToSelector: React.FC<CouponAppliesToSelectorProps> = ({
   return (
     <div className="space-y-2">
       <Label className="text-sm font-medium">{title}</Label>
-      <div className="max-h-40 overflow-y-auto border rounded-md p-3 space-y-2">
+      <div
+        className={cn(
+          "max-h-40 space-y-2 overflow-y-auto p-3",
+          marketingNestedBorderClassName,
+        )}
+      >
         {isLoading ? (
           <SelectionSkeleton />
         ) : items.length === 0 ? (
@@ -86,7 +92,7 @@ const CouponAppliesToSelector: React.FC<CouponAppliesToSelectorProps> = ({
             {items.map((item) => (
               <div
                 key={item._id}
-                className="flex items-center space-x-2 p-2 hover:bg-muted rounded"
+                className="flex items-center space-x-2 rounded-lg p-2 transition-colors hover:bg-primary/10"
               >
                 <Checkbox
                   id={`${itemIdPrefix}-${item._id}`}
@@ -106,7 +112,7 @@ const CouponAppliesToSelector: React.FC<CouponAppliesToSelectorProps> = ({
             ))}
             {/* Check all checkbox - only show if there's more than one item */}
             {items.length > 1 && (
-              <div className="flex items-center space-x-2 p-2 hover:bg-muted rounded border-t pt-2 mt-2">
+              <div className="mt-2 flex items-center space-x-2 rounded-lg border-t border-primary/10 p-2 pt-2 transition-colors hover:bg-primary/10">
                 <Checkbox
                   id={`${itemIdPrefix}-check-all`}
                   checked={allSelected}

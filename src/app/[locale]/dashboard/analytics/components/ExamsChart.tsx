@@ -55,9 +55,14 @@ const ExamsChart = () => {
   const text = useTranslations("analytics");
 
   useEffect(() => {
+    const controller = new AbortController();
+    let isActive = true;
+
     const getExams = async () => {
       try {
         setIsCourseProgressLoading(true);
+        setCourseProgress(null);
+        setExams([]);
 
         const res = await axiosInstance.get(
           `/exams/courseProgress/${selectedCourse}/${selectedUser}`,
@@ -65,8 +70,11 @@ const ExamsChart = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+            signal: controller.signal,
+          },
         );
+        if (!isActive) return;
+
         setCourseProgress(res.data.data);
         setExams(
           res.data.data.progress.map(
@@ -80,16 +88,31 @@ const ExamsChart = () => {
               examScore: exam.examScore,
               title: exam.lesson.title,
               status: exam.status,
-            })
-          ) || []
+            }),
+          ) || [],
         );
       } catch (err) {
-        console.error("Error fetching exams:", err);
+        if (isActive) {
+          console.error("Error fetching exams:", err);
+        }
       } finally {
-        setIsCourseProgressLoading(false);
+        if (isActive) {
+          setIsCourseProgressLoading(false);
+        }
       }
     };
-    if (selectedCourse && selectedUser) getExams();
+    if (selectedCourse && selectedUser) {
+      getExams();
+    } else {
+      setCourseProgress(null);
+      setExams([]);
+      setIsCourseProgressLoading(false);
+    }
+
+    return () => {
+      isActive = false;
+      controller.abort();
+    };
   }, [
     selectedCourse,
     selectedUser,
@@ -127,7 +150,7 @@ const ExamsChart = () => {
         (day) =>
           day.date.getDate() === examDate.getDate() &&
           day.date.getMonth() === examDate.getMonth() &&
-          day.date.getFullYear() === examDate.getFullYear()
+          day.date.getFullYear() === examDate.getFullYear(),
       );
 
       if (dayIndex !== -1) {
@@ -158,7 +181,7 @@ const ExamsChart = () => {
     if (active && payload && payload.length) {
       const dayData = payload[0]?.payload as DayData;
       return (
-        <div className="p-2 border rounded-lg shadow-sm bg-background">
+        <div className="rounded-xl border border-primary/10 bg-clear-ground p-3 shadow-sm">
           <div className="flex flex-col gap-2">
             <span className="font-medium text-center text-muted-foreground">
               ({dayData.fullDate})
@@ -194,8 +217,8 @@ const ExamsChart = () => {
   };
 
   return (
-    <Card className="bg-background cardShadow">
-      <CardHeader>
+    <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground shadow-sm">
+      <CardHeader className="border-b border-primary/10 p-4 sm:p-5">
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="h3">{text("examsPerformance")}</CardTitle>
@@ -207,7 +230,7 @@ const ExamsChart = () => {
           />
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 sm:p-5">
         {isCourseProgressLoading ? (
           <div
             className="w-full rounded-md bg-muted animate-pulse"

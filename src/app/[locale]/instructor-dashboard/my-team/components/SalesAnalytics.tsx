@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth-provider";
 import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -14,6 +13,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DataTable,
+  DataTableContent,
+  DataTableDescription,
+  DataTableHeader,
+  DataTableHeading,
+  DataTableIcon,
+  DataTableTitle,
+} from "@/components/ui/data-table";
+import { ChartNoAxesCombined } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
 import { useTranslations } from "next-intl";
 import { getDynamicString } from "@/lib/utils";
@@ -54,7 +64,7 @@ const SalesAnalytics: React.FC = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         setData(res.data);
         console.log("Sales Analytics Data:", res.data);
@@ -105,15 +115,26 @@ const SalesAnalytics: React.FC = () => {
     </TableRow>
   );
 
+  const tableHeader = (
+    <DataTableHeader>
+      <DataTableHeading>
+        <DataTableIcon>
+          <ChartNoAxesCombined aria-hidden className="size-5" />
+        </DataTableIcon>
+        <div className="min-w-0">
+          <DataTableTitle>{t("topCoursesSell")}</DataTableTitle>
+          <DataTableDescription className="tabular-nums">
+            {(data?.sales?.length || 0).toLocaleString()} {t("itemName")}
+          </DataTableDescription>
+        </div>
+      </DataTableHeading>
+    </DataTableHeader>
+  );
   if (isLoading) {
     return (
-      <Card className="bg-background cardShadow">
-        <CardHeader>
-          <CardTitle>
-            <Skeleton className="h-6 w-48" />
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+      <DataTable variant="striped">
+        {tableHeader}
+        <DataTableContent className="p-4 sm:p-5">
           <div className="space-y-4 mb-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Skeleton className="h-20 w-full" />
@@ -138,32 +159,28 @@ const SalesAnalytics: React.FC = () => {
               </TableBody>
             </Table>
           </div>
-        </CardContent>
-      </Card>
+        </DataTableContent>
+      </DataTable>
     );
   }
 
   if (!data || !data.sales || data.sales.length === 0) {
     return (
-      <Card className="bg-background cardShadow">
-        <CardHeader>
-          <CardTitle>{t("topCoursesSell")}</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <DataTable variant="striped">
+        {tableHeader}
+        <DataTableContent>
           <p className="text-center text-muted-foreground py-8">
             {tInvoices("common.noData")}
           </p>
-        </CardContent>
-      </Card>
+        </DataTableContent>
+      </DataTable>
     );
   }
 
   return (
-    <Card className="bg-background cardShadow">
-      <CardHeader>
-        <CardTitle>{t("topCoursesSell")}</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <DataTable variant="striped">
+      {tableHeader}
+      <DataTableContent className="p-4 sm:p-5">
         {/* Summary Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div className="p-4 border rounded-lg">
@@ -221,8 +238,8 @@ const SalesAnalytics: React.FC = () => {
             </TableBody>
           </Table>
         </div>
-      </CardContent>
-    </Card>
+      </DataTableContent>
+    </DataTable>
   );
 };
 

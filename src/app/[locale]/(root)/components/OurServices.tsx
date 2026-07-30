@@ -17,6 +17,7 @@ import SectionHeader from "@/components/SectionHeader";
 interface OurServicesProps {
   enableSearch?: boolean;
   gridClassName?: string;
+  showAllCategories?: boolean;
   onCategoryClick?: (category: ICategory) => void;
 }
 
@@ -40,6 +41,7 @@ const fetchServicesByCategory = async (
 const OurServices: React.FC<OurServicesProps> = ({
   enableSearch = false,
   gridClassName = "",
+  showAllCategories = enableSearch,
   onCategoryClick,
 }) => {
   const text = useTranslations("services");
@@ -58,7 +60,7 @@ const OurServices: React.FC<OurServicesProps> = ({
     selectedCategory,
     setSelectedCategory,
     loading: categoriesLoading,
-  } = useCategoryFilter(enableSearch);
+  } = useCategoryFilter(enableSearch, !showAllCategories);
 
   // Update URL search params when search keyword changes
   useEffect(() => {
@@ -74,7 +76,9 @@ const OurServices: React.FC<OurServicesProps> = ({
     const nextQueryString = params.toString();
     if (nextQueryString === currentQueryString) return;
 
-    const newUrl = nextQueryString ? `${pathname}?${nextQueryString}` : pathname;
+    const newUrl = nextQueryString
+      ? `${pathname}?${nextQueryString}`
+      : pathname;
     router.replace(newUrl, { scroll: false });
   }, [searchKeyword, currentQueryString, pathname, router, enableSearch]);
 
@@ -83,7 +87,7 @@ const OurServices: React.FC<OurServicesProps> = ({
     queryKey: ["services", selectedCategory?._id, searchKeyword],
     queryFn: () =>
       fetchServicesByCategory(selectedCategory?._id, searchKeyword),
-    enabled: enableSearch ? true : !!selectedCategory,
+    enabled: showAllCategories && enableSearch ? true : !!selectedCategory,
   });
 
   // Get category title for display
@@ -124,9 +128,8 @@ const OurServices: React.FC<OurServicesProps> = ({
             setSelectedCategory(category);
             containerRef.current?.scrollIntoView({ behavior: "smooth" });
           }}
-          showAllButton={true}
+          showAllButton={showAllCategories}
           loading={categoriesLoading}
-          enableSearch={enableSearch}
         />
       </div>
       {enableSearch ? (

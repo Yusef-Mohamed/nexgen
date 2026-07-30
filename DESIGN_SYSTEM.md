@@ -417,7 +417,73 @@ What was changed when this doc was first written, kept here so you can see
 
 ---
 
-## 11. How to use this doc when redesigning a new page
+## 11. Dashboard community shell redesign - 2026-06-10 changelog
+
+**Shared dashboard shell**
+
+- Preserved the existing dashboard routes and availability rules, but restyled
+  the sidebar as a quieter product rail with rounded active states, semantic
+  token colors, and the existing Nexgen logo/profile affordances.
+- Reworked the sticky top bar to match the community workspace structure:
+  token-based white/clear surface, dashboard search, create action, mobile menu,
+  and the existing chat, notification, and profile dropdown behavior.
+- Dashboard page backgrounds now use `bg-background-2` for the app-canvas
+  feel, while panels use `bg-clear-ground` so light and dark themes continue to
+  swap through tokens.
+- Sidebar bottom controls should stay functional: no promo/user-level block in
+  the dashboard rail. Use token-based language and light/dark toggles, with
+  compact icon controls for the collapsed rail.
+
+**Community page**
+
+- Adopted the screenshot's structure without copying unavailable routes:
+  centered feed column, right activity rail, and the current `Home` /
+  `Course Discussion` community tabs.
+- Feed composer and post cards now use the dashboard panel language:
+  `rounded-2xl`, `border-primary/10`, `bg-clear-ground`, soft shadows, and
+  token-based hover states.
+- Right rail uses the existing top-poster and event APIs when available, with
+  polished empty/demo rows for local states. Pinned Discussions is intentionally
+  hidden until a real pinned-post source exists.
+- Post media uses a responsive gallery grid in the feed and a two-column focused
+  detail view on desktop, with token-based thumbnail selection and comment
+  tooling.
+- Reactions and comments use rounded dashboard controls, stacked reaction
+  badges, bordered comment bubbles, attachment frames, and token-only hover
+  states.
+- Admin post actions should sit at `end-4` so they do not compete with the
+  publisher avatar in LTR or RTL. Use a compact round trigger and real dropdown
+  menu items, not labels masquerading as actions.
+- Reaction pickers need a short hover close delay so users can move from the
+  reaction button into the popover without it collapsing. Post, reaction,
+  comment, media, and thumbnail actions should use `cursor-pointer`.
+- Comment previews and detail-thread comments need clear separation from the
+  reaction/action row: use border dividers, `mt-4`/`pt-4`, and `gap-4` spacing
+  for comment lists.
+- Community right-rail events and live sessions are different surfaces. Events
+  come from `/events` and should use a larger highlighted image card because
+  they are rare platform moments. Live sessions come from `/lives` and should
+  stay as compact recurring session rows.
+- The top community posters rail uses `/posts/topPosters`, so show only honest
+  community contribution signals such as post counts. Do not invent levels,
+  ranks, or online-presence dots unless the backend provides that data. Poster
+  rows should be full-row links to the profile with a subtle hover background
+  and lift.
+- The create-post flow now uses the approved hybrid collapsible composer. The
+  collapsed row opens the composer, while the expanded body keeps real post
+  creation logic, polished course/service targeting, media previews, and
+  floating emoji/image/send controls at the text area's bottom end.
+- Advanced community filters live behind the filter dialog. Keep the dialog
+  compact: use stacked selectable rows, deferred Save/Cancel actions, and only
+  show the course/service selector after that filter type is chosen.
+- Feed media should use predictable social-gallery patterns: one image as a
+  contained hero, two images split evenly, three images as a hero plus stacked
+  thumbnails, four images as a balanced grid, and additional images hidden
+  behind a `+N` overlay.
+
+---
+
+## 12. How to use this doc when redesigning a new page
 
 1. **Read the current page.** Note which patterns are missing (eyebrow,
    blobs, tone rotation, list-item cards, sticky aside, etc.).
@@ -433,3 +499,55 @@ What was changed when this doc was first written, kept here so you can see
 7. **Run `npx tsc --noEmit`** before declaring done.
 8. **Append a changelog entry** to the redesign changelog section so the next
    redesign has a precedent.
+
+---
+
+## 13. AI chat widget redesign - 2026-06-15 changelog
+
+**`src/components/AiChatWidget.tsx`**
+
+- Reframed the floating AI assistant as a compact Chatbase-inspired support
+  surface: small circular launcher, clean header, tight panel sizing, and
+  token-only colors from the Nexgen system.
+- Preserved the existing AI chat API, guest session storage, logged-in session
+  picker, recommendation links, and handoff behavior.
+- Upgraded the conversation with neutral assistant bubbles, primary user
+  bubbles, starter prompt chips, clearer loading and typing states, token-only
+  error treatment, and RTL-safe send icon handling.
+- Rebuilt recommendation cards as compact link rows with tone-aware icons, type
+  badges, and explicit open affordances.
+- Replaced hard-coded Telegram sky colors in the handoff card with the
+  primary/secondary design-system palette.
+
+**`src/components/FloatingSupportActions.tsx`**
+
+- Re-enabled `AiChatWidget` in the global floating support dock.
+- Restyled the Telegram support shortcut as a secondary rounded action so it
+  complements the AI assistant instead of competing with it.
+
+---
+
+## 14. Dashboard chat page redesign - 2026-06-25 changelog
+
+**Dashboard chat workspace**
+
+- Reframed `/dashboard/chat` as a community-inspired workspace with token-based page blobs, a rounded clear-ground chat shell, a primary top accent bar, and `bg-background` canvas treatment.
+- Restyled the conversation rail with the dashboard panel language: eyebrow pill, icon tile, count badge, rounded chat rows, selected-state accent bars, group participant chips, and token-only hover states.
+- Updated the empty conversation state with the shared heroicon/eyebrow treatment instead of the bare placeholder mark.
+- Polished the chat topbar with rounded avatars, clearer group metadata, participant count, and compact bordered action buttons while preserving existing info/leave behavior.
+- Rebuilt the message stream visuals with refined incoming/outgoing bubbles, visible timestamps, rounded reply previews, media frames, and compact hover action controls.
+- Reworked the composer to mirror the community composer controls: rounded surface, tokenized emoji/attachment/send buttons, selected-media pill, reply/edit preview card, and the shared `Textarea` control.
+- Preserved the existing chat APIs, socket events, participant admin flows, external-link warning, media upload path, and RTL-safe icon handling.
+
+---
+
+## 15. Learning workspace redesign - 2026-07-14 changelog
+
+**Student learning dashboard and course workspace**
+
+- Reframed the dashboard learn page with a token-based learning hero, honest course statistics, clearer in-progress/completed filtering, responsive course rows, and a distinct recommended-path section.
+- Rebuilt the course workspace as a focused learning studio: compact sticky header, collapsible desktop outline, controlled mobile course drawer, course overview state, and no distracting marketing footer.
+- Reworked the course outline with section/activity progress, semantic icon tiles, real exam titles and question counts, clear unavailable/locked fallbacks, and final-exam gating from the API contract.
+- Upgraded lesson playback with a descriptive entry panel, responsive player frame, secure-video retry state, lesson resources, and a working video-completion callback.
+- Rebuilt quizzes with title and passing-score context, answer progress, accessible selectable answer cards, guarded empty/error states, responsive sticky submit controls, and clearer result/feedback surfaces.
+- Extended the learn API response with exam metadata and course content summaries while preserving legacy client fallbacks. All new UI uses semantic tokens, logical positioning, bilingual strings, and responsive layouts.

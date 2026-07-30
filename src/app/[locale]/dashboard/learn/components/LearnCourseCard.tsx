@@ -1,169 +1,248 @@
 "use client";
+
 import { Link } from "@/i18n/navigation";
-import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
-import { PiExam } from "react-icons/pi";
-import { PlayIcon } from "@/components/icons";
 import { getDynamicString } from "@/lib/utils";
-import { ICourse } from "@/types";
+import type { ICourse } from "@/types";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import {
+  HiOutlineArrowRight,
+  HiOutlineCheckBadge,
+  HiOutlineBookOpen,
+  HiOutlineClock,
+  HiOutlineDocumentText,
+  HiOutlineLockClosed,
+  HiOutlinePlayCircle,
+  HiOutlineTrophy,
+} from "react-icons/hi2";
 
 interface LearnCourseCardProps {
   course: ICourse;
   minimal?: boolean;
+  locked?: boolean;
 }
+
+const cardClassName =
+  "group relative overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground p-3 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg hover:shadow-text-1/5 sm:p-4";
 
 export const LearnCourseCard = ({
   course,
   minimal = false,
+  locked = false,
 }: LearnCourseCardProps) => {
   const text = useTranslations("learn");
-  const locale = useLocale();
-  return (
-    <div className="relative flex items-stretch gap-4 p-3 md:p-6 md:gap-10 max-md:flex-col cardShadow rounded-xl bg-background-2">
-      <Link href={`/dashboard/learn/${course._id}`}>
-        <Image
-          loading="lazy"
-          src={course.image}
-          alt={getDynamicString(course.title)}
-          width={600}
-          height={600}
-          className="object-cover aspect-[1656/931] md:h-36 md:w-auto max-md:w-full rounded-xl"
-        />
-      </Link>
-      <div
-        className="flex max-md:flex-col
-             flex-1 w-full gap-2"
-      >
-        <div className="flex w-full flex-1">
-          <div className="self-center w-full xl:pe-10 md:pe-6">
-            <p className="text-text-2 max-md:text-xs">
-              {text("course")} | {getDynamicString(course.title)}
-            </p>
-            <Link href={`/dashboard/learn/${course._id}`}>
-              <h2 className="my-1 font-semibold md:my-4 h1-5">
-                {getDynamicString(course.title)}
-              </h2>
-            </Link>
-            {course.courseProgress?.status === "Completed" ? (
-              <>
-                <p className="max-md:text-sm">
-                  {text("congratsOnFinishingTheCourse")}
-                </p>
-                {course.courseProgress.certificate?.file ? (
-                  <a
-                    href={course.courseProgress.certificate.file}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-1 underline text-primary max-md:text-sm"
-                  >
-                    {text("checkYourCertificate")}
-                  </a>
-                ) : (
-                  <p className="mt-1 text-sm text-text-3 max-md:text-xs">
-                    {text("yourCertificateDosnotAvailableYet")}
-                  </p>
-                )}
-              </>
-            ) : (
-              <>
-                <div className="flex items-center w-full gap-2 ">
-                  <div className="w-full h-1 overflow-hidden rounded-full md:max-w-xs bg-muted">
-                    <div
-                      className="w-full h-1 rounded-full bg-primary"
-                      style={{
-                        transform: `translateX(${locale === "en" ? "-" : ""}${
-                          100 - Number(course.userScore?.totalProgress || 0)
-                        }%)`,
-                      }}
-                    ></div>
-                  </div>
-                  <span className="block mt-1 font-semibold">
-                    {parseInt(
-                      course.userScore?.totalProgress?.toString() || "0",
-                    )}
-                    %
-                  </span>
-                </div>
-                <span className="block max-md:text-sm text-text-2">
-                  {text("overAllProgress")}
-                </span>
-              </>
-            )}
+  const courseId = course._id || course.id;
+  const learnHref = "/dashboard/learn/" + courseId;
+  const coursePageHref = "/courses/" + (course.slug || courseId);
+  const certificateFile = course.courseProgress?.certificate?.file;
+  const isCertificatePdf = certificateFile?.toLowerCase().endsWith(".pdf");
+  const courseTitle = getDynamicString(course.title) || text("course");
+  const courseImage = course.image || "/images/courses.png";
+  const progress = Math.min(
+    100,
+    Math.max(0, Number(course.userScore?.totalProgress) || 0),
+  );
+  const isCompleted = course.courseProgress?.status === "Completed";
+
+  if (locked) {
+    return (
+      <Link href={coursePageHref} className={cardClassName}>
+        <div className="grid gap-4 sm:grid-cols-[11rem_minmax(0,1fr)_auto] sm:items-center">
+          <div className="relative aspect-video overflow-hidden rounded-xl bg-background-2 sm:aspect-[4/3]">
+            <Image
+              loading="lazy"
+              src={courseImage}
+              alt={courseTitle}
+              fill
+              sizes="(max-width: 640px) 100vw, 176px"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-background/20" />
           </div>
+
+          <div className="min-w-0">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-secondary/20 bg-secondary/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-secondary">
+              <HiOutlineLockClosed className="size-3.5" />
+              {text("lockedCourse")}
+            </div>
+            <h2 className="mt-3 line-clamp-2 font-black text-text-1 transition-colors group-hover:text-primary">
+              {courseTitle}
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-text-3">
+              {text("viewCoursePage")}
+            </p>
+          </div>
+
+          <span className="inline-flex size-11 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-transform group-hover:scale-105">
+            <HiOutlineArrowRight className="size-5 rtl:rotate-180" />
+          </span>
         </div>
+      </Link>
+    );
+  }
+
+  return (
+    <article className={cardClassName}>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -end-16 -top-20 size-44 rounded-full bg-primary/10 blur-[70px]"
+      />
+
+      <div
+        className={
+          minimal
+            ? "relative grid gap-4 md:grid-cols-[14rem_minmax(0,1fr)] md:items-center"
+            : "relative grid gap-4 md:grid-cols-[14rem_minmax(0,1fr)] md:items-center xl:grid-cols-[14rem_minmax(0,1fr)_18rem]"
+        }
+      >
+        <Link
+          href={learnHref}
+          className="relative aspect-video overflow-hidden rounded-xl bg-background-2 md:aspect-[16/10]"
+        >
+          <Image
+            loading="lazy"
+            src={courseImage}
+            alt={courseTitle}
+            fill
+            sizes="(max-width: 768px) 100vw, 224px"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          <span className="absolute bottom-3 start-3 inline-flex size-10 items-center justify-center rounded-full border border-clear-ground/30 bg-clear-ground/90 text-primary cardShadowSm backdrop-blur-sm">
+            <HiOutlinePlayCircle className="size-5" />
+          </span>
+        </Link>
+
+        <div className="min-w-0 py-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-primary">
+              <HiOutlineBookOpen className="size-3.5" />
+              {text("course")}
+            </span>
+            <Link
+              href={"/dashboard/learn/exams-history/" + courseId}
+              className="inline-flex items-center gap-1.5 rounded-full border border-secondary/20 bg-secondary/10 px-2.5 py-1 text-[10px] font-black text-secondary transition-colors hover:border-secondary/35"
+            >
+              <HiOutlineTrophy className="size-3.5" />
+              {text("examsHistory")}
+            </Link>
+          </div>
+
+          <Link href={learnHref}>
+            <h2 className="mt-3 line-clamp-2 font-black text-text-1 transition-colors hover:text-primary">
+              {courseTitle}
+            </h2>
+          </Link>
+
+          {isCompleted ? (
+            <div className="mt-3">
+              <p className="text-sm font-bold text-green">
+                {text("congratsOnFinishingTheCourse")}
+              </p>
+              {!certificateFile && (
+                <p className="mt-1 text-sm text-text-3">
+                  {text("yourCertificateDosnotAvailableYet")}
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="mt-4 max-w-md">
+              <div className="flex items-center justify-between gap-3 text-xs font-bold">
+                <span className="text-text-3">{text("overAllProgress")}</span>
+                <span className="text-text-1">{Math.round(progress)}%</span>
+              </div>
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-primary transition-[width] duration-500"
+                  style={{ width: progress + "%" }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
         {!minimal && (
-          <div className="md:border-s border-primary/20 md:px-10 flex">
-            {course.courseProgress?.certificate &&
-            course.courseProgress?.certificate.file ? (
+          <div className="border-primary/10 xl:border-s xl:ps-4">
+            {certificateFile ? (
               <a
-                className="max-md:hidden w-auto aspect-[126/90] max-md:w-full md:h-36 overflow-hidden rounded-xl"
-                href={course.courseProgress.certificate.file}
+                href={certificateFile}
                 target="_blank"
                 rel="noreferrer"
+                className="flex min-h-28 items-center gap-3 rounded-2xl border border-green/15 bg-fadedGreen p-3 transition-all hover:-translate-y-0.5 hover:border-green/30"
               >
-                {course.courseProgress.certificate.file &&
-                  !course.courseProgress.certificate.file?.endsWith(".pdf") && (
+                <span className="inline-flex size-12 shrink-0 overflow-hidden rounded-xl border border-green/15 bg-clear-ground text-green">
+                  {isCertificatePdf ? (
+                    <span className="flex size-full items-center justify-center">
+                      <HiOutlineDocumentText className="size-6" />
+                    </span>
+                  ) : (
                     <Image
                       loading="lazy"
-                      src={course.courseProgress.certificate.file}
-                      alt={getDynamicString(course.title)}
-                      width={600}
-                      height={600}
-                      className="object-cover w-full h-full"
+                      src={certificateFile}
+                      alt={courseTitle}
+                      width={96}
+                      height={96}
+                      className="size-full object-cover"
                     />
                   )}
+                </span>
+                <span className="min-w-0">
+                  <HiOutlineCheckBadge className="mb-1 size-5 text-green" />
+                  <span className="line-clamp-2 text-sm font-black text-text-1">
+                    {text("checkYourCertificate")}
+                  </span>
+                </span>
               </a>
             ) : course.lastLesson ? (
               <Link
-                href={`/dashboard/learn/${course._id}?display=lesson&lesson=${course.lastLesson._id}`}
-                className="flex items-center self-center group gap-3 aspect-[126/90] md:h-36"
+                href={
+                  learnHref + "?display=lesson&lesson=" + course.lastLesson._id
+                }
+                className="flex min-h-28 items-center gap-3 rounded-2xl border border-primary/10 bg-background-2 p-3 transition-colors hover:border-primary/30 hover:bg-primary/5"
               >
-                <PlayIcon />
-                <div className="flex flex-col">
-                  <h3 className="font-medium text-primary group-hover:underline line-clamp-2">
-                    {getDynamicString(course.lastLesson.title)}
-                  </h3>
-                  <p className="text-sm text-muted-foreground line-clamp-1">
-                    {getDynamicString(course.lastLesson.section.title)} |{" "}
-                    {course.lastLesson.lessonDuration} {text("min")}
-                  </p>
-                </div>
+                <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <HiOutlinePlayCircle className="size-5" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-[10px] font-black uppercase tracking-[0.12em] text-primary">
+                    {text("continueLearning")}
+                  </span>
+                  <span className="mt-1 block line-clamp-2 text-sm font-black text-text-1">
+                    {getDynamicString(course.lastLesson.title) ||
+                      text("lesson")}
+                  </span>
+                  <span className="mt-1 flex items-center gap-1 text-xs text-text-3">
+                    <HiOutlineClock className="size-3.5" />
+                    {Number(course.lastLesson.lessonDuration) || 0}{" "}
+                    {text("minuteAbbr")}
+                  </span>
+                </span>
               </Link>
-            ) : null}
+            ) : (
+              <Link
+                href={learnHref}
+                className="flex min-h-28 items-center justify-center gap-2 rounded-2xl border border-primary/10 bg-primary/5 px-4 text-sm font-black text-primary transition-colors hover:bg-primary/10"
+              >
+                {text("openCourse")}
+                <HiOutlineArrowRight className="size-4 rtl:rotate-180" />
+              </Link>
+            )}
           </div>
         )}
-        <Link
-          href={`/dashboard/learn/exams-history/${course._id}`}
-          className="flex items-center gap-2 text-xs  absolute top-4 end-4 border bg-primary-faded text-primary border-primary/20 px-1 py-0.5 rounded"
-        >
-          <PiExam size={18} /> {text("examsHistory")}
-        </Link>
       </div>
-    </div>
+    </article>
   );
 };
 
-export const LearnCourseCardSkeleton = () => {
-  return (
-    <div className="relative flex items-stretch gap-4 p-3 md:p-6 md:gap-10 max-md:flex-col cardShadow rounded-xl bg-clear-ground">
-      <div className="object-cover aspect-[1656/931] md:w-60 w-full rounded-xl bg-muted animate-pulse" />
-
-      <div className="flex flex-1 w-full">
-        <div className="self-center w-full xl:pe-10 md:pe-6">
-          <div className="w-40 h-4 rounded bg-muted animate-pulse max-md:text-xs" />
-          <div className="w-3/4 h-8 my-1 rounded bg-muted animate-pulse md:my-4" />
-
-          <div className="flex items-center gap-2">
-            <div className="w-full h-1 max-w-xs overflow-hidden rounded-full bg-muted">
-              <div className="w-full h-1 rounded-full bg-muted animate-pulse" />
-            </div>
-            <div className="w-8 h-4 rounded bg-muted animate-pulse" />
-          </div>
-
-          <div className="w-32 h-4 rounded bg-muted animate-pulse max-md:text-sm" />
-        </div>
-        <div className="flex items-center justify-center w-8 h-8 p-0 rounded aspect-square bg-muted animate-pulse max-md:absolute top-4 right-4" />
+export const LearnCourseCardSkeleton = () => (
+  <div className={cardClassName}>
+    <div className="grid gap-4 md:grid-cols-[14rem_minmax(0,1fr)] md:items-center xl:grid-cols-[14rem_minmax(0,1fr)_18rem]">
+      <div className="aspect-video animate-pulse rounded-xl bg-muted md:aspect-[16/10]" />
+      <div className="space-y-3 py-1">
+        <div className="h-6 w-28 animate-pulse rounded-full bg-muted" />
+        <div className="h-6 w-3/4 animate-pulse rounded-lg bg-muted" />
+        <div className="h-2 w-full max-w-md animate-pulse rounded-full bg-muted" />
       </div>
+      <div className="hidden h-28 animate-pulse rounded-2xl bg-muted xl:block" />
     </div>
-  );
-};
+  </div>
+);

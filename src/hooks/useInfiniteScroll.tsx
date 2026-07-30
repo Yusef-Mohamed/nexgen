@@ -1,8 +1,22 @@
 import { IPagination } from "@/types";
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 
 interface UseInfiniteScrollOptions<T> {
-  fetchData: (page: number, search?: string) => Promise<T[]>;
+  fetchData: (
+    page: number,
+    search?: string,
+    helpers?: {
+      setPaginationData: Dispatch<SetStateAction<IPagination | null>>;
+    },
+  ) => Promise<T[]>;
   initialPage?: number;
   search?: string;
   dependencies?: unknown[];
@@ -17,7 +31,7 @@ export function useInfiniteScroll<T>({
   const [data, setData] = useState<T[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [paginationData, setPaginationData] = useState<IPagination | null>(
-    null
+    null,
   );
   const [page, setPage] = useState(initialPage);
   const observerRef = useRef<HTMLDivElement | null>(null);
@@ -45,7 +59,9 @@ export function useInfiniteScroll<T>({
     isLoadingRef.current = true;
 
     try {
-      const newItems = await fetchData(pageToFetch, search);
+      const newItems = await fetchData(pageToFetch, search, {
+        setPaginationData,
+      });
 
       if (pageToFetch === initialPage) {
         setData(newItems);

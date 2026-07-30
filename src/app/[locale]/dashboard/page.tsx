@@ -10,13 +10,9 @@ export async function generateMetadata(props: {
     params,
   });
 }
-const Dashboard = async (props: { params: Promise<{ locale: string }> }) => {
-  const params = await props.params;
-
-  const { locale } = params;
-
+const Dashboard = async () => {
   return (
-    <main className="flex flex-col relative overflow-hidden bg-background xl:flex-row">
+    <main className="relative flex flex-col overflow-hidden px-3 sm:px-6 !bg-transparent xl:flex-row">
       <DashboardHomeClient />
     </main>
   );

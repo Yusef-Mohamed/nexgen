@@ -51,6 +51,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [showFeedback, setShowFeedback] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [feedbackQuestions, setFeedbackQuestions] = useState<
     IQuestion[] | null
   >(null);
@@ -118,10 +119,11 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
       const response = await axiosInstance.post(
         `/exams/${quizType}/${quiz?._id}/submit`,
         { answers: formattedAnswers },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       const result = response.data.data;
       setSubmitData(result);
+      setHasSubmitted(true);
 
       // Transform examAnalytics to feedback questions format
       if (result.examAnalytics && quiz?.questions) {
@@ -130,7 +132,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
             // Find the original question from quiz using the question ID from examAnalytics
             // analytic._id is the question ID, analytic.question might also be the question ID
             const originalQuestion = quiz.questions.find(
-              (q) => q._id === analytic._id || q._id === analytic.question
+              (q) => q._id === analytic._id || q._id === analytic.question,
             );
 
             if (!originalQuestion) {
@@ -162,7 +164,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
                   ? analytic.givenAnswer
                   : undefined,
             };
-          }
+          },
         );
         setFeedbackQuestions(transformedQuestions);
       }
@@ -179,7 +181,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
           sections,
           id,
           false, // checkForNoQuiz = false for quiz
-          true // skipUnlockNextIfCurrentHasAssignment: do not unlock next if this lesson has an assignment
+          true, // skipUnlockNextIfCurrentHasAssignment: do not unlock next if this lesson has an assignment
         );
 
         // Mark passedExam as true for the current lesson
@@ -224,6 +226,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
     setShowFeedback(false);
     setFeedbackQuestions(null);
     setSubmitData({ passed: false, totalScore: 0, score: 0 });
+    setHasSubmitted(false);
   }, [id]);
 
   const retakeQuiz = useCallback(async () => {
@@ -235,6 +238,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
     setShowFeedback(false);
     setFeedbackQuestions(null);
     setSubmitData({ passed: false, totalScore: 0, score: 0 });
+    setHasSubmitted(false);
   }, [getQuiz]);
 
   const findNextItem = useCallback((): {
@@ -247,11 +251,11 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
     if (!sections || sections.length === 0) return null;
 
     const allLessons: ILesson[] = sections.flatMap((section) =>
-      Array.isArray(section.lessons) ? section.lessons : []
+      Array.isArray(section.lessons) ? section.lessons : [],
     );
     const sortedLessons = [...allLessons].sort((a, b) => a.order - b.order);
     const currentLessonIndex = sortedLessons.findIndex(
-      (lesson) => lesson._id === id
+      (lesson) => lesson._id === id,
     );
     if (currentLessonIndex === -1) return null;
 
@@ -294,6 +298,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
     isSubmitting,
     submitError,
     showFeedback,
+    hasSubmitted,
     feedbackQuestions,
 
     // actions

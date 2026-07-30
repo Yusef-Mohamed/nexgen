@@ -105,7 +105,7 @@ const CreatePractice = ({
             lessons: section.lessons.map((lesson) =>
               lesson._id === lessonId
                 ? { ...lesson, passedAnalyticsTask: true }
-                : lesson
+                : lesson,
             ),
           }));
 
@@ -113,7 +113,7 @@ const CreatePractice = ({
           const unlockedSections = unlockLessonsSequentially(
             updatedSections,
             lessonId,
-            true // checkForNoQuiz = true for practice
+            true, // checkForNoQuiz = true for practice
           );
           courseContext.updateSections(unlockedSections);
         }
@@ -168,10 +168,7 @@ const CreatePractice = ({
       {!courseId && (
         <div className="pb-3 flex gap-4 flex-wrap">
           <div>
-            <Label
-              htmlFor="course"
-              className="text-sm sr-only"
-            >
+            <Label htmlFor="course" className="text-sm sr-only">
               {inputs("course")}:
             </Label>
             <Select
@@ -179,7 +176,7 @@ const CreatePractice = ({
               onValueChange={setSelectedCourse}
               disabled={isLoadingPackages}
             >
-              <SelectTrigger className="gap-4 bg-muted w-fit rounded text-muted-foreground border-none text-xs !h-10">
+              <SelectTrigger className="h-10 w-fit gap-4 rounded-xl border-primary/10 bg-background-2 text-xs font-bold text-text-2 shadow-none">
                 <SelectValue
                   placeholder={
                     isLoadingPackages ? text("loading") : inputs("SelectCourse")
@@ -188,10 +185,7 @@ const CreatePractice = ({
               </SelectTrigger>
               <SelectContent>
                 {packages.map((pkg) => (
-                  <SelectItem
-                    value={pkg.course._id}
-                    key={pkg.course._id}
-                  >
+                  <SelectItem value={pkg.course._id} key={pkg.course._id}>
                     {getDynamicString(pkg.course.title)}
                   </SelectItem>
                 ))}
@@ -201,10 +195,7 @@ const CreatePractice = ({
         </div>
       )}
       <div className="flex gap-2 justify-between items-start">
-        <UserAvatar
-          user={user || undefined}
-          size="md"
-        />
+        <UserAvatar user={user || undefined} size="md" />
         <TextWithEmojiBox
           text={content}
           setText={setContent}
@@ -216,20 +207,20 @@ const CreatePractice = ({
 
       <div
         className={cn(
-          `overflow-hidden relative mx-auto mt-4 w-full rounded-3xl h-[220px] aspect-video`,
+          `relative mx-auto mt-4 aspect-video h-[220px] w-full overflow-hidden rounded-2xl border-primary/10 bg-background-2`,
           {
             "opacity-60 cursor-not-allowed": isLoading,
             "cursor-pointer": !isLoading,
             "border-2 border-dashed border-primary bg-primary/10": isDragging,
             "border-2 border-dashed": !isDragging,
-          }
+          },
         )}
         onClick={() => !isLoading && fileInputRef.current?.click()}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        <div className="flex absolute inset-0 flex-col justify-center items-center bg-input/20">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-primary/5 text-center">
           <FaCloudArrowUp className="mb-2 w-12 h-12 text-primary" />
           <p className="text-sm">{text("clickOrDragImageToUpload")}</p>
           <p className="mt-1 text-xs text-text-3">
@@ -254,10 +245,10 @@ const CreatePractice = ({
           <li
             key={media.name}
             className={cn(
-              "flex justify-between items-center px-4 py-3 mt-2 rounded-sm border",
+              "mt-2 flex items-center justify-between rounded-xl border border-primary/10 bg-background-2 px-4 py-3",
               {
                 "opacity-50": isLoading,
-              }
+              },
             )}
           >
             <div className="flex gap-4 items-center">
@@ -276,10 +267,7 @@ const CreatePractice = ({
                       stroke="#D0D5DD"
                       strokeWidth="1.5"
                     />
-                    <mask
-                      id="path-2-inside-1_2151_28361"
-                      fill="white"
-                    >
+                    <mask id="path-2-inside-1_2151_28361" fill="white">
                       <path d="M25 1.9668H33.5V10.4668H26C25.4477 10.4668 25 10.0191 25 9.4668V1.9668Z" />
                     </mask>
                     <path
@@ -331,11 +319,7 @@ const CreatePractice = ({
           </li>
         ))}
       </ul>
-      <Button
-        onClick={handelCreatePractice}
-        isLoading={isLoading}
-        size={"lg"}
-      >
+      <Button onClick={handelCreatePractice} isLoading={isLoading} size={"lg"}>
         {text("submit")}
       </Button>
     </div>

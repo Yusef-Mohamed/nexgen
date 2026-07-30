@@ -101,7 +101,6 @@ const LearningPathsBlock: React.FC = () => {
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
           loading={loading}
-          enableSearch={false}
         />
       }
     >
@@ -147,7 +146,6 @@ const CoursesBlock: React.FC = () => {
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
           loading={loading}
-          enableSearch={false}
         />
       }
     >
@@ -193,7 +191,6 @@ const ServicesBlock: React.FC = () => {
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
           loading={loading}
-          enableSearch={false}
         />
       }
     >

@@ -56,7 +56,7 @@ const LivesCalendar = ({
   const currentDate = new Date();
   const [selectedMonth, setSelectedMonth] = useState(currentDate);
   const [firstDayOfMonth, setFirstDayOfMonth] = useState(
-    startOfMonth(currentDate)
+    startOfMonth(currentDate),
   );
   const startingDayIndex = getDay(firstDayOfMonth);
   const [lastDayOfMonth, setLastDayOfMonth] = useState(endOfMonth(currentDate));
@@ -68,7 +68,7 @@ const LivesCalendar = ({
   const getLivesForDate = (date: Date) => {
     const dateKey = format(date, "yyyy-MM-dd");
     return lives.filter(
-      (live) => format(new Date(live.date), "yyyy-MM-dd") === dateKey
+      (live) => format(new Date(live.date), "yyyy-MM-dd") === dateKey,
     );
   };
 
@@ -81,14 +81,17 @@ const LivesCalendar = ({
       days.push(
         format(date, isArabic ? "EEEE" : "EEE", {
           locale: isArabic ? arSA : enUS,
-        })
+        }),
       );
     }
     return days;
   }, [isArabic]);
 
   return (
-    <div dir="ltr" className="w-full cardShadow rounded-xl h-fit">
+    <div
+      dir="ltr"
+      className="h-fit w-full rounded-2xl border border-primary/10 bg-clear-ground shadow-sm"
+    >
       <div className="p-4">
         <span className="block text-xs text-center">
           {format(selectedMonth, " yyyy", {
@@ -138,7 +141,10 @@ const LivesCalendar = ({
         <div className="grid grid-cols-7 gap-2">
           {localizedWeekdays.map((day) => {
             return (
-              <div key={day} className="font-bold text-center rtl:text-xs">
+              <div
+                key={day}
+                className="text-center text-xs font-bold text-text-3 rtl:text-xs"
+              >
                 {day}
               </div>
             );
@@ -154,14 +160,15 @@ const LivesCalendar = ({
                 <button
                   onClick={() => handleDateSelect(dateKey)}
                   className={clsx(
-                    "rounded-md flex-col transition-all px-1 py-1 w-full flex justify-center items-center text-center border-2",
+                    "flex w-full flex-col items-center justify-center rounded-lg border px-1 py-1 text-center text-sm font-bold transition-all",
                     {
                       "border-primary": isToday(day),
-                      "border-[#FFD700]": selectedDate === dateKey,
-                      "border-transparent":
+                      "border-secondary bg-secondary/10 text-secondary":
+                        selectedDate === dateKey,
+                      "border-transparent hover:border-primary/30 hover:bg-primary/10":
                         !isToday(day) && selectedDate !== dateKey,
-                      "bg-secondary text-white": dayLives.length > 0,
-                    }
+                      "bg-primary text-primary-foreground": dayLives.length > 0,
+                    },
                   )}
                 >
                   {format(day, "d")}{" "}

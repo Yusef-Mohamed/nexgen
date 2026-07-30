@@ -52,7 +52,10 @@ export async function generateMetadata(props: {
 
 const LearningPathPage = async (props: {
   params: Promise<{ locale: string; learningPathId: string }>;
-  searchParams: Promise<{ coupon?: string | string[]; code?: string | string[] }>;
+  searchParams: Promise<{
+    coupon?: string | string[];
+    code?: string | string[];
+  }>;
 }) => {
   const params = await props.params;
   const searchParams = await props.searchParams;
@@ -76,62 +79,62 @@ const LearningPathPage = async (props: {
           />
         }
       >
-          <LearningPathHeading
-            learningPathData={learningPathData}
-            className="max-lg:hidden"
-          />
-          <LearningPathCard
-            learningPathData={learningPathData}
-            couponCode={couponCode}
-            className="lg:hidden relative overflow-hidden"
-          />
-          {learningPathData.whoThisCourseFor &&
-            learningPathData.whoThisCourseFor.length > 0 && (
-              <SectionBlock
+        <LearningPathHeading
+          learningPathData={learningPathData}
+          className="max-lg:hidden"
+        />
+        <LearningPathCard
+          learningPathData={learningPathData}
+          couponCode={couponCode}
+          className="lg:hidden relative overflow-hidden"
+        />
+        {learningPathData.whoThisCourseFor &&
+          learningPathData.whoThisCourseFor.length > 0 && (
+            <SectionBlock
+              tone="secondary"
+              eyebrow={learningPathText("whoThisLearningPathFor")}
+              icon={<HiOutlineUserGroup className="size-5" />}
+              title={learningPathText("whoThisLearningPathFor")}
+            >
+              <ItemDetailList
+                items={learningPathData.whoThisCourseFor}
                 tone="secondary"
-                eyebrow={learningPathText("whoThisLearningPathFor")}
-                icon={<HiOutlineUserGroup className="size-5" />}
-                title={learningPathText("whoThisLearningPathFor")}
-              >
-                <ItemDetailList
-                  items={learningPathData.whoThisCourseFor}
-                  tone="secondary"
-                  icon={<HiOutlineUserGroup className="size-4" />}
-                />
-              </SectionBlock>
-            )}
-          {learningPathData.whatWillLearn &&
-            learningPathData.whatWillLearn.length > 0 && (
-              <SectionBlock
+                icon={<HiOutlineUserGroup className="size-4" />}
+              />
+            </SectionBlock>
+          )}
+        {learningPathData.whatWillLearn &&
+          learningPathData.whatWillLearn.length > 0 && (
+            <SectionBlock
+              tone="primary"
+              eyebrow={learningPathText("whatYouWillLearn")}
+              icon={<HiOutlineCheckCircle className="size-5" />}
+              title={learningPathText("whatYouWillLearn")}
+            >
+              <ItemDetailList
+                items={learningPathData.whatWillLearn}
                 tone="primary"
-                eyebrow={learningPathText("whatYouWillLearn")}
-                icon={<HiOutlineCheckCircle className="size-5" />}
-                title={learningPathText("whatYouWillLearn")}
-              >
-                <ItemDetailList
-                  items={learningPathData.whatWillLearn}
-                  tone="primary"
-                  icon={<HiOutlineCheckCircle className="size-4" />}
-                />
-              </SectionBlock>
-            )}
-          {learningPathData.coursePrerequisites &&
-            learningPathData.coursePrerequisites.length > 0 && (
-              <SectionBlock
+                icon={<HiOutlineCheckCircle className="size-4" />}
+              />
+            </SectionBlock>
+          )}
+        {learningPathData.coursePrerequisites &&
+          learningPathData.coursePrerequisites.length > 0 && (
+            <SectionBlock
+              tone="secondary"
+              eyebrow={learningPathText("learningPathPrerequisites")}
+              icon={<HiOutlineClipboardDocumentList className="size-5" />}
+              title={learningPathText("learningPathPrerequisites")}
+            >
+              <ItemDetailList
+                items={learningPathData.coursePrerequisites}
                 tone="secondary"
-                eyebrow={learningPathText("learningPathPrerequisites")}
-                icon={<HiOutlineClipboardDocumentList className="size-5" />}
-                title={learningPathText("learningPathPrerequisites")}
-              >
-                <ItemDetailList
-                  items={learningPathData.coursePrerequisites}
-                  tone="secondary"
-                  icon={<HiOutlineClipboardDocumentList className="size-4" />}
-                />
-              </SectionBlock>
-            )}
+                icon={<HiOutlineClipboardDocumentList className="size-4" />}
+              />
+            </SectionBlock>
+          )}
 
-          <PathContent courses={learningPathData.courses} />
+        <PathContent courses={learningPathData.courses} />
       </ItemPageLayout>
       <MobileAppHero />
       <PopularLearningPaths />
