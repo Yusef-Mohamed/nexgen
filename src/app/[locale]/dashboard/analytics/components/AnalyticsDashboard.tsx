@@ -71,6 +71,7 @@ const AnalyticsDashboard = () => {
   const [userSearchTerm, setUserSearchTerm] = useState("");
   const [isUserFilterOpen, setIsUserFilterOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [isTopUsersLoading, setIsTopUsersLoading] = useState(false);
   const {
     selectedUser,
     setSelectedUser,
@@ -165,14 +166,26 @@ const AnalyticsDashboard = () => {
   useEffect(() => {
     if (!myAccountId) return;
 
-    const nextSelectedUser = selectedUserParam || myAccountId;
+    const canSelectAnotherUser = myAccount?.isMarketer === true;
+    const nextSelectedUser =
+      canSelectAnotherUser && selectedUserParam
+        ? selectedUserParam
+        : myAccountId;
     if (selectedUser !== nextSelectedUser) {
       setSelectedUser(nextSelectedUser);
     }
-  }, [myAccountId, selectedUser, selectedUserParam, setSelectedUser]);
+  }, [
+    myAccount?.isMarketer,
+    myAccountId,
+    selectedUser,
+    selectedUserParam,
+    setSelectedUser,
+  ]);
 
   useEffect(() => {
-    if (!myAccountId || !token) return;
+    if (!myAccountId || !token || myAccount?.isMarketer !== true) {
+      return;
+    }
 
     const controller = new AbortController();
     axiosInstance
@@ -188,7 +201,7 @@ const AnalyticsDashboard = () => {
       });
 
     return () => controller.abort();
-  }, [myAccountId, token]);
+  }, [myAccount?.isMarketer, myAccountId, token]);
 
   useEffect(() => {
     const nextSelectedUserObject =
@@ -255,19 +268,29 @@ const AnalyticsDashboard = () => {
     }
 
     setTopUsers([]);
-    axiosInstance
-      .get(`/courses/courseDetails/${selectedCourse}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        signal: controller.signal,
-      })
-      .then((response) =>
-        setTopUsers((response.data.data.users || []).slice(0, 3)),
-      )
-      .catch((error) => {
-        if (error?.name !== "CanceledError") {
+    const fetchCourseLeaders = async () => {
+      await Promise.resolve();
+      if (controller.signal.aborted) return;
+      setIsTopUsersLoading(true);
+
+      try {
+        const response = await axiosInstance.get(
+          `/courses/courseDetails/${selectedCourse}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            signal: controller.signal,
+          },
+        );
+        setTopUsers((response.data.data.users || []).slice(0, 3));
+      } catch (error: unknown) {
+        if (!(error instanceof Error && error.name === "CanceledError")) {
           console.error("Failed to load course leaders", error);
         }
-      });
+      } finally {
+        if (!controller.signal.aborted) setIsTopUsersLoading(false);
+      }
+    };
+    void fetchCourseLeaders();
 
     return () => controller.abort();
   }, [selectedCourse, setTopUsers, token]);
@@ -448,7 +471,7 @@ const AnalyticsDashboard = () => {
 
             <LeaderBoardCard
               users={topUsers}
-              isLoading={Boolean(selectedCourse) && topUsers.length === 0}
+              isLoading={isTopUsersLoading}
               title={text("outTopStudentsInThisCourse")}
             />
             <CertificateCard />

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useSyncExternalStore } from "react";
 import LanguageSelector from "../LanguageSelector";
 import NavItem from "../../app/[locale]/(root)/components/NavItem";
 import { Button } from "../ui/button";
@@ -20,20 +20,30 @@ const headerLinks = [
   { name: "blogs", url: "/blogs" },
 ];
 
+const subscribeToScroll = (callback: () => void) => {
+  window.addEventListener("scroll", callback, { passive: true });
+  return () => window.removeEventListener("scroll", callback);
+};
+const getScrollSnapshot = () => window.scrollY > 8;
+const getServerScrollSnapshot = () => false;
+const subscribeToClientState = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 const Header = () => {
   const text = useTranslations("header");
   const { token } = useAuth();
-  const [scrolled, setScrolled] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const scrolled = useSyncExternalStore(
+    subscribeToScroll,
+    getScrollSnapshot,
+    getServerScrollSnapshot,
+  );
+  const isMounted = useSyncExternalStore(
+    subscribeToClientState,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
   const canRenderAuth = isMounted && !!token;
-
-  useEffect(() => {
-    setIsMounted(true);
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
     <header

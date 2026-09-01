@@ -68,8 +68,10 @@ export function unlockLessonsSequentially(
   // Always unlock current lesson
   const currentSection = updatedSections[currentLessonItem.sectionIndex];
   if (currentSection && currentSection.lessons[currentLessonItem.lessonIndex]) {
-    currentSection.lessons[currentLessonItem.lessonIndex].videoUrl =
-      PLACEHOLDER_VIDEO_URL;
+    const currentLessonToUnlock =
+      currentSection.lessons[currentLessonItem.lessonIndex];
+    currentLessonToUnlock.videoUrl = PLACEHOLDER_VIDEO_URL;
+    currentLessonToUnlock.isUnlocked = true;
   }
 
   // For practice (checkForNoQuiz): do not unlock *next* lessons if current has a quiz
@@ -99,8 +101,9 @@ export function unlockLessonsSequentially(
     // Unlock this lesson
     const targetSection = updatedSections[nextItem.sectionIndex];
     if (targetSection && targetSection.lessons[nextItem.lessonIndex]) {
-      targetSection.lessons[nextItem.lessonIndex].videoUrl =
-        PLACEHOLDER_VIDEO_URL;
+      const nextLessonToUnlock = targetSection.lessons[nextItem.lessonIndex];
+      nextLessonToUnlock.videoUrl = PLACEHOLDER_VIDEO_URL;
+      nextLessonToUnlock.isUnlocked = true;
     }
 
     // Check if this is a blocking lesson (unlock it, then stop)

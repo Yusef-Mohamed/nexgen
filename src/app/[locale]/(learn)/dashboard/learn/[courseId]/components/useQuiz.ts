@@ -62,7 +62,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
   const courseContext = useCourseContextSafe();
   const sections = courseContext?.sections;
   const updateSections = courseContext?.updateSections;
-  const { setSearchParams } = useCustomSearchParams();
+  const { clearSearchParams, setSearchParams } = useCustomSearchParams();
 
   const endpoint: "lesson" | "course" | "placement" = useMemo(() => {
     switch (quizType) {
@@ -281,10 +281,10 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
     if (nextItem) {
       setSearchParams({ lesson: nextItem.lessonId, display: nextItem.display });
     } else {
-      setSearchParams({});
+      clearSearchParams();
       toast.info(text("completedAllContent"));
     }
-  }, [findNextItem, setSearchParams, text]);
+  }, [clearSearchParams, findNextItem, setSearchParams, text]);
 
   return {
     // state

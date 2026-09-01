@@ -67,7 +67,6 @@ const SalesAnalytics: React.FC = () => {
           },
         );
         setData(res.data);
-        console.log("Sales Analytics Data:", res.data);
       } catch (err) {
         console.error("Error fetching sales analytics:", err);
         toast.error(t("failedToLoadSalesAnalytics"));

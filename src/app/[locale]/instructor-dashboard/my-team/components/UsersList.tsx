@@ -116,7 +116,7 @@ const fetchUsersFromAPI = async (
         email: user.email || "",
         purchasedate: purchaseDate,
         isresale: user.isResale || false,
-        profileimage: "/images/default-avatar.png",
+        profileimage: "",
       }),
     );
   } catch (error) {

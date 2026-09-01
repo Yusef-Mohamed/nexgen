@@ -8,7 +8,7 @@ import { getDynamicString, isImageFile } from "@/lib/utils";
 import type { ILesson } from "@/types";
 import { Download } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   HiOutlineArrowPath,
   HiOutlineClock,
@@ -37,6 +37,10 @@ const LessonBody = ({
 }) => {
   const [data, setData] = useState<VideoCredentials | null>(null);
   const [isVideoLoading, setIsVideoLoading] = useState(true);
+  const viewedRequestRef = useRef<{
+    lessonId: string;
+    request: Promise<void>;
+  } | null>(null);
 
   const { token } = useAuth();
   const text = useTranslations("learn");
@@ -79,6 +83,10 @@ const LessonBody = ({
   useEffect(() => {
     fetchVideoData();
   }, [fetchVideoData]);
+
+  useEffect(() => {
+    viewedRequestRef.current = null;
+  }, [lessonId]);
 
   const getNextContent = useCallback(() => {
     if (!lesson || sections.length === 0) return null;
@@ -161,32 +169,48 @@ const LessonBody = ({
     toast.success(text("lessonCompleted") + " " + messages[nextContent.type]);
   }, [getNextContent, setSearchParams, text]);
 
-  const handleVideoEnd = useCallback(async () => {
-    if (!lesson?.lessonWatched) {
-      try {
-        await axiosInstance.post(
-          "/lessonViewed/" + lessonId,
-          {},
-          {
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          },
-        );
-        markLessonAsWatched();
-      } catch (updateError) {
-        console.error("Failed to mark lesson as viewed:", updateError);
-      }
+  const markLessonViewed = useCallback(() => {
+    if (!lessonId || !token || lesson?.lessonWatched) {
+      return Promise.resolve();
     }
 
+    const pendingRequest = viewedRequestRef.current;
+    if (pendingRequest?.lessonId === lessonId) {
+      return pendingRequest.request;
+    }
+
+    const request = axiosInstance
+      .post(
+        "/lessonViewed/" + lessonId,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        },
+      )
+      .then(() => {
+        markLessonAsWatched();
+      })
+      .catch((updateError) => {
+        if (viewedRequestRef.current?.lessonId === lessonId) {
+          viewedRequestRef.current = null;
+        }
+        console.error("Failed to mark lesson as viewed:", updateError);
+      });
+
+    viewedRequestRef.current = { lessonId, request };
+    return request;
+  }, [lesson?.lessonWatched, lessonId, markLessonAsWatched, token]);
+
+  const handleVideoNearEnd = useCallback(() => {
+    void markLessonViewed();
+  }, [markLessonViewed]);
+
+  const handleVideoEnd = useCallback(() => {
+    void markLessonViewed();
     navigateToNext();
-  }, [
-    lesson?.lessonWatched,
-    lessonId,
-    markLessonAsWatched,
-    navigateToNext,
-    token,
-  ]);
+  }, [markLessonViewed, navigateToNext]);
 
   const lessonTitle = getDynamicString(lesson?.title) || text("lesson");
   const lessonDescription =
@@ -229,8 +253,10 @@ const LessonBody = ({
       <section className="overflow-hidden rounded-3xl border border-primary/10 bg-clear-ground p-2 cardShadowSm sm:p-3">
         {data ? (
           <VideoPlayer
+            key={lessonId}
             otp={data.otp}
             playbackInfo={data.playbackInfo}
+            onVideoNearEnd={handleVideoNearEnd}
             onVideoEnd={handleVideoEnd}
             title={text("videoLesson")}
           />

@@ -28,7 +28,10 @@ axiosInstance.interceptors.request.use(
     const language = getCookie("NEXT_LOCALE") || "en";
     const token = getCookie("token");
     config.headers["Accept-Language"] = language;
-    if (token && !config.headers["Authorization"]) {
+    // A component can render once before AuthProvider hydrates and pass an
+    // empty `Bearer ` header. Always prefer the current session cookie so
+    // protected requests cannot race auth hydration.
+    if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
 

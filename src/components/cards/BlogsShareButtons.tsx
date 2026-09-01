@@ -1,4 +1,5 @@
 "use client";
+import { useSyncExternalStore } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import {
   FaFacebook,
@@ -14,13 +15,22 @@ interface ShareButtonsProps {
   className?: string;
 }
 
+const subscribeToLocation = () => () => {};
+const getClientOrigin = () => window.location.origin;
+const getServerOrigin = () => "";
+
 export const ShareButtons: React.FC<ShareButtonsProps> = ({
   id,
   className,
 }) => {
   const locale = useLocale();
   const t = useTranslations("blogShareButtons");
-  const url = `${window.location.origin}/${locale}/blogs/${id}`;
+  const origin = useSyncExternalStore(
+    subscribeToLocation,
+    getClientOrigin,
+    getServerOrigin,
+  );
+  const url = `${origin}/${locale}/blogs/${id}`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(url);
@@ -74,6 +84,7 @@ export const ShareButtons: React.FC<ShareButtonsProps> = ({
           <FaLinkedin />
         </a>
         <button
+          type="button"
           className="flex items-center justify-center w-8 h-8 rounded-full bg-muted focus:outline"
           onClick={handleCopyLink}
           aria-label={t("copyLink")}

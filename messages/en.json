@@ -370,7 +370,7 @@
     "displayLess": "Display Less"
   },
   "footer": {
-    "copyRight": "©2024 NexGen Inc. All rights reserved.",
+    "copyRight": "©2026 NexGen Inc. All rights reserved.",
     "about": "About Us",
     "blogs": "Blogs",
     "support": "Support",
@@ -1333,6 +1333,11 @@
     "completed": "Completed",
     "title": "Practice",
     "description": "Submit practice work, review feedback, and filter your completed or in-progress tasks by course.",
+    "viewAs": "View as",
+    "viewAsDescription": "Choose which eligible role you want to use.",
+    "roleUser": "User",
+    "roleInstructor": "Instructor",
+    "roleMarketer": "Marketer",
     "onProgress": "In Progress",
     "addNew": "Add New",
     "somethingWentWrong": "Something went wrong",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "@/app/lib/utils";
 import { ICategory, ICourse, IPackage, ICoursePackage } from "@/types";
@@ -178,7 +178,7 @@ export const useDashboardFilters = (
   const searchParams = useSearchParams();
 
   // State
-  const [activeFilter, setActiveFilter] = useState<FilterType>("courses");
+  const [activeFilter, setActiveFilterState] = useState<FilterType>("courses");
   const [filterState, setFilterState] = useState<FilterState>({
     category: "all",
     level: "all",
@@ -193,13 +193,13 @@ export const useDashboardFilters = (
   // Debounce search keyword
   const debouncedSearchKeyword = useDebounce(filterState.searchKeyword, 500);
 
-  // Clear level filter when switching between different content types
-  useEffect(() => {
+  const setActiveFilter = useCallback((filter: FilterType) => {
+    setActiveFilterState(filter);
     setFilterState((prev) => ({
       ...prev,
       level: "all",
     }));
-  }, [activeFilter]);
+  }, []);
 
   // Fetch categories
   const { data: categories = [], isLoading: isLoadingCategories } = useQuery({

@@ -20,7 +20,7 @@ const Dashboard = async (
       }}
       className="flex flex-col px-2 py-6 lg:px-6 sm:px-4"
     >
-      <DisplayPosts />
+      <DisplayPosts forceRole="instructor" />
     </main>
   );
 };

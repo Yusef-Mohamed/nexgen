@@ -11,7 +11,7 @@ const UserHeader = () => {
     () => false,
   );
 
-  if (!isMounted) return null;
+  if (!isMounted) return <div aria-hidden className="h-10 w-[128px]" />;
 
   return (
     <div className="flex items-center gap-1.5">

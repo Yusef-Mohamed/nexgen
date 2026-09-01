@@ -9,7 +9,6 @@ interface CourseReviewState {
   };
   idToEdit: string;
   isLoading: boolean;
-  lastFetched: number | null;
   setData: (newData: Partial<{ title: string; ratings: number }>) => void;
   setIdToEdit: (id: string) => void;
   setIsLoading: (loading: boolean) => void;
@@ -22,7 +21,6 @@ export const useCourseReviewStore = create<CourseReviewState>((set, get) => ({
   data: { title: "", ratings: 5 },
   idToEdit: "",
   isLoading: false,
-  lastFetched: null,
 
   setData: (newData) => {
     set((state) => ({ data: { ...state.data, ...newData } }));
@@ -31,28 +29,26 @@ export const useCourseReviewStore = create<CourseReviewState>((set, get) => ({
   setIsLoading: (loading) => set({ isLoading: loading }),
 
   fetchReview: async (courseId, token) => {
-    const { lastFetched, setData, setIdToEdit } = get();
+    const { setData, setIdToEdit } = get();
 
     if (!token) return;
-
-    const now = Date.now();
-    const shouldRefetch = !lastFetched || now - lastFetched > 5 * 60 * 1000;
-
-    if (!shouldRefetch) {
-      return;
-    }
 
     set({ isLoading: true });
 
     try {
-      const response = await axiosInstance.get("/reviews/myReviews", {
+      const response = await axiosInstance.get("/reviews/myReview", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const allReviews = response.data.data as IReview[];
-      const thisReview = allReviews.find(
-        (review) => review.course?._id === courseId
-      );
+      const allReviews: IReview[] = Array.isArray(response.data.data)
+        ? response.data.data
+        : [];
+      const thisReview = allReviews.find((review) => {
+        const reviewCourse = review.course as IReview["course"] | string;
+        return typeof reviewCourse === "string"
+          ? reviewCourse === courseId
+          : reviewCourse?._id === courseId;
+      });
 
       if (thisReview) {
         setIdToEdit(thisReview._id);
@@ -62,7 +58,6 @@ export const useCourseReviewStore = create<CourseReviewState>((set, get) => ({
         setData({ title: "", ratings: 5 });
       }
 
-      set({ lastFetched: now });
     } catch (error) {
       console.error(error);
     } finally {
@@ -98,6 +93,7 @@ export const useCourseReviewStore = create<CourseReviewState>((set, get) => ({
       }
     } catch (error) {
       console.error(error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -118,6 +114,7 @@ export const useCourseReviewStore = create<CourseReviewState>((set, get) => ({
       setData({ title: "", ratings: 5 });
     } catch (error) {
       console.error(error);
+      throw error;
     } finally {
       setIsLoading(false);
     }

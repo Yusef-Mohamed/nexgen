@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import LearningPathFormSidebar from "./LearningPathFormSidebar";
 import Logo from "@/components/logo";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -16,6 +16,11 @@ const LearningPathFormLayoutClient: React.FC<
   LearningPathFormLayoutClientProps
 > = ({ children }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const interactiveHeaderReady = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   return (
     <div className="dashboard">
@@ -38,7 +43,7 @@ const LearningPathFormLayoutClient: React.FC<
                 <Logo className="lg:hidden" size="sm" />
               </div>
               <div className="flex items-center gap-4">
-                <Sheet>
+                {interactiveHeaderReady ? <Sheet>
                   <SheetTrigger asChild>
                     <button className="flex items-center justify-center w-[2.5rem] h-[2.5rem] rounded-full bg-primary-faded aspect-square lg:hidden">
                       <FaBars />
@@ -47,7 +52,7 @@ const LearningPathFormLayoutClient: React.FC<
                   <SheetContent className="p-0">
                     <LearningPathFormSidebar className="w-full h-full" />
                   </SheetContent>
-                </Sheet>
+                </Sheet> : <div aria-hidden className="size-10 lg:hidden" />}
                 <UserHeader />
               </div>
             </div>

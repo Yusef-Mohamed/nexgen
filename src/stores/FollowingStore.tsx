@@ -1,9 +1,30 @@
 import { create } from "zustand";
 import { axiosInstance } from "@/app/lib/utils";
 
+type FollowingApiEntry =
+  | string
+  | {
+      _id?: string;
+      user?: string | { _id?: string };
+    };
+
+const normalizeFollowingUsers = (value: unknown): { user: string }[] => {
+  if (!Array.isArray(value)) return [];
+
+  return value.flatMap((entry: FollowingApiEntry) => {
+    if (typeof entry === "string") return [{ user: entry }];
+
+    const followedUser = entry?.user;
+    if (typeof followedUser === "string") return [{ user: followedUser }];
+    if (followedUser?._id) return [{ user: followedUser._id }];
+    if (entry?._id) return [{ user: entry._id }];
+
+    return [];
+  });
+};
+
 interface FollowingState {
   followingUsers: { user: string }[];
-  lastFetched: number | null;
   isLoading: boolean;
   fetchFollowingUsers: (token: string | undefined) => Promise<void>;
   addFollowingUser: (userId: string) => void;
@@ -12,15 +33,12 @@ interface FollowingState {
 
 export const useFollowingStore = create<FollowingState>((set, get) => ({
   followingUsers: [],
-  lastFetched: null,
   isLoading: false,
 
   fetchFollowingUsers: async (token) => {
     if (!token) return;
-    const { followingUsers, lastFetched, isLoading } = get();
-    const now = Date.now();
-    const shouldRefetch = !lastFetched || now - lastFetched > 5 * 60 * 1000;
-    if ((followingUsers.length > 0 && !shouldRefetch) || isLoading) {
+    const { isLoading } = get();
+    if (isLoading) {
       return;
     }
     try {
@@ -34,8 +52,9 @@ export const useFollowingStore = create<FollowingState>((set, get) => ({
         }
       );
       set({
-        followingUsers: response.data.data.following || [],
-        lastFetched: now,
+        followingUsers: normalizeFollowingUsers(
+          response.data?.data?.following,
+        ),
         isLoading: false,
       });
     } catch (error) {

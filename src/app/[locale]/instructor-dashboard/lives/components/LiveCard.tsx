@@ -3,12 +3,12 @@ import { ILive } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useTranslations, useLocale } from "next-intl";
-import { useEffect, useState } from "react";
 import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
 import { Trash2, Edit } from "lucide-react";
 import { getDynamicString } from "@/lib/utils";
 import { format } from "date-fns";
 import { arSA, enUS } from "date-fns/locale";
+import { useTheme } from "next-themes";
 
 interface LiveCardProps {
   live: ILive;
@@ -19,14 +19,10 @@ const LiveCard: React.FC<LiveCardProps> = ({ live, onDelete, onEdit }) => {
   const text = useTranslations("instructorLives");
   const locale = useLocale();
   const isArabic = locale === "ar";
-  const [theme, setTheme] = useState("dark");
-
-  useEffect(() => {
-    const theme = localStorage.getItem("theme");
-    if (theme) {
-      setTheme(theme);
-    }
-  }, []);
+  const { resolvedTheme } = useTheme();
+  const uniquePackages = Array.from(
+    new Map(live.package.map((packageItem) => [packageItem._id, packageItem])).values(),
+  );
 
   // Use the status field from the live object
   const isActive = live.status === "active";
@@ -36,18 +32,18 @@ const LiveCard: React.FC<LiveCardProps> = ({ live, onDelete, onEdit }) => {
     <div className="flex flex-col justify-between w-full gap-4 p-4 border rounded-md">
       <div>
         <div className="flex flex-wrap items-center justify-start gap-2">
-          {live.package.map((packageItem) => {
+          {uniquePackages.map((packageItem) => {
             if (!packageItem?.course) return null;
             return (
               <div
                 key={packageItem._id}
                 style={{
                   backgroundColor:
-                    theme === "dark"
+                    resolvedTheme !== "light"
                       ? packageItem.course.colors?.bgDarkMode
                       : packageItem.course.colors?.bgColor,
                   color:
-                    theme === "dark"
+                    resolvedTheme !== "light"
                       ? packageItem.course.colors?.fontDarkMode
                       : packageItem.course.colors?.fontColor,
                   fontSize: "0.6rem",

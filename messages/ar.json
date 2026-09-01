@@ -367,7 +367,7 @@
     "displayLess": "عرض أقل"
   },
   "footer": {
-    "copyRight": "©2024 NexGen Inc. جميع الحقوق محفوظة.",
+    "copyRight": "©2026 NexGen Inc. جميع الحقوق محفوظة.",
     "about": "من نحن",
     "blogs": "المدونات",
     "support": "الدعم",
@@ -1329,6 +1329,11 @@
     "completed": "مكتمل",
     "title": "التدريب",
     "description": "أرسل تدريباتك، وراجع الملاحظات، وصف مهامك المكتملة أو قيد التقدم حسب الدورة.",
+    "viewAs": "العرض بصفة",
+    "viewAsDescription": "اختر الصفة المؤهلة التي تريد استخدامها.",
+    "roleUser": "مستخدم",
+    "roleInstructor": "مدرب",
+    "roleMarketer": "مسوّق",
     "onProgress": "قيد التقدم",
     "addNew": "إضافة جديد",
     "somethingWentWrong": "حدث خطأ ما",

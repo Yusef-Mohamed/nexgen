@@ -128,7 +128,7 @@ const Sidebar: React.FC<
         title: "marketing",
         links: [
           {
-            href: "/dashboard/marketing",
+            href: "/dashboard/marketing/sales-analytics",
             label: "marketing",
             icon: <Award className="size-5" />,
             links: [
@@ -217,7 +217,7 @@ const Sidebar: React.FC<
               icon: <FileText className="size-5" />,
             },
             {
-              href: "/dashboard/marketing",
+              href: "/instructor-dashboard/wallet",
               label: "marketing",
               icon: <Award className="size-5" />,
               links: [

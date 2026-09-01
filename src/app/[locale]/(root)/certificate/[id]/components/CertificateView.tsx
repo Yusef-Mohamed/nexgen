@@ -74,7 +74,7 @@ export default function CertificateView({ data }: { data: CertificateData }) {
             {t("certificate.title")}
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            {t("certificate.awarded_to")} <span className="text-primary font-semibold">{data.user.name}</span> {t("certificate.for_completing")} <Link href={`/courses/${data.courseDetails._id}`} className="text-foreground font-semibold hover:underline">"{data.courseDetails.title}"</Link>.
+            {t("certificate.awarded_to")} <span className="text-primary font-semibold">{data.user.name}</span> {t("certificate.for_completing")} <Link href={`/courses/${data.courseDetails._id}`} className="text-foreground font-semibold hover:underline">&quot;{data.courseDetails.title}&quot;</Link>.
           </p>
         </motion.div>
           <motion.div 

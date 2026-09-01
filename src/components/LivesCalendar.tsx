@@ -6,6 +6,7 @@ import {
   endOfMonth,
   format,
   getDay,
+  isValid,
   isToday,
   startOfMonth,
   subMonths,
@@ -67,9 +68,10 @@ const LivesCalendar = ({
 
   const getLivesForDate = (date: Date) => {
     const dateKey = format(date, "yyyy-MM-dd");
-    return lives.filter(
-      (live) => format(new Date(live.date), "yyyy-MM-dd") === dateKey,
-    );
+    return lives.filter((live) => {
+      const liveDate = new Date(live.date);
+      return isValid(liveDate) && format(liveDate, "yyyy-MM-dd") === dateKey;
+    });
   };
 
   const localizedWeekdays = useMemo(() => {

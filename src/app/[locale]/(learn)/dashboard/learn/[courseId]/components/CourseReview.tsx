@@ -41,21 +41,29 @@ const CreateCourseReview: React.FC<CreateCourseReviewProps> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (token) {
-      await submitReview(courseId, token);
-      toast.success(
-        idToEdit
-          ? text("reviewUpdatedSuccessfully")
-          : text("reviewCreatedSuccessfully"),
-      );
-      router.refresh();
+      try {
+        await submitReview(courseId, token);
+        toast.success(
+          idToEdit
+            ? text("reviewUpdatedSuccessfully")
+            : text("reviewCreatedSuccessfully"),
+        );
+        router.refresh();
+      } catch {
+        toast.error(text("something_wrong"));
+      }
     }
   };
 
   const handleDelete = async () => {
     if (token) {
-      await deleteReview(token);
-      toast.success(text("reviewDeletedSuccessfully"));
-      router.refresh();
+      try {
+        await deleteReview(token);
+        toast.success(text("reviewDeletedSuccessfully"));
+        router.refresh();
+      } catch {
+        toast.error(text("something_wrong"));
+      }
     }
   };
 
@@ -106,6 +114,7 @@ const CreateCourseReview: React.FC<CreateCourseReviewProps> = ({
             <Button
               onClick={handleDelete}
               isLoading={isLoading}
+              type="button"
               variant="destructive"
               className="w-full rounded-xl sm:w-[200px]"
             >

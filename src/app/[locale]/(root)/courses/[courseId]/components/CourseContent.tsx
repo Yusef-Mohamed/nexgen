@@ -52,12 +52,16 @@ const CourseContent: React.FC = () => {
   const locale = useLocale();
 
   useEffect(() => {
-    setLoading(true);
+    let cancelled = false;
     getSections(courseId as string).then((sections) => {
+      if (cancelled) return;
       setSections(sections);
       setLoading(false);
     });
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [courseId]);
 
   const totalLessons = sections.reduce(
     (acc, s) => acc + (s.lessons?.length || 0),

@@ -487,6 +487,7 @@ export const useReorder = ({
       sections,
       descendantsMap,
       onSectionsReorder,
+      onOrderChanged,
     ]
   );
 

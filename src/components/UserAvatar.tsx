@@ -21,6 +21,9 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
   style,
   innerStyle,
 }) => {
+  const profileImage = user?.profileImg?.trim();
+  const initials = user?.name?.trim().slice(0, 2).toUpperCase() || "?";
+
   return (
     <Avatar
       style={style}
@@ -34,12 +37,14 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
         className
       )}
     >
-      <AvatarImage
-        src={user?.profileImg ?? "/images/user-placeholder.jpeg"}
-        alt={user?.name}
-        className={cn("object-cover ", innerClassName)}
-        style={innerStyle}
-      />
+      {profileImage ? (
+        <AvatarImage
+          src={profileImage}
+          alt={user?.name || "User"}
+          className={cn("object-cover ", innerClassName)}
+          style={innerStyle}
+        />
+      ) : null}
       <AvatarFallback
         className={cn(innerClassName, {
           "text-[10px]": size === "sm",
@@ -48,7 +53,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
         })}
         style={innerStyle}
       >
-        {user?.name?.slice(0, 2).toUpperCase()}
+        {initials}
       </AvatarFallback>
     </Avatar>
   );

@@ -1,7 +1,7 @@
 "use client";
 import NavItem from "@/app/[locale]/(root)/components/NavItem";
 import { cn } from "@/lib/utils";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useSyncExternalStore } from "react";
 import { FaBarsStaggered } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import LanguageSelector from "../LanguageSelector";
@@ -21,12 +21,12 @@ const MobileHeader = ({
   const toggleRef = useRef<HTMLButtonElement>(null);
   const text = useTranslations("header");
   const { token, logout, user } = useAuth();
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   const canRenderAuth = isMounted && !!token;
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

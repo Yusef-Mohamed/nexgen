@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useSyncExternalStore } from "react";
 
 import { useAuth } from "@/components/auth-provider";
 
@@ -11,6 +11,11 @@ import { useFilterPackages } from "@/hooks/useFilterPackages";
 import InvitationLinksBlock from "@/app/[locale]/dashboard/marketing/components/InvitationLinksBlock";
 
 const MyTeamClient = () => {
+  const clientReady = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   const { token, user } = useAuth();
 
   const { courses, isLoadingCourses } = useFilterCourses({
@@ -22,6 +27,10 @@ const MyTeamClient = () => {
   const { packages } = useFilterPackages({
     enable: true,
   });
+  if (!clientReady) {
+    return <div aria-busy="true" className="min-h-[20rem]" />;
+  }
+
   return (
     <div className="space-y-8">
       <SalesAnalytics />
@@ -33,7 +42,7 @@ const MyTeamClient = () => {
         packages={packages}
         isLoadingCourses={isLoadingCourses}
       />
-      <InvitationLinksBlock />
+      {user?.isMarketer ? <InvitationLinksBlock /> : null}
     </div>
   );
 };

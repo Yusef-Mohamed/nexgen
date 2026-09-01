@@ -338,9 +338,6 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                 selectedDisplay === "practice"));
                           const hasSubItems =
                             lesson.hasQuiz || lesson.isRequireAnalytic;
-                          let activityIndex = 1;
-                          const lessonNumber =
-                            sectionIndex + 1 + "." + (lessonIndex + 1);
                           const lessonTitle =
                             getDynamicString(lesson.title) ||
                             text("lesson") + " " + (lessonIndex + 1);
@@ -364,7 +361,6 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                     ? "primary"
                                     : "none"
                                 }
-                                badge={lessonNumber}
                                 title={lessonTitle}
                                 icon={
                                   <HiOutlinePlayCircle className="size-5" />
@@ -399,9 +395,6 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                 <div className="space-y-1.5 ps-4">
                                   {lesson.hasQuiz && (
                                     <SidebarItemButton
-                                      badge={
-                                        lessonNumber + "." + activityIndex++
-                                      }
                                       variant={
                                         selectedLesson === lesson._id &&
                                         selectedDisplay === "quiz"
@@ -436,9 +429,6 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
 
                                   {lesson.isRequireAnalytic && (
                                     <SidebarItemButton
-                                      badge={
-                                        lessonNumber + "." + activityIndex++
-                                      }
                                       variant={
                                         selectedLesson === lesson._id &&
                                         selectedDisplay === "practice"

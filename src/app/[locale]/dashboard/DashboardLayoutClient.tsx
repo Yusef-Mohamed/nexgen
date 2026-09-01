@@ -2,7 +2,7 @@
 import Sidebar from "./components/Sidebar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import UserHeader from "@/components/layout/UserHeader";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Logo from "@/components/logo";
 import { useTranslations } from "next-intl";
 import SearchInput from "@/components/SearchInput";
@@ -11,6 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import DashboardContainer from "./components/DashboardContainer";
 
+const subscribeToClientState = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -18,6 +22,11 @@ const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [search, setSearch] = useState("");
   const nav = useRouter();
+  const interactiveHeaderReady = useSyncExternalStore(
+    subscribeToClientState,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
   return (
     <div className="dashboard">
       <div className="flex min-h-screen bg-background-2">
@@ -60,22 +69,31 @@ const DashboardLayoutClient: React.FC<{ children: React.ReactNode }> = ({
                 </form>
               </div>
               <div className="flex shrink-0 items-center gap-2">
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <Button
-                      type="button"
-                      className="rounded-xl lg:hidden"
-                      size="icon"
-                      variant="outline"
-                    >
-                      <Menu className="size-4" />
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent className="p-0">
-                    <Sidebar className="w-full h-full" />
-                  </SheetContent>
-                </Sheet>
-                <UserHeader />
+                {interactiveHeaderReady ? (
+                  <>
+                    <Sheet>
+                      <SheetTrigger asChild>
+                        <Button
+                          type="button"
+                          className="rounded-xl lg:hidden"
+                          size="icon"
+                          variant="outline"
+                        >
+                          <Menu className="size-4" />
+                        </Button>
+                      </SheetTrigger>
+                      <SheetContent className="p-0">
+                        <Sidebar className="w-full h-full" />
+                      </SheetContent>
+                    </Sheet>
+                    <UserHeader />
+                  </>
+                ) : (
+                  <div
+                    aria-hidden
+                    className="h-10 w-44 shrink-0 lg:w-[128px]"
+                  />
+                )}
               </div>
             </DashboardContainer>
           </header>

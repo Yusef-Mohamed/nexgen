@@ -1,6 +1,11 @@
 "use client";
 import React, { useCallback } from "react";
-import { UseFormReturn } from "react-hook-form";
+import {
+  FieldValues,
+  Path,
+  PathValue,
+  UseFormReturn,
+} from "react-hook-form";
 import { useTranslations } from "next-intl";
 import {
   FormControl,
@@ -17,19 +22,19 @@ import {
   YOUTUBE_IFRAME_REFERRER_POLICY,
 } from "@/lib/youtube";
 
-interface PromotionVideoFieldProps {
-  form: UseFormReturn<any>;
-  name: string;
+interface PromotionVideoFieldProps<TFieldValues extends FieldValues> {
+  form: UseFormReturn<TFieldValues>;
+  name: Path<TFieldValues>;
   commonFormStyles?: string;
   loading?: boolean;
 }
 
-const PromotionVideoField: React.FC<PromotionVideoFieldProps> = ({
+const PromotionVideoField = <TFieldValues extends FieldValues,>({
   form,
   name,
   commonFormStyles,
   loading = false,
-}) => {
+}: PromotionVideoFieldProps<TFieldValues>) => {
   const text = useTranslations("courses");
 
   const extractYouTubeEmbedUrl = useCallback(
@@ -38,7 +43,9 @@ const PromotionVideoField: React.FC<PromotionVideoFieldProps> = ({
   );
 
   // Watch the promotion video field value
-  const promotionVideoValue = form.watch(name);
+  const watchedValue = form.watch(name);
+  const promotionVideoValue =
+    typeof watchedValue === "string" ? watchedValue : "";
 
   // Check if it's already an embed URL or extract from other formats
   const embedUrl = promotionVideoValue
@@ -49,9 +56,17 @@ const PromotionVideoField: React.FC<PromotionVideoFieldProps> = ({
     (value: string) => {
       const embedUrl = extractYouTubeEmbedUrl(value);
       if (embedUrl) {
-        form.setValue(name, embedUrl, { shouldValidate: true });
+        form.setValue(
+          name,
+          embedUrl as PathValue<TFieldValues, Path<TFieldValues>>,
+          { shouldValidate: true },
+        );
       } else {
-        form.setValue(name, value, { shouldValidate: true });
+        form.setValue(
+          name,
+          value as PathValue<TFieldValues, Path<TFieldValues>>,
+          { shouldValidate: true },
+        );
       }
     },
     [form, name, extractYouTubeEmbedUrl]

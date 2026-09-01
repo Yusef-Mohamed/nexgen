@@ -9,7 +9,6 @@ import CustomForm from "./CustomForm";
 import { useAuth } from "../auth-provider";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
 import {
   clearStoredAuthRedirect,
   getAuthRedirect,
@@ -43,8 +42,8 @@ const SignInForm = () => {
     updateUser({
       userData: user,
       token,
+      refresh: false,
     });
-    router.refresh();
     if (user.emailVerified === false) {
     } else {
       router.push(redirect || "/dashboard");

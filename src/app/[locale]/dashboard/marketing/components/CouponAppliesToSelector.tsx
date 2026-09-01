@@ -25,6 +25,20 @@ interface CouponAppliesToSelectorProps {
   disabled?: boolean;
 }
 
+const SelectionSkeleton = () => (
+  <div className="space-y-2">
+    {Array.from({ length: 3 }).map((_, index) => (
+      <div
+        key={`skeleton-${index}`}
+        className="flex items-center space-x-2 p-2"
+      >
+        <Skeleton className="h-4 w-4 rounded" />
+        <Skeleton className="h-4 flex-1" />
+      </div>
+    ))}
+  </div>
+);
+
 const CouponAppliesToSelector: React.FC<CouponAppliesToSelectorProps> = ({
   title,
   items,
@@ -58,21 +72,6 @@ const CouponAppliesToSelector: React.FC<CouponAppliesToSelectorProps> = ({
       onSelectionChange(selectedIds.filter((id) => id !== itemId));
     }
   };
-
-  // Skeleton loader component
-  const SelectionSkeleton = () => (
-    <div className="space-y-2">
-      {[...Array(3)].map((_, index) => (
-        <div
-          key={`skeleton-${index}`}
-          className="flex items-center space-x-2 p-2"
-        >
-          <Skeleton className="h-4 w-4 rounded" />
-          <Skeleton className="h-4 flex-1" />
-        </div>
-      ))}
-    </div>
-  );
 
   return (
     <div className="space-y-2">

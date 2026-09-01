@@ -20,9 +20,9 @@ import {
 import { Label } from "@/components/ui/label";
 import { getDynamicString } from "@/lib/utils";
 import { useFilterPackages } from "@/hooks/useFilterPackages";
-import { ClipboardCheck, SlidersHorizontal } from "lucide-react";
+import { ClipboardCheck, SlidersHorizontal, UsersRound } from "lucide-react";
 
-type ForceRole = "student" | "marketer";
+type ForceRole = "student" | "instructor" | "marketer";
 
 const DisplayPosts = ({ forceRole }: { forceRole?: ForceRole }) => {
   const text = useTranslations("practice");
@@ -31,11 +31,15 @@ const DisplayPosts = ({ forceRole }: { forceRole?: ForceRole }) => {
   const [show, setShow] = useState<"completed" | "onProgress" | "addNew">(
     "completed",
   );
+  const [activeRole, setActiveRole] = useState<ForceRole>(
+    forceRole ?? "student",
+  );
   const [selectedCourse, setSelectedCourse] = useState("");
   const [haveError, setHaveError] = useState(false);
   const { packages, isLoadingPackages } = useFilterPackages({
     enable: true,
     onlyActive: false,
+    role: activeRole,
   });
   const fetchPosts = useCallback(
     async (page: number, search?: string): Promise<IAnalytic[]> => {
@@ -56,9 +60,7 @@ const DisplayPosts = ({ forceRole }: { forceRole?: ForceRole }) => {
         if (selectedCourse) {
           filtersParams.append("course", selectedCourse);
         }
-        if (forceRole) {
-          filtersParams.append("forceRole", forceRole);
-        }
+        filtersParams.append("forceRole", activeRole);
 
         const filters = filtersParams.toString();
 
@@ -79,7 +81,7 @@ const DisplayPosts = ({ forceRole }: { forceRole?: ForceRole }) => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [token, setHaveError, user, show, selectedCourse, forceRole],
+    [token, setHaveError, user, show, selectedCourse, activeRole],
   );
 
   const {
@@ -91,7 +93,7 @@ const DisplayPosts = ({ forceRole }: { forceRole?: ForceRole }) => {
     observerRef,
   } = useInfiniteScroll<IAnalytic>({
     fetchData: fetchPosts,
-    dependencies: [show, selectedCourse],
+    dependencies: [show, selectedCourse, activeRole],
   });
   const handleShowChange = (newShow: typeof show) => {
     setHaveError(false);
@@ -104,21 +106,46 @@ const DisplayPosts = ({ forceRole }: { forceRole?: ForceRole }) => {
     resetData();
   };
 
-  const filterOptions: FilterOption[] = user?.isMarketer
-    ? [
-        { value: "completed", label: text("completed") },
-        { value: "onProgress", label: text("onProgress") },
-      ]
-    : [
-        { value: "completed", label: text("completed") },
-        { value: "onProgress", label: text("onProgress") },
-        { value: "addNew", label: text("addNew") },
-      ];
-  useEffect(() => {
-    if (packages.length > 0) {
-      setHaveError(false);
-      setSelectedCourse(packages[0].course._id);
+  const handleRoleChange = (role: ForceRole) => {
+    setHaveError(false);
+    setActiveRole(role);
+    setSelectedCourse("");
+    if (role !== "student" && show === "addNew") {
+      setShow("completed");
     }
+    resetData();
+  };
+
+  const eligibleRoles = [
+    { value: "student" as const, label: text("roleUser") },
+    ...(user?.isInstructor
+      ? [{ value: "instructor" as const, label: text("roleInstructor") }]
+      : []),
+    ...(user?.isMarketer
+      ? [{ value: "marketer" as const, label: text("roleMarketer") }]
+      : []),
+  ];
+
+  const filterOptions: FilterOption[] =
+    activeRole === "student"
+      ? [
+          { value: "completed", label: text("completed") },
+          { value: "onProgress", label: text("onProgress") },
+          { value: "addNew", label: text("addNew") },
+        ]
+      : [
+          { value: "completed", label: text("completed") },
+          { value: "onProgress", label: text("onProgress") },
+        ];
+  useEffect(() => {
+    setHaveError(false);
+    setSelectedCourse((currentCourse) => {
+      if (packages.length === 0) return "";
+      const isStillAvailable = packages.some(
+        (pkg) => pkg.course._id === currentCourse,
+      );
+      return isStillAvailable ? currentCourse : packages[0].course._id;
+    });
   }, [packages]);
 
   return (
@@ -150,6 +177,39 @@ const DisplayPosts = ({ forceRole }: { forceRole?: ForceRole }) => {
         </div>
 
         <div className="space-y-4 p-4 sm:p-5">
+          {eligibleRoles.length > 1 && (
+            <div className="flex flex-col gap-3 rounded-2xl border border-primary/10 bg-background-2 p-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-2 text-sm font-bold text-text-2">
+                <span className="inline-flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <UsersRound className="size-4" />
+                </span>
+                <div>
+                  <p>{text("viewAs")}</p>
+                  <p className="mt-0.5 text-xs font-medium text-text-3">
+                    {text("viewAsDescription")}
+                  </p>
+                </div>
+              </div>
+              <Select
+                value={activeRole}
+                onValueChange={(value) =>
+                  handleRoleChange(value as ForceRole)
+                }
+              >
+                <SelectTrigger className="h-10 w-full rounded-xl border-primary/10 bg-clear-ground text-xs font-bold text-text-2 shadow-none sm:w-fit sm:min-w-56">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {eligibleRoles.map((role) => (
+                    <SelectItem value={role.value} key={role.value}>
+                      {role.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           <div className="flex flex-col gap-3 rounded-2xl border border-primary/10 bg-background-2 p-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2 text-sm font-bold text-text-2">
               <span className="inline-flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">

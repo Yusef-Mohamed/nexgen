@@ -18,14 +18,14 @@ function useCustomSearchParams() {
       }
       router.push(`${pathname}?${newSearchParams.toString()}`);
     },
-    [router, pathname]
+    [pathname, router, searchParams],
   );
   const getSearchParam = (key: string) => {
     return searchParams.get(key);
   };
-  const clearSearchParams = () => {
+  const clearSearchParams = useCallback(() => {
     router.push(pathname);
-  };
+  }, [pathname, router]);
 
   return { setSearchParams, getSearchParam, searchParams, clearSearchParams };
 }

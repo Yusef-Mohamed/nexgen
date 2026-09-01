@@ -99,7 +99,7 @@ const NotificationDropDownMenu = () => {
                   `/dashboard/community/profile/${n.followedUser._id}`,
                 );
               else if (n.type === "post" && n.post)
-                router.push(`/dashboard?focusedPost=${n.post._id}`);
+                router.push(`/dashboard/community?focusedPost=${n.post._id}`);
               else if (n.type === "certificate" && n.course)
                 router.push(`/dashboard/analytics?selectedCourse=${n.course}`);
               else if (n.type === "certificate" && n.file)

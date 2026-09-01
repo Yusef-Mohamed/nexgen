@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { format } from "date-fns";
+import { format, isValid, parseISO } from "date-fns";
 import { arSA, enUS } from "date-fns/locale";
 import { axiosInstance } from "@/app/lib/utils";
 import { ILive } from "@/types";
@@ -96,6 +96,15 @@ const EmptyLives = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
+const parseSelectedDate = (value: string) => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+
+  const parsedDate = parseISO(value);
+  return isValid(parsedDate) && format(parsedDate, "yyyy-MM-dd") === value
+    ? parsedDate
+    : null;
+};
+
 const LivesClient = () => {
   const text = useTranslations("lives");
   const dashboardText = useTranslations("dashboard");
@@ -107,6 +116,10 @@ const LivesClient = () => {
 
   const selectedDate = getSearchParam("date") || "";
   const selectedCourse = getSearchParam("course") || "all";
+  const parsedSelectedDate = useMemo(
+    () => parseSelectedDate(selectedDate),
+    [selectedDate],
+  );
 
   useEffect(() => {
     const fetchLives = async () => {
@@ -158,14 +171,19 @@ const LivesClient = () => {
       );
     }
 
-    if (selectedDate) {
-      filtered = filtered.filter(
-        (live) => format(new Date(live.date), "yyyy-MM-dd") === selectedDate,
-      );
+    if (parsedSelectedDate) {
+      const selectedDateKey = format(parsedSelectedDate, "yyyy-MM-dd");
+      filtered = filtered.filter((live) => {
+        const liveDate = new Date(live.date);
+        return (
+          isValid(liveDate) &&
+          format(liveDate, "yyyy-MM-dd") === selectedDateKey
+        );
+      });
     }
 
     return filtered;
-  }, [lives, selectedCourse, selectedDate]);
+  }, [lives, parsedSelectedDate, selectedCourse]);
 
   const { thisWeek, upcoming } = useMemo(
     () => groupLivesByTime(filteredLives),
@@ -206,9 +224,9 @@ const LivesClient = () => {
     <LivesPageShell description={description} title={title}>
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="space-y-5">
-          {selectedDate ? (
+          {parsedSelectedDate ? (
             <LivePanel
-              title={format(new Date(selectedDate), "EEEE, MMMM d, yyyy", {
+              title={format(parsedSelectedDate, "EEEE, MMMM d, yyyy", {
                 locale: isArabic ? arSA : enUS,
               })}
             >

@@ -6,6 +6,7 @@ import {
   useState,
   useLayoutEffect,
   useEffect,
+  useSyncExternalStore,
 } from "react";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
@@ -46,6 +47,26 @@ const AuthContext = createContext<{
   setStatus: (status: number) => void;
 } | null>(null);
 
+const subscribeToClientState = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
+const getStoredUser = (): IUser | null => {
+  const storedUser = getCookie("user");
+  if (typeof storedUser !== "string") return null;
+
+  try {
+    return JSON.parse(storedUser) as IUser;
+  } catch {
+    return null;
+  }
+};
+
+const getStoredToken = () => {
+  const storedToken = getCookie("token");
+  return typeof storedToken === "string" ? storedToken : "";
+};
+
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) throw new Error("useAuth must be used within AuthProvider");
@@ -53,23 +74,30 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<null | IUser>(
-    JSON.parse(getCookie("user") || "{}")
+  const authHydrated = useSyncExternalStore(
+    subscribeToClientState,
+    getClientSnapshot,
+    getServerSnapshot,
   );
-  const [token, setToken] = useState(getCookie("token"));
+  const [userState, setUser] = useState<null | IUser>(null);
+  const [tokenState, setToken] = useState("");
+  const user = userState ?? (authHydrated ? getStoredUser() : null);
+  const token = tokenState || (authHydrated ? getStoredToken() : "");
   const [showIdVerificationModal, setShowIdVerificationModal] = useState(false);
   const [showCountryAlert, setShowCountryAlert] = useState(false);
-  const [countryAlertDismissed, setCountryAlertDismissed] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("countryAlertDismissed") === "true";
-    }
-    return false;
-  });
+  const [countryAlertDismissedState, setCountryAlertDismissed] = useState<
+    boolean | null
+  >(null);
+  const countryAlertDismissed =
+    countryAlertDismissedState ??
+    (authHydrated &&
+      localStorage.getItem("countryAlertDismissed") === "true");
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const text = useTranslations("common");
   const router = useRouter();
   const [status, setStatus] = useState<number>();
+
   const handleNotActive = async (user: IUser | null, token: string) => {
     const redirect = getAuthRedirect(searchParams);
     const emailVerificationHref = buildAuthHref(
@@ -177,7 +205,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useLayoutEffect(() => {
     const fetchUser = async () => {
       try {
-        if (!token) return;
+        if (!authHydrated || !token) return;
         const res = await axiosInstance.get("/auth/getMe", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -203,6 +231,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         updateUser({
           userData: user,
           token: token || "",
+          refresh: false,
         });
       } catch (err) {
         const typedError = err as AxiosError;
@@ -222,7 +251,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
     fetchUser();
-  }, []);
+  }, [authHydrated, token]);
 
   const logout = () => {
     router.push("/");
@@ -275,6 +304,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [status, pathname]);
   useEffect(() => {
+    if (!authHydrated) return;
     if (!token) {
       if (pathname.includes("dashboard") || pathname.includes("checkout")) {
         const redirectPath = getCurrentRedirectPath(pathname, searchParams);
@@ -282,7 +312,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         router.push(buildAuthHref("/sign-in", redirectPath));
       }
     }
-  }, [token, pathname, router, searchParams]);
+  }, [authHydrated, token, pathname, router, searchParams]);
   return (
     <AuthContext.Provider
       value={{ user, updateUser, token: token || "", logout, setStatus }}
