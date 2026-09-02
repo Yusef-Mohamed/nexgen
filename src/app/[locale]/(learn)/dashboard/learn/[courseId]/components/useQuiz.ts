@@ -10,6 +10,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useCourseContextSafe } from "../context/CourseContext";
 import useCustomSearchParams from "@/hooks/useSearchParams";
+import { useInvalidateMyCourses } from "@/hooks/useMyCoursesQueries";
 import { unlockLessonsSequentially } from "./unlockLessons";
 
 export type QuizType = "lesson" | "course" | "placement";
@@ -60,6 +61,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
   const text = useTranslations("learn");
   const { token } = useAuth();
   const courseContext = useCourseContextSafe();
+  const invalidateMyCourses = useInvalidateMyCourses();
   const sections = courseContext?.sections;
   const updateSections = courseContext?.updateSections;
   const { clearSearchParams, setSearchParams } = useCustomSearchParams();
@@ -196,6 +198,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
         updateSections(updatedSections);
       }
 
+      await invalidateMyCourses();
       router.refresh();
     } catch (err) {
       const typedError = err as AxiosError;
@@ -214,6 +217,7 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
     id,
     sections,
     updateSections,
+    invalidateMyCourses,
   ]);
 
   useEffect(() => {

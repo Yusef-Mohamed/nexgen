@@ -33,11 +33,13 @@ interface CourseSidebarProps {
   isCollapsable?: boolean;
 }
 
-const getLessonActivityProgress = (lessons: ILesson[]) =>
+const getLessonActivityProgress = (lessons: ILesson[], countVideos: boolean) =>
   lessons.reduce(
     (progress, lesson) => {
-      progress.total += 1;
-      if (lesson.lessonWatched) progress.completed += 1;
+      if (countVideos) {
+        progress.total += 1;
+        if (lesson.lessonWatched) progress.completed += 1;
+      }
 
       if (lesson.hasQuiz) {
         progress.total += 1;
@@ -66,6 +68,8 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
     course,
     courseExam,
     learningSummary,
+    totalProgress,
+    progressRules,
     canTakeFinalExam,
     passedFinalExam,
     isLoading,
@@ -92,15 +96,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
     return sections[0]?.section;
   }, [sections, selectedDisplay, selectedLesson]);
 
-  const courseProgress = useMemo(
-    () =>
-      getLessonActivityProgress(sections.flatMap((section) => section.lessons)),
-    [sections],
-  );
-  const progressPercentage =
-    courseProgress.total > 0
-      ? Math.round((courseProgress.completed / courseProgress.total) * 100)
-      : 0;
+  const progressPercentage = Math.round(totalProgress ?? 0);
 
   const toggleSection = (sectionName: string) => {
     setExpandedSections((previous) =>
@@ -264,6 +260,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                   autoExpandedSection === section.section;
                 const sectionProgress = getLessonActivityProgress(
                   section.lessons,
+                  progressRules.countVideos,
                 );
                 const sectionPercentage =
                   sectionProgress.total > 0

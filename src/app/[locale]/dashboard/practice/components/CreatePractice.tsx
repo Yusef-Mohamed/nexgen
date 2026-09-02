@@ -25,6 +25,7 @@ import { useRouter } from "@/i18n/navigation";
 import { useCourseContextSafe } from "@/app/[locale]/(learn)/dashboard/learn/[courseId]/context/CourseContext";
 import { unlockLessonsSequentially } from "@/app/[locale]/(learn)/dashboard/learn/[courseId]/components/unlockLessons";
 import { useFilterPackages } from "@/hooks/useFilterPackages";
+import { useInvalidateMyCourses } from "@/hooks/useMyCoursesQueries";
 
 const CreatePractice = ({
   lessonId,
@@ -40,6 +41,7 @@ const CreatePractice = ({
   const text = useTranslations("practice");
   const inputs = useTranslations("Forms");
   const router = useRouter();
+  const invalidateMyCourses = useInvalidateMyCourses();
   const inputRef = useRef(null);
   // Get CourseContext - returns null if not within CourseProvider (e.g., when used in practice page)
   const courseContext = useCourseContextSafe();
@@ -119,6 +121,7 @@ const CreatePractice = ({
         }
       }
 
+      await invalidateMyCourses();
       router.refresh();
       setContent("");
       setMedia([]);

@@ -10,6 +10,7 @@ import React, {
 import { axiosInstance } from "@/app/lib/utils";
 import { ICourse, IExamMetadata, ILesson } from "@/types";
 import { useAuth } from "@/components/auth-provider";
+import { useMyLearningSummary } from "@/hooks/useMyCoursesQueries";
 
 export interface CourseSection {
   section: string;
@@ -25,11 +26,17 @@ export interface LearningSummary {
   assignmentCount: number;
 }
 
+export interface ProgressRules {
+  countVideos: boolean;
+}
+
 interface CourseContextType {
   sections: CourseSection[];
   course: ICourse | null;
   courseExam: IExamMetadata;
   learningSummary: LearningSummary;
+  totalProgress: number | null;
+  progressRules: ProgressRules;
   canTakeFinalExam: boolean;
   passedFinalExam: boolean;
   isLoading: boolean;
@@ -62,11 +69,21 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({
     quizCount: 0,
     assignmentCount: 0,
   });
+  const [progressRules, setProgressRules] = useState<ProgressRules>({
+    countVideos: false,
+  });
   const [canTakeFinalExam, setCanTakeFinalExam] = useState(false);
   const [passedFinalExam, setPassedFinalExam] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { token } = useAuth();
+  const { token, user } = useAuth();
+  const { data: myCourses = [], isLoading: isMyCoursesLoading } =
+    useMyLearningSummary(token, user?._id);
+  const myCourse = myCourses.find((item) => item._id === courseId);
+  const storedProgress = Number(myCourse?.userScore?.totalProgress);
+  const totalProgress = Number.isFinite(storedProgress)
+    ? Math.min(100, Math.max(0, storedProgress))
+    : null;
 
   const fetchCourseData = useCallback(async () => {
     if (!courseId) return;
@@ -122,6 +139,7 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({
         passingScore: Number(responseExam?.passingScore) || undefined,
       };
       const responseSummary = sectionsRes.data?.learningSummary;
+      const responseProgressRules = sectionsRes.data?.progressRules;
 
       setCourse({
         ...courseData,
@@ -142,6 +160,9 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({
           ? sectionsRes.data.passedFinalExam
           : courseData?.courseProgress?.status === "Completed",
       );
+      setProgressRules({
+        countVideos: responseProgressRules?.countVideos === true,
+      });
       setLearningSummary({
         sectionsCount:
           Number(responseSummary?.sectionsCount) || normalizedSections.length,
@@ -183,9 +204,11 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({
     course,
     courseExam,
     learningSummary,
+    totalProgress,
+    progressRules,
     canTakeFinalExam,
     passedFinalExam,
-    isLoading,
+    isLoading: isLoading || isMyCoursesLoading,
     error,
     refetch,
     updateSections,
