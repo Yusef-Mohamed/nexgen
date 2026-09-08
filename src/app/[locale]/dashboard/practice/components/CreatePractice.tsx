@@ -115,7 +115,6 @@ const CreatePractice = ({
           const unlockedSections = unlockLessonsSequentially(
             updatedSections,
             lessonId,
-            true, // checkForNoQuiz = true for practice
           );
           courseContext.updateSections(unlockedSections);
         }

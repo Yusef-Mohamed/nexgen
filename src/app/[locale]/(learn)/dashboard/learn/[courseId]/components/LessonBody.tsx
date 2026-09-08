@@ -91,7 +91,7 @@ const LessonBody = ({
   const getNextContent = useCallback(() => {
     if (!lesson || sections.length === 0) return null;
 
-    if (lesson.hasQuiz) {
+    if ((lesson.examAvailable ?? lesson.hasQuiz) && !lesson.passedExam) {
       return {
         type: "quiz" as const,
         lessonId: lesson._id,
@@ -102,7 +102,7 @@ const LessonBody = ({
       };
     }
 
-    if (lesson.isRequireAnalytic) {
+    if (lesson.isRequireAnalytic && !lesson.passedAnalyticsTask) {
       return {
         type: "practice" as const,
         lessonId: lesson._id,
@@ -119,7 +119,7 @@ const LessonBody = ({
 
     if (currentIndex !== -1 && currentIndex < allLessons.length - 1) {
       const nextLesson = allLessons[currentIndex + 1];
-      if (nextLesson?.videoUrl) {
+      if (nextLesson?.isUnlocked !== false && nextLesson?.videoUrl) {
         return {
           type: "lesson" as const,
           lessonId: nextLesson._id,

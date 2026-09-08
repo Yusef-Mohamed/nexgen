@@ -24,6 +24,7 @@ import {
 import { useCourseContext } from "../context/CourseContext";
 import CourseSidebarSkeleton from "./CourseSidebarSkeleton";
 import SidebarItemButton from "./SidebarItemButton";
+import { isLearningSelectionLocked } from "./unlockLessons";
 
 interface CourseSidebarProps {
   className?: string;
@@ -119,6 +120,15 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
     display: string,
     title?: string,
   ) => {
+    if (
+      isLearningSelectionLocked(
+        sections.flatMap((section) => section.lessons),
+        lessonId,
+        display,
+        canTakeFinalExam,
+      )
+    )
+      return;
     const params: {
       lesson?: string;
       display: string;

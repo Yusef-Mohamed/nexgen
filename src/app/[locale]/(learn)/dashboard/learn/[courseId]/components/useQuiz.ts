@@ -179,21 +179,16 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
         updateSections &&
         id
       ) {
+        const completedSections = sections.map((section) => ({
+          ...section,
+          lessons: section.lessons.map((lesson) =>
+            lesson._id === id ? { ...lesson, passedExam: true } : lesson,
+          ),
+        }));
         const updatedSections = unlockLessonsSequentially(
-          sections,
+          completedSections,
           id,
-          false, // checkForNoQuiz = false for quiz
-          true, // skipUnlockNextIfCurrentHasAssignment: do not unlock next if this lesson has an assignment
         );
-
-        // Mark passedExam as true for the current lesson
-        for (const section of updatedSections) {
-          const lesson = section.lessons.find((lesson) => lesson._id === id);
-          if (lesson) {
-            lesson.passedExam = true;
-            break;
-          }
-        }
 
         updateSections(updatedSections);
       }
@@ -264,18 +259,13 @@ export const useQuiz = ({ id, quizType }: UseQuizParams) => {
     if (currentLessonIndex === -1) return null;
 
     const currentLesson = sortedLessons[currentLessonIndex];
-    if (currentLesson.assignmentTitle || currentLesson.assignmentFile) {
+    if (currentLesson.isRequireAnalytic && !currentLesson.passedAnalyticsTask) {
       return { lessonId: currentLesson._id, display: "practice" };
     }
 
-    for (let i = currentLessonIndex + 1; i < sortedLessons.length; i++) {
-      const nextLesson = sortedLessons[i];
-      if (nextLesson.videoUrl)
-        return { lessonId: nextLesson._id, display: "lesson" };
-      if (nextLesson.assignmentTitle || nextLesson.assignmentFile)
-        return { lessonId: nextLesson._id, display: "practice" };
-      if (nextLesson.hasQuiz)
-        return { lessonId: nextLesson._id, display: "quiz" };
+    const nextLesson = sortedLessons[currentLessonIndex + 1];
+    if (nextLesson && nextLesson.isUnlocked !== false && nextLesson.videoUrl) {
+      return { lessonId: nextLesson._id, display: "lesson" };
     }
     return null;
   }, [id, quizType, sections]);
