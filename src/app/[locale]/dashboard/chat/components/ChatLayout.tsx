@@ -89,13 +89,14 @@ export function ChatLayout({ selectedChat }: ChatLayoutProps) {
   useEffect(() => {
     if (!token) return;
 
-    const data = io(SOCKET_URL);
+    const data = io(SOCKET_URL, { auth: { token } });
     setSocket(data);
+    data.on("chat:changed", () => { void getChats(1); });
 
     return () => {
       data.disconnect();
     };
-  }, [token, setSocket]);
+  }, [token, setSocket, getChats]);
 
   useEffect(() => {
     if (socket && user?._id) {
