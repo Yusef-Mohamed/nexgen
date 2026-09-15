@@ -1,5 +1,6 @@
 "use client";
 
+import { CommunityPublishingNotice } from "@/components/community-safety";
 import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import TextWithEmojiBox from "@/components/TextWithEmojiBox";
@@ -196,6 +197,7 @@ const CreatePost = ({
 
   return (
     <section className="overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground transition-all duration-300 hover:border-primary/20">
+      <CommunityPublishingNotice />
       <button
         type="button"
         onClick={() => setIsExpanded((value) => !value)}

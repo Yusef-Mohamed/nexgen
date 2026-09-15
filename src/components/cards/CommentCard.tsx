@@ -1,4 +1,5 @@
 "use client";
+import { CommunityPublishingNotice, CommunitySafetyActions, useSafetyHidden } from "@/components/community-safety";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import UserAvatar from "../UserAvatar";
@@ -33,6 +34,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
   isLast,
   setComments,
 }) => {
+  const hidden = useSafetyHidden(comment.user?._id);
   const locale = useLocale();
   const isEn = locale === "en";
   const pathname = usePathname();
@@ -64,6 +66,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
       }
     }
   };
+  if (hidden) return null;
   if (isEditing) {
     return (
       <li className="relative">
@@ -139,6 +142,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
           )}
         </div>
       </div>
+      <CommunitySafetyActions kind="comment" targetId={comment._id} authorId={comment.user?._id} entity={comment} />
       <div className="ms-14 mt-3 flex flex-wrap items-center gap-2 ps-1 text-xs text-text-3">
         <button
           onClick={() => {
@@ -353,6 +357,7 @@ const CommentAction: React.FC<{
         },
       )}
     >
+      <CommunityPublishingNotice />
       <TextWithEmojiBox
         handleSend={handleSend}
         inputRef={inputRef}

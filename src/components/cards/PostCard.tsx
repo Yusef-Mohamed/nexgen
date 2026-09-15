@@ -1,4 +1,5 @@
 "use client";
+import { CommunitySafetyActions, useSafetyHidden } from "@/components/community-safety";
 import { IPost } from "@/types";
 import UserAvatar from "../UserAvatar";
 import { cn, getCommentText } from "@/lib/utils";
@@ -40,6 +41,7 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
+  const hidden = useSafetyHidden(post.user?._id);
   const text = useTranslations("post");
   const [isOpen, setIsOpen] = useState(false);
   const locale = useLocale();
@@ -48,12 +50,15 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
   const profileHref = `${
     isInstructorDashboard ? "/instructor-dashboard" : "/dashboard"
   }/community/profile/${post.user._id}`;
-  const allImages = [post.imageCover, ...post.images].filter(Boolean);
+  const allImages = [undefined, "pending", "approved"].includes((post as typeof post & { moderationState?: string }).moderationState)
+    ? [post.imageCover, ...post.images].filter(Boolean) : [];
   const hasMedia = allImages.length > 0;
 
+  if (hidden) return null;
   return (
     <>
       <div className="relative w-full overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground">
+        <CommunitySafetyActions kind="post" targetId={post._id} authorId={post.user?._id} entity={post} />
         <PostAction post={post} />
         <div className={cn("p-5", hasMedia ? "pb-4" : "pb-3")}>
           <div className="flex items-center gap-3 pe-12">

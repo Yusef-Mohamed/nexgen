@@ -113,6 +113,16 @@ const PrivacyPolicy = async (props: { params: Promise<{ locale: string }> }) => 
           </ul>
         </section>
       )}
+      <section id="account-deletion" className="container pb-24 prose">
+        <h2>{params.locale === "ar" ? "حذف الحساب والاحتفاظ بالبيانات" : "Account deletion and data retention"}</h2>
+        <p>{params.locale === "ar"
+          ? "يمكنك طلب حذف حساب نكس جين والبيانات الشخصية المرتبطة به بعد التحقق من ملكية البريد الإلكتروني. تقديم الطلب لا يعني اكتمال الحذف، ويمكن إلغاؤه قبل بدء المعالجة. نزّل الشهادات التي تريد الاحتفاظ بها قبل الحذف."
+          : "You can request deletion of your NexGen account and associated personal data after verifying ownership of your email address. A request is not completed deletion, and you can cancel before processing starts. Download any certificates you want to keep before deletion."}</p>
+        <p>{params.locale === "ar"
+          ? "توضح صفحة طلب الحذف تفاصيل المعالجة والاحتفاظ المعتمدة عند توفرها. قد تُحتفظ بالسجلات المالية المطلوبة قانونيًا بصورة مقيدة لمدة محددة. تخضع النسخ الاحتياطية لدورة احتفاظ معلنة، ويجب ألا تعيد عمليات الاستعادة الحسابات المحذوفة."
+          : "The deletion request page displays the approved processing and retention details when available. Legally required financial records may be retained with restricted access for a defined period. Backups follow the disclosed retention schedule, and restores must not resurrect deleted accounts."}</p>
+        <a href={"/" + params.locale + "/account-deletion"}>{params.locale === "ar" ? "طلب حذف الحساب أو متابعة الطلب" : "Request account deletion or manage your request"}</a>
+      </section>
     </main>
   );
 };

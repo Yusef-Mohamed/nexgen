@@ -1,3 +1,5 @@
+import { safetyError } from "@/lib/safety-contract";
+import { CommunityPublishingNotice, CommunitySafetyActions, useSafetyHidden } from "@/components/community-safety";
 import { IComment, IPost } from "@/types";
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import UserAvatar from "../UserAvatar";
@@ -36,12 +38,14 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
   isOpen,
   setIsOpen,
 }) => {
+  const hidden = useSafetyHidden(post.user?._id);
   const text = useTranslations("post");
   const locale = useLocale();
   const pathname = usePathname();
   const isInstructorDashboard = pathname.includes("instructor-dashboard");
   const [selectedImage, setSelectedImage] = useState(0);
-  const allImages = [post.imageCover, ...post.images].filter(Boolean);
+  const allImages = [undefined, "pending", "approved"].includes((post as typeof post & { moderationState?: string }).moderationState)
+    ? [post.imageCover, ...post.images].filter(Boolean) : [];
   const [comments, setComments] = useState<IComment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const { token, user } = useAuth();
@@ -117,7 +121,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
       setComments((prev) =>
         prev.filter((comment) => comment._id !== newComment._id),
       );
-      toast.error(text("commentFailed"));
+      toast.error(safetyError(error, locale));
     } finally {
       setIsLoading(false);
     }
@@ -133,6 +137,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
     });
   };
 
+  if (hidden) return null;
   return (
     <Dialog
       open={isOpen}
@@ -220,6 +225,8 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
           </section>
 
           <section className="flex min-h-0 flex-col border-s border-primary/10">
+            <CommunityPublishingNotice />
+            <CommunitySafetyActions kind="post" targetId={post._id} authorId={post.user?._id} entity={post} />
             <div className="border-b border-primary/10 p-5">
               <PostAuthor
                 isInstructorDashboard={isInstructorDashboard}

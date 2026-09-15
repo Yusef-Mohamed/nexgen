@@ -1,0 +1,40 @@
+export const curriculumMessages = {
+  "en": {
+    "title": "Course curriculum",
+    "note": "Preview lesson titles and durations. Videos, files and assessments require authorized course access.",
+    "loading": "Loading curriculum...",
+    "error": "Could not load the curriculum.",
+    "retry": "Try again",
+    "empty": "No curriculum has been published yet.",
+    "sectionEmpty": "No lessons have been published in this section.",
+    "sections": "sections",
+    "lessons": "lessons",
+    "minute": "min",
+    "recorded": "Recorded",
+    "live": "Live",
+    "durationUnknown": "Duration not listed",
+    "untitledSection": "Untitled section",
+    "untitledLesson": "Untitled lesson",
+    "showAll": "Show all sections",
+    "locked": "Preview only"
+  },
+  "ar": {
+    "title": "محتوى الدورة",
+    "note": "استعرض عناوين الدروس ومددها. تتطلب الفيديوهات والملفات والتقييمات صلاحية الوصول إلى الدورة.",
+    "loading": "جارٍ تحميل محتوى الدورة...",
+    "error": "تعذر تحميل محتوى الدورة.",
+    "retry": "حاول مجددًا",
+    "empty": "لم يُنشر محتوى الدورة بعد.",
+    "sectionEmpty": "لم تُنشر دروس في هذا القسم بعد.",
+    "sections": "أقسام",
+    "lessons": "دروس",
+    "minute": "دقيقة",
+    "recorded": "مسجل",
+    "live": "مباشر",
+    "durationUnknown": "المدة غير متاحة",
+    "untitledSection": "قسم بلا عنوان",
+    "untitledLesson": "درس بلا عنوان",
+    "showAll": "عرض جميع الأقسام",
+    "locked": "معاينة فقط"
+  }
+} as const;
