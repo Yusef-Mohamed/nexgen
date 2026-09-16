@@ -4,13 +4,15 @@ import {
   HiOutlineSparkles,
 } from "react-icons/hi2";
 
-import { useChatStore } from "@/stores/ChatStore";
+import { useChatStore, isCurrentChatRequest } from "@/stores/ChatStore";
 import { ChatList } from "./ChatList";
 import { axiosInstance } from "@/app/lib/utils";
 import ChatTopbar from "./ChatTopbar";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/components/auth-provider";
-import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import { safetyCopy } from "@/lib/safety-contract";
+import { useLocale, useTranslations } from "next-intl";
 import { IMessage } from "@/types";
 
 interface ChatProps {
@@ -25,6 +27,9 @@ type SocketMessageEvent = {
 
 export function Chat({ selectedChat }: ChatProps) {
   const {
+    isFetchingThisChat,
+    thisChat,
+    safetyEpoch,
     setMessages,
     setIsFetchingMessages,
     setThisChat,
@@ -47,6 +52,7 @@ export function Chat({ selectedChat }: ChatProps) {
       return;
     }
 
+    const epoch = useChatStore.getState().safetyEpoch;
     setIsFetchingThisChat(true);
 
     try {
@@ -55,11 +61,11 @@ export function Chat({ selectedChat }: ChatProps) {
           Authorization: `Bearer ${token}`,
         },
       });
-      setThisChat(res.data.data);
-    } catch (error) {
-      console.error("Error fetching chat details:", error);
+      if (isCurrentChatRequest(epoch, selectedChatId)) setThisChat(res.data.data);
+    } catch {
+      if (isCurrentChatRequest(epoch, selectedChatId)) setThisChat(null);
     } finally {
-      setIsFetchingThisChat(false);
+      if (isCurrentChatRequest(epoch, selectedChatId)) setIsFetchingThisChat(false);
     }
   }, [selectedChatId, token, setIsFetchingThisChat, setThisChat]);
 
@@ -114,7 +120,10 @@ export function Chat({ selectedChat }: ChatProps) {
   useEffect(() => {
     if (!socket) return;
 
+    const epoch = safetyEpoch;
     const handleReceiveMessage = (data: SocketMessageEvent) => {
+      if (useChatStore.getState().safetyEpoch !== epoch || !useChatStore.getState().thisChat) return;
+      if (typeof data.payload !== "string" && data.payload.chat !== useChatStore.getState().selectedChatId) return;
       if (data.action === "sendMessage" && typeof data.payload !== "string") {
         addMessage(data.payload);
         return;
@@ -135,7 +144,7 @@ export function Chat({ selectedChat }: ChatProps) {
     return () => {
       socket.off("receiveMessage", handleReceiveMessage);
     };
-  }, [socket, addMessage, updateMessage, deleteMessage]);
+  }, [socket, addMessage, updateMessage, deleteMessage, safetyEpoch]);
 
   useEffect(() => {
     if (selectedChat) {
@@ -146,6 +155,8 @@ export function Chat({ selectedChat }: ChatProps) {
   }, [selectedChat, setSelectedChatId]);
 
   const text = useTranslations("chat");
+  const locale = useLocale();
+  const common = safetyCopy[locale === "ar" ? "ar" : "en"];
   return (
     <div
       className={cn(
@@ -163,7 +174,7 @@ export function Chat({ selectedChat }: ChatProps) {
         aria-hidden
         className="pointer-events-none absolute bottom-16 start-1/4 size-56 rounded-full bg-primary/10 blur-[95px]"
       />
-      {selectedChat ? (
+      {selectedChat && thisChat ? (
         <>
           <ChatTopbar />
           <ChatList />
@@ -182,11 +193,12 @@ export function Chat({ selectedChat }: ChatProps) {
             {text("chats")}
           </div>
           <h1 className="text-2xl font-black text-text-1">
-            {text("selectChat")}
+            {selectedChat ? isFetchingThisChat ? common.loading : common.unavailable : text("selectChat")}
           </h1>
           <p className="mt-2 max-w-sm text-sm leading-6 text-text-3">
-            {text("selectChatDescription")}
+            {!selectedChat ? text("selectChatDescription") : null}
           </p>
+          {selectedChat && !isFetchingThisChat ? <Button variant="outline" onClick={() => void getThisChat()}>{common.retry}</Button> : null}
         </div>
       )}
     </div>

@@ -26,7 +26,8 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import { axiosInstance } from "@/app/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "../auth-provider";
-import ImageWithZoom from "../ImageWithZoom";
+import { ChatAttachment } from "../chat-attachment";
+import { CommunitySafetyActions } from "../community-safety";
 import { formatMessageTime } from "@/lib/dateTime";
 interface MessageCardProps {
   message: IMessage;
@@ -69,8 +70,8 @@ const MessageCard: React.FC<MessageCardProps> = ({
           action: "deleteMessage",
         });
       }
-    } catch (e) {
-      console.log(e);
+    } catch {
+      // Keep the confirmation available for retry.
     } finally {
       setIsDeleting(false);
     }
@@ -191,31 +192,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 )}
 
                 {message.text && <p>{renderMessageText(message.text)}</p>}
-                {message.media[0] &&
-                  (message.media[0].endsWith("pdf") ? (
-                    <a
-                      href={message.media[0]}
-                      target="_blank"
-                      className={cn(
-                        "mt-3 inline-flex rounded-full border px-3 py-1.5 text-xs font-semibold underline-offset-4 hover:underline",
-                        isMine
-                          ? "border-primary-foreground/25 text-primary-foreground"
-                          : "border-primary/20 text-primary",
-                      )}
-                    >
-                      {text("pdfFileClickToOpen")}
-                    </a>
-                  ) : (
-                    <div className="mt-3 overflow-hidden rounded-2xl border border-primary/10 bg-background/70">
-                      <ImageWithZoom
-                        src={message.media[0]}
-                        alt=""
-                        width={400}
-                        height={400}
-                        className="max-h-[22rem] w-full object-cover"
-                      />
-                    </div>
-                  ))}
+                {message.media.map((uri) => <ChatAttachment key={uri} uri={uri} />)}
               </div>
               <div
                 className={cn(
@@ -293,6 +270,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
             </DropdownMenu>
           </div>
         </div>
+        {!isMine && <CommunitySafetyActions kind="message" targetId={message._id} authorId={message.sender._id} />}
       </motion.div>
 
       <AlertDialog

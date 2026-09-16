@@ -1,4 +1,4 @@
-export type SafetyKind = "post" | "comment";
+export type SafetyKind = "post" | "comment" | "message";
 export type SafetyMe = { rulesVersion: string; consented: boolean; suspended: boolean; suspensionReason: string | null; hiddenUserIds: string[]; blocks: { id: string; name: string }[] };
 export type SafetySubmission = { _id: string; kind: SafetyKind; content: string; moderationState: string; moderationRevision: number; appealState: string | null; decisionReason: string | null; canAppeal: boolean };
 export type SafetyPage = { data: SafetySubmission[]; hasMore: boolean };
@@ -11,9 +11,9 @@ export const safetyCopy = {
     accept: "I agree to the Community rules", accepted: "Community rules accepted",
     report: "Report content", reportSent: "Report received. The moderation team will review it.",
     reason: "Reason", block: "Block this user", confirmBlock: "Confirm block",
-    blockInfo: "You will no longer see each other's Community posts or comments. You can unblock them in account settings.",
+    blockInfo: "You will no longer see each other's Community content or chat messages. Direct chats become unavailable; shared groups remain open. You can unblock them in account settings.",
     blocked: "Blocked users", unblock: "Unblock", noneBlocked: "No blocked users.",
-    support: "Contact support", submissions: "My content and appeals", post: "Posts", comment: "Comments",
+    support: "Contact support", submissions: "My content and appeals", post: "Posts", comment: "Comments", message: "Chat messages",
     pending: "Published", approved: "Published", removed: "Removed",
     appeal: "Appeal removal", appealReason: "Explain why this decision should be reviewed",
     appealSent: "Appeal submitted", appealPending: "Appeal awaiting review", appealResolved: "Appeal reviewed",
@@ -32,9 +32,9 @@ export const safetyCopy = {
     accept: "أوافق على قواعد المجتمع", accepted: "تمت الموافقة على قواعد المجتمع",
     report: "الإبلاغ عن المحتوى", reportSent: "تم استلام البلاغ وسيراجعه فريق الإشراف.",
     reason: "السبب", block: "حظر هذا المستخدم", confirmBlock: "تأكيد الحظر",
-    blockInfo: "لن يظهر لأي منكما محتوى الآخر في منشورات المجتمع وتعليقاته. يمكنك إلغاء الحظر من إعدادات الحساب.",
+    blockInfo: "لن يظهر لأي منكما محتوى الآخر في المجتمع أو رسائله. تتوقف المحادثات المباشرة وتبقى المجموعات المشتركة متاحة. يمكنك إلغاء الحظر من إعدادات الحساب.",
     blocked: "المستخدمون المحظورون", unblock: "إلغاء الحظر", noneBlocked: "لا يوجد مستخدمون محظورون.",
-    support: "التواصل مع الدعم", submissions: "محتواي والاعتراضات", post: "المنشورات", comment: "التعليقات",
+    support: "التواصل مع الدعم", submissions: "محتواي والاعتراضات", post: "المنشورات", comment: "التعليقات", message: "رسائل المحادثة",
     pending: "منشور", approved: "منشور", removed: "تمت الإزالة",
     appeal: "الاعتراض على الإزالة", appealReason: "اشرح سبب طلب مراجعة القرار",
     appealSent: "تم إرسال الاعتراض", appealPending: "الاعتراض بانتظار المراجعة", appealResolved: "تمت مراجعة الاعتراض",

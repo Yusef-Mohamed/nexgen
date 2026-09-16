@@ -18,6 +18,7 @@ const CHAT_PAGE_SIZE = 20;
 
 export function ChatLayout({ selectedChat }: ChatLayoutProps) {
   const {
+    safetyEpoch,
     setChats,
     setIsFetchingChats,
     setSocket,
@@ -30,6 +31,8 @@ export function ChatLayout({ selectedChat }: ChatLayoutProps) {
   const { user, token } = useAuth();
   const isFetchingChatsRef = useRef(false);
 
+  const currentToken = useRef(token);
+  currentToken.current = token;
   const getChats = useCallback(
     async (page = 1) => {
       if (!token) {
@@ -39,6 +42,7 @@ export function ChatLayout({ selectedChat }: ChatLayoutProps) {
 
       if (isFetchingChatsRef.current) return;
 
+      const epoch = useChatStore.getState().safetyEpoch;
       isFetchingChatsRef.current = true;
       setIsFetchingChats(true);
 
@@ -51,6 +55,7 @@ export function ChatLayout({ selectedChat }: ChatLayoutProps) {
             },
           },
         );
+        if (useChatStore.getState().safetyEpoch !== epoch || currentToken.current !== token) return;
         const nextChats = (res.data.data ?? []) as IChat[];
 
         if (page === 1) {
@@ -66,8 +71,8 @@ export function ChatLayout({ selectedChat }: ChatLayoutProps) {
 
         setChatsPagination(res.data.paginationResult ?? null);
         setChatCurrentPage(page);
-      } catch (error) {
-        console.error("Error fetching chats:", error);
+      } catch {
+        // Leave cleared data empty when the request is unavailable.
       } finally {
         isFetchingChatsRef.current = false;
         setIsFetchingChats(false);
@@ -83,18 +88,22 @@ export function ChatLayout({ selectedChat }: ChatLayoutProps) {
   );
 
   useEffect(() => {
-    getChats(1);
-  }, [getChats]);
+    isFetchingChatsRef.current = false;
+    void getChats(1);
+  }, [getChats, safetyEpoch]);
 
   useEffect(() => {
     if (!token) return;
 
     const data = io(SOCKET_URL, { auth: { token } });
     setSocket(data);
+    data.on("chat:safety-changed", () => useChatStore.getState().resetSafety());
+    data.on("connect", () => useChatStore.getState().resetSafety());
     data.on("chat:changed", () => { void getChats(1); });
 
     return () => {
       data.disconnect();
+      useChatStore.getState().resetSafety();
     };
   }, [token, setSocket, getChats]);
 
@@ -125,7 +134,7 @@ export function ChatLayout({ selectedChat }: ChatLayoutProps) {
         hasMoreChats={hasMoreChats}
         onLoadMoreChats={loadMoreChats}
       />
-      <Chat selectedChat={selectedChat} />
+      <Chat key={String(user?._id) + ":" + safetyEpoch} selectedChat={selectedChat} />
     </div>
   );
 }

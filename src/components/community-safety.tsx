@@ -1,5 +1,6 @@
 "use client";
 
+import { useChatStore } from "@/stores/ChatStore";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocale } from "next-intl";
@@ -28,7 +29,8 @@ function useSafetyAction() {
   return useMutation({
     mutationFn: async ({ path, method = "post", body }: { path: string; method?: "post" | "put" | "delete"; body?: object }) =>
       axiosInstance.request({ url: "/moderation" + path, method, data: body }),
-    onSuccess: async () => {
+    onSuccess: async (_result, variables) => {
+      if (variables.path.startsWith("/blocks/")) useChatStore.getState().resetSafety();
       await cache.invalidateQueries({ queryKey: ["community-safety", user?._id] });
       await cache.invalidateQueries({ predicate: (q) => String(q.queryKey[0]).startsWith("community-") && q.queryKey[0] !== "community-safety" });
     },

@@ -3,6 +3,8 @@ import { Socket } from "socket.io-client";
 import { create } from "zustand";
 
 type ChatStore = {
+  safetyEpoch: number;
+  resetSafety: () => void;
   chats: IChat[];
   setChats: (chat: IChat[]) => void;
   isFetchingChats: boolean;
@@ -37,6 +39,8 @@ type ChatStore = {
 };
 
 export const useChatStore = create<ChatStore>((set) => ({
+  safetyEpoch: 0,
+  resetSafety: () => set((state) => ({ safetyEpoch: state.safetyEpoch + 1, chats: [], messages: [], thisChat: null, actionOnMessage: null, chatsPagination: null, messagesPagination: null, chatCurrentPage: 1, messageCurrentPage: 1 })),
   chats: [],
   setChats: (chats) => set({ chats }),
   isFetchingChats: true,
@@ -114,3 +118,9 @@ export const useChatStore = create<ChatStore>((set) => ({
   messageCurrentPage: 1,
   setMessageCurrentPage: (messageCurrentPage) => set({ messageCurrentPage }),
 }));
+
+/** Reject requests started before a safety refresh or conversation switch. */
+export function isCurrentChatRequest(epoch: number, chatId?: string) {
+  const state = useChatStore.getState();
+  return state.safetyEpoch === epoch && (chatId === undefined || state.selectedChatId === chatId);
+}

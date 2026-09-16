@@ -12,7 +12,7 @@ import { IMessage } from "@/types";
 import MessageCard, {
   MessageCardSkeleton,
 } from "@/components/cards/MessageCard";
-import { useChatStore } from "@/stores/ChatStore";
+import { useChatStore, isCurrentChatRequest } from "@/stores/ChatStore";
 import { useAuth } from "@/components/auth-provider";
 import { axiosInstance } from "@/app/lib/utils";
 
@@ -159,9 +159,10 @@ export function ChatList() {
         return;
       }
 
+      const epoch = useChatStore.getState().safetyEpoch;
       const activeChatId = selectedChatId;
       const isActiveChat = () =>
-        useChatStore.getState().selectedChatId === activeChatId;
+        isCurrentChatRequest(epoch, activeChatId);
 
       if (mode === "older") {
         if (isFetchingOlderRef.current) return;
@@ -205,9 +206,9 @@ export function ChatList() {
 
         setMessagesPagination(res.data.paginationResult ?? null);
         setMessageCurrentPage(page);
-      } catch (error) {
+      } catch {
         preserveScrollRef.current = null;
-        console.error("Error fetching messages:", error);
+        if (isActiveChat()) setMessages([]);
       } finally {
         if (mode === "older") {
           isFetchingOlderRef.current = false;

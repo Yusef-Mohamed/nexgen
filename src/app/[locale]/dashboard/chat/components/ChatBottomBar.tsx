@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { useChatStore } from "@/stores/ChatStore";
+import { useChatStore, isCurrentChatRequest } from "@/stores/ChatStore";
 import { IMessage } from "@/types";
 import { useTranslations } from "next-intl";
 import { IoMdClose } from "react-icons/io";
@@ -72,6 +72,9 @@ export default function ChatBottombar() {
   }, []);
 
   const handleSend = useCallback(async () => {
+    const epoch = useChatStore.getState().safetyEpoch;
+    if (!useChatStore.getState().thisChat || !selectedChatId || isLoading) return;
+    const current = () => isCurrentChatRequest(epoch, selectedChatId);
     if (message.trim() || media) {
       setIsLoading(true);
       const data = new FormData();
@@ -88,6 +91,7 @@ export default function ChatBottombar() {
               },
             },
           );
+          if (!current()) return;
           addMessage(res.data);
           sendMessageToSocket(res.data, "new");
         } else if (actionOnMessage.action === "edit") {
@@ -100,6 +104,7 @@ export default function ChatBottombar() {
               },
             },
           );
+          if (!current()) return;
           updateMessage(res.data);
           sendMessageToSocket(res.data, "edit");
         } else if (actionOnMessage.action === "reply") {
@@ -112,6 +117,7 @@ export default function ChatBottombar() {
               },
             },
           );
+          if (!current()) return;
           addMessage(res.data.data);
           sendMessageToSocket(res.data.data, "new");
         }
@@ -128,6 +134,7 @@ export default function ChatBottombar() {
       }
     }
   }, [
+    isLoading,
     message,
     media,
     actionOnMessage,
