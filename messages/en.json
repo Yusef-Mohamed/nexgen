@@ -393,7 +393,13 @@
     "learn": "Learn",
     "licensedAccredited": "Licensed & accredited",
     "availableLanguages": "Available in EN · AR",
-    "backToTop": "Back to top"
+    "backToTop": "Back to top",
+    "legalAndPolicies": "Legal & Policies",
+    "termsAndConditions": "Terms & Conditions",
+    "privacyPolicy": "Privacy Policy",
+    "returnAndRefundPolicy": "Return & Refund Policy",
+    "communityGuidelines": "Community Guidelines",
+    "deleteAccount": "Delete Account"
   },
   "aboutHeroPage": {
     "heading": "Shaping the Next Generation of Learners, Innovators, and Leaders.",

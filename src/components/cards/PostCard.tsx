@@ -14,13 +14,8 @@ import { useAuth } from "../auth-provider";
 import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { BsThreeDots } from "react-icons/bs";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -58,7 +53,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
   return (
     <>
       <div className="relative w-full overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground">
-        <CommunitySafetyActions kind="post" targetId={post._id} authorId={post.user?._id} entity={post} />
         <PostAction post={post} />
         <div className={cn("p-5", hasMedia ? "pb-4" : "pb-3")}>
           <div className="flex items-center gap-3 pe-12">
@@ -274,25 +268,11 @@ const PostAction: React.FC<{
     }
   };
 
-  if (thisUser?.role !== "admin" || !isInClient) return null;
+  if (!isInClient) return null;
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            size={"sm"}
-            variant="outline"
-            aria-label={text("delete")}
-            className="absolute end-4 top-4 z-10 size-9 rounded-full border-primary/10 bg-clear-ground/90 p-0 text-text-3 backdrop-blur-sm transition-all hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
-          >
-            <BsThreeDots className="size-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="end"
-          sideOffset={8}
-          className="w-40 rounded-xl border-primary/10 bg-clear-ground p-1 shadow-none"
-        >
+      <CommunitySafetyActions kind="post" targetId={post._id} authorId={post.user?._id} className="absolute end-3 top-3">
+        {thisUser?.role === "admin" && (
           <DropdownMenuItem
             onClick={() => {
               setIsDeleting(true);
@@ -304,8 +284,8 @@ const PostAction: React.FC<{
             </span>
             <span>{text("delete")}</span>
           </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        )}
+      </CommunitySafetyActions>
       <AlertDialog open={isDeleting}>
         <AlertDialogContent>
           <AlertDialogHeader>

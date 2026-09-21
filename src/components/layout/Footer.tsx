@@ -30,6 +30,13 @@ const supportLinks = [
   { name: "telegram", link: "https://t.me/nexgensupport" },
 ];
 
+const legalLinks = [
+  { name: "termsAndConditions", link: "/terms-of-services" },
+  { name: "privacyPolicy", link: "/privacy-policy" },
+  { name: "returnAndRefundPolicy", link: "/return-and-refund-policy" },
+  { name: "communityGuidelines", link: "/community-guidelines" },
+  { name: "deleteAccount", link: "/account-deletion" },
+];
 const socialLinks = [
   {
     name: "facebook",
@@ -182,6 +189,21 @@ const Footer = ({}: { clear?: boolean }) => {
           </div>
         </div>
 
+        <nav
+          aria-label={text("legalAndPolicies")}
+          className="mt-10 pt-6 border-t border-primary/10"
+        >
+          <h3 className="text-sm font-bold text-text-1 uppercase tracking-wider">
+            {text("legalAndPolicies")}
+          </h3>
+          <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-3">
+            {legalLinks.map((link) => (
+              <FooterLink key={link.name} href={link.link}>
+                {text(link.name)}
+              </FooterLink>
+            ))}
+          </ul>
+        </nav>
         {/* Trust badges + bottom row */}
         <div className="mt-10 pt-6 border-t border-primary/10 flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3 text-xs text-text-3">

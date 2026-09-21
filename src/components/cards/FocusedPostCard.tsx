@@ -226,8 +226,8 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
 
           <section className="flex min-h-0 flex-col border-s border-primary/10">
             <CommunityPublishingNotice />
-            <CommunitySafetyActions kind="post" targetId={post._id} authorId={post.user?._id} entity={post} />
-            <div className="border-b border-primary/10 p-5">
+            <div className="relative border-b border-primary/10 p-5 pe-16">
+              <CommunitySafetyActions kind="post" targetId={post._id} authorId={post.user?._id} className="absolute end-3 top-3" />
               <PostAuthor
                 isInstructorDashboard={isInstructorDashboard}
                 post={post}

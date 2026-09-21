@@ -5,7 +5,7 @@ import { deletionMessages } from "./messages";
 type Action = "request" | "cancel" | "status";
 type Status = "none" | "pending" | "processing" | "failed" | "completed" | "cancelled";
 type Result = { reference: string | null; status: Status; canCancel: boolean };
-type Policy = { configured: boolean; processingNotice: Record<"en" | "ar", string> | null;
+type Policy = { configured: boolean; closureMode: string; source?: "approved" | "defaults"; approvalRequired?: boolean; processingTargetDays?: number; processingNotice: Record<"en" | "ar", string> | null;
   retentionReason: Record<"en" | "ar", string> | null; financialRetentionDays: number | null; backupRotationDays: number | null };
 class RequestError extends Error { constructor(public code: string) { super(code); } }
 async function request<T>(path: string, input?: unknown): Promise<T> {
@@ -41,7 +41,7 @@ export default function DeletionRequestForm({ locale }: { locale: "en" | "ar" })
   useEffect(() => {
     mounted.current = true;
     let active = true;
-    request<Policy>("policy").then((data) => { if (active) setPolicy(data); })
+    request<Policy>("policy").then((data) => { if (data.closureMode !== "anonymize-v1") throw new RequestError("DELETION_UNAVAILABLE"); if (active) setPolicy(data); })
       .catch(() => { if (active) setPolicyError(true); });
     return () => { active = false; mounted.current = false; };
   }, []);
@@ -52,13 +52,13 @@ export default function DeletionRequestForm({ locale }: { locale: "en" | "ar" })
     catch (failure) {
       if (!mounted.current) return;
       const id = failure instanceof RequestError ? failure.code : "";
-      setError(id === "DELETION_INVALID_CODE" ? copy.invalid : id === "DELETION_RATE_LIMITED" ? copy.limited
+      setError(id === "DELETION_RECONFIRM_REQUIRED" ? copy.reconfirm : id === "DELETION_INVALID_CODE" ? copy.invalid : id === "DELETION_RATE_LIMITED" ? copy.limited
         : id === "DELETION_ALREADY_PROCESSING" ? copy.conflict : id === "DELETION_NOT_CONFIGURED" ? copy.unavailable : copy.error);
     } finally { lock.current = false; if (mounted.current) setBusy(false); }
   }
   function send() {
     void run(async () => {
-      const data = await request<{ challengeId: string }>("challenge", { email, action, locale });
+      const data = await request<{ challengeId: string }>("challenge", { email, action, locale, ...(action === "request" ? { closureMode: "anonymize-v1" } : {}) });
       if (!data?.challengeId) throw new RequestError("DELETION_UNAVAILABLE");
       if (mounted.current) { setChallenge({ challengeId: data.challengeId, action }); setCode(""); setConfirmed(false); setResult(null); }
     });
@@ -78,11 +78,12 @@ export default function DeletionRequestForm({ locale }: { locale: "en" | "ar" })
       <h1 className="text-3xl font-bold">{copy.title}</h1>
       <p className="leading-7">{copy.intro}</p>
       <p className="leading-7">{copy.warning}</p>
+      <p className="leading-7">{copy.retained}</p>
+      <p className="leading-7">{copy.providerHelp}</p>
       <div className="rounded-xl border border-border p-5 space-y-3">
-        {!policy ? <p role="status">{policyError ? copy.policyError : copy.policyLoading}</p> : !policy.configured ? <p>{copy.schedulePending}</p> : <>
-          <p>{policy.processingNotice?.[locale]}</p>
-          <p>{copy.financial.replace("{days}", String(policy.financialRetentionDays)).replace("{reason}", policy.retentionReason?.[locale] || "")}</p>
-          <p>{copy.backups.replace("{days}", String(policy.backupRotationDays))}</p>
+        {!policy ? <p role="status">{policyError ? copy.policyError : copy.policyLoading}</p> : <>
+          <p role="status">{policy.processingNotice?.[locale] || (!policy.configured ? copy.schedulePending : "")}</p>
+          <p>{copy.financial}</p>
         </>}
       </div>
       <form method="post" className="space-y-4" onSubmit={(event) => { event.preventDefault(); send(); }}>

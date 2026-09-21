@@ -116,11 +116,11 @@ const PrivacyPolicy = async (props: { params: Promise<{ locale: string }> }) => 
       <section id="account-deletion" className="container pb-24 prose">
         <h2>{params.locale === "ar" ? "حذف الحساب والاحتفاظ بالبيانات" : "Account deletion and data retention"}</h2>
         <p>{params.locale === "ar"
-          ? "يمكنك طلب حذف حساب نكس جين والبيانات الشخصية المرتبطة به بعد التحقق من ملكية البريد الإلكتروني. تقديم الطلب لا يعني اكتمال الحذف، ويمكن إلغاؤه قبل بدء المعالجة. نزّل الشهادات التي تريد الاحتفاظ بها قبل الحذف."
-          : "You can request deletion of your NexGen account and associated personal data after verifying ownership of your email address. A request is not completed deletion, and you can cancel before processing starts. Download any certificates you want to keep before deletion."}</p>
+          ? "يمكنك طلب إغلاق حسابك نهائياً بعد التحقق من بريدك الإلكتروني. نزيل بيانات الملف الشخصي والتواصل والدخول ووثائق الهوية، ويتغير الاسم إلى مستخدم محذوف مع تعطيل الوصول نهائياً. يمكنك إلغاء الطلب قبل بدء المعالجة."
+          : "You can request permanent account closure after verifying your email. Profile, contact and sign-in details and identity documents are removed; the account becomes Deleted user and access is permanently disabled. You can cancel before processing begins."}</p>
         <p>{params.locale === "ar"
-          ? "توضح صفحة طلب الحذف تفاصيل المعالجة والاحتفاظ المعتمدة عند توفرها. قد تُحتفظ بالسجلات المالية المطلوبة قانونيًا بصورة مقيدة لمدة محددة. تخضع النسخ الاحتياطية لدورة احتفاظ معلنة، ويجب ألا تعيد عمليات الاستعادة الحسابات المحذوفة."
-          : "The deletion request page displays the approved processing and retention details when available. Legally required financial records may be retained with restricted access for a defined period. Backups follow the disclosed retention schedule, and restores must not resurrect deleted accounts."}</p>
+          ? "نحتفظ بالتقدم التعليمي والدرجات والاشتراكات والسجلات المالية. يبقى المحتوى والمرفقات محفوظاً داخلياً تحت الحساب المغلق مع إخفائه عن المستخدمين العاديين ومنع الوصول العام إليه. قد تحتوي السجلات والمحتوى المحفوظ على معلومات شخصية أو معلومات فوترة؛ إغلاق الحساب لا يمحو جميع السجلات. نزّل الشهادات التي تريد الاحتفاظ بها مسبقاً."
+          : "Learning progress, grades, subscriptions and financial records are retained. Content and attachments remain stored internally under the closed account, hidden from normal users and public access. Retained records and content may contain personal or billing information; account closure does not erase every record. Download any certificates you want beforehand."}</p>
         <a href={"/" + params.locale + "/account-deletion"}>{params.locale === "ar" ? "طلب حذف الحساب أو متابعة الطلب" : "Request account deletion or manage your request"}</a>
       </section>
     </main>

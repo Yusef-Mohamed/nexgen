@@ -1,7 +1,11 @@
 "use client";
 
 import { useChatStore } from "@/stores/ChatStore";
-import { useState } from "react";
+import { type ReactNode, useRef, useState } from "react";
+import { Ban, Flag, MoreHorizontal } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocale } from "next-intl";
 import { axiosInstance } from "@/app/lib/utils";
@@ -46,40 +50,67 @@ export function CommunitySafetyRules() {
     <Link href="/contact" className="inline-flex min-h-11 items-center font-semibold text-primary underline">{t.support}</Link>
   </section>;
 }
-export function CommunitySafetyActions({ kind, targetId, authorId }: {
+export function CommunitySafetyActions({ kind, targetId, authorId, children, className }: {
   kind: SafetyKind; targetId: string; authorId?: string; entity?: object;
+  children?: ReactNode; className?: string;
 }) {
   const locale = useLocale();
   const t = safetyCopy[locale === "ar" ? "ar" : "en"];
   const { user } = useAuth();
   const action = useSafetyAction();
   const [reason, setReason] = useState<(typeof safetyReasons)[number]>("spam");
-  const [blocking, setBlocking] = useState(false);
-  const own = user?._id === authorId;
-  if (own) return null;
-  if (!authorId) return null;
-  return <details className="relative z-[5] mx-4 my-2 rounded-xl border border-primary/10 p-3 text-start text-sm" dir={locale === "ar" ? "rtl" : "ltr"}>
-    <summary className="cursor-pointer py-2 font-semibold text-primary">{t.actions}</summary>
-    <div className="space-y-3 pt-3">
-      <label className="block space-y-2"><span>{t.reason}</span>
-        <select className="block min-h-11 w-full rounded-lg border bg-background p-2" value={reason}
-          onChange={(event) => setReason(event.target.value as typeof reason)}>
-          {safetyReasons.map((value) => <option key={value} value={value}>{t[value]}</option>)}
-        </select>
-      </label>
-      <div className="flex flex-wrap gap-2">
-        <Button disabled={action.isPending} onClick={() => action.mutate({ path: "/reports/" + kind + "/" + targetId, body: { reason } })}>{t.report}</Button>
-        <Button variant="outline" disabled={action.isPending} onClick={() => setBlocking(true)}>{t.block}</Button>
-      </div>
-      {blocking ? <div role="group" aria-label={t.confirmBlock} className="space-y-3 rounded-lg border p-3">
-        <p>{t.blockInfo}</p>
-        <Button disabled={action.isPending} onClick={() => action.mutate({ path: "/blocks/" + authorId, method: "put", body: {} })}>{t.confirmBlock}</Button>
-        <Button variant="ghost" onClick={() => setBlocking(false)}>{t.cancel}</Button>
-      </div> : null}
-      {action.isError ? <p role="alert">{safetyError(action.error, locale)}</p> : null}
-      {action.isSuccess ? <p role="status">{action.variables?.path.startsWith("/reports/") ? t.reportSent : t.sent}</p> : null}
-    </div>
-  </details>;
+  const [mode, setMode] = useState<"report" | "block" | null>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const canModerate = Boolean(authorId && user && user._id !== authorId);
+  const moreLabel = locale === "ar" ? "المزيد من الخيارات" : "More options";
+  const closeLabel = locale === "ar" ? "إغلاق" : "Close";
+  const startAction = (next: "report" | "block") => {
+    action.reset();
+    setReason("spam");
+    setMode(next);
+  };
+  if (!canModerate && !children) return null;
+  return <>
+    <DropdownMenu dir={locale === "ar" ? "rtl" : "ltr"}>
+      <DropdownMenuTrigger asChild>
+        <Button ref={trigger} type="button" size="icon" variant="ghost" aria-label={moreLabel} title={moreLabel}
+          className={cn("relative z-[5] size-11 shrink-0 rounded-full p-0 text-text-3 hover:bg-primary/5 hover:text-text-1 focus-visible:ring-2 focus-visible:ring-primary", className)}>
+          <MoreHorizontal className="size-5" aria-hidden="true" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" sideOffset={6} className="min-w-48">
+        {children}
+        {canModerate && <>
+          {children && <DropdownMenuSeparator />}
+          <DropdownMenuItem className="min-h-11" onSelect={() => startAction("report")}><Flag aria-hidden="true" />{t.report}</DropdownMenuItem>
+          <DropdownMenuItem className="min-h-11 text-destructive focus:bg-destructive/10 focus:text-destructive" onSelect={() => startAction("block")}><Ban aria-hidden="true" />{t.block}</DropdownMenuItem>
+        </>}
+      </DropdownMenuContent>
+    </DropdownMenu>
+    <Dialog open={mode !== null} onOpenChange={(open) => { if (!open && !action.isPending) setMode(null); }}>
+      <DialogContent className="w-[calc(100%-2rem)] max-w-md rounded-2xl text-start" dir={locale === "ar" ? "rtl" : "ltr"}
+        onCloseAutoFocus={(event) => { event.preventDefault(); trigger.current?.focus(); }}>
+        <DialogTitle className="pe-6">{mode === "block" ? t.confirmBlock : t.report}</DialogTitle>
+        <DialogDescription>{mode === "block" ? t.blockInfo : t.review}</DialogDescription>
+        {action.isSuccess ? <p role="status" className="rounded-xl bg-primary/5 p-4 text-sm leading-7">{mode === "report" ? t.reportSent : t.sent}</p> : <>
+          {mode === "report" && <label className="space-y-2 text-sm font-medium"><span>{t.reason}</span>
+            <select className="block min-h-11 w-full rounded-xl border border-primary/15 bg-background p-3 focus-visible:outline-primary" value={reason} disabled={action.isPending}
+              onChange={(event) => setReason(event.target.value as typeof reason)}>
+              {safetyReasons.map((value) => <option key={value} value={value}>{t[value]}</option>)}
+            </select>
+          </label>}
+          {action.isError && <p role="alert" className="text-sm text-destructive">{safetyError(action.error, locale)}</p>}
+        </>}
+        <DialogFooter className="gap-2 sm:space-x-0">
+          <Button type="button" variant="outline" disabled={action.isPending} onClick={() => setMode(null)}>{action.isSuccess ? closeLabel : t.cancel}</Button>
+          {!action.isSuccess && <Button type="button" variant={mode === "block" ? "destructive" : "default"} disabled={action.isPending}
+            onClick={() => action.mutate(mode === "block" ? { path: "/blocks/" + authorId, method: "put", body: {} } : { path: "/reports/" + kind + "/" + targetId, body: { reason } })}>
+            {action.isPending ? t.loading : mode === "block" ? t.confirmBlock : t.report}
+          </Button>}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  </>;
 }
 export function CommunityPublishingNotice() {
   const locale = useLocale();

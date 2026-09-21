@@ -3,6 +3,7 @@
 import {
   createContext,
   useContext,
+  useCallback,
   useState,
   useLayoutEffect,
   useEffect,
@@ -16,6 +17,7 @@ import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import { useLocale, useTranslations } from "next-intl";
 import { AxiosError } from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -97,6 +99,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const text = useTranslations("common");
   const router = useRouter();
   const [status, setStatus] = useState<number>();
+  useEffect(() => { if (status === 200) setShowIdVerificationModal(false); }, [status]);
+  const queryClient = useQueryClient();
+  const clearSession = useCallback(() => {
+    deleteCookie("user");
+    deleteCookie("token");
+    delete axiosInstance.defaults.headers.common["Authorization"];
+    setUser(null);
+    setToken("");
+    setStatus(undefined);
+    setShowIdVerificationModal(false);
+    setShowCountryAlert(false);
+    queryClient.clear();
+  }, [queryClient]);
 
   const handleNotActive = async (user: IUser | null, token: string) => {
     const redirect = getAuthRedirect(searchParams);
@@ -211,6 +226,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             Authorization: `Bearer ${token}`,
           },
         });
+        if (getStoredToken() !== token) return;
         const user = res?.data.data as IUser;
         if (user.lang && user.lang !== locale) {
           try {
@@ -235,10 +251,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
       } catch (err) {
         const typedError = err as AxiosError;
-        if (
-          typedError.response?.status === 401 ||
-          typedError.response?.status === 407
-        )
+        if (getStoredToken() !== token) return;
+        if (typedError.response?.status === 401) {
+          clearSession();
+          return;
+        }
+        if (typedError.response?.status === 407)
           handleNotActive(user, token || "");
         if (typedError.response?.status === 406) {
           setShowIdVerificationModal(true);
@@ -251,28 +269,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
     fetchUser();
-  }, [authHydrated, token]);
+  }, [authHydrated, token, clearSession]);
 
   const logout = () => {
+    clearSession();
     router.push("/");
-    setTimeout(() => {
-      setUser(null);
-      setToken("");
-      setStatus(undefined);
-      setShowIdVerificationModal(false);
-      deleteCookie("user");
-      deleteCookie("token");
-      router.refresh();
-    }, 500);
+    router.refresh();
   };
-  // Catch 405/406 from any authenticated API call (getMe skips protect middleware)
+  // Clear rejected sessions and handle account restrictions from API calls.
   useEffect(() => {
     const interceptorId = axiosInstance.interceptors.response.use(
       (response) => response,
       (error: unknown) => {
         const typedError = error as AxiosError;
         const responseStatus = typedError.response?.status;
-        if (responseStatus === 406) {
+        const sessionToken = getStoredToken();
+        if (responseStatus === 401 && sessionToken &&
+            typedError.config?.headers?.Authorization === `Bearer ${sessionToken}`) {
+          clearSession();
+        } else if (responseStatus === 406) {
           setShowIdVerificationModal(true);
           setStatus(406);
         } else if (responseStatus === 405) {
@@ -284,7 +299,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       axiosInstance.interceptors.response.eject(interceptorId);
     };
-  }, []);
+  }, [clearSession]);
 
   useEffect(() => {
     if (
@@ -306,7 +321,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!authHydrated) return;
     if (!token) {
-      if (pathname.includes("dashboard") || pathname.includes("checkout")) {
+      if (pathname.includes("dashboard") || pathname.includes("checkout") || pathname === "/email-verification") {
         const redirectPath = getCurrentRedirectPath(pathname, searchParams);
         rememberAuthRedirect(redirectPath);
         router.push(buildAuthHref("/sign-in", redirectPath));

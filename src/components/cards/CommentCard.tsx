@@ -108,8 +108,9 @@ const CommentCard: React.FC<CommentCardProps> = ({
             />
           )}
         </div>
-        <div className="w-full rounded-2xl border border-primary/10 bg-background-2 p-3">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="relative min-w-0 w-full rounded-2xl border border-primary/10 bg-background-2 p-3">
+          <CommunitySafetyActions kind="comment" targetId={comment._id} authorId={comment.user?._id} className="absolute end-1 top-1" />
+          <div className="flex flex-wrap items-center gap-2 pe-10">
             {profileHref ? (
               <Link
                 href={profileHref}
@@ -142,7 +143,6 @@ const CommentCard: React.FC<CommentCardProps> = ({
           )}
         </div>
       </div>
-      <CommunitySafetyActions kind="comment" targetId={comment._id} authorId={comment.user?._id} entity={comment} />
       <div className="ms-14 mt-3 flex flex-wrap items-center gap-2 ps-1 text-xs text-text-3">
         <button
           onClick={() => {

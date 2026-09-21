@@ -1,14 +1,10 @@
 import { cn } from "@/lib/utils";
 import { IMessage } from "@/types";
 import { motion } from "framer-motion";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import UserAvatar from "../UserAvatar";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { LuReply } from "react-icons/lu";
 import { useChatStore } from "@/stores/ChatStore";
@@ -203,13 +199,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 {sentAt}
               </div>
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="mb-4 flex size-8 scale-95 cursor-pointer items-center justify-center rounded-full border border-primary/10 bg-clear-ground text-text-3 opacity-0 shadow-sm transition-all hover:text-primary group-hover/fullContainer:scale-100 group-hover/fullContainer:opacity-100 focus:scale-100 focus:opacity-100">
-                  <HiOutlineDotsHorizontal />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
+            <CommunitySafetyActions kind="message" targetId={message._id} authorId={message.sender._id} className="mb-2 [@media(hover:hover)]:opacity-0 group-hover/fullContainer:opacity-100 focus-visible:opacity-100 data-[state=open]:opacity-100 transition-opacity">
                 <DropdownMenuItem asChild>
                   <button
                     className="flex w-full cursor-pointer items-center gap-4"
@@ -266,11 +256,9 @@ const MessageCard: React.FC<MessageCardProps> = ({
                     </DropdownMenuItem>
                   </>
                 )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            </CommunitySafetyActions>
           </div>
         </div>
-        {!isMine && <CommunitySafetyActions kind="message" targetId={message._id} authorId={message.sender._id} />}
       </motion.div>
 
       <AlertDialog

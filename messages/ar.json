@@ -390,7 +390,13 @@
     "learn": "تعلّم",
     "licensedAccredited": "مرخصة ومعتمدة",
     "availableLanguages": "متاحة بالعربية والإنجليزية",
-    "backToTop": "العودة إلى الأعلى"
+    "backToTop": "العودة إلى الأعلى",
+    "legalAndPolicies": "الشروط والسياسات",
+    "termsAndConditions": "الشروط والأحكام",
+    "privacyPolicy": "سياسة الخصوصية",
+    "returnAndRefundPolicy": "سياسة الإرجاع والاسترداد",
+    "communityGuidelines": "إرشادات المجتمع",
+    "deleteAccount": "حذف الحساب"
   },
   "aboutHeroPage": {
     "heading": "تشكيل الجيل القادم من المتعلمين والمبدعين والقادة.",
