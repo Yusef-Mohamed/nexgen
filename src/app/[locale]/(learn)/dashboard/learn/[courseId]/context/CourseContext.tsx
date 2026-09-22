@@ -183,7 +183,7 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({
           ),
         quizCount:
           Number(responseSummary?.quizCount) ||
-          allLessons.filter((lesson) => lesson.hasQuiz).length,
+          allLessons.filter((lesson) => lesson.hasQuiz === true && lesson.examAvailable === true).length,
         assignmentCount:
           Number(responseSummary?.assignmentCount) ||
           allLessons.filter((lesson) => lesson.isRequireAnalytic).length,

@@ -24,6 +24,7 @@ const lesson = (id, order, extra = {}) => ({
   _id: id,
   order,
   hasQuiz: false,
+  examAvailable: true,
   isRequireAnalytic: false,
   isUnlocked: false,
   ...extra,
@@ -304,3 +305,15 @@ test("a locked direct URL never mounts the video, quiz, or analytic submission U
     assert.match(html, /returnToAvailableLesson/);
   }
 });
+
+for (const hasQuiz of [false, true]) {
+  for (const examAvailable of [false, true]) {
+    test('quiz requires both flags: ' + hasQuiz + '/' + examAvailable, () => {
+      const current = lesson('a', 1, { hasQuiz, examAvailable, isUnlocked: true, videoUrl: 'video' });
+      assert.equal(exports.hasUnfinishedRequirements(current), hasQuiz && examAvailable);
+      assert.equal(exports.isLearningSelectionLocked([current], 'a', 'quiz', false), !(hasQuiz && examAvailable));
+      const result = exports.applyLessonProgression(section([current, lesson('b', 2, { isUnlocked: true })]));
+      assert.equal(result[0].lessons[1].isUnlocked, !(hasQuiz && examAvailable));
+    });
+  }
+}

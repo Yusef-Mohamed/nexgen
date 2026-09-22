@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 import { useCourseContext } from "../context/CourseContext";
 import CreateCourseReview from "./CourseReview";
 import VideoPlayer from "./VideoPlayer";
+import { hasLessonQuiz } from "./unlockLessons";
 
 interface VideoCredentials {
   otp: string;
@@ -91,7 +92,7 @@ const LessonBody = ({
   const getNextContent = useCallback(() => {
     if (!lesson || sections.length === 0) return null;
 
-    if ((lesson.examAvailable ?? lesson.hasQuiz) && !lesson.passedExam) {
+    if (hasLessonQuiz(lesson) && !lesson.passedExam) {
       return {
         type: "quiz" as const,
         lessonId: lesson._id,

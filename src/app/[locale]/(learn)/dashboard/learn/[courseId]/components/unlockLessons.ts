@@ -7,9 +7,13 @@ interface Section {
   lessons: ILesson[];
 }
 
+export function hasLessonQuiz(lesson: ILesson): boolean {
+  return lesson.hasQuiz === true && lesson.examAvailable === true;
+}
+
 export function hasUnfinishedRequirements(lesson: ILesson): boolean {
   return Boolean(
-    ((lesson.examAvailable ?? lesson.hasQuiz) && !lesson.passedExam) ||
+    (hasLessonQuiz(lesson) && !lesson.passedExam) ||
     (lesson.isRequireAnalytic && !lesson.passedAnalyticsTask),
   );
 }
@@ -63,7 +67,7 @@ export function isLearningSelectionLocked(
     return false;
   const lesson = lessons.find((item) => item._id === lessonId);
   if (!lesson || lesson.isUnlocked === false || !lesson.videoUrl) return true;
-  if (display === "quiz") return !(lesson.examAvailable ?? lesson.hasQuiz);
+  if (display === "quiz") return !hasLessonQuiz(lesson);
   if (display === "practice") return !lesson.isRequireAnalytic;
   return false;
 }
