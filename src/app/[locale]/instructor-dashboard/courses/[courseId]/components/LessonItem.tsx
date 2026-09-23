@@ -34,6 +34,7 @@ interface LessonItemProps {
   courseId: string;
   onEdit: (lessonId: string) => void;
   onDelete: (lessonId: string) => void;
+  onLessonUpdated: (lesson: ILesson) => void;
   onDragStart: (
     e: React.DragEvent,
     id: string,
@@ -56,6 +57,7 @@ const LessonItem = ({
   courseId,
   onEdit,
   onDelete,
+  onLessonUpdated,
   onDragStart,
   onDragOver,
   onDragLeave,
@@ -65,16 +67,8 @@ const LessonItem = ({
 }: LessonItemProps) => {
   const text = useTranslations("courses");
   const [isExpanded, setIsExpanded] = useState(false);
-  const [assessment, setAssessment] = useState({
-    id: `assessment-${lesson._id}`,
-    title: text("lesson_assessment"),
-    isActive: lesson.isRequireAnalytic || false,
-  });
-  const [quiz, setQuiz] = useState({
-    id: `quiz-${lesson._id}`,
-    title: text("lesson_quiz"),
-    isActive: lesson.hasQuiz || false,
-  });
+  const assessment = { isActive: lesson.isRequireAnalytic || false, title: text("lesson_assessment") };
+  const quiz = { isActive: lesson.hasQuiz || false, title: text("lesson_quiz") };
   const [isUpdatingAssessment, setIsUpdatingAssessment] = useState(false);
   const [isUpdatingQuiz, setIsUpdatingQuiz] = useState(false);
   const [assessmentDialogOpen, setAssessmentDialogOpen] = useState(false);
@@ -89,10 +83,7 @@ const LessonItem = ({
       });
 
       if (response.status === 200) {
-        setAssessment((prev) => ({
-          ...prev,
-          isActive: newValue,
-        }));
+        onLessonUpdated({ ...lesson, isRequireAnalytic: newValue });
         toast.success(text("assessment_updated_successfully"));
       } else {
         toast.error(text("something_wrong"));
@@ -115,10 +106,7 @@ const LessonItem = ({
       });
 
       if (response.status === 200) {
-        setQuiz((prev) => ({
-          ...prev,
-          isActive: newValue,
-        }));
+        onLessonUpdated({ ...lesson, hasQuiz: newValue });
         toast.success(text("quiz_updated_successfully"));
       } else {
         toast.error(text("something_wrong"));

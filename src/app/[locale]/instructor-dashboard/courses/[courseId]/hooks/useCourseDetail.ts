@@ -1,9 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ICourse, ISection, ILesson } from "@/types";
 import { useAuth } from "@/components/auth-provider";
 import { axiosInstance } from "@/app/lib/utils";
 import { AxiosError } from "axios";
+import { mergeSectionUpdate } from "./curriculumState";
 
 export const useCourseDetail = (courseId: string) => {
   const { token } = useAuth();
@@ -16,78 +17,36 @@ export const useCourseDetail = (courseId: string) => {
   );
 
   // Fetch course and sections data
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
+      setError(false);
 
-      // Fetch course data
-      const courseResponse = await axiosInstance.get(`/courses/${courseId}`);
+      const [courseResponse, sectionsResponse] = await Promise.all([
+        axiosInstance.get(`/courses/${courseId}`),
+        axiosInstance.get(`/lessons/manage/course/${courseId}`),
+      ]);
       setCourse(courseResponse.data.data);
-
-      // Fetch sections and lessons with authentication - handle errors gracefully
-      try {
-        const sectionsResponse = await axiosInstance.get(
-          `/lessons/sectionLessons/${courseId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setSections(sectionsResponse.data.data);
-
-        // Expand first section by default
-        if (sectionsResponse.data.data.length > 0) {
-          const first = sectionsResponse.data.data[0] as ISection & {
-            sectionId?: string;
-            id?: string;
-          };
-          const firstId = first.sectionId || first._id || first.id;
-          if (firstId) {
-            setExpandedSections(new Set([firstId]));
-          }
-        }
-      } catch (sectionsError) {
-        console.error("Error fetching sections and lessons:", sectionsError);
-        setSections([]);
-      }
+      setSections(sectionsResponse.data.data);
+      const first = sectionsResponse.data.data[0] as ISection | undefined;
+      setExpandedSections(new Set(first ? [first.sectionId || first._id] : []));
     } catch {
       setError(true);
     } finally {
       setLoading(false);
     }
-  };
+  }, [courseId]);
 
   // Update sections with new data from response
   const updateSections = (sectionData: ISection, isEdit: boolean) => {
-    console.log(`Section ${isEdit ? "updated" : "created"}:`, sectionData);
-    const getId = (s: ISection & { sectionId?: string; id?: string }) =>
-      s.sectionId || s._id || s.id;
-    if (isEdit) {
-      setSections(
-        sections.map((section) =>
-          getId(section) ===
-          getId(sectionData as ISection & { sectionId?: string; id?: string })
-            ? sectionData
-            : section
-        )
-      );
-    } else {
-      setSections([...sections, sectionData]);
-    }
-    // For now, just log the data without updating the state
-    // You can implement state update logic here later if needed
+    setSections((previous) => mergeSectionUpdate(previous, sectionData, isEdit));
   };
 
   // Update sections order for drag and drop
   const updateSectionsOrder = (newSections: ISection[]) => {
     setSections(newSections);
 
-    // TODO: Add API call to update sections order on the server
-    // This would typically involve calling an endpoint like:
-    // PUT /courses/${courseId}/sections/order
-    // with the new order of section IDs
-    console.log("Sections order updated:", newSections);
+    // CourseDetailClient persists this draft when the user saves the order.
   };
 
   // Toggle section expansion
@@ -132,7 +91,7 @@ export const useCourseDetail = (courseId: string) => {
         const idx = currentLessons.findIndex((l) => l._id === lesson._id);
         if (idx >= 0) {
           const nextLessons = [...currentLessons];
-          nextLessons[idx] = lesson;
+          nextLessons[idx] = { ...currentLessons[idx], ...lesson, order: currentLessons[idx].order };
           return { ...s, lessons: nextLessons } as ISection;
         }
         return s;
@@ -214,7 +173,7 @@ export const useCourseDetail = (courseId: string) => {
     if (courseId && token) {
       fetchData();
     }
-  }, [courseId, token]);
+  }, [courseId, token, fetchData]);
 
   return {
     // State

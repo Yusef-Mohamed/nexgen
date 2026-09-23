@@ -394,6 +394,7 @@ const ExamDialog = ({
   onExamUpdated,
   isEdit,
 }: ExamDialogProps) => {
+  const locale = useLocale();
   const text = useTranslations("exams");
   const commonT = useTranslations("common");
   const [loading, setLoading] = useState(false);
@@ -475,7 +476,7 @@ const ExamDialog = ({
 
       // API returns { data: { exam: {...} } } for create/update
       const returnedExam = response?.data?.data?.exam ?? response?.data?.data;
-      onExamUpdated(returnedExam, isEdit);
+      onExamUpdated({ ...returnedExam, title: { ...formData.title, localized: formData.title[locale as "en" | "ar"] } }, isEdit);
     } catch (err) {
       const typedError = err as AxiosError<{ message: string }>;
       const errorMessage =
@@ -603,6 +604,7 @@ const EditExamDialog = ({
   exam,
   onExamUpdated,
 }: EditExamDialogProps) => {
+  const locale = useLocale();
   const text = useTranslations("exams");
   const commonT = useTranslations("common");
   const [loading, setLoading] = useState(false);
@@ -645,24 +647,14 @@ const EditExamDialog = ({
 
     setLoading(true);
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("passingScore", formData.passingScore);
-      formDataToSend.append("title.en", formData.title.en);
-      formDataToSend.append("title.ar", formData.title.ar);
-
-      const response = await axiosInstance.put(
-        `/exams/${exam._id}`,
-        formDataToSend,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axiosInstance.put(`/exams/${exam._id}`, {
+        passingScore: Number(formData.passingScore),
+        title: formData.title,
+      });
 
       // API returns { data: { exam: {...} } } for update
       const returnedExam = response?.data?.data?.exam ?? response?.data?.data;
-      onExamUpdated(returnedExam);
+      onExamUpdated({ ...returnedExam, title: { ...formData.title, localized: formData.title[locale as "en" | "ar"] } });
     } catch (err) {
       const typedError = err as AxiosError<{ message: string }>;
       const errorMessage =

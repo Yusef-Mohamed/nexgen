@@ -1,3 +1,4 @@
+import { moveRelative } from "./curriculumState";
 import { useState, useCallback, useMemo } from "react";
 import { ISection, ILesson } from "@/types";
 
@@ -305,18 +306,7 @@ export const useReorder = ({
             );
 
             if (draggedIndex !== -1 && targetIndex !== -1) {
-              // Remove dragged section
-              newSections.splice(draggedIndex, 1);
-
-              // Insert at new position
-              if (dropTarget.position === "above") {
-                newSections.splice(targetIndex, 0, draggedSection);
-              } else if (dropTarget.position === "below") {
-                newSections.splice(targetIndex + 1, 0, draggedSection);
-              }
-
-              // Update sections state
-              onSectionsReorder(newSections);
+              onSectionsReorder(moveRelative(newSections, draggedIndex, targetIndex, dropTarget.position));
               // Notify that order has changed
               onOrderChanged?.();
             }
@@ -399,21 +389,13 @@ export const useReorder = ({
                 );
 
                 if (draggedIndex !== -1 && targetIndex !== -1) {
-                  // Remove dragged lesson
-                  newLessons.splice(draggedIndex, 1);
-
-                  // Insert at new position
-                  if (dropTarget.position === "above") {
-                    newLessons.splice(targetIndex, 0, draggedLesson);
-                  } else {
-                    newLessons.splice(targetIndex + 1, 0, draggedLesson);
-                  }
+                  const reorderedLessons = moveRelative(newLessons, draggedIndex, targetIndex, dropTarget.position === "above" ? "above" : "below");
 
                   // Update section with new lesson order
                   const updatedSections = [...sections];
                   updatedSections[sourceSectionIndex] = {
                     ...sourceSection,
-                    lessons: newLessons,
+                    lessons: reorderedLessons,
                   };
 
                   // Update sections state

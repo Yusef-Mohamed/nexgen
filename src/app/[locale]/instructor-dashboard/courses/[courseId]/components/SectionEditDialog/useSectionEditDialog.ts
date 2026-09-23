@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ISection } from "@/types";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { useForm } from "react-hook-form";
@@ -14,7 +14,6 @@ interface UseSectionEditDialogProps {
   onSectionUpdated: (sectionData?: ISection, isEdit?: boolean) => void;
   isEdit?: boolean;
   courseId: string;
-  sectionIndex?: number;
   sectionsLength: number;
 }
 
@@ -23,10 +22,10 @@ export const useSectionEditDialog = ({
   onSectionUpdated,
   isEdit = false,
   courseId,
-  sectionIndex,
   sectionsLength,
 }: UseSectionEditDialogProps) => {
   const text = useTranslations("courses");
+  const locale = useLocale() as "en" | "ar";
   const { token } = useAuth();
   const [loading, setLoading] = useState(false);
 
@@ -85,19 +84,13 @@ export const useSectionEditDialog = ({
 
     setLoading(true);
     try {
-      const computedOrder: number =
-        isEdit && section
-          ? Math.max(1, typeof sectionIndex === "number" ? sectionIndex + 1 : 1)
-          : Math.max(1, sectionsLength + 1);
       let response;
       if (isEdit && section) {
-        response = await axiosInstance.put(`/sections/${section.sectionId}`, {
+        response = await axiosInstance.put(`/sections/${section.sectionId || section._id}`, {
           title: {
             ar: data.title.ar,
             en: data.title.en,
           },
-          order: computedOrder,
-          course: courseId,
         });
       } else {
         response = await axiosInstance.post(`/sections`, {
@@ -105,7 +98,7 @@ export const useSectionEditDialog = ({
             ar: data.title.ar,
             en: data.title.en,
           },
-          order: computedOrder,
+          order: Math.max(1, sectionsLength + 1),
           course: courseId,
         });
       }
@@ -114,7 +107,7 @@ export const useSectionEditDialog = ({
       if (response.data && response.data.data) {
         const updatedSection = response.data.data;
         onSectionUpdated(
-          { ...updatedSection, sectionId: updatedSection.sectionId  || updatedSection._id },
+          { ...updatedSection, title: { ...data.title, localized: data.title[locale] }, sectionId: updatedSection.sectionId || updatedSection._id },
           isEdit
         );
       }

@@ -43,6 +43,8 @@ const AssessmentDialog = ({
     loading,
     fetchedLesson,
     fetchingLesson,
+    fetchError,
+    fetchLesson,
     assignmentFile,
     form,
     onSubmit,
@@ -78,6 +80,14 @@ const AssessmentDialog = ({
           </DialogTitle>
         </DialogHeader>
 
+        {fetchError && (
+          <div role="alert" className="space-y-2 text-destructive">
+            <p>{text("something_wrong")}</p>
+            <Button type="button" variant="outline" onClick={() => lesson?._id && fetchLesson(lesson._id)}>
+              {text("try_again")}
+            </Button>
+          </div>
+        )}
         {fetchingLesson ? (
           <AssessmentFormSkeleton />
         ) : (
@@ -230,13 +240,13 @@ const AssessmentDialog = ({
             type="button"
             variant="outline"
             onClick={() => onOpenChange(false)}
-            disabled={loading || fetchingLesson}
+            disabled={loading}
           >
             {text("cancel")}
           </Button>
           <Button
             type="submit"
-            disabled={loading || fetchingLesson}
+            disabled={loading || fetchingLesson || fetchError}
             onClick={
               !fetchingLesson ? form.handleSubmit(handleSubmit) : undefined
             }

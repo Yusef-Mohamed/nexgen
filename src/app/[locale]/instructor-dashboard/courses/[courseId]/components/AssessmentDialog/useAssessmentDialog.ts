@@ -24,6 +24,7 @@ export const useAssessmentDialog = ({
   const [loading, setLoading] = useState(false);
   const [fetchedLesson, setFetchedLesson] = useState<ILesson | null>(null);
   const [fetchingLesson, setFetchingLesson] = useState(false);
+  const [fetchError, setFetchError] = useState(false);
   const [assignmentFile, setAssignmentFile] = useState<File | null>(null);
 
   const createValidationSchema = () =>
@@ -58,6 +59,7 @@ export const useAssessmentDialog = ({
     } else if (!open) {
       // Clear form and state when dialog closes
       setFetchedLesson(null);
+      setFetchError(false);
       form.reset({
         assignmentTitle: { en: "", ar: "" },
         assignmentDescription: { en: "", ar: "" },
@@ -97,15 +99,17 @@ export const useAssessmentDialog = ({
     if (!lessonId) return;
 
     setFetchingLesson(true);
+    setFetchError(false);
     try {
-      const response = await axiosInstance.get(`/lessons/${lessonId}`);
+      const response = await axiosInstance.get(`/lessons/${lessonId}/manage`);
       const lessonData = response?.data?.data.lesson;
 
+      if (!lessonData) throw new Error("Lesson response is missing");
       if (lessonData) {
         setFetchedLesson(lessonData);
-        console.log("Fetched lesson data for assessment:", lessonData);
       }
     } catch (error) {
+      setFetchError(true);
       console.error("Error fetching lesson:", error);
       const typedError = error as AxiosError<{ message: string }>;
       const errorMessage =
@@ -129,6 +133,7 @@ export const useAssessmentDialog = ({
   const onSubmit = async (
     data: z.infer<ReturnType<typeof createValidationSchema>>
   ) => {
+    if (fetchError || fetchingLesson) return false;
     setLoading(true);
     try {
       const formData = new FormData();
@@ -180,6 +185,7 @@ export const useAssessmentDialog = ({
     loading,
     fetchedLesson,
     fetchingLesson,
+    fetchError,
     assignmentFile,
 
     // Form
@@ -187,6 +193,7 @@ export const useAssessmentDialog = ({
 
     // Actions
     onSubmit,
+    fetchLesson,
     handleAssignmentFileSelected,
     removeAssignmentFile,
 
