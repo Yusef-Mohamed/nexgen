@@ -17,7 +17,7 @@ import {
   Trash2,
   GripVertical,
 } from "lucide-react";
-import { ISection } from "@/types";
+import { ILesson, ISection } from "@/types";
 import LessonItem from "./LessonItem";
 import { DropTargetIndicator } from "./DropTargetIndicator";
 import { getDynamicString } from "@/lib/utils";
@@ -33,6 +33,7 @@ interface SectionItemProps {
   onAddLesson: (sectionId: string) => void;
   onEditLesson: (lessonId: string) => void;
   onDeleteLesson: (lessonId: string) => void;
+  onLessonUpdated: (lesson: ILesson) => void;
   onDragStart: (
     e: React.DragEvent,
     id: string,
@@ -60,6 +61,7 @@ const SectionItem = ({
   onAddLesson,
   onEditLesson,
   onDeleteLesson,
+  onLessonUpdated,
   onDragStart,
   onDragOver,
   onDragLeave,
@@ -178,6 +180,7 @@ const SectionItem = ({
               courseId={courseId}
               onEdit={onEditLesson}
               onDelete={onDeleteLesson}
+              onLessonUpdated={onLessonUpdated}
               onDragStart={onDragStart}
               onDragOver={onDragOver}
               onDragLeave={(e) => onDragLeave(e)}

@@ -1,4 +1,5 @@
 "use client";
+import { CommunitySafetyActions, useSafetyHidden } from "@/components/community-safety";
 import { IPost } from "@/types";
 import UserAvatar from "../UserAvatar";
 import { cn, getCommentText } from "@/lib/utils";
@@ -13,13 +14,8 @@ import { useAuth } from "../auth-provider";
 import { axiosInstance } from "@/app/lib/utils";
 import { toast } from "react-toastify";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { BsThreeDots } from "react-icons/bs";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,6 +36,7 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
+  const hidden = useSafetyHidden(post.user?._id);
   const text = useTranslations("post");
   const [isOpen, setIsOpen] = useState(false);
   const locale = useLocale();
@@ -48,9 +45,11 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
   const profileHref = `${
     isInstructorDashboard ? "/instructor-dashboard" : "/dashboard"
   }/community/profile/${post.user._id}`;
-  const allImages = [post.imageCover, ...post.images].filter(Boolean);
+  const allImages = [undefined, "pending", "approved"].includes((post as typeof post & { moderationState?: string }).moderationState)
+    ? [post.imageCover, ...post.images].filter(Boolean) : [];
   const hasMedia = allImages.length > 0;
 
+  if (hidden) return null;
   return (
     <>
       <div className="relative w-full overflow-hidden rounded-2xl border border-primary/10 bg-clear-ground">
@@ -269,25 +268,11 @@ const PostAction: React.FC<{
     }
   };
 
-  if (thisUser?.role !== "admin" || !isInClient) return null;
+  if (!isInClient) return null;
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            size={"sm"}
-            variant="outline"
-            aria-label={text("delete")}
-            className="absolute end-4 top-4 z-10 size-9 rounded-full border-primary/10 bg-clear-ground/90 p-0 text-text-3 backdrop-blur-sm transition-all hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
-          >
-            <BsThreeDots className="size-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="end"
-          sideOffset={8}
-          className="w-40 rounded-xl border-primary/10 bg-clear-ground p-1 shadow-none"
-        >
+      <CommunitySafetyActions kind="post" targetId={post._id} authorId={post.user?._id} className="absolute end-3 top-3">
+        {thisUser?.role === "admin" && (
           <DropdownMenuItem
             onClick={() => {
               setIsDeleting(true);
@@ -299,8 +284,8 @@ const PostAction: React.FC<{
             </span>
             <span>{text("delete")}</span>
           </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        )}
+      </CommunitySafetyActions>
       <AlertDialog open={isDeleting}>
         <AlertDialogContent>
           <AlertDialogHeader>

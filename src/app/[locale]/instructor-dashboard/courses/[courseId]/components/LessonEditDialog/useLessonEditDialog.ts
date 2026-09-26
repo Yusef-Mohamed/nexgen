@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -14,7 +14,6 @@ interface UseLessonEditDialogProps {
   sectionId: string;
   onLessonUpdated: (lessonData?: unknown, isEdit?: boolean) => void;
   isEdit: boolean;
-  lessonIndex?: number;
   lessonsLength: number;
   open?: boolean;
 }
@@ -25,15 +24,16 @@ export const useLessonEditDialog = ({
   sectionId,
   onLessonUpdated,
   isEdit,
-  lessonIndex,
   lessonsLength,
   open,
 }: UseLessonEditDialogProps) => {
   const text = useTranslations("courses");
+  const locale = useLocale() as "en" | "ar";
   const [loading, setLoading] = useState(false);
   const [attachments, setAttachments] = useState<File[]>([]);
   const [fetchedLesson, setFetchedLesson] = useState<ILesson | null>(null);
   const [fetchingLesson, setFetchingLesson] = useState(false);
+  const [fetchError, setFetchError] = useState(false);
 
   const createValidationSchema = () =>
     z.object({
@@ -75,6 +75,7 @@ export const useLessonEditDialog = ({
     } else if (!open) {
       // Clear form and state when dialog closes
       setFetchedLesson(null);
+      setFetchError(false);
       form.reset({
         title: { en: "", ar: "" },
         description: { en: "", ar: "" },
@@ -85,6 +86,7 @@ export const useLessonEditDialog = ({
     } else if (!isEdit) {
       // Reset fetched lesson when not in edit mode
       setFetchedLesson(null);
+      setFetchError(false);
     }
   }, [open, isEdit, lesson?._id, form]);
 
@@ -162,14 +164,17 @@ export const useLessonEditDialog = ({
     if (!lessonId) return;
 
     setFetchingLesson(true);
+    setFetchError(false);
     try {
-      const response = await axiosInstance.get(`/lessons/${lessonId}`);
+      const response = await axiosInstance.get(`/lessons/${lessonId}/manage`);
       const lessonData = response?.data?.data.lesson;
 
+      if (!lessonData) throw new Error("Lesson response is missing");
       if (lessonData) {
         setFetchedLesson(lessonData);
       }
     } catch (error) {
+      setFetchError(true);
       console.error("Error fetching lesson:", error);
       const typedError = error as AxiosError<{ message: string }>;
       const errorMessage =
@@ -183,6 +188,7 @@ export const useLessonEditDialog = ({
   const onSubmit = async (
     data: z.infer<ReturnType<typeof createValidationSchema>>
   ) => {
+    if (fetchError || fetchingLesson) return false;
     setLoading(true);
     try {
       const formData = new FormData();
@@ -196,16 +202,14 @@ export const useLessonEditDialog = ({
       // Add other fields
       formData.append("lessonDuration", data.lessonDuration);
 
-      // Compute order based on lesson index within the section
-      const computedOrder: number =
-        isEdit && lesson
-          ? Math.max(1, typeof lessonIndex === "number" ? lessonIndex + 1 : 1)
-          : Math.max(1, lessonsLength + 1);
-      formData.append("order", computedOrder.toString());
-
       formData.append("videoUrl", data.videoUrl);
-      formData.append("section", sectionId);
-      formData.append("course", courseId);
+      // Reordering owns placement updates. Editing text must not persist a
+      // pending drag or reset the global lesson order to its section index.
+      if (!isEdit) {
+        formData.append("order", Math.max(1, lessonsLength + 1).toString());
+        formData.append("section", sectionId);
+        formData.append("course", courseId);
+      }
 
       // Add files
       attachments.forEach((attachment) => {
@@ -221,7 +225,7 @@ export const useLessonEditDialog = ({
         response = await axiosInstance.post("/lessons", formData);
       }
 
-      onLessonUpdated(response?.data?.data, isEdit);
+      await onLessonUpdated({ ...response?.data?.data, title: { ...data.title, localized: data.title[locale] }, description: { ...data.description, localized: data.description[locale] } }, isEdit);
       // Clear form after successful submission
       form.reset({
         title: { en: "", ar: "" },
@@ -249,6 +253,7 @@ export const useLessonEditDialog = ({
     attachments,
     fetchedLesson,
     fetchingLesson,
+    fetchError,
 
     // Form
     form,

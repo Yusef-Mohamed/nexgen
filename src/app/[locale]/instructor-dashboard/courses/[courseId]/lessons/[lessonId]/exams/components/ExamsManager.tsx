@@ -5,7 +5,7 @@ import { IExam } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getDynamicString } from "@/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
 import ExamQuestionDisplay from "./ExamQuestionDisplay";
 import ExamsDisplay from "./ExamsDisplay";
@@ -54,7 +54,12 @@ export const ExamsManager = ({
     try {
       const endpoint = `/exams/${type}s/${parentId}`;
       const response = await axiosInstance.get(endpoint);
-      setExams(response.data?.data || []);
+      setExams((response.data?.data || []).map((exam: IExam & { translationTitle?: IExam["title"] }) => ({
+        ...exam,
+        title: exam.translationTitle && typeof exam.translationTitle === "object"
+          ? { ...exam.translationTitle, localized: getDynamicString(exam.title) }
+          : exam.title,
+      })));
     } catch (err) {
       const typedError = err as AxiosError<{ message: string }>;
       const errorMessage =
@@ -126,6 +131,7 @@ export const ExamsManager = ({
 
   const handleExamUpdate = (updatedExam: IExam) => {
     setSelectedExam(updatedExam);
+    setExams((previous) => previous.map((exam) => exam._id === updatedExam._id ? updatedExam : exam));
   };
 
   // Show the questions UI when selection is materialized

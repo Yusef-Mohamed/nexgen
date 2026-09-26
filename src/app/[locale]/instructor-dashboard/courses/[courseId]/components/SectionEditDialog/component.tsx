@@ -27,7 +27,6 @@ interface SectionEditDialogProps {
   onSectionUpdated: (sectionData?: ISection, isEdit?: boolean) => void;
   isEdit?: boolean;
   courseId: string;
-  sectionIndex?: number;
   sectionsLength: number;
 }
 
@@ -40,7 +39,6 @@ const SectionEditDialog = ({
   courseId,
   onSectionUpdated,
   isEdit = false,
-  sectionIndex,
   sectionsLength,
 }: SectionEditDialogProps) => {
   const { loading, form, onSubmit, text } = useSectionEditDialog({
@@ -48,10 +46,8 @@ const SectionEditDialog = ({
     onSectionUpdated,
     isEdit,
     courseId,
-    sectionIndex,
     sectionsLength,
   });
-  console.log("section", section);
 
   const handleSubmit = async (data: Parameters<typeof onSubmit>[0]) => {
     const success = await onSubmit(data);

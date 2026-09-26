@@ -31,7 +31,6 @@ interface LessonEditDialogProps {
   sectionId: string;
   onLessonUpdated: (lessonData?: unknown, isEdit?: boolean) => void;
   isEdit: boolean;
-  lessonIndex?: number;
   lessonsLength: number;
 }
 
@@ -43,13 +42,14 @@ const LessonEditDialog = ({
   sectionId,
   onLessonUpdated,
   isEdit,
-  lessonIndex,
   lessonsLength,
 }: LessonEditDialogProps) => {
   const {
     loading,
     attachments,
     fetchingLesson,
+    fetchError,
+    fetchLesson,
     form,
     onSubmit,
     handleAttachmentFilesSelected,
@@ -61,7 +61,6 @@ const LessonEditDialog = ({
     sectionId,
     onLessonUpdated,
     isEdit,
-    lessonIndex,
     lessonsLength,
     open,
   });
@@ -91,6 +90,14 @@ const LessonEditDialog = ({
           </DialogTitle>
         </DialogHeader>
 
+        {fetchError && (
+          <div role="alert" className="space-y-2 text-destructive">
+            <p>{text("something_wrong")}</p>
+            <Button type="button" variant="outline" onClick={() => lesson?._id && fetchLesson(lesson._id)}>
+              {text("try_again")}
+            </Button>
+          </div>
+        )}
         {isEdit && fetchingLesson ? (
           <LessonFormSkeleton />
         ) : (
@@ -276,7 +283,7 @@ const LessonEditDialog = ({
           </Button>
           <Button
             type="submit"
-            disabled={loading || (isEdit && fetchingLesson)}
+            disabled={loading || fetchError || (isEdit && fetchingLesson)}
             onClick={
               !(isEdit && fetchingLesson)
                 ? form.handleSubmit(handleSubmit)

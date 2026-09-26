@@ -12,6 +12,9 @@
 //   });
 // }
 
+import { safetyCopy } from "@/lib/safety-contract";
+import { Link } from "@/i18n/navigation";
+
 const TermsOfServices = async (props: { params: Promise<{ locale: string }> }) => {
   const params = await props.params;
   
@@ -59,6 +62,9 @@ const TermsOfServices = async (props: { params: Promise<{ locale: string }> }) =
               يحظر إعادة إنتاج أو توزيع أو تعديل أي محتوى دون إذن كتابي مسبق
             </li>
           </ul>
+          <h2>5. قواعد المجتمع في الموقع والتطبيق</h2>
+          <p>{safetyCopy.ar.rules}</p><p>{safetyCopy.ar.review}</p>
+          <p><Link href="/contact">{safetyCopy.ar.support}</Link></p>
         </section>
       ) : (
         <section className="container py-24 prose ">
@@ -115,6 +121,9 @@ const TermsOfServices = async (props: { params: Promise<{ locale: string }> }) =
               prior written permission is prohibited
             </li>
           </ul>
+          <h2>5. Community conduct on the website and app</h2>
+          <p>{safetyCopy.en.rules}</p><p>{safetyCopy.en.review}</p>
+          <p><Link href="/contact">{safetyCopy.en.support}</Link></p>
         </section>
       )}
     </main>

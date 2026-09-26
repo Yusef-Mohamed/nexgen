@@ -1,14 +1,10 @@
 import { cn } from "@/lib/utils";
 import { IMessage } from "@/types";
 import { motion } from "framer-motion";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import UserAvatar from "../UserAvatar";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { LuReply } from "react-icons/lu";
 import { useChatStore } from "@/stores/ChatStore";
@@ -26,7 +22,8 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import { axiosInstance } from "@/app/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "../auth-provider";
-import ImageWithZoom from "../ImageWithZoom";
+import { ChatAttachment } from "../chat-attachment";
+import { CommunitySafetyActions } from "../community-safety";
 import { formatMessageTime } from "@/lib/dateTime";
 interface MessageCardProps {
   message: IMessage;
@@ -69,8 +66,8 @@ const MessageCard: React.FC<MessageCardProps> = ({
           action: "deleteMessage",
         });
       }
-    } catch (e) {
-      console.log(e);
+    } catch {
+      // Keep the confirmation available for retry.
     } finally {
       setIsDeleting(false);
     }
@@ -191,31 +188,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 )}
 
                 {message.text && <p>{renderMessageText(message.text)}</p>}
-                {message.media[0] &&
-                  (message.media[0].endsWith("pdf") ? (
-                    <a
-                      href={message.media[0]}
-                      target="_blank"
-                      className={cn(
-                        "mt-3 inline-flex rounded-full border px-3 py-1.5 text-xs font-semibold underline-offset-4 hover:underline",
-                        isMine
-                          ? "border-primary-foreground/25 text-primary-foreground"
-                          : "border-primary/20 text-primary",
-                      )}
-                    >
-                      {text("pdfFileClickToOpen")}
-                    </a>
-                  ) : (
-                    <div className="mt-3 overflow-hidden rounded-2xl border border-primary/10 bg-background/70">
-                      <ImageWithZoom
-                        src={message.media[0]}
-                        alt=""
-                        width={400}
-                        height={400}
-                        className="max-h-[22rem] w-full object-cover"
-                      />
-                    </div>
-                  ))}
+                {message.media.map((uri) => <ChatAttachment key={uri} uri={uri} />)}
               </div>
               <div
                 className={cn(
@@ -226,13 +199,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 {sentAt}
               </div>
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="mb-4 flex size-8 scale-95 cursor-pointer items-center justify-center rounded-full border border-primary/10 bg-clear-ground text-text-3 opacity-0 shadow-sm transition-all hover:text-primary group-hover/fullContainer:scale-100 group-hover/fullContainer:opacity-100 focus:scale-100 focus:opacity-100">
-                  <HiOutlineDotsHorizontal />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
+            <CommunitySafetyActions kind="message" targetId={message._id} authorId={message.sender._id} className="mb-2 [@media(hover:hover)]:opacity-0 group-hover/fullContainer:opacity-100 focus-visible:opacity-100 data-[state=open]:opacity-100 transition-opacity">
                 <DropdownMenuItem asChild>
                   <button
                     className="flex w-full cursor-pointer items-center gap-4"
@@ -289,8 +256,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                     </DropdownMenuItem>
                   </>
                 )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            </CommunitySafetyActions>
           </div>
         </div>
       </motion.div>

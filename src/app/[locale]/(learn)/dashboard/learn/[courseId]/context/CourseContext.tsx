@@ -11,6 +11,10 @@ import { axiosInstance } from "@/app/lib/utils";
 import { ICourse, IExamMetadata, ILesson } from "@/types";
 import { useAuth } from "@/components/auth-provider";
 import { useMyLearningSummary } from "@/hooks/useMyCoursesQueries";
+import {
+  applyLessonProgression,
+  hasUnfinishedRequirements,
+} from "../components/unlockLessons";
 
 export interface CourseSection {
   section: string;
@@ -119,9 +123,8 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({
             lessons: Array.isArray(section?.lessons) ? section.lessons : [],
           }))
         : [];
-      const allLessons = normalizedSections.flatMap(
-        (section) => section.lessons,
-      );
+      const gatedSections = applyLessonProgression(normalizedSections);
+      const allLessons = gatedSections.flatMap((section) => section.lessons);
       const responseExam = sectionsRes.data?.courseExam;
       const normalizedCourseExam: IExamMetadata = {
         available:
@@ -148,12 +151,16 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({
         examAvailable: normalizedCourseExam.available,
         examPassingScore: normalizedCourseExam.passingScore,
       });
-      setSections(normalizedSections);
+      setSections(gatedSections);
       setCourseExam(normalizedCourseExam);
       setCanTakeFinalExam(
-        typeof sectionsRes.data?.canTakeFinalExam === "boolean"
-          ? sectionsRes.data.canTakeFinalExam
-          : normalizedCourseExam.available,
+        normalizedCourseExam.available &&
+          sectionsRes.data?.canTakeFinalExam !== false &&
+          allLessons.length > 0 &&
+          allLessons.every(
+            (lesson) =>
+              lesson.isUnlocked !== false && !hasUnfinishedRequirements(lesson),
+          ),
       );
       setPassedFinalExam(
         typeof sectionsRes.data?.passedFinalExam === "boolean"
@@ -176,7 +183,7 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({
           ),
         quizCount:
           Number(responseSummary?.quizCount) ||
-          allLessons.filter((lesson) => lesson.hasQuiz).length,
+          allLessons.filter((lesson) => lesson.hasQuiz === true && lesson.examAvailable === true).length,
         assignmentCount:
           Number(responseSummary?.assignmentCount) ||
           allLessons.filter((lesson) => lesson.isRequireAnalytic).length,
@@ -196,7 +203,17 @@ export const CourseProvider: React.FC<CourseProviderProps> = ({
   const refetch = fetchCourseData;
 
   const updateSections = (newSections: CourseSection[]) => {
-    setSections(newSections);
+    const gatedSections = applyLessonProgression(newSections);
+    setSections(gatedSections);
+    const lessons = gatedSections.flatMap((section) => section.lessons);
+    setCanTakeFinalExam(
+      courseExam.available &&
+        lessons.length > 0 &&
+        lessons.every(
+          (lesson) =>
+            lesson.isUnlocked !== false && !hasUnfinishedRequirements(lesson),
+        ),
+    );
   };
 
   const value: CourseContextType = {

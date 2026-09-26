@@ -1,5 +1,6 @@
 "use client";
 
+import { BlockedUsersSettings } from "@/components/community-safety";
 import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
@@ -322,6 +323,7 @@ const Main = () => {
           </div>
         </form>
       </Form>
+      <BlockedUsersSettings />
     </div>
   );
 };

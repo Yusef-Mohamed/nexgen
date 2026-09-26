@@ -24,6 +24,7 @@ import {
 import { useCourseContext } from "../context/CourseContext";
 import CourseSidebarSkeleton from "./CourseSidebarSkeleton";
 import SidebarItemButton from "./SidebarItemButton";
+import { hasLessonQuiz, isLearningSelectionLocked } from "./unlockLessons";
 
 interface CourseSidebarProps {
   className?: string;
@@ -41,7 +42,7 @@ const getLessonActivityProgress = (lessons: ILesson[], countVideos: boolean) =>
         if (lesson.lessonWatched) progress.completed += 1;
       }
 
-      if (lesson.hasQuiz) {
+      if (hasLessonQuiz(lesson)) {
         progress.total += 1;
         if (lesson.passedExam) progress.completed += 1;
       }
@@ -119,6 +120,15 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
     display: string,
     title?: string,
   ) => {
+    if (
+      isLearningSelectionLocked(
+        sections.flatMap((section) => section.lessons),
+        lessonId,
+        display,
+        canTakeFinalExam,
+      )
+    )
+      return;
     const params: {
       lesson?: string;
       display: string;
@@ -334,7 +344,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                               (selectedDisplay === "quiz" ||
                                 selectedDisplay === "practice"));
                           const hasSubItems =
-                            lesson.hasQuiz || lesson.isRequireAnalytic;
+                            hasLessonQuiz(lesson) || lesson.isRequireAnalytic;
                           const lessonTitle =
                             getDynamicString(lesson.title) ||
                             text("lesson") + " " + (lessonIndex + 1);
@@ -345,7 +355,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                             getDynamicString(lesson.quizTitle) ||
                             text("lessonQuiz");
                           const quizAvailable =
-                            lesson.examAvailable ?? lesson.hasQuiz;
+                            hasLessonQuiz(lesson);
 
                           return (
                             <li
@@ -390,7 +400,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
 
                               {hasSubItems && isLessonExpanded && (
                                 <div className="space-y-1.5 ps-4">
-                                  {lesson.hasQuiz && (
+                                  {hasLessonQuiz(lesson) && (
                                     <SidebarItemButton
                                       variant={
                                         selectedLesson === lesson._id &&
@@ -449,7 +459,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
                                       disabled={
                                         isLocked ||
                                         Boolean(
-                                          lesson.hasQuiz && !lesson.passedExam,
+                                          hasLessonQuiz(lesson) && !lesson.passedExam,
                                         )
                                       }
                                       onClick={() =>

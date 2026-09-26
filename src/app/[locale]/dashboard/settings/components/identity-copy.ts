@@ -1,0 +1,26 @@
+export const identityCopy = {
+  en: {
+    optional: "You can verify your identity now. You can continue using the app unless the platform requires verification.",
+    required: "The platform requires identity verification to continue. Submit your documents here, or refresh the status after an admin reviews them.",
+    consent: "I agree to manual identity review",
+    disclosure: "NexGen administrators will review your ID front, ID back and selfie to verify your identity. No third-party AI is used. Documents are kept while review is pending and removed from active storage after a decision or account deletion; backup retention follows our privacy policy.",
+    fileLimit: "Choose three JPEG or PNG images, up to 5 MB each, with clear and readable details.",
+    refresh: "Refresh verification status",
+    refreshError: "Could not refresh verification status. Please try again.",
+    signOut: "Sign out",
+    withdraw: "Withdraw submission and delete documents",
+    withdrawn: "Submission withdrawn. Your documents were removed from active storage. Any backend verification requirement still applies.",
+  },
+  ar: {
+    optional: "يمكنك التحقق من هويتك الآن. يمكنك متابعة استخدام التطبيق ما لم تطلب المنصة التحقق.",
+    required: "تطلب المنصة التحقق من هويتك للمتابعة. أرسل مستنداتك هنا أو حدّث الحالة بعد مراجعتها من الإدارة.",
+    consent: "أوافق على مراجعة هويتي يدوياً",
+    disclosure: "ستراجع إدارة نكسجن صورة وجه الهوية وظهرها وصورتك الشخصية للتحقق من هويتك. لا يُستخدم ذكاء اصطناعي تابع لطرف ثالث. تُحفظ المستندات أثناء انتظار المراجعة وتُحذف من التخزين النشط بعد القرار أو حذف الحساب؛ وتخضع النسخ الاحتياطية لسياسة الخصوصية.",
+    fileLimit: "اختر ثلاث صور JPEG أو PNG بحجم لا يتجاوز 5 ميجابايت لكل صورة، مع وضوح التفاصيل.",
+    refresh: "تحديث حالة التحقق",
+    refreshError: "تعذر تحديث حالة التحقق. حاول مرة أخرى.",
+    signOut: "تسجيل الخروج",
+    withdraw: "سحب الطلب وحذف المستندات",
+    withdrawn: "تم سحب الطلب وحذف مستنداتك من التخزين النشط. يظل أي شرط تحقق تفرضه المنصة سارياً.",
+  },
+} as const;

@@ -113,6 +113,16 @@ const PrivacyPolicy = async (props: { params: Promise<{ locale: string }> }) => 
           </ul>
         </section>
       )}
+      <section id="account-deletion" className="container pb-24 prose">
+        <h2>{params.locale === "ar" ? "حذف الحساب والاحتفاظ بالبيانات" : "Account deletion and data retention"}</h2>
+        <p>{params.locale === "ar"
+          ? "يمكنك طلب إغلاق حسابك نهائياً بعد التحقق من بريدك الإلكتروني. نزيل بيانات الملف الشخصي والتواصل والدخول ووثائق الهوية، ويتغير الاسم إلى مستخدم محذوف مع تعطيل الوصول نهائياً. يمكنك إلغاء الطلب قبل بدء المعالجة."
+          : "You can request permanent account closure after verifying your email. Profile, contact and sign-in details and identity documents are removed; the account becomes Deleted user and access is permanently disabled. You can cancel before processing begins."}</p>
+        <p>{params.locale === "ar"
+          ? "نحتفظ بالتقدم التعليمي والدرجات والاشتراكات والسجلات المالية. يبقى المحتوى والمرفقات محفوظاً داخلياً تحت الحساب المغلق مع إخفائه عن المستخدمين العاديين ومنع الوصول العام إليه. قد تحتوي السجلات والمحتوى المحفوظ على معلومات شخصية أو معلومات فوترة؛ إغلاق الحساب لا يمحو جميع السجلات. نزّل الشهادات التي تريد الاحتفاظ بها مسبقاً."
+          : "Learning progress, grades, subscriptions and financial records are retained. Content and attachments remain stored internally under the closed account, hidden from normal users and public access. Retained records and content may contain personal or billing information; account closure does not erase every record. Download any certificates you want beforehand."}</p>
+        <a href={"/" + params.locale + "/account-deletion"}>{params.locale === "ar" ? "طلب حذف الحساب أو متابعة الطلب" : "Request account deletion or manage your request"}</a>
+      </section>
     </main>
   );
 };

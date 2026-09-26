@@ -393,7 +393,13 @@
     "learn": "Learn",
     "licensedAccredited": "Licensed & accredited",
     "availableLanguages": "Available in EN · AR",
-    "backToTop": "Back to top"
+    "backToTop": "Back to top",
+    "legalAndPolicies": "Legal & Policies",
+    "termsAndConditions": "Terms & Conditions",
+    "privacyPolicy": "Privacy Policy",
+    "returnAndRefundPolicy": "Return & Refund Policy",
+    "communityGuidelines": "Community Guidelines",
+    "deleteAccount": "Delete Account"
   },
   "aboutHeroPage": {
     "heading": "Shaping the Next Generation of Learners, Innovators, and Leaders.",
@@ -1136,6 +1142,9 @@
     "lessonQuiz": "Lesson quiz",
     "questionCountPending": "Questions shown when opened",
     "examNotConfigured": "Exam details are not available yet",
+    "lessonLocked": "This lesson is locked",
+    "lessonLockedDescription": "Pass the required quiz and submit the required assignment in the earlier lesson to continue.",
+    "returnToAvailableLesson": "Go to the available lesson",
     "finalExamLockedHint": "Complete the required lesson activities to unlock the final exam.",
     "courseLoadFailed": "We couldn't open this course",
     "courseLoadFailedDescription": "The course details did not load correctly. Check your connection and try again.",
@@ -1337,7 +1346,7 @@
     "viewAsDescription": "Choose which eligible role you want to use.",
     "roleUser": "User",
     "roleInstructor": "Instructor",
-    "roleMarketer": "Marketer",
+    "roleMarketer": "Coach",
     "onProgress": "In Progress",
     "addNew": "Add New",
     "somethingWentWrong": "Something went wrong",

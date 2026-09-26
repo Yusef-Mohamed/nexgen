@@ -19,11 +19,22 @@ import {
 import { useCourseContext } from "../context/CourseContext";
 import LessonBody from "./LessonBody";
 import MainSkeleton from "./MainSkeleton";
+import {
+  hasUnfinishedRequirements,
+  isLearningSelectionLocked,
+} from "./unlockLessons";
 import QuizBody from "./QuizBody";
 
 const Main = () => {
-  const { sections, course, learningSummary, isLoading, error, refetch } =
-    useCourseContext();
+  const {
+    sections,
+    course,
+    learningSummary,
+    isLoading,
+    error,
+    refetch,
+    canTakeFinalExam,
+  } = useCourseContext();
   const { searchParams, setSearchParams } = useCustomSearchParams();
   const text = useTranslations("learn");
   const selectedLesson = searchParams.get("lesson");
@@ -65,6 +76,49 @@ const Main = () => {
             </Button>
           </div>
         </div>
+      </main>
+    );
+  }
+
+  if (
+    isLearningSelectionLocked(
+      allLessons,
+      selectedLesson,
+      selectedDisplay,
+      canTakeFinalExam,
+    )
+  ) {
+    const availableLesson =
+      allLessons.find(
+        (lesson) =>
+          lesson.isUnlocked !== false &&
+          lesson.videoUrl &&
+          hasUnfinishedRequirements(lesson),
+      ) || firstAvailableLesson;
+    return (
+      <main className="flex min-h-[calc(100vh-72px)] items-center justify-center p-6">
+        <section className="w-full max-w-lg rounded-3xl border border-primary/15 bg-clear-ground p-8 text-center">
+          <HiOutlineExclamationTriangle className="mx-auto size-10 text-primary" />
+          <h1 className="mt-4 font-black text-text-1">
+            {text("lessonLocked")}
+          </h1>
+          <p className="mt-3 leading-7 text-text-3">
+            {text("lessonLockedDescription")}
+          </p>
+          {availableLesson ? (
+            <Button
+              className="mt-6"
+              onClick={() =>
+                setSearchParams({
+                  lesson: availableLesson._id,
+                  display: "lesson",
+                })
+              }
+            >
+              {text("returnToAvailableLesson")}
+            </Button>
+          ) : null}
+        </section>
       </main>
     );
   }

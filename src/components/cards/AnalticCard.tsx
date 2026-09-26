@@ -42,9 +42,11 @@ const isPDF = (url: string) => url.endsWith(".pdf");
 const AnalyticCard = ({
   analytic,
   setAnalytics,
+  showCoach = false,
 }: {
   analytic: IAnalytic;
   setAnalytics: React.Dispatch<React.SetStateAction<IAnalytic[]>>;
+  showCoach?: boolean;
 }) => {
   const text = useTranslations("practice");
   const { user } = useAuth();
@@ -61,6 +63,8 @@ const AnalyticCard = ({
 
   const isMyChild = user?._id === analytic.marketer || user?.isInstructor;
   const isAdmin = user?.role === "admin";
+  const coach = analytic.user?.invitor;
+  const coachName = typeof coach === "object" ? coach?.name?.trim() : undefined;
 
   const handleSubmit = async () => {
     try {
@@ -186,8 +190,17 @@ const AnalyticCard = ({
       <div className="p-3">
         <div className="flex items-center gap-2">
           <UserAvatar user={analytic.user} />
-          <div className="flex flex-col">
-            <h4 className="text-sm">{analytic.user?.name}</h4>
+          <div className="flex min-w-0 flex-col">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <h4 className="break-words text-sm">
+                <bdi>{analytic.user?.name}</bdi>
+              </h4>
+              {showCoach && coachName && (
+                <span className="min-w-0 break-words rounded-md bg-primary/10 px-2 py-0.5 text-xs text-primary">
+                  {text("roleMarketer")}: <bdi>{coachName}</bdi>
+                </span>
+              )}
+            </div>
             <span className="text-xs text-muted-foreground">
               {new Date(analytic.createdAt).toLocaleDateString()}
             </span>

@@ -9,6 +9,7 @@ import SectionEditDialog from "./SectionEditDialog";
 import LessonEditDialog from "./LessonEditDialog";
 import { useCourseDetail } from "../hooks/useCourseDetail";
 import { useReorder } from "../hooks/useReorder";
+import { getSectionId } from "../hooks/curriculumState";
 import { toast } from "react-toastify";
 
 // Import new components
@@ -190,9 +191,7 @@ const CourseDetailClient = () => {
   const handleEditSection = (sectionId: string) => {
     // Find the section data from the sections array
     const sectionData = sections.find(
-      (s) =>
-        (s as ISection & { sectionId?: string }).sectionId === sectionId ||
-        s._id === sectionId
+      (s) => getSectionId(s) === sectionId
     );
     if (sectionData) {
       setEditingSection(sectionData);
@@ -300,6 +299,7 @@ const CourseDetailClient = () => {
     sectionsToOrder: typeof sections,
     showToast = true
   ) => {
+    setIsSaving(true);
     try {
       // Calculate cumulative lesson order across all sections
       let cumulativeLessonOrder = 0;
@@ -349,6 +349,8 @@ const CourseDetailClient = () => {
         toast.error(postActionText("something_wrong"));
       }
       return false;
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -362,7 +364,7 @@ const CourseDetailClient = () => {
       updateLessonInSections(lesson);
       toast.success(postActionText("update_success"));
     } else {
-      const sid = activeSectionIdForLesson || lesson?.course?._id || "";
+      const sid = activeSectionIdForLesson;
       if (sid) {
         // Add lesson to section first
         addLessonToSection(sid, lesson);
@@ -382,30 +384,26 @@ const CourseDetailClient = () => {
 
         // Save order with updated sections (includes the new lesson)
         // Don't show toast since we already showed "create_success"
-        await saveOrder(updatedSections, false);
+        setHasOrderChanged(true);
+        if (!(await saveOrder(updatedSections, false))) {
+          toast.error(postActionText("something_wrong"));
+        }
       }
     }
   };
 
-  const handleSaveOrder = async () => {
-    setIsSaving(true);
-    try {
-      await saveOrder(sections, true);
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  const handleSaveOrder = () => saveOrder(sections, true);
 
   return (
     <div className="min-h-screen">
-      <div className="container mx-auto p-6">
+      <div className="container mx-auto p-6" inert={isSaving}>
         <CourseHeader course={course} onEdit={handleEdit} />
         <LessonListCard />
         <div className="my-10">
           {sections.length > 0 ? (
             sections.map((section, sectionIndex) => (
               <SectionItem
-                key={sectionIndex}
+                key={getSectionId(section)}
                 section={section}
                 sectionIndex={sectionIndex}
                 courseId={courseId}
@@ -418,6 +416,7 @@ const CourseDetailClient = () => {
                 onAddLesson={handleAddNewLesson}
                 onEditLesson={handleEditLesson}
                 onDeleteLesson={handleDeleteLesson}
+                onLessonUpdated={updateLessonInSections}
                 // Drag and drop props
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
@@ -467,18 +466,7 @@ const CourseDetailClient = () => {
         courseId={courseId}
         onSectionUpdated={handleSectionUpdated}
         isEdit={isEditSection}
-        // When editing, pass the index of the section; when creating, pass current length
-        sectionIndex={
-          isEditSection && editingSection
-            ? sections.findIndex(
-                (s) =>
-                  (s as ISection & { sectionId?: string }).sectionId ===
-                    (editingSection as ISection & { sectionId?: string })
-                      .sectionId || s._id === editingSection._id
-              )
-            : undefined
-        }
-        sectionsLength={sections.length}
+        sectionsLength={Math.max(sections.length, ...sections.map((s) => s.order || 0))}
       />
 
       <LessonEditDialog
@@ -489,24 +477,7 @@ const CourseDetailClient = () => {
         sectionId={activeSectionIdForLesson}
         onLessonUpdated={handleLessonUpdated}
         isEdit={isEditLesson}
-        lessonIndex={
-          isEditLesson && editingLesson
-            ? sections
-                .find(
-                  (s) =>
-                    s?.sectionId === activeSectionIdForLesson ||
-                    s?._id === activeSectionIdForLesson
-                )
-                ?.lessons?.findIndex((l) => l._id === editingLesson._id) ?? -1
-            : undefined
-        }
-        lessonsLength={
-          sections.find(
-            (s) =>
-              s?.sectionId === activeSectionIdForLesson ||
-              s?._id === activeSectionIdForLesson
-          )?.lessons?.length ?? 0
-        }
+        lessonsLength={Math.max(0, ...sections.flatMap((s) => (s.lessons || []).map((l) => l.order || 0)))}
       />
 
       <DeleteConfirmationDialogs

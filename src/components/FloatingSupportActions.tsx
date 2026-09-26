@@ -2,10 +2,17 @@
 
 import { useTranslations } from "next-intl";
 import { FaTelegramPlane } from "react-icons/fa";
+import { usePathname } from "@/i18n/navigation";
 // import AiChatWidget from "@/components/AiChatWidget";
 
 export default function FloatingSupportActions() {
   const t = useTranslations("common");
+  const pathname = usePathname();
+  const isDashboard = ["/dashboard", "/instructor-dashboard"].some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
+
+  if (isDashboard) return null;
 
   return (
     <div className="fixed bottom-5 end-4 z-500 flex flex-col items-end gap-3 sm:bottom-8 sm:end-8">
