@@ -407,7 +407,9 @@ export interface IAnalytic {
   updatedAt: string;
   marketerComment?: string;
   media: string[];
-  user: IUser;
+  user: IUser & {
+    invitor?: Pick<IUser, "_id" | "name" | "profileImg"> | string | null;
+  };
   _id: string;
 }
 export interface IUserScore {

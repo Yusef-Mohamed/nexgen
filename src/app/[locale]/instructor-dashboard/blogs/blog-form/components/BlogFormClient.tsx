@@ -17,8 +17,8 @@ import dynamic from "next/dynamic";
 import ImageUploadField from "@/components/form/ImageUploadField";
 
 // Dynamically import ReactQuill to avoid SSR issues
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-import "react-quill/dist/quill.snow.css";
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+import "react-quill-new/dist/quill.snow.css";
 
 interface BlogFormData {
   title: {
@@ -64,9 +64,6 @@ const quillModules = {
     ["link"],
     ["clean"],
   ],
-  clipboard: {
-    matchVisual: false,
-  },
 };
 
 const quillFormats = [
@@ -79,7 +76,6 @@ const quillFormats = [
   "strike",
   "blockquote",
   "list",
-  "bullet",
   "indent",
   "link",
 ];
@@ -553,8 +549,6 @@ const BlogFormClient = () => {
               guidelinesTitle={coursesText("guidelines")}
               fileInputButtonText={coursesText("upload_file")}
               fileInputDescription={coursesText("no_file_selected")}
-              accept={coursesText("imageUploadAccept")}
-              className={coursesText("imageUploadClassName")}
               guidelines={[
                 coursesText("course_image_guideline_size"),
                 coursesText("course_image_guideline_format"),

@@ -257,6 +257,9 @@ const DisplayPosts = ({ forceRole }: { forceRole?: ForceRole }) => {
                   key={post._id}
                   analytic={post}
                   setAnalytics={setData}
+                  showCoach={
+                    activeRole === "marketer" || activeRole === "instructor"
+                  }
                 />
               ))}
               {!isLoading && posts.length === 0 && !haveError && (
