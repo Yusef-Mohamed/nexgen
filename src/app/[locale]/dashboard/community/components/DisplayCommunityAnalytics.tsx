@@ -1,132 +1,81 @@
 "use client";
-import PostCard, { SkeletonPostCard } from "@/components/cards/PostCard";
-import useCustomSearchParams from "@/hooks/useSearchParams";
-import { IPagination, IPost } from "@/types";
-import { useCallback, useEffect, useState } from "react";
-import { axiosInstance } from "@/app/lib/utils";
-import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
-import { useTranslations } from "next-intl";
-import CreatePost from "./CreatePost";
-import { useAuth } from "@/components/auth-provider";
-import { Link } from "@/i18n/navigation";
-const DisplayCommunityAnalytics = () => {
-  const { token, user } = useAuth();
-  const text = useTranslations("dashboard");
-  const communityText = useTranslations("community");
-  const [haveError, setHaveError] = useState(false);
-  const { searchParams } = useCustomSearchParams();
-  const searchKey = searchParams.toString();
-  const fetchPosts = useCallback(
-    async (
-      page: number,
-      _search?: string,
-      helpers?: {
-        setPaginationData: React.Dispatch<
-          React.SetStateAction<IPagination | null>
-        >;
-      },
-    ): Promise<IPost[]> => {
-      try {
-        if (haveError) {
-          return [];
-        }
-        const filtersParams = new URLSearchParams(searchParams);
-        let sharedTo = filtersParams.get("sharedTo");
-        filtersParams.delete("sharedTo");
-        if (sharedTo === "services") {
-          const serviceId = filtersParams.get("service");
-          if (!serviceId) return [];
-          filtersParams.delete("service");
-          sharedTo = `/packages/${serviceId}`;
-        } else if (sharedTo === "students") sharedTo = "?type=profile";
-        else if (sharedTo === "courses") {
-          const courseId = filtersParams.get("course");
-          if (!courseId) return [];
-          filtersParams.delete("course");
-          sharedTo = `/courses/${courseId}`;
-        } else {
-          return [];
-        }
-        filtersParams.append("limit", "4");
-        if (page) filtersParams.append("page", `${page}`);
-        const filters = filtersParams.toString()
-          ? `${sharedTo.startsWith("?") ? "&" : "?"}${filtersParams.toString()}`
-          : "";
 
-        const res = await axiosInstance(`/posts${sharedTo}${filters}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = res.data.data as IPost[];
-        helpers?.setPaginationData(res.data.paginationResult);
-        return data;
-      } catch (e) {
-        console.log(e);
-        setHaveError(true);
-        return [];
-      }
-    },
-    [token, setHaveError, haveError, searchParams],
-  );
+import { useEffect, useRef } from "react";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocale, useTranslations } from "next-intl";
+import PostCard, { SkeletonPostCard } from "@/components/cards/PostCard";
+import { axiosInstance } from "@/app/lib/utils";
+import { useAuth } from "@/components/auth-provider";
+import { IPagination, IPost } from "@/types";
+import CreatePost from "./CreatePost";
+
+const DisplayCommunityAnalytics = ({ category }: { category: string }) => {
+  const { token, user } = useAuth();
+  const locale = useLocale();
+  const text = useTranslations("post");
+  const communityText = useTranslations("community");
+  const cache = useQueryClient();
+  const observerRef = useRef<HTMLDivElement>(null);
   const {
-    data: posts,
-    isLoading,
-    observerRef,
-    setData,
-  } = useInfiniteScroll<IPost>({
-    fetchData: fetchPosts,
-    search: searchKey,
+    data, isPending, isError, isFetching, isFetchingNextPage,
+    hasNextPage, fetchNextPage, refetch,
+  } = useInfiniteQuery({
+    queryKey: ["community-posts", user?._id, locale, category],
+    enabled: Boolean(token),
+    initialPageParam: 1,
+    queryFn: async ({ pageParam, signal }) => {
+      const response = await axiosInstance.get<{ data: IPost[]; paginationResult: IPagination }>(
+        "/posts/categories",
+        {
+          params: { page: pageParam, limit: 4, ...(category ? { category } : {}) },
+          signal,
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      return response.data;
+    },
+    getNextPageParam: ({ paginationResult }) =>
+      paginationResult.currentPage < paginationResult.numberOfPages
+        ? paginationResult.currentPage + 1
+        : undefined,
   });
 
   useEffect(() => {
-    setData([]); // Reset data when filters change
-  }, [searchKey, setData]);
+    const element = observerRef.current;
+    if (!element || !hasNextPage || isFetching || isError) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) void fetchNextPage();
+    }, { rootMargin: "200px" });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetching, isError]);
 
-  // Show welcome message for users without review access
-  if (user && !user.authToReview && !user.isInstructor) {
-    return (
-      <section className="flex-1 w-full space-y-3 sm:space-y-6">
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6 p-8 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg border border-primary/20">
-          <div className="space-y-4">
-            <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
-              {communityText("welcomeToNexgenAcademy")}
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-md mx-auto">
-              {communityText("welcomeMessage")}
-            </p>
-          </div>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200"
-          >
-            {communityText("goToCourseList")}
-          </Link>
-        </div>
-      </section>
-    );
-  }
+  const posts = data?.pages.flatMap((page) => page.data) ?? [];
 
   return (
-    <section className="flex-1 w-full space-y-3 sm:space-y-6">
-      <CreatePost setData={setData} />
-      {haveError && (
-        <p className="text-center text-destructive">
-          {text("something_went_wrong")}
-        </p>
+    <section className="w-full space-y-5">
+      <CreatePost
+        defaultCategory={category}
+        onCreated={() => void cache.invalidateQueries({ queryKey: ["community-posts"] })}
+      />
+      {isError && (
+        <div role="alert" className="space-y-2 text-center">
+          <p className="text-destructive">{text("something_went_wrong")}</p>
+          <button type="button" className="font-semibold text-primary" onClick={() => void (data ? fetchNextPage() : refetch())}>
+            {communityText("tryAgain")}
+          </button>
+        </div>
       )}
-      {posts.map((post) => (
-        <PostCard key={post._id} inCommunity post={post} />
-      ))}
-      {isLoading &&
-        Array.from({ length: 1 }).map((_, i) => <SkeletonPostCard key={i} />)}
-      {!haveError && (
-        <div
-          ref={observerRef}
-          className="h-24 w-full my-8"
-          style={{ visibility: posts.length > 0 ? "visible" : "hidden" }}
-          data-testid="scroll-observer"
-        />
+      {posts.map((post) => <PostCard key={post._id} inCommunity post={post} />)}
+      {(isPending || isFetchingNextPage) && <SkeletonPostCard />}
+      {!isPending && !isError && posts.length === 0 && (
+        <p className="rounded-2xl border border-primary/10 bg-clear-ground p-6 text-center text-text-3">{text("no_posts_found")}</p>
+      )}
+      <div ref={observerRef} className="h-4" />
+      {hasNextPage && !isError && (
+        <button type="button" disabled={isFetching} onClick={() => void fetchNextPage()} className="mx-auto block rounded-full border border-primary/10 px-5 py-2 text-sm font-semibold text-primary disabled:opacity-50">
+          {isFetchingNextPage ? communityText("loading") : communityText("loadMore")}
+        </button>
       )}
     </section>
   );

@@ -22,7 +22,6 @@ import {
   HiOutlineChatBubbleLeftRight,
 } from "react-icons/hi2";
 import { Link } from "@/i18n/navigation";
-import PopularCourses from "../../components/PopularCourses";
 import ReviewsGrid from "@/components/ReviewsGrid";
 import CourseContent from "./components/CourseContent";
 import BuyCourse from "./components/BuyCourse";
@@ -231,7 +230,6 @@ const CoursesPage = async (props: {
           dialogHeader={`${courseData.title} - ${text("reviews")}`}
         />
       </section>
-      <PopularCourses />
     </main>
   );
 };

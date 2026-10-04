@@ -901,6 +901,15 @@
     "noLivesThisDay": "لا توجد بثوث مباشرة هذا اليوم"
   },
   "community": {
+    "category": "التصنيف",
+    "selectCategory": "اختر تصنيفًا",
+    "pleaseSelectCategory": "يرجى اختيار تصنيف",
+    "failedToLoadCategories": "تعذر تحميل التصنيفات المتاحة لك.",
+    "noCategoriesAvailable": "لا توجد تصنيفات متاحة لك للنشر حتى الآن.",
+    "categoryUnavailable": "هذا التصنيف غير متاح لك. اختر تصنيفًا آخر أو جميع التصنيفات.",
+    "failedToCreatePost": "تعذر نشر منشورك. يرجى المحاولة مرة أخرى.",
+    "tryAgain": "حاول مرة أخرى",
+    "loadMore": "تحميل المزيد من المنشورات",
     "filters": "الفلاتر",
     "clearFilters": "مسح الفلاتر",
     "close": "إغلاق",

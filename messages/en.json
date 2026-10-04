@@ -904,6 +904,15 @@
     "noLivesThisDay": "No live streams this day"
   },
   "community": {
+    "category": "Category",
+    "selectCategory": "Select a category",
+    "pleaseSelectCategory": "Please select a category",
+    "failedToLoadCategories": "Unable to load your categories.",
+    "noCategoriesAvailable": "You do not have any categories available for posting yet.",
+    "categoryUnavailable": "This category is not available to you. Choose another category or All Categories.",
+    "failedToCreatePost": "Unable to publish your post. Please try again.",
+    "tryAgain": "Try again",
+    "loadMore": "Load more posts",
     "filters": "Filters",
     "clearFilters": "Clear Filters",
     "close": "Close",

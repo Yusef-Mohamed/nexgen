@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Edit } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import Image from "next/image";
+import Image from "@/components/ResilientImage";
 import { cn, getDynamicString } from "@/lib/utils";
 import { ContentType, getDynamicContent } from "@/lib/dynamicContent";
 

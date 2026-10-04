@@ -12,7 +12,6 @@ import { GoInfinity } from "react-icons/go";
 import { GrCertificate } from "react-icons/gr";
 import { LevelsIcons } from "@/components/icons";
 import BuyLearningPath from "./components/BuyLearningPath";
-import PopularLearningPaths from "../../components/PopularLearningPaths";
 import PathContent from "./components/PathContent";
 import { cn, getDynamicString } from "@/lib/utils";
 import MobileAppHero from "../../components/MobileAppHero";
@@ -137,7 +136,6 @@ const LearningPathPage = async (props: {
         <PathContent courses={learningPathData.courses} />
       </ItemPageLayout>
       <MobileAppHero />
-      <PopularLearningPaths />
     </main>
   );
 };

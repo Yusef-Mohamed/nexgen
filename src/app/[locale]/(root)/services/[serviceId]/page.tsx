@@ -5,7 +5,6 @@ import { createServerAxiosInstance } from "@/app/lib/serverUtils";
 import { IPackage } from "@/types";
 import { getDynamicString } from "@/lib/utils";
 import MobileAppHero from "../../components/MobileAppHero";
-import PopularServices from "../../components/PopularServices";
 import ServiceHeading from "./components/ServiceHeading";
 import ServiceCard from "./components/ServiceCard";
 import { getCouponCodeFromSearchParams } from "@/lib/coupons";
@@ -109,7 +108,6 @@ const ServicePage = async (props: {
             )}
       </ItemPageLayout>
       <MobileAppHero />
-      <PopularServices />
     </main>
   );
 };

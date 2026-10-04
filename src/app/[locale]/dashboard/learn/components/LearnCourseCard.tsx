@@ -3,7 +3,7 @@
 import { Link } from "@/i18n/navigation";
 import { getDynamicString } from "@/lib/utils";
 import type { ICourse } from "@/types";
-import Image from "next/image";
+import Image from "@/components/ResilientImage";
 import { useTranslations } from "next-intl";
 import {
   HiOutlineArrowRight,

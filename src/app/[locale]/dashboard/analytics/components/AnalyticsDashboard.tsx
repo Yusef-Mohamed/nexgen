@@ -171,13 +171,13 @@ const AnalyticsDashboard = () => {
       canSelectAnotherUser && selectedUserParam
         ? selectedUserParam
         : myAccountId;
-    if (selectedUser !== nextSelectedUser) {
+    // Initialize from the account or URL without overriding dropdown changes.
+    if (useAnalyticsStore.getState().selectedUser !== nextSelectedUser) {
       setSelectedUser(nextSelectedUser);
     }
   }, [
     myAccount?.isMarketer,
     myAccountId,
-    selectedUser,
     selectedUserParam,
     setSelectedUser,
   ]);

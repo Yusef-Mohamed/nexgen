@@ -6,7 +6,7 @@ import { ICategory, ICoursePackage } from "@/types";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { FaRegClock } from "react-icons/fa";
-import Image from "next/image";
+import Image from "@/components/ResilientImage";
 import { LevelsIcons } from "@/components/icons";
 import { cn, getDynamicString } from "@/lib/utils";
 import CardBadges from "@/components/cards/CardBadges";
