@@ -46,16 +46,16 @@ const DisplayPosts = ({
         filtersParams.append("page", `${page}`);
 
         if (userId) {
-          filtersParams.append("type", "feed");
           filtersParams.append("user", userId);
         }
 
         if (search) filtersParams.append("search", search);
 
         const filters = filtersParams.toString();
+        const endpoint = userId ? "/posts/categories" : "/posts";
 
         const res = await axiosInstance(
-          `/posts${filters ? "?" + filters : ""}`,
+          `${endpoint}${filters ? "?" + filters : ""}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           },
