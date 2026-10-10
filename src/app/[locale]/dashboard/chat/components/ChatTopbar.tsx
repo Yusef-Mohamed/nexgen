@@ -324,8 +324,8 @@ export default function ChatTopbar() {
   useEffect(() => {
     if (thisChat) {
       setEditData({
-        groupName: thisChat.groupName,
-        description: thisChat.description,
+        groupName: thisChat.groupName ?? "",
+        description: thisChat.description ?? "",
         image: null,
       });
     }

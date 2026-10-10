@@ -3,7 +3,8 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { useChatStore, isCurrentChatRequest } from "@/stores/ChatStore";
 import { IMessage } from "@/types";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { safetyCopy } from "@/lib/safety-contract";
 import { IoMdClose } from "react-icons/io";
 import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
@@ -16,6 +17,8 @@ import { cn } from "@/lib/utils";
 
 export default function ChatBottombar() {
   const text = useTranslations("chat");
+  const locale = useLocale();
+  const common = safetyCopy[locale === "ar" ? "ar" : "en"];
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [media, setMedia] = useState<File | null>(null);
@@ -127,8 +130,7 @@ export default function ChatBottombar() {
         const typedError = e as AxiosError<{
           message: string;
         }>;
-        if (typedError.response?.data?.message)
-          toast.error(typedError.response?.data?.message);
+        if (current()) toast.error(typedError.response?.data?.message || common.error);
       } finally {
         setIsLoading(false);
       }
@@ -145,6 +147,7 @@ export default function ChatBottombar() {
     updateMessage,
     setActionOnMessage,
     resetComposer,
+    common.error,
   ]);
 
   useEffect(() => {
@@ -207,6 +210,7 @@ export default function ChatBottombar() {
               <div className="flex shrink-0 flex-col items-end gap-1">
                 <button
                   onClick={() => setActionOnMessage(null)}
+                  aria-label={common.cancel}
                   className="inline-flex size-8 cursor-pointer items-center justify-center rounded-full border border-primary/10 bg-clear-ground text-text-3 transition-colors hover:text-primary"
                   type="button"
                 >
@@ -259,6 +263,7 @@ export default function ChatBottombar() {
           />
           <button
             onClick={handleMediaClick}
+            aria-label={locale === "ar" ? "إرفاق ملف" : "Attach a file"}
             className={cn(
               "flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-primary/15 bg-clear-ground text-primary transition-colors hover:bg-primary/10 absolute start-11 top-1 z-10",
               {
@@ -297,6 +302,7 @@ export default function ChatBottombar() {
           </div>
           <button
             disabled={isLoading || (!message.trim() && !media)}
+            aria-label={locale === "ar" ? "إرسال الرسالة" : "Send message"}
             type="submit"
             className="absolute end-1 bottom-1 inline-flex size-9 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
           >

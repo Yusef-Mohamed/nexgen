@@ -50,7 +50,12 @@ export const useChatStore = create<ChatStore>((set) => ({
   chatCurrentPage: 1,
   setChatCurrentPage: (chatCurrentPage) => set({ chatCurrentPage }),
   selectedChatId: "",
-  setSelectedChatId: (selectedChatId) => set({ selectedChatId }),
+  setSelectedChatId: (selectedChatId) => set((state) => state.selectedChatId === selectedChatId ? state : ({
+    selectedChatId,
+    safetyEpoch: state.safetyEpoch + 1,
+    messages: [], thisChat: null, actionOnMessage: null,
+    messagesPagination: null, messageCurrentPage: 1,
+  })),
   messages: [],
   setMessages: (messages) => set({ messages }),
   isFetchingMessages: true,
@@ -66,7 +71,7 @@ export const useChatStore = create<ChatStore>((set) => ({
       const messageExists = state.messages.some(
         (existingMessage) => existingMessage._id === message._id,
       );
-      const messages = messageExists
+      const messages = message.chat !== state.selectedChatId || messageExists
         ? state.messages
         : [...state.messages, message];
       const chats = state.chats

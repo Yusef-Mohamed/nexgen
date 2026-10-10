@@ -7,7 +7,9 @@ import {
   DropdownMenuSeparator,
 } from "../ui/dropdown-menu";
 import { LuReply } from "react-icons/lu";
-import { useChatStore } from "@/stores/ChatStore";
+import { useChatStore, isCurrentChatRequest } from "@/stores/ChatStore";
+import { safetyCopy } from "@/lib/safety-contract";
+import { toast } from "react-toastify";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -49,6 +51,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
   const sentAt = formatMessageTime(message.createdAt, locale).toLowerCase();
 
   const deleteMessageAction = async () => {
+    const epoch = useChatStore.getState().safetyEpoch;
     try {
       setIsLoading(true);
 
@@ -57,7 +60,9 @@ const MessageCard: React.FC<MessageCardProps> = ({
           Authorization: `Bearer ${token}`,
         },
       });
+      if (!isCurrentChatRequest(epoch, message.chat)) return;
       deleteMessage(message._id);
+      setIsDeleting(false);
       if (socket) {
         socket.emit("sendMessage", {
           senderId: myAccount?._id,
@@ -67,9 +72,9 @@ const MessageCard: React.FC<MessageCardProps> = ({
         });
       }
     } catch {
-      // Keep the confirmation available for retry.
+      if (isCurrentChatRequest(epoch, message.chat)) toast.error(safetyCopy[locale === "ar" ? "ar" : "en"].error);
     } finally {
-      setIsDeleting(false);
+      setIsLoading(false);
     }
   };
 

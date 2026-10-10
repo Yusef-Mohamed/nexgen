@@ -15,6 +15,8 @@ import MessageCard, {
 import { useChatStore, isCurrentChatRequest } from "@/stores/ChatStore";
 import { useAuth } from "@/components/auth-provider";
 import { axiosInstance } from "@/app/lib/utils";
+import { safetyCopy } from "@/lib/safety-contract";
+import { Button } from "@/components/ui/button";
 
 const GROUPING_WINDOW_MS = 2 * 60 * 1000;
 const MESSAGE_PAGE_SIZE = 20;
@@ -117,12 +119,10 @@ const mergeMessagesById = (
   olderMessages: IMessage[],
   currentMessages: IMessage[],
 ) => {
-  const messageIds = new Set<string>();
-  return [...olderMessages, ...currentMessages].filter((message) => {
-    if (messageIds.has(message._id)) return false;
-    messageIds.add(message._id);
-    return true;
-  });
+  const currentById = new Map(currentMessages.map(message => [message._id, message]));
+  const olderIds = new Set(olderMessages.map(message => message._id));
+  return [...olderMessages.map(message => currentById.get(message._id) ?? message),
+    ...currentMessages.filter(message => !olderIds.has(message._id))];
 };
 
 export function ChatList() {
@@ -133,7 +133,10 @@ export function ChatList() {
   const lastMessageIdRef = useRef<string | null>(null);
   const isFetchingOlderRef = useRef(false);
   const [isFetchingOlder, setIsFetchingOlder] = useState(false);
+  const [failedPage, setFailedPage] = useState<number | null>(null);
+  const requestGeneration = useRef(0);
   const locale = useLocale();
+  const common = safetyCopy[locale === "ar" ? "ar" : "en"];
   const { user, token } = useAuth();
   const currentUserId = user?._id;
   const {
@@ -160,9 +163,10 @@ export function ChatList() {
       }
 
       const epoch = useChatStore.getState().safetyEpoch;
+      const generation = requestGeneration.current;
       const activeChatId = selectedChatId;
       const isActiveChat = () =>
-        isCurrentChatRequest(epoch, activeChatId);
+        requestGeneration.current === generation && isCurrentChatRequest(epoch, activeChatId);
 
       if (mode === "older") {
         if (isFetchingOlderRef.current) return;
@@ -180,6 +184,7 @@ export function ChatList() {
         shouldScrollToBottomRef.current = true;
         setIsFetchingMessages(true);
       }
+      setFailedPage(null);
 
       try {
         const res = await axiosInstance(
@@ -201,16 +206,18 @@ export function ChatList() {
           const currentMessages = useChatStore.getState().messages;
           setMessages(mergeMessagesById(pageMessages, currentMessages));
         } else {
-          setMessages(pageMessages);
+          setMessages(mergeMessagesById(pageMessages, useChatStore.getState().messages));
         }
 
         setMessagesPagination(res.data.paginationResult ?? null);
         setMessageCurrentPage(page);
       } catch {
-        preserveScrollRef.current = null;
-        if (isActiveChat()) setMessages([]);
+        if (isActiveChat()) {
+          preserveScrollRef.current = null;
+          setFailedPage(page);
+        }
       } finally {
-        if (mode === "older") {
+        if (mode === "older" && isActiveChat()) {
           isFetchingOlderRef.current = false;
           setIsFetchingOlder(false);
         } else if (isActiveChat()) {
@@ -229,6 +236,7 @@ export function ChatList() {
   );
 
   useEffect(() => {
+    requestGeneration.current += 1;
     preserveScrollRef.current = null;
     shouldScrollToBottomRef.current = true;
     isNearBottomRef.current = true;
@@ -245,6 +253,7 @@ export function ChatList() {
     }
 
     fetchMessages(1, "initial");
+    return () => { requestGeneration.current += 1; };
   }, [
     selectedChatId,
     token,
@@ -309,6 +318,7 @@ export function ChatList() {
         target.scrollTop <= 96 &&
         hasOlderMessages &&
         !isFetchingMessages &&
+        failedPage === null &&
         !isFetchingOlderRef.current &&
         !isFetchingOlder
       ) {
@@ -317,6 +327,7 @@ export function ChatList() {
     },
     [
       fetchMessages,
+      failedPage,
       hasOlderMessages,
       isFetchingMessages,
       isFetchingOlder,
@@ -336,6 +347,12 @@ export function ChatList() {
         className="relative flex h-full w-full flex-col overflow-x-hidden overflow-y-auto px-2 py-5 sm:px-4 lg:px-6"
         onScroll={handleMessagesScroll}
       >
+        {failedPage !== null && (
+          <div role="alert" className="flex items-center justify-center gap-3 py-2 text-sm">
+            <span>{common.error}</span>
+            <Button variant="outline" onClick={() => void fetchMessages(failedPage, failedPage === 1 ? "initial" : "older")}>{common.retry}</Button>
+          </div>
+        )}
         {isFetchingOlder && (
           <div className="flex justify-center py-2">
             <span className="size-2 animate-pulse rounded-full bg-primary/60" />
