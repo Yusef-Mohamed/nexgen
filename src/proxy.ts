@@ -5,6 +5,13 @@ import { routing } from "./i18n/routing";
 const intlMiddleware = createMiddleware(routing);
 
 export default function proxy(request: NextRequest) {
+  // TEMP_ARABIC_ONLY: Remove this temporary redirect to restore English routes.
+  if (/^\/en(?=\/|$)/.test(request.nextUrl.pathname)) {
+    const arabicUrl = request.nextUrl.clone();
+    arabicUrl.pathname = arabicUrl.pathname.replace(/^\/en(?=\/|$)/, "/ar");
+    return NextResponse.redirect(arabicUrl, 307);
+  }
+
   const localeMatch = request.nextUrl.pathname.match(/^\/(ar|en)(?=\/|$)/);
   const locale = localeMatch?.[1] || routing.defaultLocale;
   const pathnameWithoutLocale = localeMatch

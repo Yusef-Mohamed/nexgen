@@ -4,7 +4,8 @@ import { cn } from "@/lib/utils";
 import { useState, useEffect, useRef, useSyncExternalStore } from "react";
 import { FaBarsStaggered } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
-import LanguageSelector from "../LanguageSelector";
+// TEMP_ARABIC_ONLY: Uncomment to restore language switching.
+// import LanguageSelector from "../LanguageSelector";
 import ThemeToggler from "../ThemeToggler";
 import { Button } from "../ui/button";
 import { Link } from "@/i18n/navigation";
@@ -99,7 +100,9 @@ const MobileHeader = ({
                 className="flex items-center gap-2"
                 onClick={() => setIsOpen(false)}
               >
-                <LanguageSelector />
+                {/* TEMP_ARABIC_ONLY: Uncomment to restore language switching.
+<LanguageSelector />
+*/}
                 <ThemeToggler />
               </div>
               {canRenderAuth ? (

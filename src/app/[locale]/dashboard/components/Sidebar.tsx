@@ -17,7 +17,8 @@ import {
   FileText,
   FolderOpen,
   Home,
-  Languages,
+  // TEMP_ARABIC_ONLY: Uncomment to restore language switching.
+  // Languages,
   Menu,
   MessageCircle,
   Moon,
@@ -366,7 +367,7 @@ const SidebarControls: React.FC<{
   setTheme: (theme: string) => void;
   text: (key: "lightMode" | "darkMode") => string;
   theme?: string;
-}> = ({ collapsed, locale, mounted, pathname, setTheme, text, theme }) => {
+}> = ({ collapsed, /* TEMP_ARABIC_ONLY: Uncomment to restore language switching. locale, pathname, */ mounted, setTheme, text, theme }) => {
   const isDark = mounted && theme === "dark";
 
   if (collapsed) {
@@ -380,6 +381,7 @@ const SidebarControls: React.FC<{
         >
           {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
         </button>
+        {/* TEMP_ARABIC_ONLY: Uncomment to restore language switching.
         <Link
           className="inline-flex size-11 items-center justify-center rounded-xl border border-primary/10 bg-background-2 text-xs font-bold text-text-3 transition-colors hover:border-primary/30 hover:text-primary"
           href={pathname}
@@ -388,6 +390,7 @@ const SidebarControls: React.FC<{
         >
           <Languages className="size-4" />
         </Link>
+        */}
       </div>
     );
   }
@@ -421,6 +424,7 @@ const SidebarControls: React.FC<{
         </div>
       </div>
 
+      {/* TEMP_ARABIC_ONLY: Uncomment to restore language switching.
       <div className="rounded-2xl border border-primary/10 bg-background-2 p-2">
         <div className="grid grid-cols-2 gap-2">
           <Link
@@ -445,6 +449,7 @@ const SidebarControls: React.FC<{
           </Link>
         </div>
       </div>
+      */}
     </div>
   );
 };

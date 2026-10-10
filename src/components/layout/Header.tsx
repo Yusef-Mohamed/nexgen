@@ -1,6 +1,7 @@
 "use client";
 import React, { useSyncExternalStore } from "react";
-import LanguageSelector from "../LanguageSelector";
+// TEMP_ARABIC_ONLY: Uncomment to restore language switching.
+// import LanguageSelector from "../LanguageSelector";
 import NavItem from "../../app/[locale]/(root)/components/NavItem";
 import { Button } from "../ui/button";
 import Logo from "../logo";
@@ -88,7 +89,9 @@ const Header = () => {
               <Link href="/dashboard">{text("dashboard")}</Link>
             </Button>
           )}
-          <LanguageSelector />
+          {/* TEMP_ARABIC_ONLY: Uncomment to restore language switching.
+<LanguageSelector />
+*/}
           <ThemeToggler />
           {canRenderAuth ? (
             <UserHeader />

@@ -6,4 +6,6 @@ export const routing = defineRouting({
 
   // Used when no locale matches
   defaultLocale: "ar",
+  // TEMP_ARABIC_ONLY: Remove to restore browser/cookie locale detection.
+  localeDetection: false,
 });

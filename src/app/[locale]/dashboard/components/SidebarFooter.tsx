@@ -1,5 +1,6 @@
 "use client";
-import { Link, usePathname } from "@/i18n/navigation";
+// TEMP_ARABIC_ONLY: Uncomment to restore language switching.
+// import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
@@ -18,7 +19,8 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
   const { setTheme, theme } = useTheme();
   const { logout } = useAuth();
   const text = useTranslations("dashboard");
-  const pathname = usePathname();
+  // TEMP_ARABIC_ONLY: Uncomment to restore language switching.
+  // const pathname = usePathname();
   const locale = useLocale();
 
   return (
@@ -74,6 +76,7 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
               <span className="text-xs">{text("darkMode")}</span>
             </button>
           </div>
+          {/* TEMP_ARABIC_ONLY: Uncomment to restore language switching.
           <div className="flex items-center gap-2 p-2 rounded-lg bg-background">
             <Link
               locale="ar"
@@ -100,6 +103,7 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
               English
             </Link>
           </div>
+          */}
         </>
       ) : (
         <div className="space-y-2">
@@ -110,6 +114,7 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
           >
             {theme === "dark" ? <FaSun /> : <IoMoon />}
           </button>
+          {/* TEMP_ARABIC_ONLY: Uncomment to restore language switching.
           <Link
             locale={locale === "ar" ? "en" : "ar"}
             href={pathname}
@@ -120,6 +125,7 @@ const SidebarFooter: React.FC<{ collapsed?: boolean }> = ({
           >
             {locale === "ar" ? "E" : "ع"}
           </Link>
+          */}
         </div>
       )}
     </div>
