@@ -4,10 +4,14 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import UserAvatar from "../UserAvatar";
 import { IComment } from "@/types";
-import Image from "next/image";
+import ImageWithZoom from '../ImageWithZoom';
+import { CommentMediaPicker } from '../CommentMediaPicker';
+import { commentImages, commentFormData, commentTimestamp, COMMENT_IMAGE_LIMIT } from '@/lib/comment-media';
+import { safetyError } from '@/lib/safety-contract';
 import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import TextWithEmojiBox from "../TextWithEmojiBox";
+import { ImagePlus } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -124,23 +128,23 @@ const CommentCard: React.FC<CommentCardProps> = ({
               </h3>
             )}
             <span className="text-[11px] font-medium text-text-3">
-              {new Date(comment.createdAt).toLocaleDateString()}
+              <time dateTime={comment.createdAt}>{commentTimestamp(comment.createdAt, locale)}</time>
             </span>
           </div>
           <p className="my-1 text-sm leading-6 text-text-2">
             {formatContentWithLinks(comment.content)}
           </p>
-          {comment.image && (
-            <div className="mt-3 overflow-hidden rounded-xl border border-primary/10 bg-clear-ground">
-              <Image
-                src={comment.image}
-                alt="comment"
+          {commentImages(comment).map((image, index) => (
+            <div key={image} className="mt-3 overflow-hidden rounded-xl border border-primary/10 bg-clear-ground">
+              <ImageWithZoom
+                src={image}
+                alt={isEn ? `Comment image ${index + 1}` : `صورة التعليق ${index + 1}`}
                 width={520}
                 height={360}
                 className="max-h-72 w-full object-cover"
               />
             </div>
-          )}
+          ))}
         </div>
       </div>
       <div className="ms-14 mt-3 flex flex-wrap items-center gap-2 ps-1 text-xs text-text-3">
@@ -272,7 +276,8 @@ const CommentAction: React.FC<{
 }) => {
   const text = useTranslations("post");
   const [isLoading, setIsLoading] = useState(false);
-  const [media, setMedia] = useState<File | null>(null);
+  const [media, setMedia] = useState<File[] | null>(null);
+  const locale = useLocale();
   const [comment, setComment] = useState(
     type === "edit" ? parentComment.content : "",
   );
@@ -280,6 +285,8 @@ const CommentAction: React.FC<{
   const { user, token } = useAuth();
 
   const handleSend = async () => {
+    if (isLoading || (!comment.trim() && !(media?.length || (type === 'edit' && commentImages(parentComment).length)))) return;
+    if ((media?.length || 0) > COMMENT_IMAGE_LIMIT) { toast.error(locale === 'ar' ? 'يمكن إرفاق 10 صور كحد أقصى' : 'Attach up to 10 images'); return; }
     if (!user?.authToReview && !user?.isInstructor) {
       toast.error(text("youShouldBuyCourseOrServiceToDoThisAction"));
       return;
@@ -288,22 +295,9 @@ const CommentAction: React.FC<{
 
     try {
       if (type === "reply") {
-        const newReply: IComment = {
-          _id: Date.now().toString(),
-          content: comment,
-          user: user,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          repiles: [],
-          image: media ? URL.createObjectURL(media) : "",
-          post: parentComment.post,
-        };
-        if (setReplies) setReplies((prev) => [...prev, newReply]); // Optimistic update
         const res = await axiosInstance.put(
           `comments/replyToComment/${parentComment._id}`,
-          {
-            content: comment,
-          },
+          commentFormData(comment, media || []),
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -311,18 +305,12 @@ const CommentAction: React.FC<{
           },
         );
         if (setReplies)
-          setReplies((prev) =>
-            prev.map((item) =>
-              item._id === newReply._id ? res.data.data : item,
-            ),
-          );
+          setReplies((prev) => [...prev, res.data.data]);
         if (setIsReplying) setIsReplying(false);
       } else if (type === "edit") {
         const res = await axiosInstance.put(
           `comments${isChild ? "/editReplyComment" : ""}/${parentComment._id}`,
-          {
-            content: comment,
-          },
+          commentFormData(comment, media || []),
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -341,7 +329,7 @@ const CommentAction: React.FC<{
       setComment("");
       setMedia(null);
     } catch (err) {
-      console.log(err);
+      toast.error(safetyError(err, locale));
     } finally {
       setIsLoading(false);
     }
@@ -358,7 +346,11 @@ const CommentAction: React.FC<{
       )}
     >
       <CommunityPublishingNotice />
+      <CommentMediaPicker files={media} setFiles={setMedia} disabled={isLoading} />
       <TextWithEmojiBox
+        multiMedia
+        mediaIcon={<ImagePlus className="size-5" />}
+        mediaAccept="image/jpeg,image/png,image/gif,image/webp"
         handleSend={handleSend}
         inputRef={inputRef}
         isLoading={isLoading}

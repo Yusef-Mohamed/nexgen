@@ -13,6 +13,8 @@ import {
 } from "../ui/dialog";
 import CommentCard from "./CommentCard";
 import TextWithEmojiBox from "../TextWithEmojiBox";
+import { CommentMediaPicker } from "../CommentMediaPicker";
+import { commentFormData, COMMENT_IMAGE_LIMIT } from "@/lib/comment-media";
 import { toast } from "react-toastify";
 import ImageWithZoom from "../ImageWithZoom";
 import { axiosInstance } from "@/app/lib/utils";
@@ -23,7 +25,7 @@ import ReactionComponent from "../ReactionComponent";
 import { cn, getCommentText } from "@/lib/utils";
 import { Skeleton } from "../ui/skeleton";
 import PostReactions from "./PostReactions";
-import { ChevronLeft, ChevronRight, MessageCircle, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, ImagePlus, MessageCircle, X } from "lucide-react";
 import Image from "next/image";
 
 interface FocusedPostCardProps {
@@ -70,11 +72,13 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
 
   const [isLoading, setIsLoading] = useState(false);
   const [commentText, setCommentText] = useState("");
-  const [media, setMedia] = useState<File | null>(null);
+  const [media, setMedia] = useState<File[] | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const handleCommentSubmit = async () => {
     const currentUser = user;
+    if (isLoading || (!commentText.trim() && !media?.length)) return;
+    if ((media?.length || 0) > COMMENT_IMAGE_LIMIT) { toast.error(locale === "ar" ? "يمكن إرفاق 10 صور كحد أقصى" : "Attach up to 10 images"); return; }
 
     if (!currentUser?.authToReview && !currentUser?.isInstructor) {
       toast.error(text("youShouldBuyCourseOrServiceToDoThisAction"));
@@ -82,23 +86,8 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
     }
 
     setIsLoading(true);
-    const newComment: IComment = {
-      _id: Date.now().toString(),
-      content: commentText,
-      user: currentUser,
-      createdAt: new Date().toISOString(),
-      post: post._id,
-      image: media ? URL.createObjectURL(media) : "",
-      repiles: [],
-      updatedAt: new Date().toISOString(),
-    };
-
-    setComments((prev) => [...prev, newComment]);
-
     try {
-      const formData = new FormData();
-      formData.append("content", commentText);
-      if (media) formData.append("image", media);
+      const formData = commentFormData(commentText, media || []);
 
       const res = await axiosInstance.post(
         `comments/post/${post?._id}`,
@@ -108,19 +97,12 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
         },
       );
 
-      setComments((prev) =>
-        prev.map((comment) =>
-          comment._id === newComment._id ? res.data.data : comment,
-        ),
-      );
+      setComments((prev) => [...prev, res.data.data]);
       setCommentText("");
       setMedia(null);
       toast.success(text("commentHasBeenAdded"));
     } catch (error) {
       console.log(error);
-      setComments((prev) =>
-        prev.filter((comment) => comment._id !== newComment._id),
-      );
       toast.error(safetyError(error, locale));
     } finally {
       setIsLoading(false);
@@ -290,7 +272,11 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
               )}
             </div>
 
+            <CommentMediaPicker files={media} setFiles={setMedia} disabled={isLoading} />
             <TextWithEmojiBox
+              multiMedia
+              mediaIcon={<ImagePlus className="size-5" />}
+              mediaAccept="image/jpeg,image/png,image/gif,image/webp"
               text={commentText}
               setText={setCommentText}
               isLoading={isLoading}

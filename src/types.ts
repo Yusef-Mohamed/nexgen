@@ -292,6 +292,7 @@ export interface IMessage {
 export interface IComment {
   content: string;
   image: string;
+  images?: string[];
   post: string;
   user: IUser;
 

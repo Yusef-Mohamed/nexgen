@@ -21,6 +21,7 @@ interface TextWithEmojiBoxProps {
   textClassName?: string;
   toolsPosition?: "split" | "end";
   mediaIcon?: React.ReactNode;
+  mediaAccept?: string;
 }
 
 const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
@@ -37,6 +38,7 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
   textClassName,
   toolsPosition = "split",
   mediaIcon,
+  mediaAccept,
 }) => {
   const mediaRef = useRef<HTMLInputElement>(null);
 
@@ -85,7 +87,7 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
   const handleMediaChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (multiMedia) {
-        const files = e.target.files;
+        const files = e.target.files ? Array.from(e.target.files) : null;
         if (files) {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
@@ -102,6 +104,7 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
         // @ts-ignore
         if (file) setMedia(file);
       }
+      e.target.value = "";
     },
     [setMedia, multiMedia],
   );
@@ -173,6 +176,7 @@ const TextWithEmojiBox: React.FC<TextWithEmojiBoxProps> = ({
                   ref={mediaRef}
                   onChange={handleMediaChange}
                   multiple={multiMedia}
+                  accept={mediaAccept}
                 />
               </div>
             )}

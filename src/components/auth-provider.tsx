@@ -98,8 +98,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const searchParams = useSearchParams();
   const text = useTranslations("common");
   const router = useRouter();
-  const [status, setStatus] = useState<number>();
-  useEffect(() => { if (status === 200) setShowIdVerificationModal(false); }, [status]);
+  const [status, setStatusState] = useState<number>();
+  const setStatus = useCallback((value: number | undefined) => {
+    setStatusState(value);
+    if (value === 200) setShowIdVerificationModal(false);
+  }, []);
   const queryClient = useQueryClient();
   const clearSession = useCallback(() => {
     deleteCookie("user");
@@ -111,7 +114,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setShowIdVerificationModal(false);
     setShowCountryAlert(false);
     queryClient.clear();
-  }, [queryClient]);
+  }, [queryClient, setStatus]);
 
   const handleNotActive = async (user: IUser | null, token: string) => {
     const redirect = getAuthRedirect(searchParams);

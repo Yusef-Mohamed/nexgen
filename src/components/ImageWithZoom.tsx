@@ -31,6 +31,9 @@ const ImageWithZoom: React.FC<ImageWithZoomProps> = ({
         alt={alt}
         className={cn(className, "cursor-pointer")}
         onClick={() => setIsOpen(true)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={event => { if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setIsOpen(true); } }}
       />
       {isOpen && (
         <Dialog
