@@ -1,81 +1,22 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { Dialog } from "@radix-ui/react-dialog";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import React, { useState } from "react";
-import { DialogContent, DialogTitle, DialogDescription } from "./ui/dialog";
+import { useRef, useState } from "react";
+import { ImageViewer } from "./image-viewer";
 
-interface ImageWithZoomProps {
-  className?: string;
-  src: string;
-  alt: string;
-  width: number;
-  height: number;
+type Props = { className?: string; src: string; alt: string; width: number; height: number; unoptimized?: boolean };
+
+export default function ImageWithZoom({ className, src, alt, width, height, unoptimized = false }: Props) {
+  const [open, setOpen] = useState(false);
+  const trigger = useRef<HTMLImageElement>(null);
+  const t = useTranslations("imageViewer");
+  return <>
+    <Image ref={trigger} width={width} height={height} src={src} alt={alt} unoptimized={unoptimized}
+      className={cn(className, "cursor-zoom-in focus-visible:outline-2 focus-visible:outline-primary")}
+      role="button" tabIndex={0} aria-label={alt ? `${t("open")}: ${alt}` : t("open")}
+      onClick={event => { event.stopPropagation(); setOpen(true); }}
+      onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); event.stopPropagation(); setOpen(true); } }} />
+    {open && <ImageViewer images={[src]} index={0} alt={alt} unoptimized={unoptimized} onClose={() => { setOpen(false); trigger.current?.focus(); }} />}
+  </>;
 }
-const ImageWithZoom: React.FC<ImageWithZoomProps> = ({
-  className,
-  src,
-  alt,
-  width,
-  height,
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const t = useTranslations("common");
-  return (
-    <>
-      <Image
-        width={width}
-        height={height}
-        src={src}
-        alt={alt}
-        className={cn(className, "cursor-pointer")}
-        onClick={() => setIsOpen(true)}
-        role="button"
-        tabIndex={0}
-        onKeyDown={event => { if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setIsOpen(true); } }}
-      />
-      {isOpen && (
-        <Dialog
-          open={isOpen}
-          onOpenChange={(value) => {
-            setIsOpen(value);
-          }}
-        >
-          <DialogContent className="max-w-[95vw] sm:max-w-[95vw] p-0 overflow-hidden flex flex-col w-[95vw] max-h-[95vh] h-[95vh] ">
-            <DialogTitle className="sr-only">{t("dialog.image_zoom_title")}</DialogTitle>
-            <DialogDescription className="sr-only">
-              {alt}
-            </DialogDescription>
-            <div className="grow w-full overflow-hidden">
-              <Image
-                width={2000}
-                height={2000}
-                src={src}
-                alt={alt}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.scale = "2";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.scale = "1";
-                }}
-                onMouseMove={(e) => {
-                  const { left, top, width, height } =
-                    e.currentTarget.getBoundingClientRect();
-                  const x = (e.clientX - left) / width;
-                  const y = (e.clientY - top) / height;
-                  e.currentTarget.style.transformOrigin = `${x * 100}% ${
-                    y * 100
-                  }%`;
-                }}
-                className="object-contain w-full h-full cursor-zoom-in"
-              />
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
-    </>
-  );
-};
-
-export default ImageWithZoom;

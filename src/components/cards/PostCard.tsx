@@ -4,10 +4,11 @@ import { IPost } from "@/types";
 import UserAvatar from "../UserAvatar";
 import { cn, getCommentText } from "@/lib/utils";
 import Image from "next/image";
+import { ImageViewer } from "../image-viewer";
 import { useTranslations, useLocale } from "next-intl";
 import { FaRegComment } from "react-icons/fa6";
 import { AiFillDelete } from "react-icons/ai";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FocusedPostCard from "./FocusedPostCard";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { useAuth } from "../auth-provider";
@@ -84,12 +85,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
             ))}
           </p>
         </div>
-        <PostMediaGrid
-          images={allImages}
-          onOpen={() => {
-            setIsOpen(true);
-          }}
-        />
+        <PostMediaGrid images={allImages} />
         <div className={cn("px-5 pb-5", hasMedia ? "pt-4" : "pt-2")}>
           <div className="flex min-h-9 items-center justify-between gap-3">
             <PostReactions post={post} />
@@ -137,77 +133,23 @@ const PostCard: React.FC<PostCardProps> = ({ post, inCommunity }) => {
   );
 };
 
-const PostMediaGrid: React.FC<{
-  images: string[];
-  onOpen: () => void;
-}> = ({ images, onOpen }) => {
-  if (images.length === 0) return null;
-
-  const visibleImages = images.slice(0, 4);
-  const hiddenCount = images.length - visibleImages.length;
-  const isTwoUp = images.length === 2;
-  const isHeroLayout = images.length === 3;
-
-  if (images.length === 1) {
-    return (
-      <button
-        aria-label="Open post media"
-        className="mx-5 block max-h-[34rem] w-[calc(100%-2.5rem)] cursor-pointer overflow-hidden rounded-2xl border border-primary/10 bg-background-2"
-        onClick={onOpen}
-        type="button"
-      >
-        <Image
-          width={960}
-          height={540}
-          src={images[0]}
-          alt=""
-          className="max-h-[34rem] w-full object-contain transition-transform duration-500 hover:scale-[1.01]"
-        />
-      </button>
-    );
-  }
-
-  return (
-    <button
-      aria-label={`Open ${images.length} post photos`}
-      className={cn(
-        "mx-5 grid w-[calc(100%-2.5rem)] cursor-pointer overflow-hidden rounded-2xl border border-primary/10 bg-background-2",
-        isTwoUp
-          ? "aspect-[16/9] grid-cols-2 gap-1"
-          : "aspect-[16/10] grid-cols-2 grid-rows-2 gap-1",
-      )}
-      onClick={onOpen}
-      type="button"
-    >
-      {visibleImages.map((image, index) => {
-        const isPrimary = isHeroLayout && index === 0;
-        const showOverlay = hiddenCount > 0 && index === 3;
-
-        return (
-          <span
-            className={cn(
-              "relative block min-h-0 overflow-hidden bg-muted",
-              isPrimary && "row-span-2",
-            )}
-            key={`${image}-${index}`}
-          >
-            <Image
-              width={720}
-              height={720}
-              src={image}
-              alt=""
-              className="size-full object-cover transition-transform duration-500 hover:scale-105"
-            />
-            {showOverlay && (
-              <span className="absolute inset-0 flex items-center justify-center bg-foreground/55 text-3xl font-black text-primary-foreground backdrop-blur-[2px]">
-                +{hiddenCount}
-              </span>
-            )}
-          </span>
-        );
-      })}
-    </button>
-  );
+const PostMediaGrid = ({ images }: { images: string[] }) => {
+  const [index, setIndex] = useState(-1);
+  const t = useTranslations("imageViewer");
+  const trigger = useRef<HTMLButtonElement | null>(null);
+  if (!images.length) return null;
+  return <>
+    <div className={cn("mx-5 grid w-[calc(100%-2.5rem)] overflow-hidden rounded-2xl border border-primary/10 bg-background-2",
+      images.length === 1 ? "max-h-[34rem]" : images.length === 2 ? "aspect-[16/9] grid-cols-2 gap-1" : "aspect-[16/10] grid-cols-2 grid-rows-2 gap-1")}>
+      {images.slice(0, 4).map((image, i) => <button type="button" key={`${image}-${i}`} aria-label={`${t("open")} ${i + 1}`}
+        className={cn("relative block min-h-0 cursor-zoom-in overflow-hidden", images.length === 3 && i === 0 && "row-span-2")}
+        onClick={event => { event.stopPropagation(); trigger.current = event.currentTarget; setIndex(i); }}>
+        <Image width={960} height={720} src={image} alt="" className={images.length === 1 ? "max-h-[34rem] w-full object-contain" : "size-full object-cover"} />
+        {i === 3 && images.length > 4 && <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-foreground/55 text-3xl font-black text-primary-foreground">+{images.length - 4}</span>}
+      </button>)}
+    </div>
+    <ImageViewer images={images} index={index} onIndexChange={setIndex} onClose={() => { setIndex(-1); trigger.current?.focus(); }} />
+  </>;
 };
 
 export const SkeletonPostCard = () => {

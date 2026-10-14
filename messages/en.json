@@ -1,4 +1,16 @@
 {
+  "imageViewer": {
+    "title": "Image preview",
+    "open": "Enlarge image",
+    "close": "Close image",
+    "hint": "Pinch, double-click, or scroll to zoom. Drag to move.",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "reset": "Reset zoom",
+    "retry": "Image unavailable. Try again",
+    "previous": "Previous image",
+    "next": "Next image"
+},
   "comingSoon": {
     "enhancingYour": "Enhancing Your",
     "experience": "Experience",
