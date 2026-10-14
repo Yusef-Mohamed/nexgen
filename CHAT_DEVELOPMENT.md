@@ -6,6 +6,8 @@ REST writes are authoritative. Chat-change events coalesce for 100 ms and reconc
 
 The Latest badge appears after roughly 20 messages are below the visible viewport, or immediately when viewing a section with unloaded newer history. Small scrolls near the latest message keep it hidden. The display threshold does not change auto-follow or the exact live-bottom check for read receipts.
 
+Visibility/reconnect refreshes retain the authorized message section and mounted composer draft instead of replacing them with skeletons. Concurrent resume checks share one reconciliation; an unfinished or failed check no longer triggers a second history load. Sending and receipts wait for valid access, and safety/denied-access handling still clears content. Resume validation: 11 chat tests, lint (0 errors, 80 existing warnings), and local/development builds passed.
+
 The 2026-10-14 Android investigation also found a shared cache issue: reopening the same notification after scrolling far enough to evict its target could reuse the remaining section. Cache reuse now requires the target to still be retained; otherwise it makes one around-target request. The dedicated regression covers eviction and reopening. Website validation: 10 chat tests, lint (0 errors, 80 existing warnings), and build passed.
 
 Development: https://development.nexgen-academy.com. Full deployment, fixture commands, measurements, and remaining device checks are in the sibling Backend repository's `docs/DEVELOPMENT_CHAT.md`. Development-only browser timing requires `NEXT_PUBLIC_CHAT_TIMING=true`; inspect `document.documentElement.dataset.chatDiagnostics` for sanitized timing/request records. Passwords and tokens are never included.

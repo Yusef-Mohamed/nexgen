@@ -61,3 +61,25 @@ test('reopening an evicted notification target fetches its original section agai
   assert.equal(calls.at(-1).around, '500');
   assert.ok(timeline.getSnapshot().rows.some(row => row._id === '500'));
 });
+
+test('foreground and socket reconnect share revalidation without another history load', async () => {
+  let finish, pages = 0, syncs = 0;
+  const timeline = new ChatTimeline({
+    page: async () => { pages++; return page(); },
+    sync: async () => { syncs++; return new Promise(resolve => { finish = resolve; }); }, accessDenied: () => false,
+  });
+  const unsubscribe = timeline.subscribe(() => {});
+  try {
+    await timeline.open('500'); const rows = timeline.getSnapshot().rows;
+    timeline.invalidate(false);
+    const resumed = timeline.open('500');
+    timeline.invalidate();
+    const connected = timeline.revalidate();
+    assert.equal(syncs, 1); assert.equal(timeline.getSnapshot().rows, rows);
+    finish({ data: [{ ...row(500, 1), text: 'changed while away' }], removedIds: ['499'], latest: null });
+    await Promise.all([resumed, connected]);
+    assert.equal(pages, 1); assert.equal(timeline.getSnapshot().valid, true);
+    assert.equal(timeline.getSnapshot().rows.find(row => row._id === '500').text, 'changed while away');
+    assert.ok(!timeline.getSnapshot().rows.some(row => row._id === '499'));
+  } finally { unsubscribe(); timeline.dispose(); }
+});

@@ -36,12 +36,11 @@ const Row = memo(function Row({ index, style, data }: ListChildComponentProps<Ro
     </div>
   </div>;
 });
-const emptyRows: WireMessage[] = [];
 export function ChatList({ chatId }: { chatId: string }) {
   const params = useSearchParams(), locale = useLocale(), { user, token } = useAuth();
   const target = params.get('messageId') || undefined;
   const { timeline, state, chat, active } = useChatTimeline(chatId, target);
-  const rows = state.valid ? state.rows : emptyRows;
+  const rows = state.rows;
   const common = safetyCopy[locale === 'ar' ? 'ar' : 'en'];
   const latestLabel = locale === 'ar' ? '↓ أحدث الرسائل' : '↓ Latest';
   const list = useRef<VariableSizeList<RowData>>(null), outer = useRef<HTMLDivElement>(null), container = useRef<HTMLDivElement>(null);
@@ -182,6 +181,6 @@ export function ChatList({ chatId }: { chatId: string }) {
       {state.newerLoading || state.newerError ? <div className="absolute inset-x-0 bottom-14 flex justify-center">{state.newerError ? <Button onClick={() => void timeline.newerPage()}>{common.retry}</Button> : <span className="rounded-full bg-background px-3 py-1 text-xs" role="status">{common.loading}</span>}</div> : null}
       {rows.length > 0 && !atBottom && (farFromLatest || state.hasNewer) ? <Button className="absolute bottom-3 end-4 rounded-full shadow-lg" onClick={() => void jumpLatest()}>{latestLabel}{state.hasNewer ? ' •' : ''}</Button> : null}
     </div>
-    {chat && state.valid ? <ChatBottombar onSent={onSent} onEdited={id => timeline.changed({ messageId: id, kind: 'editMessage' })} /> : null}
+    {chat ? <ChatBottombar disabled={!state.valid} onSent={onSent} onEdited={id => timeline.changed({ messageId: id, kind: 'editMessage' })} /> : null}
   </>;
 }

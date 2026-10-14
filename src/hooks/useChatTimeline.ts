@@ -51,10 +51,10 @@ export function useChatTimeline(chatId: string, target?: string) {
     return () => { clearInterval(poll); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('online', reconnect); };
   }, [timeline]);
   const chat = useMemo(() => {
-    if (!state.summary || !state.valid) return null;
+    if (!state.summary) return null;
     const summary = state.summary;
     const people = (summary.participants || []) as { user: IUser; isAdmin: boolean }[];
     return { ...summary, participants: people.map(p => ({ user: p.user._id, userDetails: p.user, isAdmin: p.isAdmin, _id: p.user._id })) } as unknown as IChat;
-  }, [state.summary, state.valid]);
+  }, [state.summary]);
   return { timeline, state, chat, active };
 }

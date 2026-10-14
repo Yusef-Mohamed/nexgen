@@ -37,6 +37,7 @@ export class ChatTimeline<T extends TimelineMessage> {
   private target?: string;
   private opened = false;
   private syncAgain = false;
+  private revalidation?: Promise<void>;
   lastUsed = Date.now();
   anchor: { id: string; offset: number } | null = null;
   atLiveEnd = false;
@@ -83,8 +84,12 @@ export class ChatTimeline<T extends TimelineMessage> {
     if (this.opened && this.target === target && this.state.loading) return;
     this.target = target; this.opened = true;
     if (this.state.rows.length && !this.state.valid) {
+      const epoch = this.epoch;
       await this.revalidate();
-      if (this.state.valid && (!target || this.state.rows.some(row => row._id === target))) return;
+      // A resume check may be shared with socket reconnect, or followed by a
+      // queued mutation sync. Do not replace it with an aborting history load.
+      if (epoch !== this.epoch || this.target !== target || !this.state.valid) return;
+      if (!target || this.state.rows.some(row => row._id === target)) return;
     }
     if (target && this.state.valid && this.state.rows.some(row => row._id === target)) return;
     await this.load(target ? { around: target } : {});
@@ -93,6 +98,7 @@ export class ChatTimeline<T extends TimelineMessage> {
     if (direction && (this.pagination || this.state.loading || this.state.syncing)) return;
     if (!direction) {
       this.controller.abort(); this.controller = new AbortController(); this.epoch++; this.pagination = false;
+      this.revalidation = undefined;
       this.publish({ syncing: false, olderLoading: false, newerLoading: false });
     }
     this.pagination = true;
@@ -122,6 +128,7 @@ export class ChatTimeline<T extends TimelineMessage> {
     this.target = undefined; this.opened = true; this.anchor = null; this.atLiveEnd = true;
     if (!force && this.latest && this.state.valid && !this.pendingSync && !this.state.syncing) {
       this.controller.abort(); this.controller = new AbortController(); this.epoch++;
+      this.revalidation = undefined;
       this.pagination = false;
       this.install(this.latest);
       this.publish({ loading: false, olderLoading: false, newerLoading: false });
@@ -132,6 +139,7 @@ export class ChatTimeline<T extends TimelineMessage> {
   sent(message: T) {
     this.target = undefined; this.opened = true; this.anchor = null;
     this.controller.abort(); this.controller = new AbortController(); this.epoch++;
+    this.revalidation = undefined;
     this.pagination = false;
     this.atLiveEnd = true;
     this.install({ data: [message], olderCursor: message._cursor, newerCursor: message._cursor, latestCursor: message._cursor, hasOlder: true, hasNewer: true });
@@ -153,11 +161,14 @@ export class ChatTimeline<T extends TimelineMessage> {
     if (this.timer || !this.active) return;
     this.timer = setTimeout(() => { this.timer = undefined; void this.flush(); }, 100);
   }
-  async revalidate() {
+  revalidate() {
+    if (this.revalidation) return this.revalidation;
     this.revision++;
     for (const id of this.records.keys()) this.dirty.add(id);
     this.pendingSync = true; this.needsLatest = true;
-    await this.flush();
+    const task = this.flush().finally(() => { if (this.revalidation === task) this.revalidation = undefined; });
+    this.revalidation = task;
+    return task;
   }
   invalidate(reconcile = true) {
     this.publish({ valid: false });
@@ -225,6 +236,7 @@ export class ChatTimeline<T extends TimelineMessage> {
   }
   clear(error: unknown = null) {
     this.controller.abort(); this.controller = new AbortController(); this.epoch++;
+    this.revalidation = undefined;
     if (this.timer) clearTimeout(this.timer); this.timer = undefined;
     this.records.clear(); this.latest = null; this.older = null; this.newer = null;
     this.dirty.clear(); this.pendingSync = false; this.needsLatest = false; this.pagination = false; this.syncAgain = false; this.atLiveEnd = false;

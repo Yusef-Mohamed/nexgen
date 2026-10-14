@@ -15,7 +15,7 @@ import { SendHorizontal } from "lucide-react";
 import { EmojiPicker } from "@/components/EmojiPicker";
 import { cn } from "@/lib/utils";
 
-export default function ChatBottombar({ onSent, onEdited }: { onSent: (message: WireMessage) => void; onEdited: (id: string) => void }) {
+export default function ChatBottombar({ onSent, onEdited, disabled = false }: { onSent: (message: WireMessage) => void; onEdited: (id: string) => void; disabled?: boolean }) {
   const text = useTranslations("chat");
   const locale = useLocale();
   const common = safetyCopy[locale === "ar" ? "ar" : "en"];
@@ -54,7 +54,7 @@ export default function ChatBottombar({ onSent, onEdited }: { onSent: (message: 
 
   const handleSend = useCallback(async () => {
     const epoch = useChatStore.getState().safetyEpoch;
-    if (!useChatStore.getState().thisChat || !selectedChatId || isLoading) return;
+    if (disabled || !useChatStore.getState().thisChat || !selectedChatId || isLoading) return;
     const current = () => isCurrentChatRequest(epoch, selectedChatId);
     if (message.trim() || media) {
       setIsLoading(true);
@@ -109,6 +109,7 @@ export default function ChatBottombar({ onSent, onEdited }: { onSent: (message: 
       }
     }
   }, [
+    disabled,
     isLoading,
     message,
     media,
@@ -275,7 +276,7 @@ export default function ChatBottombar({ onSent, onEdited }: { onSent: (message: 
             />
           </div>
           <button
-            disabled={isLoading || (!message.trim() && !media)}
+            disabled={disabled || isLoading || (!message.trim() && !media)}
             aria-label={locale === "ar" ? "إرسال الرسالة" : "Send message"}
             type="submit"
             className="absolute end-1 bottom-1 inline-flex size-9 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
