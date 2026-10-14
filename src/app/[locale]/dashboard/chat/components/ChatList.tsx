@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { VariableSizeList, type ListChildComponentProps } from 'react-window';
+import { VariableSizeList, type ListChildComponentProps, type ListOnItemsRenderedProps } from 'react-window';
 import { useSearchParams } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { useChatTimeline } from '@/hooks/useChatTimeline';
@@ -48,6 +48,11 @@ export function ChatList({ chatId }: { chatId: string }) {
   const sizes = useRef(new Map<string, number>()), rowsRef = useRef(rows);
   useLayoutEffect(() => { rowsRef.current = rows; }, [rows]);
   const [height, setHeight] = useState(500), [atBottom, setAtBottom] = useState(false);
+  const [farFromLatest, setFarFromLatest] = useState(false);
+  const onItemsRendered = useCallback(({ visibleStopIndex }: ListOnItemsRenderedProps) => {
+    // Badge visibility must not change the exact live-end/read-receipt boundary.
+    setFarFromLatest(rows.length - 1 - visibleStopIndex >= 20);
+  }, [rows.length]);
   const follow = useRef(!target && !timeline.anchor), positioned = useRef<string | null>(null), initialized = useRef(false);
   const readerMoved = useRef(false), viewportHeight = useRef(height);
   useLayoutEffect(() => { viewportHeight.current = height; }, [height]);
@@ -170,12 +175,12 @@ export function ChatList({ chatId }: { chatId: string }) {
   return <>
     <ChatTopbar />
     <div ref={container} className="relative min-h-0 flex-1" onWheelCapture={() => { readerMoved.current = true; }} onTouchMoveCapture={() => { readerMoved.current = true; }} onKeyDownCapture={event => { if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'].includes(event.key)) readerMoved.current = true; }} onPointerDownCapture={event => { if (event.target === outer.current) readerMoved.current = true; }}>
-      {rows.length ? <VariableSizeList ref={list} outerRef={outer} width="100%" height={height} itemCount={rows.length} itemSize={rowSize} estimatedItemSize={120} itemData={data} itemKey={(index, value) => value.rows[index]._id} overscanCount={5} onScroll={({ scrollUpdateWasRequested }) => { if (!scrollUpdateWasRequested) observeScroll(); }} style={{ overflowAnchor: 'none' }}>{Row}</VariableSizeList> :
+      {rows.length ? <VariableSizeList ref={list} outerRef={outer} width="100%" height={height} itemCount={rows.length} itemSize={rowSize} estimatedItemSize={120} itemData={data} itemKey={(index, value) => value.rows[index]._id} overscanCount={5} onItemsRendered={onItemsRendered} onScroll={({ scrollUpdateWasRequested }) => { if (!scrollUpdateWasRequested) observeScroll(); }} style={{ overflowAnchor: 'none' }}>{Row}</VariableSizeList> :
         <div className="h-full overflow-hidden p-4">{state.loading || !state.valid ? Array.from({ length: 5 }, (_, i) => <MessageCardSkeleton key={i} isMine={i % 2 === 0} />) : state.error ? <p role="alert" className="p-5 text-center">{common.unavailable}</p> : null}</div>}
       {state.error ? <div className="absolute inset-x-0 top-0 flex justify-center gap-2 bg-background/95 p-2" role="alert"><span>{common.unavailable}</span><Button variant="outline" onClick={() => void timeline.retry()}>{common.retry}</Button>{target ? <Button onClick={() => void jumpLatest()}>{latestLabel}</Button> : null}</div> : null}
       {state.olderLoading || state.olderError ? <div className="absolute inset-x-0 top-0 flex justify-center">{state.olderError ? <Button onClick={() => void timeline.olderPage()}>{common.retry}</Button> : <span className="rounded-full bg-background px-3 py-1 text-xs" role="status">{common.loading}</span>}</div> : null}
       {state.newerLoading || state.newerError ? <div className="absolute inset-x-0 bottom-14 flex justify-center">{state.newerError ? <Button onClick={() => void timeline.newerPage()}>{common.retry}</Button> : <span className="rounded-full bg-background px-3 py-1 text-xs" role="status">{common.loading}</span>}</div> : null}
-      {rows.length > 0 && (!atBottom || state.hasNewer || target) ? <Button className="absolute bottom-3 end-4 rounded-full shadow-lg" onClick={() => void jumpLatest()}>{latestLabel}{state.hasNewer ? ' •' : ''}</Button> : null}
+      {rows.length > 0 && !atBottom && (farFromLatest || state.hasNewer) ? <Button className="absolute bottom-3 end-4 rounded-full shadow-lg" onClick={() => void jumpLatest()}>{latestLabel}{state.hasNewer ? ' •' : ''}</Button> : null}
     </div>
     {chat && state.valid ? <ChatBottombar onSent={onSent} onEdited={id => timeline.changed({ messageId: id, kind: 'editMessage' })} /> : null}
   </>;
