@@ -1,4 +1,5 @@
 import { API_URL } from "@/constants";
+import { routing } from "@/i18n/routing";
 import axios from "axios";
 import { type ClassValue, clsx } from "clsx";
 import { getCookie } from "cookies-next";
@@ -25,7 +26,10 @@ export const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const language = getCookie("NEXT_LOCALE") || "en";
+    const language =
+      getCookie("NEXT_LOCALE") ||
+      config.headers["Accept-Language"] ||
+      routing.defaultLocale;
     const token = getCookie("token");
     config.headers["Accept-Language"] = language;
     // A component can render once before AuthProvider hydrates and pass an
@@ -49,7 +53,7 @@ axiosInstance.interceptors.request.use(
 //     if (axios.isAxiosError(error) && error.response?.status === 401) {
 //       // Handle unauthorized access
 //       localStorage.setItem("error", JSON.stringify(error));
-//       const language = Cookies.get("NEXT_LOCALE") || "en";
+//       const language = Cookies.get("NEXT_LOCALE") || routing.defaultLocale;
 //       const pathName = window.location.pathname;
 //       const pathNameWithoutLocale = pathName.replace(`/${language}`, "");
 //       sessionStorage.setItem("redirect", pathNameWithoutLocale);

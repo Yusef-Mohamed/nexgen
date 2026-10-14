@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { FaTelegramPlane, FaWhatsapp } from "react-icons/fa";
+import { FaTelegramPlane } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
 import SectionHeader from "@/components/SectionHeader";
 import { cn } from "@/lib/utils";
@@ -23,14 +23,6 @@ const ContactCols = () => {
       icon: <FaTelegramPlane />,
       tone: "secondary",
     },
-    {
-      title: text("whatsapp"),
-      description: text("whatsappDescription"),
-      action: text("supportWhatsapp"),
-      href: "https://wa.me/+972593442082",
-      icon: <FaWhatsapp />,
-      tone: "primary",
-    },
   ];
 
   return (
@@ -45,7 +37,7 @@ const ContactCols = () => {
         />
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-5 md:grid-cols-2">
         {cards.map((card) => {
           const isPrimary = card.tone === "primary";
           return (

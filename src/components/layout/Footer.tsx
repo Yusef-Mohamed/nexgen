@@ -26,7 +26,6 @@ const companyLinks = [
 ];
 
 const supportLinks = [
-  { name: "whatsapp", link: "https://wa.me/+972593442082" },
   { name: "telegram", link: "https://t.me/nexgensupport" },
 ];
 

@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { API_URL } from "@/constants";
+import { routing } from "@/i18n/routing";
 import { IBlog, ICourse, IPackage, ICoursePackage } from "../types";
 import axios from "axios";
 
@@ -29,7 +30,7 @@ const createAxiosInstance = () => {
   return axios.create({
     baseURL: API_URL,
     headers: {
-      "Accept-Language": "en",
+      "Accept-Language": routing.defaultLocale,
     },
   });
 };

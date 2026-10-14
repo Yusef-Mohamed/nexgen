@@ -1,4 +1,5 @@
 import { API_URL } from "@/constants";
+import { routing } from "@/i18n/routing";
 import axios from "axios";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -13,7 +14,8 @@ export const getServerCookie = async (key: string, isObject?: boolean) => {
 export const createServerAxiosInstance = async ({
   overRideLocale,
 }: { overRideLocale?: string } = {}) => {
-  const locale = overRideLocale || (await getServerCookie("NEXT_LOCALE"));
+  const locale =
+    overRideLocale || (await getServerCookie("NEXT_LOCALE")) || routing.defaultLocale;
   const instance = axios.create({
     baseURL: API_URL,
     headers: {
