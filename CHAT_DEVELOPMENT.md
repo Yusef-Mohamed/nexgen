@@ -1,0 +1,9 @@
+# Cursor chat development
+
+The timeline uses the shared pure `src/lib/chat-timeline-core.ts` (kept identical to Mobile), a five-conversation memory cache, a 200-message contiguous visible section plus a separate latest 40, and ten-minute inactive expiry. Requests default to 20 messages. Old and latest sections remain separate across missing history. `react-window` renders measured, memoized rows with a stable message/offset anchor. Notification jumps hold the target through initial row measurement until the reader scrolls. Latest clears the target and uses one direct latest request, or an already validated latest cache.
+
+REST writes are authoritative. Chat-change events coalesce for 100 ms and reconcile retained versions rather than all pages. Reconnection and safety/account changes invalidate or clear cached access. Cumulative read receipts advance only at the verified live bottom. Notification acknowledgment does not block target navigation.
+
+Development: https://development.nexgen-academy.com. Full deployment, fixture commands, measurements, and remaining device checks are in the sibling Backend repository's `docs/DEVELOPMENT_CHAT.md`. Development-only browser timing requires `NEXT_PUBLIC_CHAT_TIMING=true`; inspect `document.documentElement.dataset.chatDiagnostics` for sanitized timing/request records. Passwords and tokens are never included.
+
+Validate with `npm run lint`, `npm run build`, and the repository's relevant `*.test.mjs` tests. Existing Website locale/contact changes were separately preserved in `df233fe` before chat implementation.

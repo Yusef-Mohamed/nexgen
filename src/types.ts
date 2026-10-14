@@ -452,6 +452,7 @@ export interface INotification {
   course?: string;
   post?: IPost;
   chat?: IChat;
+  messageId?: string;
   file?: string;
   followedUser?: IUser;
   updatedAt: string;

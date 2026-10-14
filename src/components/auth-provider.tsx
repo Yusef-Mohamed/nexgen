@@ -14,6 +14,7 @@ import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { IUser } from "@/types";
 import { axiosInstance } from "@/app/lib/utils";
+import { timelines } from '@/lib/chat-timeline-cache';
 import { toast } from "react-toastify";
 import { useLocale, useTranslations } from "next-intl";
 import { AxiosError } from "axios";
@@ -105,6 +106,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
   const queryClient = useQueryClient();
   const clearSession = useCallback(() => {
+    timelines.clear();
     deleteCookie("user");
     deleteCookie("token");
     delete axiosInstance.defaults.headers.common["Authorization"];
@@ -194,6 +196,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     refresh?: boolean;
   }) => {
     setCookie("user", JSON.stringify(userData), { maxAge: 60 * 60 * 24 });
+    if (user?._id !== userData._id) timelines.clear();
     setUser(userData);
     if (token) {
       setCookie("token", token, { maxAge: 60 * 60 * 24 });

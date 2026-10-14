@@ -18,7 +18,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
-import { useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
+import { timelines } from '@/lib/chat-timeline-cache';
 import { Button } from "../ui/button";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { axiosInstance } from "@/app/lib/utils";
@@ -43,7 +44,8 @@ const MessageCard: React.FC<MessageCardProps> = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedLink, setSelectedLink] = useState<string | null>(null);
-  const { setActionOnMessage, deleteMessage, socket } = useChatStore();
+  const setActionOnMessage = useChatStore(state => state.setActionOnMessage);
+  const deleteMessage = useChatStore(state => state.deleteMessage);
   const messageDiv = useRef(null);
   const { user: myAccount, token } = useAuth();
   const text = useTranslations("chat");
@@ -63,14 +65,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
       if (!isCurrentChatRequest(epoch, message.chat)) return;
       deleteMessage(message._id);
       setIsDeleting(false);
-      if (socket) {
-        socket.emit("sendMessage", {
-          senderId: myAccount?._id,
-          roomId: message.chat,
-          payload: message._id,
-          action: "deleteMessage",
-        });
-      }
+      timelines.changed(myAccount?._id || '', { chatId: message.chat, messageId: message._id, kind: 'deleteMessage' });
     } catch {
       if (isCurrentChatRequest(epoch, message.chat)) toast.error(safetyCopy[locale === "ar" ? "ar" : "en"].error);
     } finally {
@@ -400,4 +395,4 @@ export const MessageCardSkeleton = ({ isMine }: { isMine: boolean }) => {
   );
 };
 
-export default MessageCard;
+export default memo(MessageCard);

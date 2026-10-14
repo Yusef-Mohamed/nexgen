@@ -9,6 +9,8 @@ import { SOCKET_URL } from "@/constants";
 import { axiosInstance } from "@/app/lib/utils";
 import { useAuth } from "@/components/auth-provider";
 import { IChat } from "@/types";
+import { timelines } from '@/lib/chat-timeline-cache';
+import type { TimelineChange } from '@/lib/chat-timeline-core';
 
 interface ChatLayoutProps {
   selectedChat?: string;
@@ -89,23 +91,31 @@ export function ChatLayout({ selectedChat }: ChatLayoutProps) {
 
   useEffect(() => {
     isFetchingChatsRef.current = false;
-    void getChats(1);
+    const timer = setTimeout(() => void getChats(1), 300);
+    return () => clearTimeout(timer);
   }, [getChats, safetyEpoch]);
 
   useEffect(() => {
     if (!token) return;
 
-    const data = io(SOCKET_URL, { auth: { token } });
+    const data = io(SOCKET_URL, { auth: { token, timeline: true } });
     setSocket(data);
+    const account = user?._id || '';
+    let refresh: ReturnType<typeof setTimeout> | undefined;
     data.on("chat:safety-changed", () => useChatStore.getState().resetSafety());
-    data.on("connect", () => useChatStore.getState().resetSafety());
-    data.on("chat:changed", () => { void getChats(1); });
+    data.on("connect", () => timelines.invalidate(account));
+    data.on("disconnect", () => timelines.invalidate(account));
+    data.on("chat:changed", (change: TimelineChange) => {
+      timelines.changed(account, change);
+      if (!refresh) refresh = setTimeout(() => { refresh = undefined; void getChats(1); }, 500);
+    });
 
     return () => {
       data.disconnect();
-      useChatStore.getState().resetSafety();
+      clearTimeout(refresh);
+      timelines.invalidate(account);
     };
-  }, [token, setSocket, getChats]);
+  }, [token, user?._id, setSocket, getChats]);
 
   useEffect(() => {
     if (socket && user?._id) {
@@ -134,7 +144,7 @@ export function ChatLayout({ selectedChat }: ChatLayoutProps) {
         hasMoreChats={hasMoreChats}
         onLoadMoreChats={loadMoreChats}
       />
-      <Chat key={String(user?._id) + ":" + safetyEpoch} selectedChat={selectedChat} />
+      <Chat key={String(user?._id)} selectedChat={selectedChat} />
     </div>
   );
 }

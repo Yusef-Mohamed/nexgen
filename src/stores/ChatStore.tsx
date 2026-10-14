@@ -1,6 +1,7 @@
 import { IChat, IMessage, IPagination } from "@/types";
 import { Socket } from "socket.io-client";
 import { create } from "zustand";
+import { timelines } from '@/lib/chat-timeline-cache';
 
 type ChatStore = {
   safetyEpoch: number;
@@ -40,7 +41,7 @@ type ChatStore = {
 
 export const useChatStore = create<ChatStore>((set) => ({
   safetyEpoch: 0,
-  resetSafety: () => set((state) => ({ safetyEpoch: state.safetyEpoch + 1, chats: [], messages: [], thisChat: null, actionOnMessage: null, chatsPagination: null, messagesPagination: null, chatCurrentPage: 1, messageCurrentPage: 1 })),
+  resetSafety: () => { timelines.resetSafety(); set((state) => ({ safetyEpoch: state.safetyEpoch + 1, chats: [], messages: [], thisChat: null, actionOnMessage: null, chatsPagination: null, messagesPagination: null, chatCurrentPage: 1, messageCurrentPage: 1 })); },
   chats: [],
   setChats: (chats) => set({ chats }),
   isFetchingChats: true,

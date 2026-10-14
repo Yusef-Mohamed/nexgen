@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UserAvatar from "@/components/UserAvatar";
-import { useChatStore } from "@/stores/ChatStore";
+import { useChatStore, isCurrentChatRequest } from "@/stores/ChatStore";
 import { IChat, IUser } from "@/types";
 import {
   Sheet,
@@ -165,6 +165,16 @@ export default function ChatTopbar() {
     (user) => user.user !== thisUser?._id,
   );
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const chatId = thisChat?._id;
+  useEffect(() => {
+    if (!isInfoOpen || !chatId) return;
+    const epoch = useChatStore.getState().safetyEpoch;
+    const controller = new AbortController();
+    void axiosInstance.get(`/chats/${chatId}/details`, { signal: controller.signal, headers: { Authorization: `Bearer ${token}` } })
+      .then(response => { if (isCurrentChatRequest(epoch, chatId)) setThisChat(response.data.data); })
+      .catch(() => {});
+    return () => controller.abort();
+  }, [isInfoOpen, chatId, token, setThisChat]);
   const text = useTranslations("chat");
   const isAdmin = thisChat?.participants.find(
     (participant) => participant.user === thisUser?._id,

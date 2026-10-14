@@ -14,6 +14,7 @@ import { useAuth } from "./auth-provider";
 import { useRouter } from "@/i18n/navigation";
 import { Button } from "./ui/button";
 import { NotificationIcon } from "./icons";
+import { startChatTiming } from '@/lib/chat-timeline-timing';
 const NotificationDropDownMenu = () => {
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [isOpened, setIsOpened] = useState(false);
@@ -66,7 +67,7 @@ const NotificationDropDownMenu = () => {
     if (isOpened) fetchNotifications(true);
   }, [fetchNotifications, isOpened, unReadCount, clearAllUnread]);
   return (
-    <DropdownMenu onOpenChange={setIsOpened}>
+    <DropdownMenu open={isOpened} onOpenChange={setIsOpened}>
       <DropdownMenuTrigger asChild>
         <Button
           className="relative size-10 rounded-xl border-primary/10 bg-clear-ground text-text-3 shadow-none transition-colors hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
@@ -87,14 +88,14 @@ const NotificationDropDownMenu = () => {
           <NotificationCard
             key={n._id}
             notification={n}
-            readNotification={async () => {
-              if (!n.read)
-                await readNotification({
-                  id: n._id as string,
-                });
-              if (n.type === "chat" && n.chat)
-                router.push(`/dashboard/chat?selectedChat=${n.chat._id}`);
-              else if (n.type === "follow" && n.followedUser)
+            readNotification={() => {
+              setIsOpened(false);
+              // Capture this item's target before acknowledging or refreshing it.
+              if (!n.read) void Promise.resolve(readNotification({ id: n._id })).catch(() => {});
+              if (n.type === "chat" && n.chat) {
+                startChatTiming(n.chat._id, 'inbox');
+                router.push(`/dashboard/chat?selectedChat=${n.chat._id}${n.messageId && /^[a-f\d]{24}$/i.test(n.messageId) ? `&messageId=${n.messageId}` : ''}`);
+              } else if (n.type === "follow" && n.followedUser)
                 router.push(
                   `/dashboard/community/profile/${n.followedUser._id}`,
                 );

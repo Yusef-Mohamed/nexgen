@@ -1,84 +1,47 @@
-import test from "node:test";
-import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import vm from "node:vm";
-import ts from "typescript";
-import { create } from "zustand";
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import vm from 'node:vm';
+import ts from 'typescript';
+const source = ts.transpileModule(readFileSync(new URL('../lib/chat-timeline-core.ts', import.meta.url), 'utf8'), {
+  compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+}).outputText;
+const testModule = { exports: {} };
+vm.runInNewContext(source, { module: testModule, exports: testModule.exports, AbortController, setTimeout, clearTimeout });
+const { ChatTimeline } = testModule.exports;
+const row = (n, version = 0) => ({ _id: String(n), text: String(n), createdAt: new Date(n * 1000).toISOString(), _cursor: String(n), chatVersion: version });
+const page = (start = 480, end = 519) => ({ data: Array.from({ length: end - start + 1 }, (_, i) => row(start + i)), olderCursor: String(start), newerCursor: String(end), latestCursor: '1000', hasOlder: start > 1, hasNewer: end < 1000 });
+const sync = async () => ({ data: [], removedIds: [], latest: null });
 
-function compile(file, dependencies) {
-  const source = ts.transpileModule(readFileSync(new URL(file, import.meta.url), "utf8"), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
-  }).outputText;
-  const testModule = { exports: {} };
-  vm.runInNewContext(source, { module: testModule, exports: testModule.exports, require: name => {
-    if (name in dependencies) return dependencies[name];
-    throw new Error(`Unexpected dependency: ${name}`);
-  } });
-  return testModule.exports;
-}
-
-function setup(request) {
-  const storeModule = compile("./ChatStore.tsx", { zustand: { create } });
-  const store = storeModule.useChatStore;
-  store.getState().setSelectedChatId("group");
-  const callbacks = [];
-  const effects = [];
-  const stateUpdates = [];
-  const react = {
-    useCallback: callback => { callbacks.push(callback); return callback; },
-    useRef: current => ({ current }),
-    useState: value => [value, next => stateUpdates.push(next)],
-    useEffect: effect => effects.push(effect),
-    useMemo: factory => factory(),
-  };
-  const hook = Object.assign(() => store.getState(), { getState: store.getState });
-  const { ChatList } = compile("../app/[locale]/dashboard/chat/components/ChatList.tsx", {
-    react, "react/jsx-runtime": { jsx: () => null, jsxs: () => null },
-    "next-intl": { useLocale: () => "en" }, "./ChatBottomBar": {},
-    "@/components/cards/MessageCard": {},
-    "@/stores/ChatStore": { ...storeModule, useChatStore: hook },
-    "@/components/auth-provider": { useAuth: () => ({ user: { _id: "tester" }, token: "test-only" }) },
-    "@/app/lib/utils": { axiosInstance: request },
-    "@/lib/safety-contract": { safetyCopy: { en: { error: "Retry", retry: "Retry" } } },
-    "@/components/ui/button": {},
-  });
-  ChatList();
-  return { store, fetch: callbacks[0], effects, stateUpdates };
-}
-
-test("failed older history preserves messages and enables retry", async () => {
-  const app = setup(async () => { throw new Error("offline"); });
-  app.store.getState().setMessages([{ _id: "visible", chat: "group" }]);
-  await app.fetch(2, "older");
-  assert.equal(app.store.getState().messages[0]._id, "visible");
-  assert.ok(app.stateUpdates.includes(2));
+test('failed older history preserves the visible section and enables retry', async () => {
+  let fail = false;
+  const timeline = new ChatTimeline({ page: async options => { if (options.before && fail) throw Error('offline'); return options.before ? page(440, 479) : page(); }, sync, accessDenied: () => false });
+  await timeline.open('500'); fail = true;
+  await timeline.olderPage();
+  assert.equal(timeline.getSnapshot().rows[0]._id, '480');
+  assert.ok(timeline.getSnapshot().olderError);
+  fail = false; await timeline.olderPage();
+  assert.equal(timeline.getSnapshot().rows[0]._id, '440');
 });
-
-test("initial history cannot discard a message received while the request was pending", async () => {
+test('older cursor boundaries do not shift after 50 inserts; latest is one direct request', async () => {
+  const calls = [];
+  const timeline = new ChatTimeline({ page: async options => { calls.push(options); return options.around ? page() : options.before ? page(440, 479) : page(1011, 1050); }, sync, accessDenied: () => false });
+  await timeline.open('500'); await timeline.olderPage();
+  assert.equal(calls[1].before, '480');
+  await timeline.jumpLatest();
+  assert.equal(calls.length, 3);
+  assert.equal(timeline.getSnapshot().rows[0]._id, '1011');
+});
+test('overlapping history cannot revert a record with a newer version', async () => {
+  const timeline = new ChatTimeline({ page: async options => options.before ? page(479, 500) : page(), sync: async () => ({ data: [{ ...row(500, 2), text: 'edited' }], removedIds: [], latest: null }), accessDenied: () => false });
+  await timeline.open('500'); await timeline.revalidate(); await timeline.olderPage();
+  const rows = timeline.getSnapshot().rows;
+  assert.equal(rows.find(m => m._id === '500').text, 'edited');
+  assert.equal(new Set(rows.map(m => m._id)).size, rows.length);
+});
+test('account reset discards responses from the previous account', async () => {
   let resolve;
-  const app = setup(() => new Promise(done => { resolve = done; }));
-  const pending = app.fetch(1, "initial");
-  app.store.getState().addMessage({ _id: "live", chat: "group" });
-  resolve({ data: { data: [{ _id: "older", chat: "group" }] } });
-  await pending;
-  assert.equal(app.store.getState().messages.map(m => m._id).join(), "older,live");
-});
-
-test("older history cannot revert a live edit", async () => {
-  const app = setup(async () => ({ data: { data: [{ _id: "same", text: "outdated" }] } }));
-  app.store.getState().setMessages([{ _id: "same", text: "edited" }]);
-  await app.fetch(2, "older");
-  assert.equal(app.store.getState().messages[0].text, "edited");
-});
-
-test("a response from a previous visit cannot overwrite the reopened conversation", async () => {
-  let resolve;
-  const app = setup(() => new Promise(done => { resolve = done; }));
-  const pending = app.fetch(1, "initial");
-  app.store.getState().setSelectedChatId("direct");
-  app.store.getState().setSelectedChatId("group");
-  app.store.getState().setMessages([{ _id: "current" }]);
-  resolve({ data: { data: [{ _id: "stale" }] } });
-  await pending;
-  assert.equal(app.store.getState().messages[0]._id, "current");
+  const timeline = new ChatTimeline({ page: () => new Promise(done => { resolve = done; }), sync, accessDenied: () => false });
+  const pending = timeline.open('500'); timeline.clear(); resolve(page()); await pending;
+  assert.equal(timeline.getSnapshot().rows.length, 0);
 });

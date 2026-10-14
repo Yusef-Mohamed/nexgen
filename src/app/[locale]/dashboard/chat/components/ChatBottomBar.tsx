@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { useChatStore, isCurrentChatRequest } from "@/stores/ChatStore";
-import { IMessage } from "@/types";
+import type { WireMessage } from '@/lib/chat-timeline-cache';
 import { useLocale, useTranslations } from "next-intl";
 import { safetyCopy } from "@/lib/safety-contract";
 import { IoMdClose } from "react-icons/io";
@@ -15,7 +15,7 @@ import { SendHorizontal } from "lucide-react";
 import { EmojiPicker } from "@/components/EmojiPicker";
 import { cn } from "@/lib/utils";
 
-export default function ChatBottombar() {
+export default function ChatBottombar({ onSent, onEdited }: { onSent: (message: WireMessage) => void; onEdited: (id: string) => void }) {
   const text = useTranslations("chat");
   const locale = useLocale();
   const common = safetyCopy[locale === "ar" ? "ar" : "en"];
@@ -24,11 +24,11 @@ export default function ChatBottombar() {
   const [media, setMedia] = useState<File | null>(null);
   const inputRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<HTMLInputElement>(null);
-  const { token, user } = useAuth();
+  const { token } = useAuth();
+  const retry = useRef<{ key: string; text: string; media: File | null; reply?: string } | null>(null);
   const {
     setActionOnMessage,
     selectedChatId,
-    socket,
     addMessage,
     actionOnMessage,
     updateMessage,
@@ -38,28 +38,6 @@ export default function ChatBottombar() {
     element.style.height = "auto";
     element.style.height = `${Math.min(element.scrollHeight, 160)}px`;
   }, []);
-
-  const sendMessageToSocket = useCallback(
-    (payload: IMessage, type: "new" | "edit") => {
-      if (socket) {
-        if (type === "new")
-          socket.emit("sendMessage", {
-            senderId: user?._id,
-            roomId: selectedChatId,
-            payload: payload,
-            action: "sendMessage",
-          });
-        else if (type === "edit")
-          socket.emit("sendMessage", {
-            senderId: user?._id,
-            roomId: selectedChatId,
-            payload: payload,
-            action: "editMessage",
-          });
-      }
-    },
-    [socket, user?._id, selectedChatId],
-  );
 
   const resetComposer = useCallback(() => {
     setMessage("");
@@ -84,19 +62,27 @@ export default function ChatBottombar() {
       if (message) data.append("text", message);
       if (media) data.append("media", media);
       try {
-        if (!actionOnMessage) {
+        if (actionOnMessage?.action !== 'edit') {
+          const reply = actionOnMessage?.message._id;
+          if (!retry.current || retry.current.text !== message || retry.current.media !== media || retry.current.reply !== reply) {
+            retry.current = { key: crypto.randomUUID(), text: message, media, reply };
+          }
+          data.append('clientMessageId', retry.current.key);
+          if (reply) data.append('repliedTo', reply);
           const res = await axiosInstance.post(
-            "/messages/" + selectedChatId,
+            "/messages/mobile/" + selectedChatId,
             data,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
+                'Idempotency-Key': retry.current.key,
               },
             },
           );
           if (!current()) return;
           addMessage(res.data);
-          sendMessageToSocket(res.data, "new");
+          onSent(res.data);
+          retry.current = null;
         } else if (actionOnMessage.action === "edit") {
           const res = await axiosInstance.put(
             "/messages/" + actionOnMessage.message._id,
@@ -109,20 +95,7 @@ export default function ChatBottombar() {
           );
           if (!current()) return;
           updateMessage(res.data);
-          sendMessageToSocket(res.data, "edit");
-        } else if (actionOnMessage.action === "reply") {
-          const res = await axiosInstance.post(
-            "/messages/" + actionOnMessage.message._id + "/reply",
-            data,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
-          );
-          if (!current()) return;
-          addMessage(res.data.data);
-          sendMessageToSocket(res.data.data, "new");
+          onEdited(actionOnMessage.message._id);
         }
         setActionOnMessage(null);
         resetComposer();
@@ -142,7 +115,8 @@ export default function ChatBottombar() {
     actionOnMessage,
     selectedChatId,
     token,
-    sendMessageToSocket,
+    onSent,
+    onEdited,
     addMessage,
     updateMessage,
     setActionOnMessage,

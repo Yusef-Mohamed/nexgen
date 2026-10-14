@@ -10,6 +10,7 @@ const source = ts.transpileModule(readFileSync(new URL("./ChatStore.tsx", import
 const testModule = { exports: {} };
 vm.runInNewContext(source, { exports: testModule.exports, module: testModule, require: name => {
   if (name === "zustand") return { create };
+  if (name === '@/lib/chat-timeline-cache') return { timelines: { resetSafety() {} } };
   throw new Error("Unexpected dependency: " + name);
 }});
 const { useChatStore: store, isCurrentChatRequest } = testModule.exports;
