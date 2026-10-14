@@ -78,7 +78,8 @@ export class ChatTimeline<T extends TimelineMessage> {
     this.prune();
   }
   async open(target?: string) {
-    if (this.opened && this.target === target && this.state.rows.length && this.state.valid) return;
+    if (this.opened && this.target === target && this.state.rows.length && this.state.valid &&
+      (!target || this.state.rows.some(row => row._id === target))) return;
     if (this.opened && this.target === target && this.state.loading) return;
     this.target = target; this.opened = true;
     if (this.state.rows.length && !this.state.valid) {

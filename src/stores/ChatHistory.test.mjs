@@ -45,3 +45,19 @@ test('account reset discards responses from the previous account', async () => {
   const pending = timeline.open('500'); timeline.clear(); resolve(page()); await pending;
   assert.equal(timeline.getSnapshot().rows.length, 0);
 });
+
+test('reopening an evicted notification target fetches its original section again', async () => {
+  const calls = [];
+  const timeline = new ChatTimeline({
+    page: async options => { calls.push(options); return options.after ? page(Number(options.after) + 1, Number(options.after) + 40) : page(); },
+    sync, accessDenied: () => false,
+  });
+  await timeline.open('500');
+  for (let i = 0; i < 8; i++) await timeline.newerPage();
+  assert.ok(!timeline.getSnapshot().rows.some(row => row._id === '500'));
+  const count = calls.length;
+  await timeline.open('500');
+  assert.equal(calls.length, count + 1);
+  assert.equal(calls.at(-1).around, '500');
+  assert.ok(timeline.getSnapshot().rows.some(row => row._id === '500'));
+});
