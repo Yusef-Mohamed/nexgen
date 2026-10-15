@@ -175,7 +175,7 @@ const FocusedPostCard: React.FC<FocusedPostCardProps> = ({
                 height={960}
                 src={allImages[selectedImage]}
                 alt=""
-                className="max-h-[58vh] w-full rounded-2xl object-contain lg:max-h-[72vh]"
+                className="h-[58vh] w-full rounded-2xl object-contain lg:h-[72vh]"
               />
             </div>
 

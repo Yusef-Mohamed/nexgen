@@ -141,7 +141,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                 alt={isEn ? `Comment image ${index + 1}` : `صورة التعليق ${index + 1}`}
                 width={520}
                 height={360}
-                className="max-h-72 w-full object-cover"
+                className="h-64 w-full object-contain"
               />
             </div>
           ))}

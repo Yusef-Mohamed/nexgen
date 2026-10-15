@@ -335,7 +335,7 @@ const AnalyticCard = ({
                   ] || ""
                 }
                 alt=""
-                className="w-full max-h-[80vh] aspect-square object-contain"
+                className="h-[min(600px,80vh)] w-full object-contain"
               />
             </div>
           </div>
