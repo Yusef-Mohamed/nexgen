@@ -31,7 +31,7 @@ const Row = memo(function Row({ index, style, data }: ListChildComponentProps<Ro
   const newDay = !previous || new Date(previous.createdAt).toDateString() !== new Date(message.createdAt).toDateString();
   return <div style={style}>
     <div ref={ref} data-message-id={message._id} className={message._id === data.target ? 'rounded-xl bg-primary/15 ring-2 ring-inset ring-primary/40' : ''}>
-      {newDay ? <p className="py-4 text-center text-xs text-text-3">{new Intl.DateTimeFormat(data.locale, { dateStyle: 'medium' }).format(new Date(message.createdAt))}</p> : null}
+      {newDay ? <p dir="ltr" className="py-4 text-center text-xs text-text-3">{new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(message.createdAt)).replaceAll("/", "-")}</p> : null}
       <MessageCard message={message} isMine={message.sender?._id === data.userId} isFirst={!sameGroup(previous, message)} isLast={!sameGroup(message, next)} />
     </div>
   </div>;
