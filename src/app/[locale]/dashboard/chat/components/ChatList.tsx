@@ -42,6 +42,7 @@ export function ChatList({ chatId }: { chatId: string }) {
   const { timeline, state, chat, active } = useChatTimeline(chatId, target);
   const rows = state.rows;
   const common = safetyCopy[locale === 'ar' ? 'ar' : 'en'];
+  const loadingMessagesLabel = locale === 'ar' ? 'جار تحميل الرسائل...' : 'Loading messages...';
   const latestLabel = locale === 'ar' ? '↓ أحدث الرسائل' : '↓ Latest';
   const list = useRef<VariableSizeList<RowData>>(null), outer = useRef<HTMLDivElement>(null), container = useRef<HTMLDivElement>(null);
   const sizes = useRef(new Map<string, number>()), rowsRef = useRef(rows);
@@ -177,8 +178,8 @@ export function ChatList({ chatId }: { chatId: string }) {
       {rows.length ? <VariableSizeList ref={list} outerRef={outer} width="100%" height={height} itemCount={rows.length} itemSize={rowSize} estimatedItemSize={120} itemData={data} itemKey={(index, value) => value.rows[index]._id} overscanCount={5} onItemsRendered={onItemsRendered} onScroll={({ scrollUpdateWasRequested }) => { if (!scrollUpdateWasRequested) observeScroll(); }} style={{ overflowAnchor: 'none' }}>{Row}</VariableSizeList> :
         <div className="h-full overflow-hidden p-4">{state.loading || !state.valid ? Array.from({ length: 5 }, (_, i) => <MessageCardSkeleton key={i} isMine={i % 2 === 0} />) : state.error ? <p role="alert" className="p-5 text-center">{common.unavailable}</p> : null}</div>}
       {state.error ? <div className="absolute inset-x-0 top-0 flex justify-center gap-2 bg-background/95 p-2" role="alert"><span>{common.unavailable}</span><Button variant="outline" onClick={() => void timeline.retry()}>{common.retry}</Button>{target ? <Button onClick={() => void jumpLatest()}>{latestLabel}</Button> : null}</div> : null}
-      {state.olderLoading || state.olderError ? <div className="absolute inset-x-0 top-0 flex justify-center">{state.olderError ? <Button onClick={() => void timeline.olderPage()}>{common.retry}</Button> : <span className="rounded-full bg-background px-3 py-1 text-xs" role="status">{common.loading}</span>}</div> : null}
-      {state.newerLoading || state.newerError ? <div className="absolute inset-x-0 bottom-14 flex justify-center">{state.newerError ? <Button onClick={() => void timeline.newerPage()}>{common.retry}</Button> : <span className="rounded-full bg-background px-3 py-1 text-xs" role="status">{common.loading}</span>}</div> : null}
+      {state.olderLoading || state.olderError ? <div className="absolute inset-x-0 top-0 flex justify-center">{state.olderError ? <Button onClick={() => void timeline.olderPage()}>{common.retry}</Button> : <span className="rounded-full bg-background px-3 py-1 text-xs" role="status">{loadingMessagesLabel}</span>}</div> : null}
+      {state.newerLoading || state.newerError ? <div className="absolute inset-x-0 bottom-14 flex justify-center">{state.newerError ? <Button onClick={() => void timeline.newerPage()}>{common.retry}</Button> : <span className="rounded-full bg-background px-3 py-1 text-xs" role="status">{loadingMessagesLabel}</span>}</div> : null}
       {rows.length > 0 && !atBottom && (farFromLatest || state.hasNewer) ? <Button className="absolute bottom-3 end-4 rounded-full shadow-lg" onClick={() => void jumpLatest()}>{latestLabel}{state.hasNewer ? ' •' : ''}</Button> : null}
     </div>
     {chat ? <ChatBottombar disabled={!state.valid} onSent={onSent} onEdited={id => timeline.changed({ messageId: id, kind: 'editMessage' })} /> : null}
