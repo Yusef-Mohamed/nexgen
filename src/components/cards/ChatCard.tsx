@@ -51,7 +51,7 @@ const ChatCard: React.FC<ChatCardProps> = ({ chat, selectedChat, onClick }) => {
           </span>
         </div>
         <div className="mt-1 min-w-0 text-xs text-text-3">
-          <span className="line-clamp-1">{lastMessage?.text || "---"}</span>
+          <span className="line-clamp-1">{lastMessage?.text?.trim() || "---"}</span>
         </div>
       </div>
       {lastMessage?.createdAt && (

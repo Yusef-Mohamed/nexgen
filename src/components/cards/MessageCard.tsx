@@ -75,7 +75,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
 
   const renderMessageText = (content: string) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const parts = content?.split(urlRegex);
+    const parts = content?.trim().split(urlRegex);
 
     return parts?.map((part, index) => {
       if (part.match(urlRegex)) {
@@ -187,7 +187,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                   </div>
                 )}
 
-                {message.text && <p>{renderMessageText(message.text)}</p>}
+                {message.text?.trim() && <p>{renderMessageText(message.text)}</p>}
                 {message.media.map((uri) => <ChatAttachment key={uri} uri={uri} />)}
               </div>
               <div

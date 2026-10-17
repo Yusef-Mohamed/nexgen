@@ -179,7 +179,7 @@ export default function ChatBottombar({ onSent, onEdited, disabled = false }: { 
                   {actionOnMessage.message.sender.name}
                 </h4>
                 <p className="line-clamp-2 text-xs leading-5 text-text-3">
-                  {actionOnMessage.message.text}
+                  {actionOnMessage.message.text.trim()}
                 </p>
               </div>
               <div className="flex shrink-0 flex-col items-end gap-1">
