@@ -20,7 +20,7 @@ const Services: React.FC<{ viewAll?: boolean }> = async ({ viewAll }) => {
       id="services-section"
       heading={text("heading")}
       button={!viewAll ? text("exploreAllServices") : ""}
-      href="/courses#services-section"
+      href="/courses?tab=services"
     >
       {packagesData.map((_package, index) => (
         <ServiceCard key={index} {..._package} />

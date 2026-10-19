@@ -93,7 +93,7 @@ const LearningPathsBlock: React.FC = () => {
       heading={lpText("ourPopularLearningPaths")}
       description={lpText("heading")}
       tone="primary"
-      href="/learning-paths"
+      href="/courses?tab=learning-paths"
       cta={lpText("exploreAllPaths")}
       filterSlot={
         <CategoryFilter
@@ -183,7 +183,7 @@ const ServicesBlock: React.FC = () => {
       heading={serviceText("ourPopularServices")}
       description={serviceText("popularDescription")}
       tone="primary"
-      href="/services"
+      href="/courses?tab=services"
       cta={serviceText("exploreAllServices")}
       filterSlot={
         <CategoryFilter

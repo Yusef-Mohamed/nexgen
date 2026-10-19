@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import OurCourses from "./OurCourses";
 import OurLearningPaths from "./OurLearningPaths";
@@ -28,7 +29,20 @@ const FilterTab: React.FC<FilterTabProps> = ({ label, isActive, onClick }) => (
 
 const CoursesFilterContent: React.FC = () => {
   const text = useTranslations("coursesPage");
-  const [activeFilter, setActiveFilter] = useState<FilterType>("courses");
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+  const requestedTab = searchParams.get("tab");
+  const activeFilter: FilterType =
+    requestedTab === "services" || requestedTab === "learning-paths"
+      ? requestedTab
+      : "courses";
+
+  const setActiveFilter = (filter: FilterType) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", filter);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   const renderContent = () => {
     switch (activeFilter) {

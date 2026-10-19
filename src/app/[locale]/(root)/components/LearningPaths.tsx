@@ -20,7 +20,7 @@ const LearningPaths: React.FC<{ viewAll?: boolean }> = async ({ viewAll }) => {
       id="learning-paths-section"
       heading={text("heading")}
       button={!viewAll ? text("exploreAllPaths") : ""}
-      href="/courses#learning-paths-section"
+      href="/courses?tab=learning-paths"
     >
       {coursePackages.map((_package, index) => (
         <LearningPath key={index} {..._package} />
