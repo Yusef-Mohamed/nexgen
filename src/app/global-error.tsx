@@ -1,8 +1,11 @@
 "use client";
 
 import NextError from "next/error";
+import { useEffect } from 'react';
+import { reportUnexpected } from '@/lib/monitoring/report';
 
-export default function GlobalError() {
+export default function GlobalError({ error }: { error: Error & { digest?: string } }) {
+  useEffect(() => { reportUnexpected(error, { operation: 'react.render' }); }, [error]);
   return (
     <html>
       <body>

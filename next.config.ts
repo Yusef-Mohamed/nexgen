@@ -1,5 +1,6 @@
 import {NextConfig} from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
+import { withSentryConfig } from '@sentry/nextjs/config';
  
 const nextConfig: NextConfig = {
   images: {
@@ -31,4 +32,12 @@ const nextConfig: NextConfig = {
 };
  
 const withNextIntl = createNextIntlPlugin();
-export default withNextIntl(nextConfig);
+export default withSentryConfig(withNextIntl(nextConfig), {
+  org: 'yousef-qk',
+  project: 'nexgen-website',
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  release: { name: process.env.NEXT_PUBLIC_SENTRY_RELEASE || undefined },
+  silent: true,
+  telemetry: false,
+  sourcemaps: { disable: !process.env.SENTRY_AUTH_TOKEN, deleteSourcemapsAfterUpload: true },
+});

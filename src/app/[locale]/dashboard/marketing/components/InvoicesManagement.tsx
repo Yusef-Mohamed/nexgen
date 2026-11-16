@@ -551,7 +551,17 @@ const SalesTab = ({
               <TableCell>{sale.purchaser?.name}</TableCell>
               <TableCell>{sale.item}</TableCell>
               <TableCell>${sale.amount.toLocaleString()}</TableCell>
-              <TableCell>{sale.type || "-"}</TableCell>
+              <TableCell>
+                {sale.itemType
+                  ? t(
+                      `commission.types.${
+                        ["course", "coursePackage", "package"].includes(sale.itemType)
+                          ? sale.itemType
+                          : "unknown"
+                      }`,
+                    )
+                  : "-"}
+              </TableCell>
               <TableCell>{formatDate(sale.Date)}</TableCell>
             </TableRow>
           ))}

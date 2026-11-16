@@ -380,7 +380,7 @@ export interface IMarketLog {
 export interface ISale {
   purchaser: IUser;
   amount: number;
-  type: string;
+  itemType?: string;
   item: string;
   Date: string;
   _id: string;
