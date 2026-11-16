@@ -1020,6 +1020,8 @@
     "couponAppliedInline": "تم تطبيق كوبون {coupon}",
     "verifyRecaptcha": "يرجى التحقق من reCAPTCHA",
     "selectPaymentMethod": "يرجى اختيار طريقة الدفع",
+    "noPaymentMethods": "لا تتوفر طرق دفع لهذا المنتج حاليًا.",
+    "enrollFree": "التسجيل مجانًا",
     "invalidItem": "العنصر غير صالح",
     "youCanontBuyThisCourseNow": "لا يمكنك شراء هذه الدورة الآن",
     "youShouldTakeThoseCoursesFirstOrTakePlacementTest": "يجب عليك أخذ هذه الدورات أولاً أو أداء اختبار التحديد",

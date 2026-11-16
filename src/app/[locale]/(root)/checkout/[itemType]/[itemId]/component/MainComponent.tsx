@@ -33,20 +33,23 @@ import { useSearchParams } from "next/navigation";
 const methods = [
   {
     label: "stripe",
+    gateway: "stripe",
     logos: ["visa.png", "master-card.svg"],
     value: "stripe",
   },
   {
     label: "lahza",
+    gateway: "lahza",
     logos: ["visa.png", "master-card.svg"],
     value: "lahza",
   },
   {
     label: "crypto",
+    gateway: "plisio",
     logos: ["crypto.svg"],
     value: "crypto",
   },
-];
+] as const;
 const MainComponent = ({
   thisItem,
   itemType,
@@ -55,9 +58,14 @@ const MainComponent = ({
   itemType?: ItemType;
 }) => {
   const text = useTranslations("checkout");
-  const [selectedMethod, setSelectedMethod] = useState<
+  const [choice, setSelectedMethod] = useState<
     "stripe" | "lahza" | "crypto" | ""
   >("");
+  const freeCourse = itemType === "course" && thisItem?.price === 0;
+  const availableMethods = thisItem && !freeCourse
+    ? methods.filter(method => !thisItem.excludedPaymentGateways?.includes(method.gateway))
+    : [];
+  const selectedMethod = availableMethods.find(method => method.value === choice)?.value;
   const [isVerified, setIsVerified] = useState(false);
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [isCouponLoading, setIsCouponLoading] = useState(false);
@@ -89,11 +97,7 @@ const MainComponent = ({
     }
     try {
       setIsPaymentLoading(true);
-      if (
-        itemType === "course" &&
-        ((thisItem.priceAfterDiscount && thisItem.priceAfterDiscount == 0) ||
-          thisItem.price == 0)
-      ) {
+      if (freeCourse) {
         await axiosInstance.put(
           `/orders/createUnPaidOrder/${thisItem._id}`,
           force ? { force: true } : {},
@@ -273,22 +277,23 @@ const MainComponent = ({
           <h1 className="h3">{text("title")}</h1>
           <p className="mt-1 font-medium text-text-3">{text("description")}</p>
           <div className="mt-4 ">
-            {methods.map((method, ind) => (
+            {!thisItem && <p role="status">{text("invalidItem")}</p>}
+            {thisItem && !freeCourse && availableMethods.length === 0 && (
+              <p role="status" className="rounded-md border p-4 text-text-2">{text("noPaymentMethods")}</p>
+            )}
+            {availableMethods.map((method, ind) => (
               <button
                 disabled={isLoading}
                 key={method.value}
-                onClick={() =>
-                  setSelectedMethod(
-                    method.value as "stripe" | "lahza" | "crypto",
-                  )
-                }
+                aria-pressed={selectedMethod === method.value}
+                onClick={() => setSelectedMethod(method.value)}
                 className={cn(
                   "flex items-center disabled:opacity-80 disabled:cursor-not-allowed justify-between w-full px-4 py-3 border sm:py-4  sm:px-5 max-sm:text-sm",
                   {
                     "bg-primary-faded border-primary":
                       selectedMethod === method.value,
                     "rounded-t-sm": ind === 0,
-                    "rounded-b-sm": ind === methods.length - 1,
+                    "rounded-b-sm": ind === availableMethods.length - 1,
                   },
                 )}
               >
@@ -336,12 +341,12 @@ const MainComponent = ({
               </div>
             )}
             <Button
-              disabled={!isVerified || !selectedMethod || isLoading}
+              disabled={isLoading || (!freeCourse && (!isVerified || !selectedMethod))}
               className="w-full mt-3"
               size={"lg"}
               onClick={() => handelPayment()}
             >
-              {text("pay")}
+              {text(freeCourse ? "enrollFree" : "pay")}
             </Button>
           </div>
           <div className="flex flex-wrap items-center gap-2 mt-4 max-lg:hidden whitespace-nowrap ">
@@ -436,12 +441,12 @@ const MainComponent = ({
               </div>
             )}
             <Button
-              disabled={!isVerified || !selectedMethod || isLoading}
+              disabled={isLoading || (!freeCourse && (!isVerified || !selectedMethod))}
               className="w-full mt-3"
               size={"lg"}
               onClick={() => handelPayment()}
             >
-              {text("pay")}
+              {text(freeCourse ? "enrollFree" : "pay")}
             </Button>
           </div>
           <div className="flex flex-wrap items-center gap-2 mt-4 lg:hidden whitespace-nowrap ">

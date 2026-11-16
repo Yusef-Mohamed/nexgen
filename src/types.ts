@@ -8,6 +8,7 @@ export interface ICategory {
   updatedAt: string;
 }
 export interface ICourse {
+  excludedPaymentGateways?: string[];
   title: DynamicString;
   description: DynamicString;
   certificateDescription: DynamicString;
@@ -190,6 +191,7 @@ export interface IQuestion {
   grade?: number;
 }
 export interface IPackage {
+  excludedPaymentGateways?: string[];
   title: DynamicString;
   description: DynamicString;
   whoThisCourseFor: DynamicString[];
@@ -209,6 +211,7 @@ export interface IPackage {
   updatedAt: string;
 }
 export interface ICoursePackage {
+  excludedPaymentGateways?: string[];
   title: DynamicString;
   description: DynamicString;
   highlights: DynamicString[];

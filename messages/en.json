@@ -1024,6 +1024,8 @@
     "couponAppliedInline": "Coupon {coupon} applied",
     "verifyRecaptcha": "Please verify reCAPTCHA",
     "selectPaymentMethod": "Please select a payment method",
+    "noPaymentMethods": "No payment methods are currently available for this item.",
+    "enrollFree": "Enroll for free",
     "invalidItem": "Invalid item",
     "youCanontBuyThisCourseNow": "You cannot buy this course now",
     "youShouldTakeThoseCoursesFirstOrTakePlacementTest": "You should take these courses first or take a placement test",
